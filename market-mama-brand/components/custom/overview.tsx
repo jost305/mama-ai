@@ -13,15 +13,15 @@ export const Overview = () => {
     >
       <div className="flex flex-col items-center gap-4 text-center">
         <Image
-          src="/images/marketmama-logo.png"
+          src="/logo.png"
           width={52}
           height={52}
-          alt="MarketMama"
-          className="rounded-xl"
+          alt="MamaPrice"
+          className="rounded-xl object-contain"
         />
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            Welcome to MarketMama
+            Welcome to MamaPrice
           </h1>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 max-w-sm">
             AI-powered market intelligence for African traders and buyers.

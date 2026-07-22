@@ -9,21 +9,21 @@ import { PrivyAuthProvider } from "@/components/custom/privy-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://marketmama.vercel.app"),
-  title: "MarketMama - Know Prices. Shop Smart.",
-  description: "Get real-time market prices, smart shopping recommendations, and vendor intelligence. Chat with MarketMama to make better buying decisions.",
-  keywords: "market prices, agriculture, commodities, Nigeria, Africa, price alerts, farmers, traders, shopping",
+  metadataBase: new URL("https://mamaprice.ai"),
+  title: "MamaPrice — Know prices. Shop smart.",
+  description: "Get real-time market prices, smart shopping recommendations, and vendor intelligence. Chat with MamaPrice to make better buying decisions.",
+  keywords: "market prices, agriculture, commodities, Nigeria, Africa, price alerts, farmers, traders, shopping, steel, pharma",
   openGraph: {
-    title: "MarketMama",
+    title: "MamaPrice",
     description: "Know prices. Shop smart. AI-powered market intelligence for African traders.",
-    url: "https://marketmama.vercel.app",
+    url: "https://mamaprice.ai",
     type: "website",
     images: [
       {
-        url: "https://marketmama.vercel.app/images/marketmama-logo.png",
+        url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "MarketMama",
+        alt: "MamaPrice",
       },
     ],
   },
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon-marketmama.png" />
+        <link rel="icon" href="/favicon.png" />
       </head>
       <body className="antialiased">
         <ThemeProvider

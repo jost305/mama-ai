@@ -139,11 +139,11 @@ export function SidebarDrawer() {
             <>
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image src="/images/marketmama-logo.png" width={32} height={32} alt="MarketMama" className="w-full h-full object-cover" />
+                  <Image src="/logo.png" width={32} height={32} alt="MamaPrice" className="w-full h-full object-contain" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-bold text-sm text-gray-900 leading-tight truncate">Market Mama</p>
-                  <p className="text-[10px] text-gray-400 truncate">Know prices</p>
+                  <p className="font-bold text-sm text-gray-900 leading-tight truncate">MamaPrice</p>
+                  <p className="text-[10px] text-gray-400 truncate">Know prices. Shop smart.</p>
                 </div>
               </div>
               <button
@@ -157,7 +157,7 @@ export function SidebarDrawer() {
           ) : (
             <>
               <div className="w-8 h-8 rounded-lg overflow-hidden mx-auto flex-shrink-0">
-                <Image src="/images/marketmama-logo.png" width={32} height={32} alt="MarketMama" className="w-full h-full object-cover" />
+                <Image src="/logo.png" width={32} height={32} alt="MamaPrice" className="w-full h-full object-contain" />
               </div>
               <button
                 onClick={() => setIsExpanded(true)}
