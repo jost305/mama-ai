@@ -1,5 +1,12 @@
 -- Phase 2: Knowledge Graph Tables Migration
--- Creates tables for products, markets, sellers, and price data
+-- Creates tables for users, products, markets, sellers, and price data
+
+-- Core User Table
+CREATE TABLE IF NOT EXISTS "User" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(64) NOT NULL UNIQUE,
+  password VARCHAR(255)
+);
 
 -- Product Categories
 CREATE TABLE IF NOT EXISTS "ProductCategory" (

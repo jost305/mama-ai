@@ -19,8 +19,12 @@
 --    Make price optional, add multi-type fields
 -- ────────────────────────────────────────────────────────────
 
--- Rename table to reflect its broader purpose
-ALTER TABLE IF EXISTS "PriceReport" RENAME TO "AgentReport";
+-- Rename table to reflect its broader purpose (idempotent)
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'PriceReport') THEN
+        ALTER TABLE "PriceReport" RENAME TO "AgentReport";
+    END IF;
+END $$;
 
 -- Rename scout identifier to agent identifier
 DO $$ BEGIN
@@ -30,8 +34,23 @@ DO $$ BEGIN
     END IF;
 END $$;
 
+-- Ensure AgentReport table exists
+CREATE TABLE IF NOT EXISTS "AgentReport" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "productId" UUID REFERENCES "Product"(id),
+    "marketId" UUID REFERENCES "Market"(id),
+    "sellerId" UUID REFERENCES "Seller"(id),
+    "agentId" VARCHAR(255),
+    price DECIMAL(12, 2),
+    "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Make price optional (Commerce Intelligence reports may not have a price)
-ALTER TABLE "AgentReport" ALTER COLUMN "price" DROP NOT NULL;
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'AgentReport' AND column_name = 'price') THEN
+        ALTER TABLE "AgentReport" ALTER COLUMN "price" DROP NOT NULL;
+    END IF;
+END $$;
 
 -- Add report type classification
 ALTER TABLE "AgentReport" 
