@@ -80,35 +80,10 @@
                     <button class="top-dock-btn" id="top-dock-btn" title="Expand Sidebar">
                         <i class="fa-solid fa-outdent"></i>
                     </button>
-                    <div class="model-picker-container" style="position: relative;">
-                        <button class="model-picker-btn" id="model-picker-btn">
+                    <div class="model-picker-container">
+                        <div class="model-picker-btn" id="model-picker-btn" style="cursor: default;">
                             <span class="model-picker-dot"></span>
-                            <span id="selected-model-text">MamaPrice 4o</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </button>
-                        <!-- Model Dropdown Menu -->
-                        <div class="dropdown-menu" id="model-dropdown">
-                            <div class="dropdown-item active" data-model="MamaPrice 4o">
-                                <i class="fa-solid fa-bolt"></i>
-                                <div>
-                                    <div class="item-title">MamaPrice 4o (Hybrid)</div>
-                                    <div class="item-sub">OjaLM GGUF + OjaGraph RAG Grounding</div>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-model="OjaLM v0.1">
-                                <i class="fa-solid fa-brain"></i>
-                                <div>
-                                    <div class="item-title">OjaLM v0.1 (Direct CPU)</div>
-                                    <div class="item-sub">Pure Fine-Tuned Qwen 3.5 GGUF Engine</div>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-model="OjaGraph RAG">
-                                <i class="fa-solid fa-database"></i>
-                                <div>
-                                    <div class="item-title">OjaGraph RAG Engine</div>
-                                    <div class="item-sub">Grounded Structured Commodity Search</div>
-                                </div>
-                            </div>
+                            <span id="selected-model-text">OjaLM</span>
                         </div>
                     </div>
                 </div>
