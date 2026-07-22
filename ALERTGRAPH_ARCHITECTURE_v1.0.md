@@ -37,6 +37,14 @@ People stop opening MamaPrice only when they need to search. They open MamaPrice
 
 ---
 
+# Hyperlocal Intelligence Mandate
+
+> *"Near you"* is too generic for MamaPrice.
+
+MamaPrice's core strength is **hyperlocal commerce intelligence**. Every alert MUST reference an **exact market, road, district, LGA, state, or landmark** whenever possible.
+
+---
+
 # Mission
 
 AlertGraph exists to ensure that no important change inside the commerce ecosystem goes unnoticed.
@@ -69,8 +77,6 @@ Every node and edge inside OjaGraph can produce alerts across all verticals:
 | **Infrastructure & Civic** | Road Closures, Bridge Traffic, Flooding, Weather, Fuel Scarcity, Security |
 | **Social & Academic** | UNILAG/ABU/UI Resumptions, NYSC Orientations, Trade Fairs, Concerts, Football Matches |
 
-Every node inside OjaGraph is capable of becoming an event source.
-
 ---
 
 # Intelligence Event Pipeline
@@ -82,7 +88,7 @@ flowchart TD
     C --> D[Update OjaGraph Nodes & Timelines]
     D --> E[Generate Alert Candidates]
     E --> F[Priority Level & Multi-Audience Evaluation]
-    F --> G[Audience Selection & Personalization Filter]
+    F --> G[Audience Selection & Hyperlocal Filter]
     G --> H[Delivery Scheduling & Frequency Caps]
     H --> I[Notification / Stream Delivery]
     I --> J[User Feedback Loop & Reinforcement Learning]
@@ -94,134 +100,105 @@ flowchart TD
 
 Agents (formerly Scouts) are the primary producers of field intelligence. Every Agent submission immediately enters AlertGraph.
 
-### Example Ingestion & Graph Update Flow:
-1. **Agent Submits Report**: Rice (50kg) = ₦72,000 at Mile 12 Market (09:42 AM).
-2. **Verification Engine**: Compare with historical prices, vendor receipts, and nearby agent reports.
-3. **Confidence Score**: Assign confidence weight (0.00 – 1.00).
-4. **Graph Updates**: Update Product Node $\rightarrow$ Market Node $\rightarrow$ Vendor Node $\rightarrow$ Price Timeline.
-5. **Generate Alert Candidates**: Submit to AlertGraph trigger evaluation.
-
-### Can Agent Reports Trigger Notifications?
-**YES.** Absolutely. But **NOT automatically**. Every report is strictly evaluated first.
-
 ### Agent Trigger Rules & Thresholds:
-
-#### Price Movement Threshold Rule:
-- **Minor Fluctuation**: Old ₦66,000 $\rightarrow$ New ₦66,100 ($+0.15\%$) $\Rightarrow$ **No Notification** (Logged silently).
+- **Minor Fluctuation**: Old ₦66,000 $\rightarrow$ New ₦66,100 ($+0.15\%$) $\Rightarrow$ **No Notification**.
 - **Major Movement**: Old ₦66,000 $\rightarrow$ New ₦72,000 ($+9.09\%$) $\Rightarrow$ **Alert Candidate Generated**.
-
-#### Confidence Threshold Rule:
-- **Low Confidence**: 1 Agent report, Confidence = 41% $\Rightarrow$ **Alert Stays Pending** (Awaiting verification).
+- **Low Confidence**: 1 Agent report, Confidence = 41% $\Rightarrow$ **Alert Stays Pending**.
 - **High Confidence**: 5 Trusted Agents report, Confidence = 98% $\Rightarrow$ **Published Immediately**.
 
 ---
 
-# Confidence Engine & Scoring Matrix
-
-Every alert candidate has a calculated confidence score:
-
-$$\text{Confidence} = f(\text{Agent Count}, \text{Agent Accuracy Rating}, \text{GPS Proximity}, \text{Photo Evidence}, \text{Market Consistency})$$
-
-| Confidence Range | Action / Handling |
-|---|---|
-| **0% – 40%** | **Ignore** (Discard candidate) |
-| **40% – 70%** | **Needs Verification** (Dispatch verification mission to nearby Agents) |
-| **70% – 90%** | **Publish Carefully** (Deliver to high-threshold subscribers) |
-| **90% – 100%** | **Verified** (Publish immediately across all target channels) |
-
----
-
-# Alert Priority Levels & Interrupt Policy
-
-| Level | Priority | Interruption Policy | Examples |
-|---|---|---|---|
-| **LEVEL 1** | **Critical** | Immediate Interruption (System Alert) | Severe food shortage, market fire, flooding, fuel crisis, government emergency |
-| **LEVEL 2** | **High** | Immediate Push Notification | Rice up 18%, fuel price change, major road closure, university resumption |
-| **LEVEL 3** | **Normal** | Grouped Notification / Stream | New vendor onboarding, weekly market trends, supply updates |
-| **LEVEL 4** | **Low** | Digest / Summary Only | Historical price trends, recommendations, weekly insights |
-
----
-
-# Delivery Timing & Intelligent Scheduling
-
-AlertGraph schedules delivery to maximize actionability without causing alert fatigue:
-
-* **Immediate**: Critical & High Priority (Emergencies, major price jumps, road closures).
-* **Hourly Digest**: Small updates, price movements, market summaries.
-* **Morning Intelligence (07:00 AM)**: Overnight updates, best deals nearby, price drops, trending markets, weather impact.
-* **Lunch Summary (12:00 PM)**: Busy market alerts, traffic, wholesale opportunities.
-* **Evening Intelligence (06:00 PM)**: Daily price movements, agent activity, best buys for tomorrow.
-* **Night Summary (09:00 PM)**: Market closing recaps, daily summaries, tomorrow's price outlook.
-* **Weekly Intelligence (Every Monday)**: Top price movements, cheapest markets, fastest-growing commodities, agent leaderboard.
-* **Monthly Intelligence**: Inflation index, market rankings, price indices, economic summaries.
-
----
-
-# Multi-Audience Intelligence Routing ("The Killer Feature")
+# Multi-Audience Intelligence Routing
 
 The same underlying event is automatically contextualized and routed differently depending on the recipient:
 
-### Event: *Rice price drops 12% in Mile 12 Market*
+### Event: *Rice price drops 12% in Mile 12 Market, Kosofe LGA, Lagos*
 
-* 👩 **Consumer**: *"Rice is now ₦8,000 cheaper near you. Buy today at Mile 12."*
-* 🏪 **Retailer**: *"Competitors reduced rice prices by 12%. Consider adjusting your pricing."*
-* 🚚 **Distributor**: *"Demand for rice is expected to increase in Mile 12 due to price drop."*
-* 🌾 **Farmer**: *"Market prices have weakened in Lagos due to increased supply."*
-* 🏛 **Government**: *"Rice prices declined across 3 major Lagos markets, suggesting improved regional supply."*
-* 📈 **Investor / Analyst**: *"Staple food price index fell 3.2% this week, driven primarily by rice."*
-
-AlertGraph is an **intelligence routing engine**, delivering the same underlying event in the exact format required for each persona.
+* 👩 **Consumer**: *"Rice (50kg, Mama Gold) dropped ₦81,000 → ₦73,000 at Mile 12 Market, Kosofe LGA, Lagos."*
+* 🏪 **Retailer**: *"Competitors in Yaba & Ketu reduced rice prices by 12%. Review pricing strategy."*
+* 🚚 **Distributor**: *"Tomatoes demand increased 34% in Mile 12 Market. Increase today's shipment."*
+* 🌾 **Farmer**: *"Market prices in Lagos weakened due to increased northern shipments."*
+* 🏛 **Government**: *"Rice prices declined across 3 Lagos markets (Mile 12, Oyingbo, Ketu), easing food inflation."*
+* 📈 **Analyst**: *"Staple food price index fell 3.2% this week across Kosofe and Ebute Metta hubs."*
 
 ---
 
-# Social Intelligence Alerts ("Living Network")
+# Hyperlocal Intelligence Alert Catalog
 
-Social Intelligence Alerts do not come from automated feeds—they emerge directly from collective Agent activity:
+### 🛒 Consumer Alerts
 
-> 🟢 **12 Agents just reported that tomatoes are selling out quickly in Mile 12.**  
-> 🔥 **26 Agents are currently active in Balogun Market.**  
-> 📈 **57 Agents have reported rising cement prices across Lagos in the last 2 hours.**  
-> 🚨 **Three independent Agents reported fuel scarcity in Surulere. Verification in progress.**  
+#### Price Drops:
+- 📍 **Mile 12 Market, Kosofe LGA, Lagos**: Rice (50kg, Mama Gold) dropped **₦81,000 → ₦73,000**. Lowest verified price reported 18m ago by 6 Agents.
+- 📍 **Oyingbo Market, Ebute Metta, Lagos**: Fresh tomatoes (basket) now **₦15,500** (*Lagos avg ₦18,200 · Save ~₦2,700*).
+- 📍 **Bodija Market, Ibadan North LGA, Oyo**: Frozen Chicken (Carton) selling for **₦41,500** (*Was ₦45,000 · Verified by 4 Agents*).
 
-This creates a "living network" feeling, reinforcing the value of the human Agent network in real time.
+#### Price Increases:
+- 📍 **Ariaria International Market, Aba South, Abia**: Dangote Cement 50kg increased by **₦1,200** today (**₦8,500 → ₦9,700**) due to transport delays.
 
----
+#### Buy Before Price Increases:
+- 📍 **Oil Mill Market, Port Harcourt**: Palm Oil prices expected to increase within 48h (*Early buying recommended · 91% Confidence*).
 
-# Core Alert Categories & Stream Examples
+#### Best Deal Nearby:
+- 📍 **Onitsha Main Market**: Rice (50kg) ₦72,800 · Beans (Paint) ₦8,300 · Groundnut Oil (25L) ₦39,500 (*Verified from 11 Agent reports*).
 
-### 🥬 Price Drop & Increase Alerts
-- 🟢 **Rice (50kg)**: Dropped from ₦74,000 $\rightarrow$ ₦69,500 (*Mile 12 · Verified by 14 Agents*)
-- 🔻 **Tomatoes**: 18% cheaper (*₦2,800 $\rightarrow$ ₦2,300 · Jos*)
-- 🔴 **Dangote Cement**: Rising ₦10,500 $\rightarrow$ ₦11,300 (*+7.6% · Lagos*)
-- ⛽ **Fuel Price**: Increased ₦940 $\rightarrow$ ₦995/L (*May affect transport & food prices*)
-
-### 🏪 Market & Logistics Alerts
-- 🟢 **Mile 12 Market**: Open · 1,274 shoppers, 96 active Agents
-- 🚧 **Third Mainland Bridge**: Heavy traffic · Estimated delay: 42 mins
-- 🚨 **Bodija Market**: Fire reported near market · Authorities responding
-
-### 👩🏾🌾 Agent Network & Gamification Alerts
-- 🏆 **Mission Completed**: Earned +250 Agent Points & ₦2,400 payout
-- 🔥 **Report Verified**: Confidence 98% · +80 XP
-- 🥇 **Rank Updated**: Ranked #34 among all Lagos Agents
-
-### 🏛 Government & Policy Alerts
-- 🚨 **Food Inflation Warning**: Beans increased 18% across 5 states
-- 🚛 **Import Restriction**: Announced on imported rice
-
-### 🤖 AI Predictive Insights
-- 🧠 **MamaPrice Predicts**: Rice prices may increase by 8–12% within 2 weeks due to rising fuel costs and lower northern supply.
+#### Restock & Flash Deals:
+- 📍 **Sabon Gari Market, Kano**: Sugar back in stock after 6 days (**₦82,000**).
+- 📍 **Ketu Market, Lagos**: Flash Deal — Irish Potatoes **₦28,000** (*Normal ₦36,000*).
 
 ---
 
-# Ecosystem Architecture Map
+### 🚚 Distributor Alerts
+- 📍 **Mile 12 Market, Lagos**: Demand for tomatoes increased by **34%** this morning. Wholesalers restocking rapidly.
+- 📍 **Aba Timber Market, Abia**: Demand for roofing sheets rising. Inventory may sell out in 3 days.
+- 📍 **Bodija Market, Oyo**: Supply shortage detected for onions (*Kano deliveries down 27%*).
+
+---
+
+### 🏪 Retailer Alerts
+- 📍 **Yaba Market, Lagos**: Nearby competitors reduced Indomie Super Pack by **9%**.
+- 📍 **Ogbete Main Market, Enugu**: 5 neighboring stores reduced vegetable oil prices to **₦14,500** (*Your average: ₦15,600*).
+- 📍 **Computer Village, Ikeja**: Competitors discounting phone chargers by **18%**.
+
+---
+
+### 🏭 Manufacturer Alerts
+- 📍 **Lagos (Lekki, Ikorodu, Agege, Badagry)**: Cement demand forecast **+18%** within 7 days.
+- 📍 **South-East Nigeria**: Building materials demand risen following federal road contracts.
+
+---
+
+### 🚛 Logistics Alerts
+- 📍 **Lokoja → Abuja Corridor**: Heavy truck delays (8–14h delay). Affected: Rice, Cement, Flour.
+- 📍 **Lagos–Ibadan Expressway**: Traffic slowing deliveries into Bodija Market & Oje Market.
+
+---
+
+### 💰 Agent Alerts
+- 📍 **Mile 12 Market**: Report approved (+35 Agent Points, ₦250 pending payout).
+- 📍 **Lagos State**: Ranked **#12** among Lagos Agents.
+- 📍 **Oyingbo Market**: Bonus mission available (+150 bonus points).
+
+---
+
+### 📊 Government & Emergency Alerts
+- 📍 **Federal Ministry of Agriculture**: Rice prices increased **17%** across Kano, Kaduna & Abuja.
+- 📍 **Mile 12 Market, Kosofe**: Fire incident in vegetable section · Section temporarily closed.
+- 📍 **Onitsha Main Market**: Flooding affecting access roads · Produce shortages expected.
+- 📍 **Kano Grain Market**: Truck drivers' strike affecting grain deliveries.
+
+---
+
+### 🧠 AI Insights & Predictive Intelligence
+- 📍 **Bodija Market, Ibadan**: MamaPrice AI predicts beans prices will rise **8–11%** over 5 days due to reduced northern supply, transport costs & wholesale demand (*92% Confidence*).
+
+---
+
+# Architecture Map
 
 AlertGraph completes the 5 core pillars of the MamaPrice Commerce Intelligence Architecture:
 
 1. **OjaGraph.md** — Knowledge Layer *(Graph DB & Document Store)*
 2. **OjaLM.md** — Reasoning Layer *(Fine-Tuned LLM & RAG Engine)*
-3. **AlertGraph.md** — Distribution Layer *(Intelligence Routing & Notification Engine)*
+3. **AlertGraph.md** — Distribution Layer *(Hyperlocal Intelligence Routing)*
 4. **AgentGraph.md** — Human Intelligence Layer *(Field Scout Network & Verification)*
 5. **TrustGraph.md** — Verification & Reputation Layer *(Confidence & Anti-Counterfeit)*
-
-Together, these five pillars form the complete real-time commerce intelligence engine for Africa.

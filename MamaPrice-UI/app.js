@@ -868,53 +868,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Dynamic Real-Time Market Alerts Engine (Short & Punchy Alerts)
+    // Dynamic Real-Time Hyperlocal Market Alerts Engine (Exact LGA & Market Specs)
     // ─────────────────────────────────────────────────────────────────────────
     let systemNotifications = [
         {
             id: 'notif_001',
             type: 'price',
-            text: '<strong>Rice (50kg)</strong> updated to ₦75,917 (+5%)',
-            time: '2m ago',
-            tag: 'Lagos Hub',
+            text: '📍 <strong>Mile 12 Market, Kosofe LGA, Lagos</strong><br>Rice (50kg, Mama Gold) dropped ₦81,000 → ₦73,000',
+            time: '18m ago',
+            tag: 'Kosofe LGA',
             read: false,
-            actionQuery: 'Rice 50kg bag price today Lagos Kano'
+            actionQuery: 'Rice 50kg Mama Gold price today Mile 12 Lagos'
         },
         {
             id: 'notif_002',
-            type: 'inbox',
-            text: '<strong>Dangote Cement</strong> dropped to ₦8,500 (-3%)',
-            time: '12m ago',
-            tag: 'Balogun Market',
+            type: 'price',
+            text: '📍 <strong>Oyingbo Market, Ebute Metta, Lagos</strong><br>Fresh tomatoes (basket) now ₦15,500 (Save ~₦2,700 vs Lagos avg)',
+            time: '35m ago',
+            tag: 'Ebute Metta',
             read: false,
-            actionQuery: 'Dangote Cement 50kg price today Lagos'
+            actionQuery: 'Tomatoes basket price today Oyingbo Lagos'
         },
         {
             id: 'notif_003',
-            type: 'price',
-            text: '<strong>Turkish Steel 12mm</strong> at ₦1,250,000/tonne',
-            time: '45m ago',
-            tag: 'Oshodi Market',
+            type: 'inbox',
+            text: '📍 <strong>Ariaria Market, Aba South, Abia</strong><br>Dangote Cement 50kg increased by ₦1,200 (₦8,500 → ₦9,700)',
+            time: '1h ago',
+            tag: 'Aba South',
             read: false,
-            actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
+            actionQuery: 'Dangote Cement 50kg price today Ariaria Aba'
         },
         {
             id: 'notif_004',
-            type: 'inbox',
-            text: '<strong>Scout Reward</strong> +₦1,500 payout credited',
-            time: '1h ago',
-            tag: 'Agent Payout',
+            type: 'price',
+            text: '📍 <strong>Bodija Market, Ibadan North LGA, Oyo</strong><br>Frozen Chicken (Carton) selling for ₦41,500 (Was ₦45,000)',
+            time: '2h ago',
+            tag: 'Ibadan North',
             read: true,
-            actionQuery: ''
+            actionQuery: 'Frozen Chicken carton price Bodija Ibadan'
         },
         {
             id: 'notif_005',
-            type: 'price',
-            text: '<strong>Tomatoes (Basket)</strong> ₦1,800 (+8%)',
-            time: '2h ago',
-            tag: 'Mile 12',
+            type: 'inbox',
+            text: '📍 <strong>Lokoja → Abuja Logistics Corridor</strong><br>Heavy truck delays detected (8–14h delay). Rice & Cement transport affected.',
+            time: '3h ago',
+            tag: 'Abuja Corridor',
             read: true,
-            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
+            actionQuery: 'Logistics delay Rice Cement Lokoja Abuja'
         }
     ];
 
@@ -1043,26 +1043,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Background Ingestion of Real-Time Market Commodity Alerts
+    // Background Ingestion of Real-Time Hyperlocal Commodity Alerts
     setInterval(() => {
         const dynamicEvents = [
             {
                 type: 'price',
-                text: '<strong>Pepper (Basket)</strong> updated to ₦14,800 (+6%)',
+                text: '📍 <strong>Onitsha Main Market, Anambra</strong><br>Rice ₦72,800 · Groundnut Oil 25L ₦39,500',
+                tag: 'Onitsha Main',
+                actionQuery: 'Onitsha Main Market prices today'
+            },
+            {
+                type: 'price',
+                text: '📍 <strong>Sabon Gari Market, Kano</strong><br>Sugar back in stock after 6 days (₦82,000/bag)',
                 tag: 'Kano Hub',
-                actionQuery: 'Pepper Basket price today Kano Kaduna'
+                actionQuery: 'Sugar bag price Sabon Gari Kano'
             },
             {
                 type: 'inbox',
-                text: '<strong>Scout Reward</strong> +₦2,000 payout credited',
-                tag: 'Agent Payout',
+                text: '📍 <strong>Mile 12 Market Agent Award</strong><br>Report verified! +35 Points & ₦250 pending payout credited',
+                tag: 'Scout Payout',
                 actionQuery: ''
             },
             {
                 type: 'price',
-                text: '<strong>Lagos Rent 2-Bed</strong> ₦1.5M avg',
-                tag: 'Real Estate',
-                actionQuery: 'Average 2-bedroom apartment rent price in Lagos'
+                text: '📍 <strong>Bodija Market AI Prediction</strong><br>Beans prices predicted to rise 8–11% over next 5 days (92% Confidence)',
+                tag: 'AI Forecast',
+                actionQuery: 'Beans price trend Bodija Ibadan'
             }
         ];
         const randomEvt = dynamicEvents[Math.floor(Math.random() * dynamicEvents.length)];
