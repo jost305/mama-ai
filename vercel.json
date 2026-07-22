@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "builds": [
+    {
+      "src": "MamaPrice-UI/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/MamaPrice-UI/$1"
+    }
+  ]
+}
