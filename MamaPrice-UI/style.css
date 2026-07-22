@@ -3453,4 +3453,8 @@ body.sidebar-docked .top-dock-btn {
     .mobile-bottom-nav {
         display: flex;
     }
+    .pill-clock-divider,
+    .pill-clock {
+        display: none !important;
+    }
 }
