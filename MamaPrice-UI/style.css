@@ -3511,18 +3511,32 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
     .search-chips-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 6px;
         margin: 10px 0 14px 0;
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .search-chips-row::-webkit-scrollbar {
+        display: none;
     }
     .chips-container {
-        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
         gap: 5px;
+        flex-shrink: 0;
     }
     .chip-btn {
         padding: 3px 8px;
         font-size: 0.7rem;
         border-radius: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 }
