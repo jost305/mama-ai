@@ -134,15 +134,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     function switchView(targetNav, targetPage) {
         if (!targetPage) return;
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item, .m-nav-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
 
         if (targetNav) targetNav.classList.add('active');
-        targetPage.classList.add('active');
+        
+        // Sync highlighting across both sidebar and mobile bottom nav
+        const pageKey = targetPage.id.replace('page-', '');
+        const desktopNav = document.getElementById(`nav-${pageKey}`);
+        const mobileNav = document.getElementById(`m-nav-${pageKey}`);
+        if (desktopNav) desktopNav.classList.add('active');
+        if (mobileNav) mobileNav.classList.add('active');
 
-        if (sidebar && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-        }
+        targetPage.classList.add('active');
     }
 
     const navPrices = document.getElementById('nav-prices');
