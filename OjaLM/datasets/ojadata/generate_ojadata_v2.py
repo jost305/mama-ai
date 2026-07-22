@@ -43,19 +43,30 @@ def generate_training_data():
         }
     })
 
-    # 2. Multi-turn Conversation Format (Section 2.4)
+    # 3. Steel / NaijaSteel Intelligence (Section 3.1)
     examples.append({
-        "conversations": [
-            {"role": "user", "content": "Abeg check price of garri"},
-            {"role": "assistant", "content": "Garri dey around ₦2,500–₦4,500 per paint for most Lagos markets. Which area you dey — and you want yellow ijebu or white?"},
-            {"role": "user", "content": "yellow one, I dey Surulere"},
-            {"role": "assistant", "content": "Yellow ijebu garri for Surulere dey go for ₦3,000–₦5,000 per paint. If you wan go cheaper, Mushin or Daleko go save you ₦500–₦800 per paint. Worth the trip if you dey buy multiple paints."}
-        ],
+        "instruction": "How much is Turkish 12mm rebar per tonne in Oshodi Steel Market?",
+        "output": "Turkish 12mm Rebar (Fe500 grade) for Oshodi Steel Market dey around ₦1,250,000 per tonne today. Import tariff & FX changes affect price this week. You need local rolling mill alternative like Ajaokuta specs?",
         "metadata": {
-            "domain": "price_intelligence",
-            "products": ["garri-yellow"],
-            "market": "surulere",
+            "domain": "steel_intelligence",
+            "vertical": "steel",
+            "product": "turkish-12mm-rebar",
+            "market": "oshodi-steel-market",
             "language": "mixed",
+            "verified": True
+        }
+    })
+
+    # 4. Pharmaceutical & Healthcare Intelligence (Section 3.1)
+    examples.append({
+        "instruction": "Is Coartem available at Idumota Pharma Market and what is NAFDAC status?",
+        "output": "Coartem 80/480mg (Novartis) dey IN STOCK for Idumota Pharma Market at ₦3,200 per pack of 6. NAFDAC Reg: A4-1234 verified. Always verify anti-counterfeit scratch panel on pack before buying wholesale.",
+        "metadata": {
+            "domain": "pharma_intelligence",
+            "vertical": "pharma",
+            "product": "coartem-80-480mg",
+            "market": "idumota-pharma",
+            "language": "english",
             "verified": True
         }
     })

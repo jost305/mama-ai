@@ -11,29 +11,45 @@ const GRAPH_BASE = path.join(__dirname, "..", "..", "datasets", "ojagraph", "dyn
 
 const SEEDED_PRICE_OBSERVATIONS = [
     {
+        id: "obs_steel_001", type: "PriceObservation",
+        product: "Turkish 12mm Rebar", brand: "NaijaSteel", domain_type: "steel",
+        market: "Oshodi Steel Market", state: "Lagos",
+        observed_price: 1250000, currency: "NGN", quantity: "Tonne",
+        observed_date: "2026-07-22", confidence: 0.98, sources_count: 15, freshness_hours: 1,
+        specifications: { grade: "Fe500", diameter_mm: 12, origin: "Turkey" }
+    },
+    {
         id: "obs_cement_001", type: "PriceObservation",
-        product: "Dangote Cement", brand: "Dangote",
+        product: "Dangote Cement", brand: "Dangote", domain_type: "building_materials",
         market: "Balogun Market", state: "Lagos",
         observed_price: 8500, currency: "NGN", quantity: "50kg bag",
         observed_date: "2026-07-21", confidence: 0.96, sources_count: 12, freshness_hours: 3
     },
     {
+        id: "obs_pharma_001", type: "PriceObservation",
+        product: "Coartem 80/480mg", brand: "Novartis", domain_type: "pharma",
+        market: "Idumota Pharma Market", state: "Lagos",
+        observed_price: 3200, currency: "NGN", quantity: "Pack of 6",
+        observed_date: "2026-07-22", confidence: 0.97, sources_count: 8, freshness_hours: 2,
+        specifications: { nafdac_reg: "A4-1234", generic: "Artemether/Lumefantrine" }
+    },
+    {
         id: "obs_flour_001", type: "PriceObservation",
-        product: "Golden Penny Flour", brand: "Golden Penny",
+        product: "Golden Penny Flour", brand: "Golden Penny", domain_type: "food",
         market: "Mile 12 Market", state: "Lagos",
         observed_price: 72500, currency: "NGN", quantity: "50kg bag",
         observed_date: "2026-07-21", confidence: 0.98, sources_count: 19, freshness_hours: 2
     },
     {
         id: "obs_rice_001", type: "PriceObservation",
-        product: "Mama Gold Rice", brand: "Mama Gold",
+        product: "Mama Gold Rice", brand: "Mama Gold", domain_type: "food",
         market: "Bodija Market", state: "Oyo",
         observed_price: 88000, currency: "NGN", quantity: "50kg bag",
         observed_date: "2026-07-21", confidence: 0.95, sources_count: 14, freshness_hours: 4
     },
     {
         id: "obs_tomato_001", type: "PriceObservation",
-        product: "Fresh Tomatoes", brand: "Local Produce",
+        product: "Fresh Tomatoes", brand: "Local Produce", domain_type: "agri",
         market: "Mile 12 Market", state: "Lagos",
         observed_price: 42000, currency: "NGN", quantity: "Big Raffia Basket",
         observed_date: "2026-07-21", confidence: 0.92, sources_count: 22, freshness_hours: 1
