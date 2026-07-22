@@ -3562,26 +3562,27 @@ body.sidebar-docked .top-dock-btn {
     }
 }
 
-/* ── WhatsApp Reverse Authentication (No OTP, No OAuth) ── */
-.wa-auth-btn {
-    background: linear-gradient(135deg, #25d366, #128c7e);
-    color: #ffffff;
-    border: none;
+/* ── Clean Sign In Button (No Gradient, No WhatsApp Icon) ── */
+.wa-auth-btn, .sign-in-btn {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
     border-radius: 20px;
-    padding: 7px 15px;
-    font-size: 0.82rem;
-    font-weight: 700;
+    padding: 6px 16px;
+    font-size: 0.84rem;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 7px;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.28);
-    transition: transform 0.15s, box-shadow 0.15s;
+    gap: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.wa-auth-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.38);
+.wa-auth-btn:hover, .sign-in-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
 }
 
 .wa-auth-card {

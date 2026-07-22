@@ -410,19 +410,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('mamaprice_jwt_token');
         const userJson = localStorage.getItem('mamaprice_auth_user');
 
+        const navProfile = document.getElementById('nav-profile');
+        const mNavProfile = document.getElementById('m-nav-profile');
+        const userProfileBtn = document.getElementById('user-profile-btn');
+
         if (token && userJson) {
             const user = JSON.parse(userJson);
             if (waAuthBtn) {
-                waAuthBtn.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>${user.name || 'Logged In'}</span>`;
-                waAuthBtn.style.background = 'linear-gradient(135deg, #166534, #15803d)';
-                waAuthBtn.title = `Logged in via WhatsApp (${user.phone})`;
+                waAuthBtn.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> <span>${user.name || 'Sign in'}</span>`;
+                waAuthBtn.style.background = '#ffffff';
+                waAuthBtn.style.color = '#0f172a';
+                waAuthBtn.style.border = '1px solid #cbd5e1';
+                waAuthBtn.title = `Logged in (${user.phone})`;
             }
+            if (navProfile) navProfile.style.display = 'flex';
+            if (mNavProfile) mNavProfile.style.display = 'flex';
+            if (userProfileBtn) userProfileBtn.style.display = 'flex';
         } else {
             if (waAuthBtn) {
-                waAuthBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> <span>WhatsApp Login</span>`;
-                waAuthBtn.style.background = 'linear-gradient(135deg, #25d366, #128c7e)';
-                waAuthBtn.title = `Continue with WhatsApp (No OTP Reverse Auth)`;
+                waAuthBtn.innerHTML = `<span>Sign in</span>`;
+                waAuthBtn.style.background = '#ffffff';
+                waAuthBtn.style.color = '#0f172a';
+                waAuthBtn.style.border = '1px solid #cbd5e1';
+                waAuthBtn.title = `Sign in via WhatsApp Reverse Authentication`;
             }
+            if (navProfile) navProfile.style.display = 'none';
+            if (mNavProfile) mNavProfile.style.display = 'none';
+            if (userProfileBtn) userProfileBtn.style.display = 'none';
         }
     }
     updateAuthUIState();
