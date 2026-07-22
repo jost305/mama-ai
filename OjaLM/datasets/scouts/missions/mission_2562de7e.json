@@ -1,0 +1,8 @@
+{
+  "id": "mission_2562de7e",
+  "type": "Mission",
+  "mission_type": "Stock Check",
+  "target_market_id": "market_10e9ef78",
+  "target_product_id": "product_679b1408",
+  "status": "Completed"
+}

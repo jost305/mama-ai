@@ -1,0 +1,41 @@
+{
+  "id": "scout_65894d98",
+  "type": "Scout",
+  "name": "Ngozi O.",
+  "languages": [
+    "English",
+    "Igbo",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Anambra",
+    "lga": "Onitsha North",
+    "home_market": "Onitsha Main",
+    "gps": "11.0454, 6.5621"
+  },
+  "trust_metrics": {
+    "trust_score": 2,
+    "verification_status": "Verified",
+    "accuracy": 0.95,
+    "dispute_rate": 0.02
+  },
+  "performance": {
+    "experience": "3 years",
+    "specialties": [
+      "Price Checking",
+      "Stock Verification"
+    ],
+    "average_submissions_day": 17,
+    "response_speed": "20 mins",
+    "acceptance_rate": 0.97
+  },
+  "device_info": "Android 13, TECNO Spark",
+  "rewards": {
+    "rewards_earned": 5441,
+    "level": "Active",
+    "badges": [
+      "Top Reporter"
+    ]
+  }
+}

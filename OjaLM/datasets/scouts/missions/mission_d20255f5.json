@@ -1,0 +1,36 @@
+{
+  "id": "mission_d20255f5",
+  "type": "Mission",
+  "mission_type": "Distance Audit",
+  "target_market_id": "market_19f20fd7",
+  "target_product_id": "product_ba08b2be",
+  "status": "VERIFYING",
+  "last_updated": "2026-07-20T15:27:47.254130",
+  "assigned_scout_id": "SYSTEM",
+  "lifecycle_log": [
+    {
+      "from": "OPEN",
+      "to": "ACCEPTED",
+      "timestamp": "2026-07-20T15:27:47.220845",
+      "actor": "scout_f138c5f8"
+    },
+    {
+      "from": "ACCEPTED",
+      "to": "IN_PROGRESS",
+      "timestamp": "2026-07-20T15:27:47.237569",
+      "actor": "scout_f138c5f8"
+    },
+    {
+      "from": "IN_PROGRESS",
+      "to": "REPORT_SUBMITTED",
+      "timestamp": "2026-07-20T15:27:47.254130",
+      "actor": "scout_f138c5f8"
+    },
+    {
+      "from": "REPORT_SUBMITTED",
+      "to": "VERIFYING",
+      "timestamp": "2026-07-20T15:27:47.254130",
+      "actor": "SYSTEM"
+    }
+  ]
+}

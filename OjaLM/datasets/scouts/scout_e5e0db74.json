@@ -1,0 +1,43 @@
+{
+  "id": "scout_e5e0db74",
+  "type": "Scout",
+  "name": "Adekunle T.",
+  "languages": [
+    "English",
+    "Yoruba",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Lagos",
+    "lga": "Lagos Island",
+    "home_market": "Balogun",
+    "gps": "10.5256, 5.4066"
+  },
+  "reputation": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "activity_score": 92,
+    "accuracy": 0.98,
+    "fraud_flags": 0,
+    "dispute_count": 0,
+    "image_quality": 0.94,
+    "receipt_quality": 0.67
+  },
+  "performance": {
+    "experience": "4 years",
+    "average_submissions_day": 53,
+    "response_speed": "9 mins",
+    "mission_completion_rate": 0.93
+  },
+  "economy": {
+    "level": "Master Scout",
+    "lifetime_earnings_marketpoints": 53826,
+    "current_balance": 6840,
+    "badges": [
+      "First Responder",
+      "Market Local"
+    ]
+  },
+  "device_info": "Android 13"
+}

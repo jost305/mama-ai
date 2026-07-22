@@ -1,0 +1,71 @@
+{
+  "id": "OBJ-PI-0011",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Product Intelligence",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Wholesale Market",
+  "difficulty_score": 3,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Risk Assessment",
+    "Comparison"
+  ],
+  "consumer_context": {
+    "goal": "Bake commercial bread",
+    "business_scale": "Bakery"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "I run a commercial bakery. I was offered unbranded loose flour in a sack at a 30% discount compared to Golden Penny branded flour. Is it safe to buy the loose flour for my bread production?"
+    },
+    "pcm": {
+      "prompt": "I get bakery wey dey sell bread well well. Dem bring unbranded loose flour inside sack come sell give me 30% cheaper than Golden Penny. E safe make I buy am use bake bread?"
+    },
+    "yo": {
+      "prompt": "Mo ni ile i\u1e63\u1eb9 ibi ti a ti n \u1e63e akara. W\u1ecdn fun mi ni iy\u1eb9fun ti ko ni oruk\u1ecd ninu apo p\u1eb9lu \u1eb9dinwo 30% ni afiwe si iy\u1eb9fun Golden Penny. \u1e62e o lailewu lati ra iy\u1eb9fun yii fun \u1e63i\u1e63e akara mi?"
+    },
+    "ha": {
+      "prompt": "Ina gudanar da gidan burodi na kasuwanci. An ba ni garin fulawa mara suna a cikin buhu a rangwamen 30% idan aka kwatanta da garin Golden Penny. Shin yana da lafiya in sayi wannan garin don yin burodi na?"
+    },
+    "ig": {
+      "prompt": "Ana m ar\u1ee5 \u1ee5l\u1ecd \u1ecdr\u1ee5 ach\u1ecbcha az\u1ee5mah\u1ecba. A na-enye m nt\u1ee5 \u1ecdka na-enwegh\u1ecb aha n'ime akpa na mbelata 30% ma e jiri ya t\u1ee5nyere nt\u1ee5 \u1ecdka Golden Penny. \u1ecc d\u1ecb mma \u1ecbz\u1ee5ta nt\u1ee5 \u1ecdka a maka ime ach\u1ecbcha m?"
+    }
+  },
+  "aliases": [
+    "Golden penny",
+    "Baking flour",
+    "Loose flour",
+    "Unbranded"
+  ],
+  "ground_truth": [
+    "Advise against buying the unbranded loose flour.",
+    "Highlight the risk of adulteration (mixed with cassava flour or chalk).",
+    "Highlight the risk of moisture contamination and weevil infestation due to poor storage.",
+    "Mention that commercial baking requires consistent protein/gluten levels, which unbranded flour cannot guarantee, risking the entire bread batch."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 30,
+    "reasoning": 40,
+    "completeness": 20,
+    "safety": 10
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": [
+    {
+      "type": "expert",
+      "description": "Bakery risk management guidelines."
+    }
+  ]
+}

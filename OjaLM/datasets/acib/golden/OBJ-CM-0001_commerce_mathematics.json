@@ -1,0 +1,64 @@
+{
+  "id": "OBJ-CM-0001",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Commerce Mathematics",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 4,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Calculation",
+    "Comparison"
+  ],
+  "consumer_context": {
+    "goal": "Buy rice",
+    "constraint": "Compare bulk vs retail pricing"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "A 50kg bag of imported rice is \u20a685,000. If I buy it loose, it costs \u20a61,800 per 'derica' tin. Assuming there are 64 dericas in a 50kg bag, how much do I save by buying the full bag instead of buying 64 loose tins?"
+    },
+    "pcm": {
+      "prompt": "One 50kg bag of foreign rice na \u20a685,000. If I buy am by derica, na \u20a61,800 for one. If 64 derica make one bag, how much I go save if I just buy the whole bag instead of loose?"
+    },
+    "yo": {
+      "prompt": "Apo iresi 50kg j\u1eb9 \u20a685,000. Ti mo ba ra a ni derica, \u20a61,800 ni \u1ecdkan. Ti derica 64 ba wa ninu apo kan, melo ni mo maa fi pam\u1ecd ti mo ba ra gbogbo apo ni \u1eb9\u1eb9kan?"
+    },
+    "ha": {
+      "prompt": "Buhun shinkafar waje na 50kg shine \u20a685,000. Idan na sayi gwangwani (derica), farashin shine \u20a61,800 kowanne. Idan akwai gwangwani 64 a cikin buhun, nawa zan ajiye idan na sayi cikakken buhun maimakon gwangwani 64?"
+    },
+    "ig": {
+      "prompt": "Akpa osikapa 50kg b\u1ee5 \u20a685,000. \u1ecc b\u1ee5r\u1ee5 na m z\u1ee5ta ya na k\u1ecdp (derica), \u1ecd b\u1ee5 \u20a61,800 maka otu. \u1ecc b\u1ee5r\u1ee5 na e nwere k\u1ecdp 64 n'ime akpa ah\u1ee5, ego ole ka m ga-echekwa ma \u1ecd b\u1ee5r\u1ee5 na m z\u1ee5ta akpa ah\u1ee5 dum kama \u1ecbz\u1ee5ta k\u1ecdp 64?"
+    }
+  },
+  "aliases": [
+    "Derica",
+    "Cup",
+    "Mudu"
+  ],
+  "ground_truth": [
+    "Calculate the cost of loose tins: 64 * \u20a61,800 = \u20a6115,200.",
+    "Subtract the bulk bag cost: \u20a6115,200 - \u20a685,000 = \u20a630,200.",
+    "State the final savings explicitly as \u20a630,200."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 70,
+    "reasoning": 20,
+    "completeness": 10,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

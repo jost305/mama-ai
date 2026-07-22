@@ -1,0 +1,45 @@
+{
+  "id": "scout_c99285e1",
+  "type": "Scout",
+  "name": "Femi K.",
+  "languages": [
+    "Yoruba",
+    "English"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Oyo",
+    "lga": "Ibadan North",
+    "home_market": "Bodija",
+    "gps": "11.3103, 6.0563"
+  },
+  "scout_dna": {
+    "specialization": "Pharmacy Scout",
+    "negotiation_style": "Friendly",
+    "fast_reporter": false,
+    "image_quality": 0.9,
+    "fraud_probability": 0.16,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 14
+  },
+  "reputation": {
+    "trust_score": 4,
+    "verification_status": "Verified",
+    "activity_score": 66,
+    "accuracy": 0.83,
+    "dispute_count": 2
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 22,
+    "response_speed": "9 mins",
+    "mission_completion_rate": 0.96
+  },
+  "economy": {
+    "level": "Gold",
+    "alphapoints_reputation": 2203,
+    "cash_earned_ngn": 37764,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

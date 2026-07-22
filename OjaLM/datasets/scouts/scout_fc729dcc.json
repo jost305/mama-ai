@@ -1,0 +1,39 @@
+{
+  "id": "scout_fc729dcc",
+  "type": "Scout",
+  "name": "Femi K.",
+  "languages": [
+    "Yoruba",
+    "English"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Oyo",
+    "lga": "Ibadan North",
+    "home_market": "Bodija",
+    "gps": "4.8696, 13.2359"
+  },
+  "reputation": {
+    "trust_score": 4,
+    "verification_status": "Verified",
+    "activity_score": 34,
+    "accuracy": 0.74,
+    "fraud_flags": 2,
+    "dispute_count": 3,
+    "image_quality": 0.94,
+    "receipt_quality": 0.82
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 18,
+    "response_speed": "2 mins",
+    "mission_completion_rate": 0.89
+  },
+  "economy": {
+    "level": "Gold",
+    "lifetime_earnings_marketpoints": 17223,
+    "current_balance": 3423,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "scout_425ced07",
+  "type": "Scout",
+  "name": "Ngozi O.",
+  "languages": [
+    "English",
+    "Igbo",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Anambra",
+    "lga": "Onitsha North",
+    "home_market": "Onitsha Main",
+    "gps": "7.6194, 6.3847"
+  },
+  "reputation": {
+    "trust_score": 2,
+    "verification_status": "Verified",
+    "activity_score": 94,
+    "accuracy": 0.95,
+    "fraud_flags": 0,
+    "dispute_count": 2,
+    "image_quality": 0.89,
+    "receipt_quality": 0.69
+  },
+  "performance": {
+    "experience": "5 years",
+    "average_submissions_day": 57,
+    "response_speed": "10 mins",
+    "mission_completion_rate": 0.98
+  },
+  "economy": {
+    "level": "Diamond",
+    "lifetime_earnings_marketpoints": 164405,
+    "current_balance": 9454,
+    "badges": [
+      "First Responder",
+      "Market Local"
+    ]
+  },
+  "device_info": "Android 13"
+}

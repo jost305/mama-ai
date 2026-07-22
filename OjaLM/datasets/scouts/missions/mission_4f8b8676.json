@@ -1,0 +1,8 @@
+{
+  "id": "mission_4f8b8676",
+  "type": "Mission",
+  "mission_type": "Queue Length",
+  "target_market_id": "market_ed473e1f",
+  "target_product_id": "product_bffbff13",
+  "status": "Completed"
+}

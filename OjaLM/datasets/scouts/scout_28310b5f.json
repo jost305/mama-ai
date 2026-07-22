@@ -1,0 +1,43 @@
+{
+  "id": "scout_28310b5f",
+  "type": "Scout",
+  "name": "Ibrahim M.",
+  "languages": [
+    "English",
+    "Hausa",
+    "Arabic"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Kano",
+    "lga": "Kano Municipal",
+    "home_market": "Kurmi",
+    "gps": "8.7640, 6.2364"
+  },
+  "reputation": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "activity_score": 87,
+    "accuracy": 0.95,
+    "fraud_flags": 0,
+    "dispute_count": 2,
+    "image_quality": 0.83,
+    "receipt_quality": 0.89
+  },
+  "performance": {
+    "experience": "2 years",
+    "average_submissions_day": 84,
+    "response_speed": "9 mins",
+    "mission_completion_rate": 0.87
+  },
+  "economy": {
+    "level": "Elite",
+    "lifetime_earnings_marketpoints": 90123,
+    "current_balance": 8771,
+    "badges": [
+      "First Responder",
+      "Market Local"
+    ]
+  },
+  "device_info": "Android 13"
+}

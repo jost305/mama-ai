@@ -1,0 +1,45 @@
+{
+  "id": "scout_405aad98",
+  "type": "Scout",
+  "name": "Chidinma U.",
+  "languages": [
+    "English",
+    "Igbo"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Abia",
+    "lga": "Aba North",
+    "home_market": "Ariaria",
+    "gps": "9.2797, 5.3792"
+  },
+  "scout_dna": {
+    "specialization": "Fashion Scout",
+    "negotiation_style": "Passive",
+    "fast_reporter": false,
+    "image_quality": 0.82,
+    "fraud_probability": 0.19,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 17
+  },
+  "reputation": {
+    "trust_score": 4,
+    "verification_status": "Verified",
+    "activity_score": 69,
+    "accuracy": 0.72,
+    "dispute_count": 2
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 22,
+    "response_speed": "4 mins",
+    "mission_completion_rate": 0.91
+  },
+  "economy": {
+    "level": "Silver",
+    "alphapoints_reputation": 11987,
+    "cash_earned_ngn": 19353,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

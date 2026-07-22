@@ -1,0 +1,12 @@
+{
+  "id": "EVT-2026-00001",
+  "type": "MarketEvent",
+  "market": "Mile 12",
+  "event_type": "Traffic Heavy",
+  "severity": "High",
+  "description": "Major gridlock on Ikorodu road blocking trucks from entering Mile 12.",
+  "timestamp": "2026-07-20T10:00:00Z",
+  "estimated_resolution": "2026-07-20T18:00:00Z",
+  "reporter_scout_id": "scout_e5f6g7h8",
+  "verification_status": "Expert Verified"
+}

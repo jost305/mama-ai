@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Mama — Smart Prices. Real People.</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-header">
+                <div class="brand-logo" id="brand-logo-btn" style="cursor: pointer;">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Market Mama</span>
+                </div>
+                <button class="dock-toggle-btn" id="sidebar-dock-btn" title="Dock Sidebar"><i class="fa-solid fa-indent"></i></button>
+                <button class="mobile-close-btn" id="mobile-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="sidebar-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Search product, market or location..." />
+                <span class="shortcut-key" id="search-shortcut">⌘K</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="#" class="nav-item" id="nav-prices"><i class="fa-solid fa-tag"></i> Prices & Trends</a>
+                <a href="#" class="nav-item" id="nav-markets"><i class="fa-solid fa-shop"></i> Markets & Vendors</a>
+                <a href="#" class="nav-item" id="nav-map"><i class="fa-solid fa-map-location-dot"></i> Live Map</a>
+                <a href="#" class="nav-item" id="nav-scout"><i class="fa-solid fa-bullhorn"></i> Reporter Hub</a>
+                <a href="#" class="nav-item" id="nav-library"><i class="fa-regular fa-bookmark"></i> Watchlist</a>
+                <a href="#" class="nav-item" id="nav-history"><i class="fa-regular fa-clock"></i> History</a>
+            </nav>
+
+            <div class="history-section" id="history-section-container">
+                <div class="section-title">Today</div>
+                <div class="history-link active" data-query="Where can I buy the cheapest 50kg bag of Dangote Cement in Lagos?">
+                    <i class="fa-regular fa-message"></i> Lagos Cement Price Inquiry
+                </div>
+                <div class="history-link" data-query="Golden Penny Flour price at Mile 12 Market">
+                    <i class="fa-regular fa-message"></i> Flour Prices Mile 12
+                </div>
+
+                <div class="section-title">7 Days Ago</div>
+                <div class="history-link" data-query="Fresh Tomatoes price basket Mile 12">
+                    <i class="fa-regular fa-message"></i> Tomato Basket Price Trend
+                </div>
+                <div class="history-link" data-query="Mama Gold Rice 50kg bag Bodija Market">
+                    <i class="fa-regular fa-message"></i> Bodija Rice Observations
+                </div>
+            </div>
+
+            <div class="sidebar-user" id="user-profile-btn" style="cursor: pointer;" title="View User Profile">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Amina Yusuf</span>
+                    <span class="user-email">Kano, Nigeria</span>
+                </div>
+                <i class="fa-solid fa-ellipsis-vertical user-menu-icon"></i>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Container -->
+        <main class="chat-main">
+            <!-- Top Navbar Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="top-dock-btn" id="top-dock-btn" title="Toggle Sidebar">
+                        <i class="fa-solid fa-outdent"></i>
+                    </button>
+                    <button class="menu-toggle-btn" id="menu-toggle-btn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="model-picker-container" style="position: relative;">
+                        <button class="model-picker-btn" id="model-picker-btn">
+                            <span class="model-picker-dot"></span>
+                            <span id="selected-model-text">MamaPrice 4o</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <!-- Model Dropdown Menu -->
+                        <div class="dropdown-menu" id="model-dropdown">
+                            <div class="dropdown-item active" data-model="MamaPrice 4o">
+                                <i class="fa-solid fa-bolt"></i>
+                                <div>
+                                    <div class="item-title">MamaPrice 4o (Hybrid)</div>
+                                    <div class="item-sub">OjaLM GGUF + OjaGraph RAG Grounding</div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item" data-model="OjaLM v0.1">
+                                <i class="fa-solid fa-brain"></i>
+                                <div>
+                                    <div class="item-title">OjaLM v0.1 (Direct CPU)</div>
+                                    <div class="item-sub">Pure Fine-Tuned Qwen 3.5 GGUF Engine</div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item" data-model="OjaGraph RAG">
+                                <i class="fa-solid fa-database"></i>
+                                <div>
+                                    <div class="item-title">OjaGraph RAG Engine</div>
+                                    <div class="item-sub">Grounded Structured Commodity Search</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Tight Dynamic Live Weather & Location Capsule -->
+                    <div class="weather-pill-container" style="position: relative;">
+                        <div class="weather-location-pill" id="weather-location-pill" title="Click for Live Weather Details & Market Switcher">
+                            <span class="pill-loc"><i class="fa-solid fa-location-dot"></i> <span id="weather-city">Kano, NG</span></span>
+                            <span class="pill-divider">•</span>
+                            <span class="pill-weather-icon" id="weather-icon">🌤️</span>
+                            <span class="pill-temp" id="weather-temp">29°C</span>
+                            <span class="pill-divider">•</span>
+                            <span class="pill-clock" id="live-clock">09:41 AM</span>
+                        </div>
+
+                        <!-- Live Weather Details Dropdown Card -->
+                        <div class="weather-popover-card" id="weather-popover-card">
+                            <div class="w-pop-header">
+                                <div>
+                                    <h4 id="w-pop-city">Kano, Nigeria</h4>
+                                    <span id="w-pop-desc">Partly Cloudy · Live Data</span>
+                                </div>
+                                <span class="w-pop-big-icon" id="w-pop-icon">🌤️</span>
+                            </div>
+                            <div class="w-pop-metrics">
+                                <div class="w-metric">
+                                    <span class="lbl">Temp</span>
+                                    <strong id="w-pop-temp">29°C</strong>
+                                </div>
+                                <div class="w-metric">
+                                    <span class="lbl">Feels Like</span>
+                                    <strong id="w-pop-feels">31°C</strong>
+                                </div>
+                                <div class="w-metric">
+                                    <span class="lbl">Humidity</span>
+                                    <strong id="w-pop-humidity">64%</strong>
+                                </div>
+                                <div class="w-metric">
+                                    <span class="lbl">Wind</span>
+                                    <strong id="w-pop-wind">12 km/h</strong>
+                                </div>
+                            </div>
+                            <div class="w-pop-cities">
+                                <span>Switch Market Hub:</span>
+                                <div class="w-city-btns">
+                                    <button type="button" class="w-city-btn active" data-city="Kano, NG" data-lat="12.0022" data-lon="8.5919">Kano</button>
+                                    <button type="button" class="w-city-btn" data-city="Lagos, NG" data-lat="6.5244" data-lon="3.3792">Lagos</button>
+                                    <button type="button" class="w-city-btn" data-city="Ibadan, NG" data-lat="7.3775" data-lon="3.9470">Ibadan</button>
+                                    <button type="button" class="w-city-btn" data-city="Abuja, NG" data-lat="9.0765" data-lon="7.3986">Abuja</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Bell Button -->
+                    <button class="notif-btn" id="notif-btn" title="3 New Market Alerts">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notif-badge">3</span>
+                    </button>
+
+                    <!-- New Chat Button -->
+                    <button class="new-chat-action-btn" id="new-chat-btn">
+                        <i class="fa-solid fa-plus"></i> <span>New Chat</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page 1: Home Dashboard & Smart Companion (Ref Image 2) -->
+            <div class="page-view active" id="page-home">
+                <div class="chat-stream" id="chat-history">
+                    <!-- Hero Welcome State -->
+                    <div class="hero-welcome" id="welcome-screen">
+                        <div class="hero-orb-wrapper">
+                            <div class="orb-canvas-container">
+                                <canvas id="orb-canvas" width="120" height="120"></canvas>
+                            </div>
+                        </div>
+                        <div class="hero-greeting-row">
+                            <h1 class="hero-title" id="hero-greeting-title">Good Evening</h1>
+                            <span class="hero-title-divider">·</span>
+                            <h2 class="hero-subtitle">How Can I Assist You Today?</h2>
+                        </div>
+                        <!-- Popular Searches -->
+                        <div class="search-chips-row">
+                            <span class="chips-label">Popular Searches:</span>
+                            <div class="chips-container">
+                                <button class="chip-btn" onclick="sendSuggestion('Rice price today in Lagos')">🍚 Rice price today</button>
+                                <button class="chip-btn" onclick="sendSuggestion('Tomatoes in Mile 12 market price')">🍅 Tomatoes in Mile 12</button>
+                                <button class="chip-btn" onclick="sendSuggestion('Price of eggs crate today')">🥚 Price of eggs</button>
+                                <button class="chip-btn" onclick="sendSuggestion('Fresh fish prices near me')">🐟 Fresh fish near me</button>
+                            </div>
+                        </div>
+
+                        <!-- Market Snapshot Cards (Lagos & Kano) — Live -->
+                        <div class="snapshot-section">
+                            <div class="snapshot-header">
+                                <h3>Market Snapshot <span class="snap-location">Lagos & Kano</span></h3>
+                                <span class="snap-live-badge"><span class="snap-live-dot"></span> Live · <span id="snap-last-updated">just now</span></span>
+                            </div>
+                            <div class="snapshot-grid" id="snapshot-grid">
+                                <div class="snap-card" data-commodity="rice" onclick="sendSuggestion('Rice 50kg bag price today Lagos Kano')">
+                                    <span class="snap-icon">🍚</span>
+                                    <div class="snap-info">
+                                        <strong>Rice (50kg)</strong>
+                                        <span class="snap-price" id="snap-price-rice">₦72,000</span>
+                                        <span class="snap-trend down" id="snap-trend-rice"><i class="fa-solid fa-arrow-down"></i> 3%</span>
+                                    </div>
+                                </div>
+                                <div class="snap-card" data-commodity="tomatoes" onclick="sendSuggestion('Tomatoes Basket price today Lagos Mile 12')">
+                                    <span class="snap-icon">🍅</span>
+                                    <div class="snap-info">
+                                        <strong>Tomatoes (Basket)</strong>
+                                        <span class="snap-price" id="snap-price-tomatoes">₦1,950</span>
+                                        <span class="snap-trend up" id="snap-trend-tomatoes"><i class="fa-solid fa-arrow-up"></i> 8%</span>
+                                    </div>
+                                </div>
+                                <div class="snap-card" data-commodity="pepper" onclick="sendSuggestion('Pepper Basket price today Kano Kaduna')">
+                                    <span class="snap-icon">🌶️</span>
+                                    <div class="snap-info">
+                                        <strong>Pepper (Basket)</strong>
+                                        <span class="snap-price" id="snap-price-pepper">₦14,000</span>
+                                        <span class="snap-trend up" id="snap-trend-pepper"><i class="fa-solid fa-arrow-up"></i> 5%</span>
+                                    </div>
+                                </div>
+                                <div class="snap-card" data-commodity="eggs" onclick="sendSuggestion('Eggs Crate price today Lagos')">
+                                    <span class="snap-icon">🥚</span>
+                                    <div class="snap-info">
+                                        <strong>Eggs (Crate)</strong>
+                                        <span class="snap-price" id="snap-price-eggs">₦4,500</span>
+                                        <span class="snap-trend flat" id="snap-trend-eggs">— 0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Floating Prompt Bar Container -->
+                <div class="prompt-bar-container">
+                    <form id="chat-form" class="prompt-box">
+                        <div class="prompt-input-row">
+                            <textarea id="message-input" placeholder="Ask MamaPrice..." rows="1" autofocus></textarea>
+                        </div>
+
+                        <div class="prompt-actions-row">
+                            <div class="action-tags">
+                                <button type="button" class="tag-btn" id="tag-attach" title="Attach image or market evidence"><i class="fa-solid fa-paperclip"></i></button>
+                            </div>
+                            <div class="send-actions">
+                                <button type="button" class="mic-btn" id="mic-btn" title="Voice Input"><i class="fa-solid fa-microphone"></i></button>
+                                <button type="submit" class="send-submit-btn" id="send-btn">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="footer-note">
+                        MamaPrice Intelligence • Powered by OjaLM & OjaGraph RAG
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Prices & Trends Page (Ref Image 1 & 3 - Commodity Detail) -->
+            <div class="page-view" id="page-prices">
+                <div class="view-container">
+                    <div class="commodity-detail-layout">
+                        <!-- Left Column: Trend & Insights -->
+                        <div class="detail-main-col">
+                            <div class="commodity-header-card">
+                                <div class="c-title-row">
+                                    <div class="c-icon">🌶️</div>
+                                    <div>
+                                        <h2>Pepper (Bag 100kg)</h2>
+                                        <span class="c-sub">Average Price Across 5 Major Nigerian Markets</span>
+                                    </div>
+                                    <button class="watchlist-btn"><i class="fa-regular fa-heart"></i> Watchlist</button>
+                                </div>
+                                <div class="c-price-box">
+                                    <div class="price-range">₦13,200 – ₦15,000</div>
+                                    <div class="price-badge green"><i class="fa-solid fa-arrow-down"></i> 4% vs yesterday</div>
+                                </div>
+
+                                <!-- 7-Day Trend Chart SVG -->
+                                <div class="chart-container">
+                                    <h4>Price Trend (7 days)</h4>
+                                    <div class="chart-mock-svg">
+                                        <svg viewBox="0 0 500 120" class="svg-graph">
+                                            <path d="M0,40 Q70,20 140,50 T280,30 T420,70 T500,90" fill="none" stroke="#0d5c3a" stroke-width="3" />
+                                            <circle cx="500" cy="90" r="5" fill="#0d5c3a" />
+                                        </svg>
+                                        <div class="chart-labels">
+                                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Market Insights -->
+                            <div class="insights-card">
+                                <h3><i class="fa-solid fa-lightbulb"></i> Market Insights</h3>
+                                <div class="insight-row">
+                                    <span class="i-icon green">🏷️</span>
+                                    <div>
+                                        <strong>Cheapest Market:</strong>
+                                        <span>Minna, Niger State — ₦13,200</span>
+                                    </div>
+                                </div>
+                                <div class="insight-row">
+                                    <span class="i-icon red">🏷️</span>
+                                    <div>
+                                        <strong>Most Expensive Market:</strong>
+                                        <span>Maiduguri, Borno State — ₦15,000</span>
+                                    </div>
+                                </div>
+                                <div class="insight-row">
+                                    <span class="i-icon green">📦</span>
+                                    <div>
+                                        <strong>Highest Supply:</strong>
+                                        <span>Kano, Kaduna, Minna (Supply is high)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Recent Reports -->
+                        <div class="detail-side-col">
+                            <div class="reports-box">
+                                <div class="r-header">
+                                    <h3>Recent Reports</h3>
+                                    <a href="#">View all</a>
+                                </div>
+                                <div class="report-item">
+                                    <div>
+                                        <strong>Kano, Dawanau Market</strong>
+                                        <small>2 mins ago</small>
+                                    </div>
+                                    <span class="report-val">₦13,800 <span class="dot green"></span></span>
+                                </div>
+                                <div class="report-item">
+                                    <div>
+                                        <strong>Kaduna, Sabon Gari</strong>
+                                        <small>5 mins ago</small>
+                                    </div>
+                                    <span class="report-val">₦13,700 <span class="dot green"></span></span>
+                                </div>
+                                <div class="report-item">
+                                    <div>
+                                        <strong>Maiduguri, Monday Market</strong>
+                                        <small>7 mins ago</small>
+                                    </div>
+                                    <span class="report-val">₦15,000 <span class="dot red"></span></span>
+                                </div>
+                                <div class="report-item">
+                                    <div>
+                                        <strong>Minna, Bosso Market</strong>
+                                        <small>8 mins ago</small>
+                                    </div>
+                                    <span class="report-val">₦13,200 <span class="dot green"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 3: Live Map Page (Ref Image 1 & 3) -->
+            <div class="page-view" id="page-map">
+                <div class="map-view-layout">
+                    <!-- Left Sidebar Filters -->
+                    <div class="map-sidebar-panel">
+                        <div class="m-panel-header">
+                            <h3>LIVE MARKET MAP</h3>
+                            <span class="live-pill">● Live</span>
+                            <p>Real-time prices from markets across Nigeria. Updates every 2 minutes.</p>
+                            <button class="share-price-btn"><i class="fa-solid fa-plus"></i> Share My Price</button>
+                        </div>
+
+                        <div class="m-filter-group">
+                            <label>SELECT PRODUCT</label>
+                            <div class="product-select-list">
+                                <div class="p-item"><span class="p-icon">🍅</span> Tomatoes</div>
+                                <div class="p-item"><span class="p-icon">🧅</span> Onions</div>
+                                <div class="p-item active"><span class="p-icon">🌶️</span> Pepper</div>
+                                <div class="p-item"><span class="p-icon">🐄</span> Cows</div>
+                                <div class="p-item"><span class="p-icon">🐐</span> Goats</div>
+                                <div class="p-item"><span class="p-icon">🍠</span> Yam</div>
+                            </div>
+                        </div>
+
+                        <div class="m-filter-group">
+                            <label>FILTERS</label>
+                            <select><option>Location: All Regions</option></select>
+                            <select><option>Price Range: All Prices</option></select>
+                            <select><option>Supply Level: All Levels</option></select>
+                        </div>
+
+                        <div class="map-footer-count">● Live · 1,248 reports today</div>
+                    </div>
+
+                    <!-- Center Nigeria Interactive Map Area -->
+                    <div class="map-main-area">
+                        <div class="map-top-bar">
+                            <div class="map-toggle-group">
+                                <button class="m-btn active">Map</button>
+                                <button class="m-btn">List</button>
+                            </div>
+                            <div class="supply-legend">
+                                <span>SUPPLY LEVEL:</span>
+                                <span><span class="dot green"></span> High</span>
+                                <span><span class="dot yellow"></span> Medium</span>
+                                <span><span class="dot red"></span> Low</span>
+                            </div>
+                        </div>
+
+                        <!-- Graphic Map of Nigeria with City Pins -->
+                        <div class="nigeria-map-graphic">
+                            <div class="map-grid-overlay"></div>
+                            
+                            <!-- City Pins (Ref Image 1 & 3) -->
+                            <div class="map-city-pin pin-sokoto">
+                                <span class="pin-title">Sokoto</span>
+                                <strong class="pin-price">₦14,000</strong>
+                                <small class="pin-trend down">↓ 5%</small>
+                            </div>
+                            <div class="map-city-pin pin-katsina">
+                                <span class="pin-title">Katsina</span>
+                                <strong class="pin-price">₦13,500</strong>
+                                <small class="pin-trend up">↑ 4%</small>
+                            </div>
+                            <div class="map-city-pin pin-kano">
+                                <span class="pin-title">Kano</span>
+                                <strong class="pin-price">₦13,800</strong>
+                                <small class="pin-trend down">↓ 3%</small>
+                            </div>
+                            <div class="map-city-pin pin-maiduguri low-supply">
+                                <span class="pin-title">Maiduguri</span>
+                                <strong class="pin-price">₦15,000</strong>
+                                <small class="pin-trend up">↑ 6%</small>
+                            </div>
+                            <div class="map-city-pin pin-zaria">
+                                <span class="pin-title">Zaria</span>
+                                <strong class="pin-price">₦13,600</strong>
+                                <small class="pin-trend down">↓ 2%</small>
+                            </div>
+                            <div class="map-city-pin pin-kaduna">
+                                <span class="pin-title">Kaduna</span>
+                                <strong class="pin-price">₦13,700</strong>
+                                <small class="pin-trend down">↓ 4%</small>
+                            </div>
+                            <div class="map-city-pin pin-minna">
+                                <span class="pin-title">Minna</span>
+                                <strong class="pin-price">₦13,200</strong>
+                                <small class="pin-trend down">↓ 6%</small>
+                            </div>
+                            <div class="map-city-pin pin-jos">
+                                <span class="pin-title">Jos</span>
+                                <strong class="pin-price">₦13,900</strong>
+                                <small class="pin-trend up">↑ 3%</small>
+                            </div>
+                            <div class="map-city-pin pin-yola">
+                                <span class="pin-title">Yola</span>
+                                <strong class="pin-price">₦14,200</strong>
+                                <small class="pin-trend down">↓ 2%</small>
+                            </div>
+                            <div class="map-city-pin pin-lagos">
+                                <span class="pin-title">Lagos (Oyingbo)</span>
+                                <strong class="pin-price">₦14,500</strong>
+                                <small class="pin-trend up">↑ 3%</small>
+                            </div>
+                            <div class="map-city-pin pin-enugu">
+                                <span class="pin-title">Enugu</span>
+                                <strong class="pin-price">₦13,300</strong>
+                                <small class="pin-trend down">↓ 2%</small>
+                            </div>
+                            <div class="map-city-pin pin-ph">
+                                <span class="pin-title">Port Harcourt</span>
+                                <strong class="pin-price">₦13,000</strong>
+                                <small class="pin-trend down">↓ 5%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 4: Markets & Verified Vendors (Ref Image 3 Screen 5 & 6) -->
+            <div class="page-view" id="page-markets">
+                <div class="view-container">
+                    <div class="view-header">
+                        <h2><i class="fa-solid fa-shop"></i> Verified Vendors & Market Directory</h2>
+                        <p>Discover trusted suppliers, market locations, and commodity stock across Nigeria.</p>
+                    </div>
+
+                    <div class="vendors-grid">
+                        <div class="vendor-card">
+                            <div class="v-img-placeholder">🧅</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Amina Pepper Store</h3>
+                                <p class="v-location">📍 Dawanau Market, Kano</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.9 (128 reviews) · Wholesale</div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-placeholder">🍅</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Musa & Sons Farms</h3>
+                                <p class="v-location">📍 Jos, Plateau</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.8 (94 reviews) · Direct Farm</div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-placeholder">🌾</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Lagos Green Grocers</h3>
+                                <p class="v-location">📍 Mile 12 Market, Lagos</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7 (210 reviews) · Perishables</div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-placeholder">🍗</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Kaduna Grain Hub</h3>
+                                <p class="v-location">📍 Sabon Gari, Kaduna</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6 (82 reviews) · Grains & Beans</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 5: Scout Reporter Hub (Ref Image 3 Screen 7 & 8) -->
+            <div class="page-view" id="page-scout">
+                <div class="view-container">
+                    <div class="scout-hub-layout">
+                        <!-- Top Reporter Badge Banner -->
+                        <div class="reporter-gold-banner">
+                            <div class="r-badge-icon">🏆</div>
+                            <div>
+                                <h3>Gold Reporter Level 3</h3>
+                                <p>Earn points by reporting accurate market prices in your local market.</p>
+                            </div>
+                            <button class="submit-report-btn">Submit Report</button>
+                        </div>
+
+                        <!-- Stats & Form Grid -->
+                        <div class="two-col-grid" style="margin-top: 20px;">
+                            <div class="stats-overview-box">
+                                <h3>My Reporter Stats</h3>
+                                <div class="scout-stat-cards">
+                                    <div class="s-card">
+                                        <span class="lbl">Today's Earnings</span>
+                                        <strong class="val green">₦2,450</strong>
+                                    </div>
+                                    <div class="s-card">
+                                        <span class="lbl">Reports Submitted</span>
+                                        <strong class="val">18</strong>
+                                    </div>
+                                    <div class="s-card">
+                                        <span class="lbl">Accuracy Score</span>
+                                        <strong class="val green">96%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="report-form-box">
+                                <h3><i class="fa-solid fa-pen-to-square"></i> Report Price (Step 3 of 3)</h3>
+                                <form id="scout-report-form">
+                                    <div class="form-group">
+                                        <label>Select Commodity</label>
+                                        <select id="report-commodity">
+                                            <option>Onions (Bag)</option>
+                                            <option>Golden Penny Flour (50kg)</option>
+                                            <option>Dangote Cement (50kg)</option>
+                                            <option>Fresh Tomatoes (Basket)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select Market</label>
+                                        <select id="report-market">
+                                            <option>Dawanau Market, Kano</option>
+                                            <option>Mile 12 Market, Lagos</option>
+                                            <option>Bodija Market, Ibadan</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Current Price (₦ NGN)</label>
+                                        <input type="number" id="report-price" value="82000" required />
+                                    </div>
+                                    <button type="submit" class="green-btn" style="width: 100%; margin-top: 10px;">Submit Report →</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 6: Watchlist / Library View -->
+            <div class="page-view" id="page-library">
+                <div class="view-container">
+                    <div class="view-header">
+                        <h2><i class="fa-regular fa-bookmark"></i> Watchlist & Price Alerts</h2>
+                        <p>Track your saved products and live market alerts.</p>
+                    </div>
+                    <div class="library-list">
+                        <div class="library-item">
+                            <i class="fa-solid fa-bell green"></i>
+                            <div class="item-info">
+                                <strong>Tomato prices dropped 8%</strong>
+                                <span>Across 5 major markets in Kano & Plateau · 5 mins ago</span>
+                            </div>
+                            <span class="status-tag">Active Alert</span>
+                        </div>
+                        <div class="library-item">
+                            <i class="fa-solid fa-bell green"></i>
+                            <div class="item-info">
+                                <strong>Onions now available in Kano</strong>
+                                <span>Supply has increased at Dawanau Market · 10 mins ago</span>
+                            </div>
+                            <span class="status-tag">Active Alert</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 7: Conversation History -->
+            <div class="page-view" id="page-history">
+                <div class="view-container">
+                    <div class="view-header">
+                        <h2><i class="fa-regular fa-clock"></i> Conversation History</h2>
+                        <p>Review past price discovery sessions and scout reports.</p>
+                    </div>
+                    <div class="history-full-list" id="history-full-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Ref Image 1 & 3 Bottom Navigation) -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="m-nav-item active" id="m-nav-home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="#" class="m-nav-item" id="m-nav-prices"><i class="fa-solid fa-tag"></i><span>Prices</span></a>
+        <a href="#" class="m-nav-item" id="m-nav-markets"><i class="fa-solid fa-shop"></i><span>Markets</span></a>
+        <a href="#" class="m-nav-item" id="m-nav-map"><i class="fa-solid fa-map-location-dot"></i><span>Map</span></a>
+        <a href="#" class="m-nav-item" id="m-nav-scout"><i class="fa-solid fa-bullhorn"></i><span>Reports</span></a>
+    </nav>
+
+    <!-- Modal 1: User Profile -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-id-card"></i> Market Reporter Profile</h3>
+                <button class="modal-close" id="close-profile-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <span class="num">4,320</span>
+                        <span class="lbl">Points</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="num">56</span>
+                        <span class="lbl">Reports</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="num">28</span>
+                        <span class="lbl">Following</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.88em; color: var(--text-secondary); margin-top: 16px;">
+                    Active Contributor Level: <strong>Tier 2 Alpha Contributor</strong>. Submitting price reports updates OjaGraph in real time.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="orb.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "id": "scout_1876f80f",
+  "type": "Scout",
+  "name": "Adekunle T.",
+  "languages": [
+    "English",
+    "Yoruba",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Lagos",
+    "lga": "Lagos Island",
+    "home_market": "Balogun",
+    "gps": "6.3883, 13.4258"
+  },
+  "scout_dna": {
+    "specialization": "Food Scout",
+    "negotiation_style": "Aggressive",
+    "fast_reporter": true,
+    "image_quality": 0.85,
+    "fraud_probability": 0.04,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 9
+  },
+  "reputation": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "activity_score": 93,
+    "accuracy": 0.96,
+    "dispute_count": 3
+  },
+  "performance": {
+    "experience": "4 years",
+    "average_submissions_day": 53,
+    "response_speed": "3 mins",
+    "mission_completion_rate": 0.87
+  },
+  "economy": {
+    "level": "Master Scout",
+    "alphapoints_reputation": 31814,
+    "cash_earned_ngn": 73840,
+    "badges": [
+      "Food Expert",
+      "Fast Responder"
+    ]
+  },
+  "device_info": "Android 13"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "scout_29886723",
+  "type": "Scout",
+  "name": "Oluwaseun A.",
+  "languages": [
+    "Yoruba",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Lagos",
+    "lga": "Kosofe",
+    "home_market": "Mile 12",
+    "gps": "13.3032, 10.9632"
+  },
+  "scout_dna": {
+    "specialization": "Food Scout",
+    "negotiation_style": "Friendly",
+    "fast_reporter": false,
+    "image_quality": 0.9,
+    "fraud_probability": 0.16,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 8
+  },
+  "reputation": {
+    "trust_score": 5,
+    "verification_status": "Verified",
+    "activity_score": 32,
+    "accuracy": 0.74,
+    "dispute_count": 5
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 18,
+    "response_speed": "10 mins",
+    "mission_completion_rate": 0.96
+  },
+  "economy": {
+    "level": "Bronze",
+    "alphapoints_reputation": 6058,
+    "cash_earned_ngn": 36876,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

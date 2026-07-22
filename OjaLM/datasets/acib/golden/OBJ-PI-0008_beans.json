@@ -1,0 +1,66 @@
+{
+  "id": "OBJ-PI-0008",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Product Intelligence",
+  "country": "Nigeria",
+  "region": "South West",
+  "market_type": "Open Market",
+  "difficulty_score": 3,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Classification",
+    "Recommendation"
+  ],
+  "consumer_context": {
+    "goal": "Make Ewa Agoyin",
+    "time_constraint": "Needs to cook fast"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "I want to make Ewa Agoyin but I don't have all day to boil beans. Which type of beans should I buy, Oloyin or Drum?"
+    },
+    "pcm": {
+      "prompt": "I wan cook Ewa Agoyin but I no get time to dey boil beans from morning till night. Which beans make I buy, Oloyin or Drum?"
+    },
+    "yo": {
+      "prompt": "Mo f\u1eb9 \u1e63e Ewa Agoyin \u1e63ugb\u1ecdn mi o ni akoko lati se ewa ni gbogbo \u1ecdj\u1ecd. Ir\u00fa ewa wo ni ki n ra, Oloyin tabi Drum?"
+    },
+    "ha": {
+      "prompt": "Ina so in dafa Ewa Agoyin amma bani da lokacin dafa wake yini guda. Wane irin wake ya kamata in saya, Oloyin ko Drum?"
+    },
+    "ig": {
+      "prompt": "Ach\u1ecdr\u1ecd m \u1ecbme Ewa Agoyin mana enwegh\u1ecb m oge iji sie agwa \u1ee5b\u1ecdch\u1ecb niile. Kedu \u1ee5d\u1ecb agwa m ga-az\u1ee5ta, Oloyin ka \u1ecd b\u1ee5 Drum?"
+    }
+  },
+  "aliases": [
+    "Honey beans",
+    "Brown beans",
+    "Oloyin",
+    "Drum beans"
+  ],
+  "ground_truth": [
+    "Recommend Oloyin (Honey beans).",
+    "State that Oloyin cooks significantly faster than Drum beans.",
+    "State that Oloyin is naturally sweeter and softer, which is preferred for Ewa Agoyin mashing.",
+    "Acknowledge that Oloyin is generally more expensive."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 40,
+    "reasoning": 40,
+    "completeness": 20,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

@@ -1,0 +1,65 @@
+{
+  "id": "OBJ-PI-0009",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Product Intelligence",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 3,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Troubleshooting",
+    "Comparison"
+  ],
+  "consumer_context": {
+    "goal": "Drink Garri",
+    "preference": "Sour taste"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "I want to soak garri with cold water and groundnuts, and I love it very sour. Should I buy Ijebu garri or Yellow garri? Why?"
+    },
+    "pcm": {
+      "prompt": "I wan soak garri with cold water and groundnut, and I like make e slap well well. Make I buy Ijebu or Yellow garri? Why?"
+    },
+    "yo": {
+      "prompt": "Mo f\u1eb9 mu garri pelu omi tutu ati \u1eb9pa, mo si f\u1eb9ran r\u1eb9 ki o kan gidi. \u1e62e ki n ra garri Ijebu tabi garri ofeefee? Kilode?"
+    },
+    "ha": {
+      "prompt": "Ina so in sha garri da ruwan sanyi da gyada, kuma ina son yayi tsami sosai. Shin zan sayi garri Ijebu ko garri rawaya? Me yasa?"
+    },
+    "ig": {
+      "prompt": "Ach\u1ecdr\u1ecd m \u1ecb\u1e45\u1ee5 garri na mmiri oyi na ah\u1ee5ekere, \u1ecd na-amas\u1ecbkwa m ka \u1ecd d\u1ecb \u1ee5ka nke ukwuu. M ga-az\u1ee5ta garri Ijebu ma \u1ecd b\u1ee5 garri odo? G\u1ecbn\u1ecb kpatara ya?"
+    }
+  },
+  "aliases": [
+    "Garri Ijebu",
+    "Cassava flakes",
+    "Yellow garri",
+    "Eba"
+  ],
+  "ground_truth": [
+    "Recommend Ijebu garri.",
+    "Explain that Ijebu garri is fermented longer, giving it the signature sour taste ('slap') desired for soaking.",
+    "Explain that Yellow garri contains palm oil and is typically better suited for making Eba rather than soaking."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 50,
+    "reasoning": 30,
+    "completeness": 20,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

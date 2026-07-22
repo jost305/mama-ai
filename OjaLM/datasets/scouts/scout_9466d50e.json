@@ -1,0 +1,49 @@
+{
+  "id": "scout_9466d50e",
+  "type": "Scout",
+  "name": "Ibrahim M.",
+  "languages": [
+    "English",
+    "Hausa",
+    "Arabic"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Kano",
+    "lga": "Kano Municipal",
+    "home_market": "Kurmi",
+    "gps": "12.3096, 8.8535"
+  },
+  "scout_dna": {
+    "specialization": "Agriculture Scout",
+    "negotiation_style": "Passive",
+    "fast_reporter": true,
+    "image_quality": 0.83,
+    "fraud_probability": 0.05,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 20
+  },
+  "reputation": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "activity_score": 94,
+    "accuracy": 0.95,
+    "dispute_count": 5
+  },
+  "performance": {
+    "experience": "5 years",
+    "average_submissions_day": 64,
+    "response_speed": "3 mins",
+    "mission_completion_rate": 0.92
+  },
+  "economy": {
+    "level": "Elite",
+    "alphapoints_reputation": 36538,
+    "cash_earned_ngn": 67024,
+    "badges": [
+      "Agriculture Expert",
+      "Fast Responder"
+    ]
+  },
+  "device_info": "Android 13"
+}

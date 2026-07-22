@@ -1,0 +1,39 @@
+{
+  "id": "scout_27f2784a",
+  "type": "Scout",
+  "name": "Chidinma U.",
+  "languages": [
+    "English",
+    "Igbo"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Abia",
+    "lga": "Aba North",
+    "home_market": "Ariaria",
+    "gps": "6.3955, 7.4028"
+  },
+  "reputation": {
+    "trust_score": 5,
+    "verification_status": "Verified",
+    "activity_score": 47,
+    "accuracy": 0.93,
+    "fraud_flags": 0,
+    "dispute_count": 2,
+    "image_quality": 0.96,
+    "receipt_quality": 0.9
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 23,
+    "response_speed": "6 mins",
+    "mission_completion_rate": 0.9
+  },
+  "economy": {
+    "level": "Silver",
+    "lifetime_earnings_marketpoints": 33357,
+    "current_balance": 8496,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "OBJ-PI-0007",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Product Intelligence",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 4,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Comparison",
+    "Trade-off Analysis"
+  ],
+  "consumer_context": {
+    "goal": "Make party jollof for 100 people",
+    "budget": "Moderate"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "I'm cooking party jollof for 100 people but my budget is a bit tight. Should I buy imported parboiled rice or local rice? What are the risks?"
+    },
+    "pcm": {
+      "prompt": "I wan cook party jollof for 100 people but money no too dey. Make I buy foreign rice or local rice? Wetin be the wahala?"
+    },
+    "yo": {
+      "prompt": "Mo f\u1eb9 \u1e63e jollof iresi fun eniyan \u1ecdg\u1ecdrun, \u1e63ugb\u1ecdn owo mi ko po. \u1e62e ki n ra iresi oyinbo tabi ti ibile? Kini aw\u1ecdn ewu r\u1eb9?"
+    },
+    "ha": {
+      "prompt": "Ina so in dafa shinkafar biki na mutum dari amma kudi na bai da yawa. Shin zan sayi shinkafar waje ko ta gida? Menene hadarin?"
+    },
+    "ig": {
+      "prompt": "Ach\u1ecdr\u1ecd m isiri jollof osikapa maka mmad\u1ee5 nar\u1ecb, mana ego m ad\u1ecbchagh\u1ecb ukwuu. M ga-az\u1ee5ta osikapa obodo \u1ecdz\u1ecd ma \u1ecd b\u1ee5 nke ime obodo? Kedu nsogbu nd\u1ecb nwere ike \u1ecbd\u1ecb?"
+    }
+  },
+  "aliases": [
+    "Foreign rice",
+    "Local rice",
+    "Ofada"
+  ],
+  "ground_truth": [
+    "Acknowledge the budget constraint favoring local rice.",
+    "Explain that local rice requires more rigorous washing to remove stones/chaff.",
+    "Explain that imported parboiled rice swells better and is less likely to become soggy/mashy for large-batch party cooking.",
+    "Recommend a high-quality destoned local brand or blending to manage the risk."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 40,
+    "reasoning": 30,
+    "completeness": 20,
+    "safety": 10
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": [
+    {
+      "type": "expert",
+      "description": "Standard catering knowledge in Nigerian markets."
+    }
+  ]
+}

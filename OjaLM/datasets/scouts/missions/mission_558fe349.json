@@ -1,0 +1,8 @@
+{
+  "id": "mission_558fe349",
+  "type": "Mission",
+  "mission_type": "Vendor Verification",
+  "target_market_id": "market_be1bc50f",
+  "target_product_id": "product_c671fb04",
+  "status": "Completed"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "mission_3c3ee99c",
+  "type": "Mission",
+  "mission_type": "Price Verification",
+  "target_market_id": "market_08f3aec6",
+  "target_product_id": "product_a3911fc1",
+  "status": "Completed"
+}

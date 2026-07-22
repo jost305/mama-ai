@@ -1,0 +1,40 @@
+{
+  "id": "scout_de2acf1c",
+  "type": "Scout",
+  "name": "Chidinma U.",
+  "languages": [
+    "English",
+    "Igbo"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Abia",
+    "lga": "Aba North",
+    "home_market": "Ariaria",
+    "gps": "12.3088, 8.6691"
+  },
+  "trust_metrics": {
+    "trust_score": 2,
+    "verification_status": "Verified",
+    "accuracy": 0.89,
+    "dispute_rate": 0.03
+  },
+  "performance": {
+    "experience": "5 years",
+    "specialties": [
+      "Price Checking",
+      "Stock Verification"
+    ],
+    "average_submissions_day": 35,
+    "response_speed": "13 mins",
+    "acceptance_rate": 0.93
+  },
+  "device_info": "Android 13, TECNO Spark",
+  "rewards": {
+    "rewards_earned": 10425,
+    "level": "Active",
+    "badges": [
+      "Top Reporter"
+    ]
+  }
+}

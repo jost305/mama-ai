@@ -1,0 +1,65 @@
+{
+  "id": "OBJ-MI-0001",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Market Intelligence",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Wholesale Market",
+  "difficulty_score": 3,
+  "knowledge_type": "Seasonal",
+  "reasoning_type": [
+    "Planning",
+    "Risk Assessment"
+  ],
+  "consumer_context": {
+    "goal": "Stock up on goods",
+    "season": "Two weeks before Ramadan"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "It's two weeks before Ramadan begins and I run a provisions store. Which three food items should I bulk purchase right now before their wholesale prices spike?"
+    },
+    "pcm": {
+      "prompt": "Two weeks remain make Ramadan start and I get provisions shop. Which three food items I suppose buy plenty right now before dia price go up for market?"
+    },
+    "yo": {
+      "prompt": "\u1eccs\u1eb9 meji lo ku ki aaw\u1eb9 b\u1eb9r\u1eb9, mo si ni ile itaja ounj\u1eb9. Ounj\u1eb9 m\u1eb9ta wo ni ki n ra pup\u1ecd ni kete yii \u1e63aaju ki owo w\u1ecdn to gbowo lori l\u1ecdja?"
+    },
+    "ha": {
+      "prompt": "Sauran makonni biyu kafin Ramadan ya fara kuma ina da shagon sayar da kayayyaki. Wadanne abubuwan abinci guda uku ne ya kamata in sayi masu yawa yanzu kafin farashin su ya tashi a kasuwa?"
+    },
+    "ig": {
+      "prompt": "\u1ecc b\u1ee5 izu ab\u1ee5\u1ecd tupu ibu \u1ecdn\u1ee5 nd\u1ecb Alak\u1ee5ba (Ramadan) amalite, m na-ar\u1ee5kwa \u1ee5l\u1ecd ah\u1ecba nri. Kedu nri at\u1ecd m ga-az\u1ee5ta n'\u1ecdt\u1ee5t\u1ee5 ugbu a tupu \u1ecdn\u1ee5 ah\u1ecba ha ar\u1ecbgoro n'ah\u1ecba?"
+    }
+  },
+  "aliases": [
+    "Provisions",
+    "Fasting period",
+    "Bulk buy"
+  ],
+  "ground_truth": [
+    "Acknowledge the Ramadan demand spike.",
+    "Recommend items heavily consumed during breaking of fast (Iftar/Sahur).",
+    "Specifically mention Sugar, Milk, Milo/Bournvita, or Fruits (Oranges/Watermelon).",
+    "Specifically mention staple grains (Rice, Beans, Millet)."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 50,
+    "reasoning": 40,
+    "completeness": 10,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

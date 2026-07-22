@@ -1,0 +1,39 @@
+{
+  "id": "scout_e3782912",
+  "type": "Scout",
+  "name": "Oluwaseun A.",
+  "languages": [
+    "Yoruba",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Lagos",
+    "lga": "Kosofe",
+    "home_market": "Mile 12",
+    "gps": "5.7542, 5.4442"
+  },
+  "reputation": {
+    "trust_score": 5,
+    "verification_status": "Verified",
+    "activity_score": 42,
+    "accuracy": 0.82,
+    "fraud_flags": 1,
+    "dispute_count": 3,
+    "image_quality": 0.82,
+    "receipt_quality": 0.72
+  },
+  "performance": {
+    "experience": "1 year",
+    "average_submissions_day": 22,
+    "response_speed": "9 mins",
+    "mission_completion_rate": 0.88
+  },
+  "economy": {
+    "level": "Bronze",
+    "lifetime_earnings_marketpoints": 37617,
+    "current_balance": 7463,
+    "badges": []
+  },
+  "device_info": "Android 13"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "scout_609e7658",
+  "type": "Scout",
+  "name": "Ibrahim M.",
+  "languages": [
+    "English",
+    "Hausa",
+    "Arabic"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Kano",
+    "lga": "Kano Municipal",
+    "home_market": "Kurmi",
+    "gps": "9.5080, 8.1112"
+  },
+  "trust_metrics": {
+    "trust_score": 3,
+    "verification_status": "Verified",
+    "accuracy": 0.87,
+    "dispute_rate": 0.01
+  },
+  "performance": {
+    "experience": "2 years",
+    "specialties": [
+      "Price Checking",
+      "Stock Verification"
+    ],
+    "average_submissions_day": 19,
+    "response_speed": "11 mins",
+    "acceptance_rate": 0.94
+  },
+  "device_info": "Android 13, TECNO Spark",
+  "rewards": {
+    "rewards_earned": 30990,
+    "level": "Active",
+    "badges": [
+      "Top Reporter"
+    ]
+  }
+}

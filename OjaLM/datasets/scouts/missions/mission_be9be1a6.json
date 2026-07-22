@@ -1,0 +1,8 @@
+{
+  "id": "mission_be9be1a6",
+  "type": "Mission",
+  "mission_type": "Counterfeit Check",
+  "target_market_id": "market_cb4f4e00",
+  "target_product_id": "product_f6d25e85",
+  "status": "Completed"
+}

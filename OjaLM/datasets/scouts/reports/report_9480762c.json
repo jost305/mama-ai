@@ -1,0 +1,13 @@
+{
+  "id": "report_9480762c",
+  "type": "Report",
+  "mission_id": "mission_1ceea983",
+  "scout_id": "scout_57dd30de",
+  "market_id": "market_f3f6bd56",
+  "product_id": "product_9f8e795f",
+  "extracted_data": {
+    "price_ngn": 20281,
+    "verified": true
+  },
+  "trust_tier_applied": 5
+}

@@ -1,0 +1,8 @@
+{
+  "id": "mission_deb5a440",
+  "type": "Mission",
+  "mission_type": "Distance Audit",
+  "target_market_id": "market_083a4fd8",
+  "target_product_id": "product_be7a6d33",
+  "status": "Completed"
+}

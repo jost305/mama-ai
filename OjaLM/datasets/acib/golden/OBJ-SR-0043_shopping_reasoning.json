@@ -1,0 +1,66 @@
+{
+  "id": "OBJ-SR-0043",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Shopping Reasoning",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 5,
+  "knowledge_type": "Static",
+  "reasoning_type": [
+    "Budgeting",
+    "Planning",
+    "Trade-off Analysis"
+  ],
+  "consumer_context": {
+    "budget": "\u20a615,000",
+    "goal": "Feed 6 people for 3 days",
+    "constraint": "Nutritional balance required"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "I only have \u20a615,000 to feed my family of six for the next three days. What should I buy from the market to make sure we are full and eat reasonably well?"
+    },
+    "pcm": {
+      "prompt": "I get just \u20a615,000 to feed six people for three days. Wetin and wetin make I buy for market so that we go chop belleful and the food go make sense?"
+    },
+    "yo": {
+      "prompt": "\u20a615,000 nikan ni mo ni lati b\u1ecd eniyan m\u1eb9fa fun \u1ecdj\u1ecd m\u1eb9ta. Kini ki n ra l\u1ecdja lati rii daju pe a j\u1eb9 y\u00f3, ti ounj\u1eb9 naa si b\u1ecd si ara?"
+    },
+    "ha": {
+      "prompt": "Ina da \u20a615,000 kacal don ciyar da iyalina na mutum shida na tsawon kwanaki uku. Menene ya kamata in saya a kasuwa don tabbatar da mun koshi kuma mun ci abinci mai kyau?"
+    },
+    "ig": {
+      "prompt": "Enwere m naan\u1ecb \u20a615,000 iji nye ezin\u1ee5l\u1ecd m nke mmad\u1ee5 isii nri maka \u1ee5b\u1ecdch\u1ecb at\u1ecd. G\u1ecbn\u1ecb ka m ga-az\u1ee5ta n'ah\u1ecba iji h\u1ee5 na any\u1ecb juru af\u1ecd ma rie nri nke \u1ecdma?"
+    }
+  },
+  "aliases": [
+    "Provisions",
+    "Foodstuffs"
+  ],
+  "ground_truth": [
+    "Acknowledge that \u20a615,000 is a very tight budget for 18 total meals (6 people x 3 days).",
+    "Recommend bulking out meals with cheap carbohydrates (e.g., Garri, Yam, or loose Rice).",
+    "Recommend affordable proteins like Eggs or dried fish (Panla/Kote) instead of beef or chicken.",
+    "Provide a rough allocation (e.g., \u20a66,000 for carbs, \u20a64,000 for proteins/fish, \u20a63,000 for tomatoes/pepper/oil, \u20a62,000 for seasoning/gas)."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 20,
+    "reasoning": 50,
+    "completeness": 30,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

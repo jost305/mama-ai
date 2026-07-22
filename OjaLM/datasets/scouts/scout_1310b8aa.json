@@ -1,0 +1,41 @@
+{
+  "id": "scout_1310b8aa",
+  "type": "Scout",
+  "name": "Adekunle T.",
+  "languages": [
+    "English",
+    "Yoruba",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Lagos",
+    "lga": "Lagos Island",
+    "home_market": "Balogun",
+    "gps": "4.7388, 2.7352"
+  },
+  "trust_metrics": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "accuracy": 0.92,
+    "dispute_rate": 0.01
+  },
+  "performance": {
+    "experience": "2 years",
+    "specialties": [
+      "Price Checking",
+      "Stock Verification"
+    ],
+    "average_submissions_day": 17,
+    "response_speed": "21 mins",
+    "acceptance_rate": 0.89
+  },
+  "device_info": "Android 13, TECNO Spark",
+  "rewards": {
+    "rewards_earned": 48624,
+    "level": "Active",
+    "badges": [
+      "Top Reporter"
+    ]
+  }
+}

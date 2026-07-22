@@ -1,0 +1,15 @@
+{
+  "id": "obs_20260720_001",
+  "type": "PriceObservation",
+  "product": "Golden Penny Flour",
+  "market": "Balogun",
+  "vendor": "VD-1843",
+  "observed_price": 18500,
+  "currency": "NGN",
+  "quantity": "50kg",
+  "observed_date": "2026-07-20",
+  "confidence": 0.98,
+  "collector": "Market Reporter",
+  "trust": 2,
+  "license": "CC-BY-4.0"
+}

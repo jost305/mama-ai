@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ACIB Task Schema v1.0",
+  "description": "JSON schema for evaluating models on the African Commerce Intelligence Benchmark.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier following the OBJ-[VERTICAL]-[NUMBER] standard (e.g., OBJ-PI-0001)."
+    },
+    "track": {
+      "type": "string",
+      "enum": ["ACIB-Core", "ACIB-Agent", "ACIB-Multimodal"],
+      "description": "The specific evaluation track this task belongs to."
+    },
+    "version": {
+      "type": "string",
+      "description": "The benchmark version this item belongs to (e.g., '1.0')."
+    },
+    "domain": {
+      "type": "string",
+      "description": "The Commerce Taxonomy product domain (e.g., 'Food & Groceries')."
+    },
+    "vertical": {
+      "type": "string",
+      "description": "The Commerce Taxonomy intelligence vertical (e.g., 'Product Intelligence')."
+    },
+    "country": {
+      "type": "string",
+      "description": "Target country context (e.g., 'Nigeria', 'Ghana', 'Kenya')."
+    },
+    "region": {
+      "type": "string",
+      "description": "Target regional context (e.g., 'South West')."
+    },
+    "market_type": {
+      "type": "string",
+      "enum": ["Open Market", "Supermarket", "Pharmacy", "Electronics Store", "Boutique", "Building Materials", "Auto Parts", "Online Marketplace", "Wholesale Market"],
+      "description": "The type of commerce environment."
+    },
+    "difficulty_score": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Numeric difficulty scale from 1 (trivial) to 5 (expert)."
+    },
+    "knowledge_type": {
+      "type": "string",
+      "enum": ["Static", "Seasonal", "Dynamic", "Live"],
+      "description": "Freshness requirement. Determines if the model should reason (static) or defer to tools (live)."
+    },
+    "reasoning_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Comparison",
+          "Classification",
+          "Recommendation",
+          "Troubleshooting",
+          "Budgeting",
+          "Planning",
+          "Retrieval",
+          "Calculation",
+          "Negotiation",
+          "Risk Assessment",
+          "Trade-off Analysis",
+          "Multi-step Reasoning"
+        ]
+      },
+      "description": "Specific cognitive reasoning skills required to complete the task."
+    },
+    "consumer_context": {
+      "type": "object",
+      "description": "Optional contextual parameters forcing the model to make situational trade-offs.",
+      "additionalProperties": true
+    },
+    "tool_expectation": {
+      "type": "object",
+      "properties": {
+        "requires_tool": {
+          "type": "boolean"
+        },
+        "preferred_tool": {
+          "type": "string",
+          "description": "The ideal tool the model should call (e.g., 'MarketMama Prices API')."
+        }
+      },
+      "required": ["requires_tool"]
+    },
+    "variants": {
+      "type": "object",
+      "description": "Multilingual and stylistic prompt variants for the same underlying task.",
+      "patternProperties": {
+        "^[a-z_]+$": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            }
+          },
+          "required": ["prompt"]
+        }
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Accepted cultural aliases for the products mentioned."
+    },
+    "ground_truth": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of factual assertions or outcomes that must be present/true."
+    },
+    "evaluation_dimensions": {
+      "type": "object",
+      "description": "Weighting system defining what success means for this specific task.",
+      "properties": {
+        "factual_accuracy": { "type": "integer" },
+        "reasoning": { "type": "integer" },
+        "completeness": { "type": "integer" },
+        "safety": { "type": "integer" }
+      },
+      "additionalProperties": true
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["Draft", "Reviewed", "Validated", "Golden", "Locked"]
+        },
+        "author": { "type": "string" },
+        "reviewer": { "type": ["string", "null"] },
+        "language_review": { "type": ["string", "null"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["expert", "government", "web", "vendor"] },
+          "description": { "type": "string" }
+        }
+      },
+      "description": "Optional citations explaining why the ground truth is correct."
+    }
+  },
+  "required": [
+    "id",
+    "track",
+    "version",
+    "domain",
+    "vertical",
+    "country",
+    "market_type",
+    "difficulty_score",
+    "knowledge_type",
+    "reasoning_type",
+    "tool_expectation",
+    "variants",
+    "ground_truth",
+    "evaluation_dimensions"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "scout_0f9bdb5f",
+  "type": "Scout",
+  "name": "Ngozi O.",
+  "languages": [
+    "English",
+    "Igbo",
+    "Pidgin"
+  ],
+  "geography": {
+    "country": "Nigeria",
+    "state": "Anambra",
+    "lga": "Onitsha North",
+    "home_market": "Onitsha Main",
+    "gps": "8.1945, 12.8112"
+  },
+  "scout_dna": {
+    "specialization": "Electronics Scout",
+    "negotiation_style": "Passive",
+    "fast_reporter": true,
+    "image_quality": 0.81,
+    "fraud_probability": 0.05,
+    "typical_working_hours": "08:00 - 16:00",
+    "travel_radius_km": 11
+  },
+  "reputation": {
+    "trust_score": 1,
+    "verification_status": "Verified",
+    "activity_score": 82,
+    "accuracy": 0.98,
+    "dispute_count": 5
+  },
+  "performance": {
+    "experience": "4 years",
+    "average_submissions_day": 77,
+    "response_speed": "6 mins",
+    "mission_completion_rate": 0.96
+  },
+  "economy": {
+    "level": "Diamond",
+    "alphapoints_reputation": 47436,
+    "cash_earned_ngn": 76819,
+    "badges": [
+      "Electronics Expert",
+      "Fast Responder"
+    ]
+  },
+  "device_info": "Android 13"
+}

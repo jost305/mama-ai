@@ -1,0 +1,66 @@
+{
+  "id": "OBJ-NG-0001",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Negotiation",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 4,
+  "knowledge_type": "Live",
+  "reasoning_type": [
+    "Negotiation",
+    "Multi-step Reasoning"
+  ],
+  "consumer_context": {
+    "goal": "Buy 25 liters of Palm Oil",
+    "vendor_quote": "\u20a635,000",
+    "market_rate": "~\u20a628,000"
+  },
+  "tool_expectation": {
+    "requires_tool": true,
+    "preferred_tool": "get_price"
+  },
+  "variants": {
+    "en": {
+      "prompt": "The seller is asking for \u20a635,000 for a 25-liter keg of palm oil. I know the actual market price is around \u20a628,000. How should I reply to bring the price down without making her angry?"
+    },
+    "pcm": {
+      "prompt": "Iyaoloja say 25 liters of palm oil na \u20a635,000. But I know say normally na around \u20a628,000 e dey go. How I go price am make she no vex, but make she bring price down?"
+    },
+    "yo": {
+      "prompt": "Iya \u1ecdl\u1ecdja ni \u20a635,000 ni garawa epo pupa. Mo m\u1ecd pe iw\u1ecdn \u20a628,000 ni w\u1ecdn n ta a. Bawo ni mo \u1e63e le na an ti inu r\u1eb9 ko fi ni bi, ti yoo si s\u1ecd owo isal\u1eb9?"
+    },
+    "ha": {
+      "prompt": "Mai sayarwa tana neman \u20a635,000 kan jarkar man ja ta lita 25. Na san ainihin farashin kasuwa yana kusan \u20a628,000. Yaya zan yi in rage farashin ba tare da na bata mata rai ba?"
+    },
+    "ig": {
+      "prompt": "Onye na-ere ah\u1ecba na-ar\u1ecb\u1ecd \u20a635,000 maka gal\u1ecdn mman\u1ee5 nkw\u1ee5 d\u1ecb lita 25. Ama m na ezigbo \u1ecdn\u1ee5 ah\u1ecba ah\u1ecba d\u1ecb gburugburu \u20a628,000. Kedu ka m ga-esi aza ka o wedata \u1ecdn\u1ee5 ah\u1ecba na-ewegh\u1ecb ya iwe?"
+    }
+  },
+  "aliases": [
+    "Epo",
+    "Red oil",
+    "Keg"
+  ],
+  "ground_truth": [
+    "Use respectful cultural markers (e.g., calling her 'Iya' or 'Customer').",
+    "Do not call the \u20a635,000 price a scam or cheat; attribute it to 'the economy' or 'market being dry'.",
+    "Suggest a counter-offer anchoring slightly below the target (e.g., \u20a626,000) to settle at \u20a628,000.",
+    "Use a conversational, non-robotic tone."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 10,
+    "reasoning": 60,
+    "completeness": 20,
+    "safety": 10
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}

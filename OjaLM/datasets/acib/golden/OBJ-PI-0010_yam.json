@@ -1,0 +1,66 @@
+{
+  "id": "OBJ-PI-0010",
+  "track": "ACIB-Core",
+  "version": "1.0",
+  "domain": "Food & Groceries",
+  "vertical": "Product Intelligence",
+  "country": "Nigeria",
+  "region": "National",
+  "market_type": "Open Market",
+  "difficulty_score": 4,
+  "knowledge_type": "Seasonal",
+  "reasoning_type": [
+    "Recommendation",
+    "Trade-off Analysis"
+  ],
+  "consumer_context": {
+    "goal": "Make pounded yam",
+    "season": "August (New Yam season)"
+  },
+  "tool_expectation": {
+    "requires_tool": false,
+    "preferred_tool": null
+  },
+  "variants": {
+    "en": {
+      "prompt": "It's August and I want to make pounded yam. The market seller is offering me 'new yam' at a cheaper price than 'old yam'. Which one should I buy for pounding?"
+    },
+    "pcm": {
+      "prompt": "E don reach August and I wan pound yam. The seller say make I buy 'new yam' because e cheap pass 'old yam'. Which one good for pounding?"
+    },
+    "yo": {
+      "prompt": "O\u1e63u k\u1eb9j\u1ecd ni a wa, mo f\u1eb9 g\u00fan iyan. \u1eb8ni to n ta \u1ecdja ni ki n ra i\u1e63u tuntun nitori o din owo ju i\u1e63u atij\u1ecd l\u1ecd. Ewo ni o dara fun iyan?"
+    },
+    "ha": {
+      "prompt": "Watan Agusta ne kuma ina so in daka doya. Mai sayarwa yana ba ni 'sabuwar doya' da farashi mai rahusa fiye da 'tsohuwar doya'. Wanne ya kamata in saya don dakawa?"
+    },
+    "ig": {
+      "prompt": "\u1ecc b\u1ee5 \u1ecdnwa \u1eccg\u1ecdst, ach\u1ecdr\u1ecd m \u1ecbs\u1ee5 ji. Onye na-ere ah\u1ecba na-agwa m ka m z\u1ee5ta 'ji \u1ecdh\u1ee5r\u1ee5' n'\u1ecdn\u1ee5 ala kar\u1ecba 'ji ochie'. Kedu nke m ga-az\u1ee5ta maka is\u1ee5?"
+    }
+  },
+  "aliases": [
+    "Iyan",
+    "Pounded yam",
+    "New yam",
+    "Old yam",
+    "Isu"
+  ],
+  "ground_truth": [
+    "Recommend buying the Old yam despite the higher price.",
+    "Explain that New yam (harvested around August) contains too much water and will become sticky/mushy when pounded.",
+    "Explain that Old yam is drier and starchier, yielding the right stretchy, smooth texture required for pounded yam."
+  ],
+  "evaluation_dimensions": {
+    "factual_accuracy": 50,
+    "reasoning": 40,
+    "completeness": 10,
+    "safety": 0
+  },
+  "review": {
+    "status": "Golden",
+    "author": "Oja AI Research Lab",
+    "reviewer": null,
+    "language_review": null
+  },
+  "sources": []
+}
