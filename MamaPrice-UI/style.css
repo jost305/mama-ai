@@ -3384,3 +3384,73 @@ body.sidebar-docked .top-dock-btn {
 .cashout-now-btn:hover {
     background: #166534;
 }
+
+/* ── Mobile Bottom Navigation Bar Layout ── */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #e2e8f0;
+    z-index: 900;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.m-nav-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    flex: 1;
+    height: 100%;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.65rem;
+    font-weight: 600;
+    transition: color 0.15s ease;
+}
+
+.m-nav-item i {
+    font-size: 0.95rem;
+}
+
+.m-nav-item.active, .m-nav-item:hover {
+    color: #15803d;
+}
+
+.m-nav-badge {
+    position: absolute;
+    top: 3px;
+    right: 50%;
+    transform: translateX(14px);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 1px 5px;
+    border-radius: 8px;
+    line-height: 1.1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.m-nav-badge.green-badge {
+    background: #15803d;
+}
+
+.m-nav-badge.purple-badge {
+    background: linear-gradient(135deg, #9333ea, #6b21a8);
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-nav {
+        display: flex;
+    }
+}
