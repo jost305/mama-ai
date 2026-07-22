@@ -152,7 +152,8 @@ body {
 .nav-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 10px;
     padding: 8px 10px;
     border-radius: 8px;
     text-decoration: none;
@@ -162,13 +163,15 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 
-.nav-item-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.nav-item i {
+    font-size: 0.95rem;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 .nav-earned-badge {
+    margin-left: auto;
     font-size: 0.7rem;
     font-weight: 700;
     color: #15803d;
