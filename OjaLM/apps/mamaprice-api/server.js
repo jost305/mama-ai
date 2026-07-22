@@ -203,9 +203,13 @@ app.post("/chat", async (req, res) => {
         detectedIntents = detectQueryIntents(prompt);
         console.log(`[RAG] Detected intents: [${detectedIntents.join(", ")}] for query: "${prompt}"`);
 
-        // Step 2: Multi-channel retrieval across all Commerce Graph document types
-        allEvidence = ojaGraph.searchCommerceIntelligence(prompt);
-        allEvidence.trend = ojaGraph.retrieveTrend(prompt);
+        // Step 2: Multi-channel parallel retrieval across all Commerce Graph document types (Promise.all)
+        const [searchRes, trendRes] = await Promise.all([
+            Promise.resolve(ojaGraph.searchCommerceIntelligence(prompt)),
+            Promise.resolve(ojaGraph.retrieveTrend(prompt))
+        ]);
+        allEvidence = searchRes;
+        allEvidence.trend = trendRes;
 
         const totalMatches = Object.values(allEvidence).reduce((sum, val) => sum + (Array.isArray(val) ? val.length : (val ? 1 : 0)), 0);
         console.log(`[RAG] Retrieved ${totalMatches} total evidence items (including trend memory).`);
