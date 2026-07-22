@@ -819,57 +819,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Dynamic System Notifications & Alerts Popover Engine (Reference Design Match)
+    // Dynamic Real-Time Market Alerts Engine (Short & Punchy Alerts)
     // ─────────────────────────────────────────────────────────────────────────
     let systemNotifications = [
         {
             id: 'notif_001',
+            type: 'price',
+            text: '<strong>Rice (50kg)</strong> updated to ₦75,917 (+5%)',
+            time: '2m ago',
+            tag: 'Lagos Hub',
+            read: false,
+            actionQuery: 'Rice 50kg bag price today Lagos Kano'
+        },
+        {
+            id: 'notif_002',
             type: 'inbox',
-            user: 'Balogun Scout Agent',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-            actionText: 'reported 3.5% price drop on <strong>Dangote Cement (50kg)</strong>',
-            time: '8 min ago',
+            text: '<strong>Dangote Cement</strong> dropped to ₦8,500 (-3%)',
+            time: '12m ago',
             tag: 'Balogun Market',
             read: false,
             actionQuery: 'Dangote Cement 50kg price today Lagos'
         },
         {
-            id: 'notif_002',
-            type: 'inbox',
-            user: 'Oshodi Steel Specialist',
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-            actionText: 'invited you to verify <strong>Turkish 12mm Rebar</strong> price surge',
-            time: '2 hours ago',
-            tag: 'Steel Vertical',
+            id: 'notif_003',
+            type: 'price',
+            text: '<strong>Turkish Steel 12mm</strong> at ₦1,250,000/tonne',
+            time: '45m ago',
+            tag: 'Oshodi Market',
             read: false,
-            hasButtons: true,
-            denyText: 'Decline',
-            approveText: 'Verify Report',
             actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
         },
         {
-            id: 'notif_003',
-            type: 'price',
-            user: 'Mile 12 Market Reporter',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
-            actionText: 'uploaded <strong>mile12_tomato_audit.csv</strong> market audit file',
-            time: '3 hours ago',
-            tag: 'Agriculture',
+            id: 'notif_004',
+            type: 'inbox',
+            text: '<strong>Scout Reward</strong> +₦1,500 payout credited',
+            time: '1h ago',
+            tag: 'Agent Payout',
             read: true,
-            attachment: 'mile12_tomato_audit.csv (4mb)',
-            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
+            actionQuery: ''
         },
         {
-            id: 'notif_004',
+            id: 'notif_005',
             type: 'price',
-            user: 'Ladipo Verification Hub',
-            avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80',
-            actionText: 'flagged suspicious <strong>Indomie packaging</strong> at Ladipo Market',
-            time: '2 days ago',
-            tag: 'NAFDAC Safety',
+            text: '<strong>Tomatoes (Basket)</strong> ₦1,800 (+8%)',
+            time: '2h ago',
+            tag: 'Mile 12',
             read: true,
-            commentBox: "Alert sent to NAFDAC anti-counterfeit division ⚠️",
-            actionQuery: 'Counterfeit Indomie warning details'
+            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
         }
     ];
 
@@ -908,9 +904,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (filtered.length === 0) {
             container.innerHTML = `
-                <div style="text-align: center; padding: 36px 20px; color: #94a3b8;">
-                    <i class="fa-regular fa-bell-slash" style="font-size: 1.8rem; margin-bottom: 8px;"></i>
-                    <p style="font-size: 0.85rem; font-weight: 600;">No notifications found in this view.</p>
+                <div style="text-align: center; padding: 28px 16px; color: #94a3b8;">
+                    <i class="fa-regular fa-bell-slash" style="font-size: 1.5rem; margin-bottom: 6px;"></i>
+                    <p style="font-size: 0.82rem; font-weight: 600;">No alerts in this view.</p>
                 </div>
             `;
             return;
@@ -918,34 +914,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.innerHTML = filtered.map(n => `
             <div class="notif-row-item ${n.read ? '' : 'unread'}" data-id="${n.id}" data-query="${n.actionQuery || ''}">
-                <div class="notif-avatar-wrapper">
-                    <img src="${n.avatar}" alt="${n.user}" class="notif-avatar-img">
-                    <span class="notif-status-dot ${n.read ? 'active' : 'unread-purple'}"></span>
-                </div>
                 <div class="notif-row-content">
                     <div class="notif-row-text">
-                        <strong>${n.user}</strong> ${n.actionText}
+                        ${n.text}
                     </div>
                     <div class="notif-row-meta">
                         <span>${n.time}</span>
                         ${n.tag ? `• <span class="notif-tag-pill">${n.tag}</span>` : ''}
                     </div>
-                    ${n.hasButtons ? `
-                        <div class="notif-action-row">
-                            <button class="btn-notif-secondary" onclick="event.stopPropagation();">${n.denyText || 'Deny'}</button>
-                            <button class="btn-notif-primary" onclick="event.stopPropagation();">${n.approveText || 'Approve'}</button>
-                        </div>
-                    ` : ''}
-                    ${n.attachment ? `
-                        <div class="notif-attachment-pill">
-                            <i class="fa-regular fa-file-lines"></i> ${n.attachment}
-                        </div>
-                    ` : ''}
-                    ${n.commentBox ? `
-                        <div style="background: #f8fafc; border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; color: #475569; margin-top: 4px; border: 1px solid #f1f5f9;">
-                            ${n.commentBox}
-                        </div>
-                    ` : ''}
                 </div>
             </div>
         `).join('');
@@ -1007,37 +983,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Background Ingestion of Live Intelligence Notifications
+    // Background Ingestion of Real-Time Market Commodity Alerts
     setInterval(() => {
         const dynamicEvents = [
             {
-                user: 'James Miller',
-                avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-                actionText: 'left a comment on <strong>Turkish Steel 12mm</strong>',
-                tag: 'Oshodi Market',
-                actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
+                type: 'price',
+                text: '<strong>Pepper (Basket)</strong> updated to ₦14,800 (+6%)',
+                tag: 'Kano Hub',
+                actionQuery: 'Pepper Basket price today Kano Kaduna'
             },
             {
-                user: 'Dima Phizeg',
-                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
-                actionText: 'edited <strong>ACME_guideline.pdf</strong> report',
-                tag: 'ACME 2.1',
-                attachment: 'ACME_guideline.pdf',
-                actionQuery: 'ACME price guideline'
+                type: 'inbox',
+                text: '<strong>Scout Reward</strong> +₦2,000 payout credited',
+                tag: 'Agent Payout',
+                actionQuery: ''
+            },
+            {
+                type: 'price',
+                text: '<strong>Lagos Rent 2-Bed</strong> ₦1.5M avg',
+                tag: 'Real Estate',
+                actionQuery: 'Average 2-bedroom apartment rent price in Lagos'
             }
         ];
         const randomEvt = dynamicEvents[Math.floor(Math.random() * dynamicEvents.length)];
         const newNotif = {
             id: `notif_${Date.now()}`,
-            type: 'inbox',
             ...randomEvt,
             time: 'Just now',
-            read: false,
-            dotColor: 'unread-purple'
+            read: false
         };
         systemNotifications.unshift(newNotif);
         renderNotifications();
-    }, 45000);
+    }, 30000);
 
     renderNotifications();
 })();
