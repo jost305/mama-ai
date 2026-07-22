@@ -173,12 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(navProfile, pageProfile));
     if (brandLogoBtn) brandLogoBtn.addEventListener('click', () => switchView(navHome, pageHome));
 
+    const mNavProfile = document.getElementById('m-nav-profile');
+
     // Mobile Bottom Nav Listeners
     if (mNavHome) mNavHome.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavHome, pageHome); });
     if (mNavPrices) mNavPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavPrices, pagePrices); });
     if (mNavMarkets) mNavMarkets.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavMarkets, pageMarkets); });
     if (mNavMap) mNavMap.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavMap, pageMap); });
     if (mNavAgent) mNavAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavAgent, pageAgent); });
+    if (mNavProfile) mNavProfile.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavProfile, pageProfile); });
 
     // Agent Report Form Submission
     const agentReportForm = document.getElementById('agent-report-form');
