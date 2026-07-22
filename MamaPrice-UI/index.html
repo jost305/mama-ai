@@ -854,52 +854,32 @@
         <a href="#" class="m-nav-item" id="m-nav-profile"><i class="fa-solid fa-user-gear"></i><span>Profile</span></a>
     </nav>
 
-    <!-- Modal 2: WhatsApp Reverse Authentication (No OTP, No OAuth) -->
+    <!-- Modal 2: Clean Minimalist Sign in Modal -->
     <div class="modal-overlay" id="wa-auth-modal">
         <div class="modal-card wa-auth-card">
             <div class="wa-card-header">
-                <div class="wa-header-title">
-                    <i class="fa-brands fa-whatsapp wa-green-icon"></i>
-                    <div>
-                        <h3>WhatsApp Reverse Authentication</h3>
-                        <p>No OTP · No Password · Instant Handshake</p>
-                    </div>
+                <div>
+                    <h3>Sign in to MamaPrice</h3>
+                    <p>Instant phone verification · No password required</p>
                 </div>
                 <button class="modal-close" id="close-wa-modal"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="wa-card-body">
-                <!-- Step 1: Session Overview & Code Box -->
-                <div class="wa-step-box">
-                    <span class="wa-step-lbl">1. Unique Login Verification Code</span>
-                    <div class="wa-code-display-box">
-                        <span class="wa-code-text" id="wa-code-val">LOGIN_92XG7AB</span>
-                        <button type="button" class="wa-copy-btn" id="wa-copy-code-btn" title="Copy Code"><i class="fa-regular fa-copy"></i> Copy</button>
+                <form id="sign-in-form">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Phone Number or WhatsApp</label>
+                        <input type="tel" id="sign-in-phone" value="+234 801 234 5678" placeholder="+234 800 000 0000" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
                     </div>
-                    <p class="wa-instruction">Send this code to the official MamaPrice WhatsApp Bot. Your session authenticates automatically within 2 seconds.</p>
-                </div>
 
-                <!-- Step 2: WhatsApp Deep Link Trigger -->
-                <div class="wa-action-box">
-                    <a href="https://wa.me/2348123456789?text=LOGIN_92XG7AB" target="_blank" class="wa-open-btn" id="wa-deep-link-btn">
-                        <i class="fa-brands fa-whatsapp"></i> Open WhatsApp & Send Code
-                    </a>
-                </div>
+                    <button type="submit" class="wa-open-btn" id="wa-deep-link-btn" style="margin-bottom: 10px;">
+                        Sign in Instant Handshake →
+                    </button>
 
-                <!-- Step 3: Real-Time Listening Indicator -->
-                <div class="wa-listening-indicator">
-                    <div class="pulse-wave-ring"></div>
-                    <div class="wa-listening-status">
-                        <strong id="wa-status-text">Listening for WhatsApp Confirmation...</strong>
-                        <span id="wa-timer-text">Session expires in 04:59</span>
-                    </div>
-                </div>
-
-                <!-- Instant Local Verification Simulator -->
-                <div class="wa-simulate-box">
-                    <span>Testing locally?</span>
-                    <button type="button" class="wa-sim-btn" id="wa-sim-verify-btn"><i class="fa-solid fa-bolt"></i> Simulate Incoming Webhook Authentication</button>
-                </div>
+                    <p style="font-size: 0.74rem; color: #64748b; text-align: center; margin: 0;">
+                        Authenticates via MamaPrice Reverse Handshake.
+                    </p>
+                </form>
             </div>
         </div>
     </div>

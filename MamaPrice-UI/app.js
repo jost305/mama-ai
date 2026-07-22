@@ -397,6 +397,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const signInForm = document.getElementById('sign-in-form');
+    if (signInForm) {
+        signInForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const phoneInput = document.getElementById('sign-in-phone');
+            const phone = phoneInput ? phoneInput.value : '+234 801 234 5678';
+            currentWaSession = { loginCode: 'DIRECT_AUTH', status: 'pending' };
+            completeWaAuthentication(phone, 'Amina Yusuf');
+        });
+    }
+
     if (waCopyCodeBtn) {
         waCopyCodeBtn.addEventListener('click', () => {
             if (currentWaSession && currentWaSession.loginCode) {
