@@ -109,16 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
     const topDockBtn = document.getElementById('top-dock-btn');
 
-    const isDocked = localStorage.getItem('mamaprice_sidebar_docked') === 'true';
-    if (isDocked && sidebar) {
-        sidebar.classList.add('docked');
-    }
+    if (sidebar) sidebar.classList.add('open');
 
     function toggleSidebarDock() {
         if (!sidebar) return;
         sidebar.classList.toggle('docked');
-        const dockedNow = sidebar.classList.contains('docked');
-        localStorage.setItem('mamaprice_sidebar_docked', String(dockedNow));
+        document.body.classList.toggle('sidebar-docked');
     }
 
     if (sidebarDockBtn) sidebarDockBtn.addEventListener('click', toggleSidebarDock);
@@ -137,11 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Navigation & View Switching
     // ----------------------------------------------------
     function switchView(targetNav, targetPage) {
+        if (!targetPage) return;
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
 
         if (targetNav) targetNav.classList.add('active');
-        if (targetPage) targetPage.classList.add('active');
+        targetPage.classList.add('active');
 
         if (sidebar && sidebar.classList.contains('open')) {
             sidebar.classList.remove('open');
