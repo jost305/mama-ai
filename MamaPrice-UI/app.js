@@ -18,12 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHistory = document.getElementById('nav-history');
     const brandLogoBtn = document.getElementById('brand-logo-btn');
 
+    const navProfile = document.getElementById('nav-profile');
+
     const pageHome = document.getElementById('page-home');
     const pageExplore = document.getElementById('page-explore');
     const pageMap = document.getElementById('page-map');
     const pageMarkets = document.getElementById('page-markets');
     const pageAgent = document.getElementById('page-agent');
     const pageHistory = document.getElementById('page-history');
+    const pageProfile = document.getElementById('page-profile');
 
     // Dropdown & Modals
     const modelPickerBtn = document.getElementById('model-picker-btn');
@@ -169,9 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         populateFullHistory();
         switchView(navHistory, pageHistory); 
     });
-    const navProfile = document.getElementById('nav-profile');
-    const pageProfile = document.getElementById('page-profile');
-
     if (navProfile) navProfile.addEventListener('click', (e) => { e.preventDefault(); switchView(navProfile, pageProfile); });
     if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(navProfile, pageProfile));
     if (brandLogoBtn) brandLogoBtn.addEventListener('click', () => switchView(navHome, pageHome));
