@@ -2813,6 +2813,8 @@ body.sidebar-docked .top-dock-btn {
     max-width: 1080px;
     margin: 0 auto;
     width: 100%;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .profile-page-banner {

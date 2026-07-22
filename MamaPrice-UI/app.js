@@ -169,9 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
         populateFullHistory();
         switchView(navHistory, pageHistory); 
     });
+    const navProfile = document.getElementById('nav-profile');
     const pageProfile = document.getElementById('page-profile');
 
-    if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(null, pageProfile));
+    if (navProfile) navProfile.addEventListener('click', (e) => { e.preventDefault(); switchView(navProfile, pageProfile); });
+    if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(navProfile, pageProfile));
     if (brandLogoBtn) brandLogoBtn.addEventListener('click', () => switchView(navHome, pageHome));
 
     // Mobile Bottom Nav Listeners
