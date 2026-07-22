@@ -153,8 +153,8 @@ async function getOrCreateSession(sessionId) {
         return existing.chatSession;
     }
 
-    console.log(`[SESSION] Creating new context for ID: "${sessionId}"`);
-    const context = await model.createContext();
+    console.log(`[SESSION] Creating new context (contextSize: 2048) for ID: "${sessionId}"`);
+    const context = await model.createContext({ contextSize: 2048 });
     const sequence = context.getSequence();
     const chatSession = new LlamaChatSession({
         contextSequence: sequence,
