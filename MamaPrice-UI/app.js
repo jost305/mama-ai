@@ -406,6 +406,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateAuthUIState() {
+        const token = localStorage.getItem('mamaprice_jwt_token');
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+
+        if (token && userJson) {
+            const user = JSON.parse(userJson);
+            if (waAuthBtn) {
+                waAuthBtn.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>${user.name || 'Logged In'}</span>`;
+                waAuthBtn.style.background = 'linear-gradient(135deg, #166534, #15803d)';
+                waAuthBtn.title = `Logged in via WhatsApp (${user.phone})`;
+            }
+        } else {
+            if (waAuthBtn) {
+                waAuthBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> <span>WhatsApp Login</span>`;
+                waAuthBtn.style.background = 'linear-gradient(135deg, #25d366, #128c7e)';
+                waAuthBtn.title = `Continue with WhatsApp (No OTP Reverse Auth)`;
+            }
+        }
+    }
+    updateAuthUIState();
+
     function completeWaAuthentication(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf') {
         if (!currentWaSession) return;
         currentWaSession.status = 'authenticated';
@@ -413,8 +434,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('mamaprice_jwt_token', dummyJwt);
         localStorage.setItem('mamaprice_auth_user', JSON.stringify({ name: userName, phone: phoneNumber }));
 
-        if (waStatusText) waStatusText.innerHTML = '✅ <span style="color: #15803d;">Authenticated Successfully!</span>';
-        alert(`✅ WhatsApp Reverse Authentication Successful!\n\nAuthenticated Phone: ${phoneNumber}\nUser: ${userName}\nSession Token: Stored`);
+        updateAuthUIState();
+
+        if (waStatusText) waStatusText.innerHTML = '✅ <span style="color: #15803d;">Authenticated Successfully! Redirecting to Dashboard...</span>';
 
         setTimeout(() => {
             if (waAuthModal) waAuthModal.classList.remove('open');
@@ -423,7 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pageProfile && typeof switchView === 'function') {
                 switchView(navProfile, pageProfile);
             }
-        }, 1000);
+            alert(`🎉 Welcome to your Dashboard, ${userName}!\n\nYou are logged in via WhatsApp Reverse Auth (${phoneNumber}). Saved to persistent session.`);
+        }, 800);
     }
 
     if (waSimVerifyBtn) {
@@ -431,6 +454,22 @@ document.addEventListener('DOMContentLoaded', () => {
             completeWaAuthentication();
         });
     }
+
+    // Logout Handler
+    const profLogoutBtn = document.getElementById('prof-logout-btn');
+    function handleLogout() {
+        localStorage.removeItem('mamaprice_jwt_token');
+        localStorage.removeItem('mamaprice_auth_user');
+        updateAuthUIState();
+        alert('👋 Logged out successfully. You can log back in anytime using WhatsApp Reverse Authentication.');
+        
+        const pageHome = document.getElementById('page-home');
+        const navHome = document.getElementById('nav-home');
+        if (pageHome && typeof switchView === 'function') {
+            switchView(navHome, pageHome);
+        }
+    }
+    if (profLogoutBtn) profLogoutBtn.addEventListener('click', handleLogout);
 
     // Close modals on overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
