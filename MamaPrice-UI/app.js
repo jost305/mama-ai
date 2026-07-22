@@ -795,6 +795,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lat = parseFloat(btn.dataset.lat);
                 const lon = parseFloat(btn.dataset.lon);
                 fetchWeather(lat, lon, city);
+
+                // AlertGraph Location Switcher Alert Trigger
+                if (typeof window.pushAlertGraphNotification === 'function') {
+                    const hubName = city.split(',')[0].trim();
+                    window.pushAlertGraphNotification({
+                        type: 'price',
+                        text: `<strong>Location Switched: ${hubName} Hub</strong> — Real-time price feeds active`,
+                        tag: `${hubName} Market`,
+                        actionQuery: `Cheapest market prices in ${hubName}`
+                    });
+                }
             });
         });
     }
@@ -875,6 +886,17 @@ document.addEventListener('DOMContentLoaded', () => {
             actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
         }
     ];
+
+    window.pushAlertGraphNotification = function(notifObj) {
+        const newNotif = {
+            id: `notif_${Date.now()}`,
+            time: 'Just now',
+            read: false,
+            ...notifObj
+        };
+        systemNotifications.unshift(newNotif);
+        renderNotifications();
+    };
 
     let currentNotifFilter = 'all';
 
