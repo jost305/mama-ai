@@ -1360,8 +1360,12 @@ body {
 .pin-ibadan { top: 58%; left: 30%; }
 .pin-enugu { top: 68%; left: 60%; }
 
-/* Scout Reporter Hub */
-.reporter-banner {
+/* Agent Reporter Hub */
+#page-agent {
+    padding: 0;
+}
+
+.agent-banner {
     background: linear-gradient(135deg, #0d5c3a, #15803d);
     color: #ffffff;
     padding: 24px;
@@ -2024,7 +2028,7 @@ body {
     cursor: pointer;
 }
 
-.scout-stat-cards {
+.agent-stat-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;

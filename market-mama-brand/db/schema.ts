@@ -190,9 +190,9 @@ export const seller = pgTable(
 
 export type Seller = InferSelectModel<typeof seller>;
 
-// Price reports from scouts
-export const priceReport = pgTable(
-  "PriceReport",
+// Agent reports from human contributors (Commerce Intelligence)
+export const agentReport = pgTable(
+  "AgentReport",
   {
     id: uuid("id").primaryKey().notNull().defaultRandom(),
     productId: uuid("productId")
@@ -204,10 +204,18 @@ export const priceReport = pgTable(
     marketId: uuid("marketId")
       .notNull()
       .references(() => market.id),
-    price: decimal("price", { precision: 12, scale: 2 }).notNull(),
+    price: decimal("price", { precision: 12, scale: 2 }), // optional now
     currency: varchar("currency", { length: 3 }).notNull(), // USD, NGN, GHS, etc.
     quantity: varchar("quantity", { length: 100 }), // e.g., "per kg", "per dozen"
-    reportedBy: varchar("reportedBy", { length: 255 }), // scout identifier
+    agentId: varchar("agentId", { length: 255 }), // renamed from reportedBy
+    reportType: varchar("reportType", { length: 50 }).notNull().default("PRICE"),
+    inStock: boolean("inStock"),
+    stockLevel: varchar("stockLevel", { length: 20 }), // NONE, LOW, MEDIUM, HIGH
+    qualityRating: decimal("qualityRating", { precision: 3, scale: 2 }),
+    counterfeitRisk: varchar("counterfeitRisk", { length: 20 }).default("NONE"),
+    transportNotes: text("transportNotes"),
+    vendorSection: varchar("vendorSection", { length: 255 }),
+    reportTags: json("reportTags").default([]),
     photoUrl: varchar("photoUrl", { length: 500 }),
     gpsCoordinates: json("gpsCoordinates"), // {lat, lng}
     notes: text("notes"),
@@ -215,18 +223,157 @@ export const priceReport = pgTable(
     createdAt: timestamp("createdAt").notNull().defaultNow(),
   },
   (table) => ({
-    productIdx: index("price_product_idx").on(table.productId),
-    sellerIdx: index("price_seller_idx").on(table.sellerId),
-    marketIdx: index("price_market_idx").on(table.marketId),
-    createdIdx: index("price_created_idx").on(table.createdAt),
-    productMarketIdx: index("price_product_market_idx").on(
+    productIdx: index("agent_product_idx").on(table.productId),
+    sellerIdx: index("agent_seller_idx").on(table.sellerId),
+    marketIdx: index("agent_market_idx").on(table.marketId),
+    createdIdx: index("agent_created_idx").on(table.createdAt),
+    typeIdx: index("agent_report_type_idx").on(table.reportType),
+    agentIdx: index("agent_report_agent_idx").on(table.agentId),
+    productMarketIdx: index("agent_product_market_idx").on(
       table.productId,
       table.marketId
     ),
   })
 );
 
-export type PriceReport = InferSelectModel<typeof priceReport>;
+export type AgentReport = InferSelectModel<typeof agentReport>;
+
+// Human Commerce Contributor Profiles
+export const agentProfile = pgTable(
+  "AgentProfile",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("userId").references(() => user.id),
+    agentName: varchar("agentName", { length: 255 }).notNull(),
+    trustTier: integer("trustTier").default(1),
+    reputationScore: integer("reputationScore").default(100),
+    completedMissions: integer("completedMissions").default(0),
+    verifiedReports: integer("verifiedReports").default(0),
+    rejectedReports: integer("rejectedReports").default(0),
+    alphaPoints: integer("alphaPoints").default(0),
+    level: varchar("level", { length: 50 }).default("Bronze"),
+    domainExpertise: json("domainExpertise").default([]),
+    state: varchar("state", { length: 100 }),
+    lga: varchar("lga", { length: 100 }),
+    whatsappNumber: varchar("whatsappNumber", { length: 20 }),
+    wallet: json("wallet").default({ ngn: 0, alphapoints: 0 }),
+    isActive: boolean("isActive").default(true),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdx: index("agent_profile_user_idx").on(table.userId),
+    stateIdx: index("agent_profile_state_idx").on(table.state),
+    trustIdx: index("agent_profile_trust_idx").on(table.trustTier),
+  })
+);
+
+export type AgentProfile = InferSelectModel<typeof agentProfile>;
+
+// Market Disruptions & Commerce Events
+export const marketEvent = pgTable(
+  "MarketEvent",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    marketId: uuid("marketId").references(() => market.id),
+    agentId: uuid("agentId").references(() => agentProfile.id),
+    eventType: varchar("eventType", { length: 50 }).notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    severity: varchar("severity", { length: 20 }).default("INFO"),
+    affectedProducts: json("affectedProducts").default([]),
+    startDate: timestamp("startDate").notNull(),
+    endDate: timestamp("endDate"),
+    isVerified: boolean("isVerified").default(false),
+    confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.80"),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    marketIdx: index("market_event_market_idx").on(table.marketId),
+    typeIdx: index("market_event_type_idx").on(table.eventType),
+    severityIdx: index("market_event_severity_idx").on(table.severity),
+    dateIdx: index("market_event_date_idx").on(table.startDate),
+  })
+);
+
+export type MarketEvent = InferSelectModel<typeof marketEvent>;
+
+// RAG Knowledge Snippets
+export const commerceKnowledgeCard = pgTable(
+  "CommerceKnowledgeCard",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    topic: varchar("topic", { length: 255 }).notNull(),
+    category: varchar("category", { length: 100 }).notNull(),
+    summary: text("summary").notNull(),
+    content: text("content").notNull(),
+    keywords: json("keywords").default([]),
+    marketIds: json("marketIds").default([]),
+    productIds: json("productIds").default([]),
+    language: varchar("language", { length: 10 }).default("en"),
+    embedding: json("embedding"),
+    viewCount: integer("viewCount").default(0),
+    helpfulCount: integer("helpfulCount").default(0),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    categoryIdx: index("knowledge_card_category_idx").on(table.category),
+    topicIdx: index("knowledge_card_topic_idx").on(table.topic),
+  })
+);
+
+export type CommerceKnowledgeCard = InferSelectModel<typeof commerceKnowledgeCard>;
+
+// Fake/Substandard Product Reports
+export const counterfeitAlert = pgTable(
+  "CounterfeitAlert",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    productId: uuid("productId").references(() => product.id),
+    marketId: uuid("marketId").references(() => market.id),
+    agentId: uuid("agentId").references(() => agentProfile.id),
+    brandSuspected: varchar("brandSuspected", { length: 255 }),
+    riskLevel: varchar("riskLevel", { length: 20 }).notNull().default("MEDIUM"),
+    description: text("description"),
+    evidenceUrls: json("evidenceUrls").default([]),
+    peerReviewCount: integer("peerReviewCount").default(0),
+    isConfirmed: boolean("isConfirmed").default(false),
+    confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.80"),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    productIdx: index("counterfeit_product_idx").on(table.productId),
+    marketIdx: index("counterfeit_market_idx").on(table.marketId),
+    riskIdx: index("counterfeit_risk_idx").on(table.riskLevel),
+  })
+);
+
+export type CounterfeitAlert = InferSelectModel<typeof counterfeitAlert>;
+
+// For Continuous Learning
+export const commerceConversationLog = pgTable(
+  "CommerceConversationLog",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    sessionId: varchar("sessionId", { length: 255 }),
+    queryText: text("queryText").notNull(),
+    responseText: text("responseText").notNull(),
+    detectedIntents: json("detectedIntents").default([]),
+    evidenceUsed: json("evidenceUsed").default({}),
+    feedbackScore: integer("feedbackScore"),
+    wasHelpful: boolean("wasHelpful"),
+    language: varchar("language", { length: 10 }).default("en"),
+    convertedToTraining: boolean("convertedToTraining").default(false),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    sessionIdx: index("conv_log_session_idx").on(table.sessionId),
+    trainingIdx: index("conv_log_training_idx").on(table.convertedToTraining),
+  })
+);
+
+export type CommerceConversationLog = InferSelectModel<typeof commerceConversationLog>;
 
 // Daily price rollups (materialized view performance optimization)
 export const dailyPriceRollup = pgTable(

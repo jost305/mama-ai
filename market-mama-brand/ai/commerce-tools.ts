@@ -19,7 +19,7 @@ export async function searchAfricanMarkets({
     schema: z.object({
       marketName: z.string().describe("Name of the market"),
       city: z.string().describe("City where the market is located"),
-      country: z.string().describe("Country (${country})"),
+      country: z.string().describe(`Country (${country})`),
       specialization: z.string().describe("What the market specializes in"),
       operatingHours: z
         .string()
@@ -103,7 +103,6 @@ export async function checkCurrencyRate({
   fromCurrency: string;
   toCurrency: string;
 }) {
-  // Using a simple exchange rate lookup for African currencies
   const { object: exchange } = await generateObject({
     model: geminiFlashModel,
     prompt: `Get current exchange rate from ${fromCurrency} to ${toCurrency}. Provide realistic rate for African currencies. Include: 1 unit of source currency = ? units of target currency`,
@@ -198,4 +197,47 @@ export async function findSuppliers({
   });
 
   return { suppliers };
+}
+
+export async function checkCounterfeitRisk({
+  productName,
+  marketName,
+}: {
+  productName: string;
+  marketName: string;
+}) {
+  const { object: alert } = await generateObject({
+    model: geminiFlashModel,
+    prompt: `Assess the counterfeit risk for "${productName}" in "${marketName}". African markets sometimes have fake products. Output realistic risks for this product category.`,
+    schema: z.object({
+      productName: z.string(),
+      marketName: z.string(),
+      riskLevel: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+      commonFakes: z.array(z.string()).describe("List of common fake variations"),
+      howToIdentify: z.array(z.string()).describe("Steps to identify authentic products"),
+      recentAlerts: z.string().describe("Any recent alerts or known issues"),
+    })
+  });
+  return alert;
+}
+
+export async function getMarketEvents({
+  marketName,
+}: {
+  marketName: string;
+}) {
+  const { object: events } = await generateObject({
+    model: geminiFlashModel,
+    prompt: `Identify current or upcoming events, closures, or disruptions for "${marketName}". Include things like sanitation days, holidays, or strikes.`,
+    output: "array",
+    schema: z.object({
+      eventType: z.string(),
+      title: z.string(),
+      description: z.string(),
+      severity: z.enum(["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+      dateRange: z.string(),
+      impact: z.string().describe("Expected impact on prices or availability"),
+    })
+  });
+  return { events };
 }

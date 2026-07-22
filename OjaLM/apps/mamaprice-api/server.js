@@ -16,12 +16,105 @@ const MODEL_PATH = path.join(__dirname, "..", "..", "models", "OjaLM", "OjaLM-v0
 let llama;
 let model;
 
-// Multi-user Session Store (sessionId -> { context, sequence, chatSession, lastActive })
+// ─────────────────────────────────────────────────────────────────────────────
+// Multi-user Session Store: sessionId -> { context, sequence, chatSession, lastActive }
+// ─────────────────────────────────────────────────────────────────────────────
 const sessions = new Map();
 
-const SYSTEM_PROMPT = `You are MamaPrice, the friendly and intelligent AI agent for commerce and market prices in Nigeria.
+const SYSTEM_PROMPT = `You are MamaPrice, the intelligent Commerce AI for African markets.
 
-When provided with GROUNDED OJAGRAPH EVIDENCE, use those exact verified prices, markets, confidence levels, and freshness indicators to answer the user accurately and clearly.`;
+You help users understand prices, product availability, vendor reliability, market events,
+and all aspects of commerce intelligence across Nigerian and African markets.
+
+When provided with GROUNDED OJAGRAPH COMMERCE EVIDENCE, use the verified facts to answer
+the user accurately. Clearly distinguish between price data, availability info, vendor
+reviews, market events, counterfeit warnings, and quality assessments.
+
+If a question has no matching evidence, say so honestly and offer general guidance.`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Intent Detection — determines what type of commerce knowledge to retrieve
+// ─────────────────────────────────────────────────────────────────────────────
+
+const INTENT_KEYWORDS = {
+    price:        ["price", "cost", "how much", "naira", "ngn", "cheap", "expensive", "rate", "sold", "buy"],
+    availability: ["available", "stock", "out of stock", "in stock", "find", "where to buy", "sold out", "have"],
+    vendor:       ["vendor", "seller", "shop", "store", "trader", "merchant", "stall", "trusted", "reliable"],
+    market_event: ["closed", "open", "strike", "flood", "rain", "event", "renovation", "traffic", "days"],
+    counterfeit:  ["fake", "counterfeit", "original", "authentic", "genuine", "real", "copy", "spoil"],
+    quality:      ["quality", "fresh", "good", "bad", "expired", "rotten", "packaging", "condition"]
+};
+
+function detectQueryIntents(query) {
+    const q = query.toLowerCase();
+    const intents = new Set();
+    for (const [intent, keywords] of Object.entries(INTENT_KEYWORDS)) {
+        if (keywords.some(kw => q.includes(kw))) {
+            intents.add(intent);
+        }
+    }
+    // Default to price if no specific intent detected
+    if (intents.size === 0) intents.add("price");
+    return Array.from(intents);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hybrid RAG: Multi-Intent Commerce Intelligence Retrieval
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildGroundedContext(query, evidence) {
+    const sections = [];
+
+    if (evidence.prices?.length > 0) {
+        const priceLines = evidence.prices.map(obs =>
+            `• ${obs.product}${obs.brand ? ` (${obs.brand})` : ""} at ${obs.market}, ${obs.state}: ₦${obs.observed_price?.toLocaleString() || "N/A"} per ${obs.quantity || "unit"} — Confidence: ${Math.round((obs.confidence || 0) * 100)}%, Freshness: ${obs.freshness_hours}h ago`
+        );
+        sections.push(`PRICE INTELLIGENCE:\n${priceLines.join("\n")}`);
+    }
+
+    if (evidence.availability?.length > 0) {
+        const availLines = evidence.availability.map(a =>
+            `• ${a.product} at ${a.market}: ${a.in_stock ? `IN STOCK (${a.stock_level || "unknown level"})` : "OUT OF STOCK"}${a.vendor_section ? ` — ${a.vendor_section}` : ""}${a.notes ? `. Note: ${a.notes}` : ""}`
+        );
+        sections.push(`AVAILABILITY REPORTS:\n${availLines.join("\n")}`);
+    }
+
+    if (evidence.vendor_reviews?.length > 0) {
+        const vendorLines = evidence.vendor_reviews.map(v =>
+            `• ${v.vendor_name} at ${v.market}: Rating ${v.rating}/5 (${v.reliability} reliability)${v.notes ? `. ${v.notes}` : ""}`
+        );
+        sections.push(`VENDOR INTELLIGENCE:\n${vendorLines.join("\n")}`);
+    }
+
+    if (evidence.market_events?.length > 0) {
+        const eventLines = evidence.market_events.map(e =>
+            `• [${e.severity || "INFO"}] ${e.title} — ${e.market}: ${e.description}${e.end_date ? ` (Until ${e.end_date})` : ""}`
+        );
+        sections.push(`MARKET EVENTS:\n${eventLines.join("\n")}`);
+    }
+
+    if (evidence.counterfeit_alerts?.length > 0) {
+        const fakeLines = evidence.counterfeit_alerts.map(c =>
+            `• ⚠️ COUNTERFEIT ALERT — ${c.product}${c.brand ? ` (${c.brand})` : ""} at ${c.market}: ${c.description} [Risk: ${c.risk_level}]`
+        );
+        sections.push(`COUNTERFEIT WARNINGS:\n${fakeLines.join("\n")}`);
+    }
+
+    if (evidence.quality_assessments?.length > 0) {
+        const qualLines = evidence.quality_assessments.map(q =>
+            `• ${q.product_id || "Product"}: Quality ${q.quality_rating}/5${q.notes ? ` — ${q.notes}` : ""}`
+        );
+        sections.push(`QUALITY ASSESSMENTS:\n${qualLines.join("\n")}`);
+    }
+
+    if (sections.length === 0) return null;
+
+    return `GROUNDED OJAGRAPH COMMERCE EVIDENCE:\n${"─".repeat(50)}\n${sections.join("\n\n")}\n${"─".repeat(50)}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Session Management
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function getOrCreateSession(sessionId) {
     if (sessions.has(sessionId)) {
@@ -30,7 +123,7 @@ async function getOrCreateSession(sessionId) {
         return existing.chatSession;
     }
 
-    console.log(`[SESSION] Creating new isolated context & chat session for ID: "${sessionId}"`);
+    console.log(`[SESSION] Creating new context for ID: "${sessionId}"`);
     const context = await model.createContext();
     const sequence = context.getSequence();
     const chatSession = new LlamaChatSession({
@@ -38,89 +131,102 @@ async function getOrCreateSession(sessionId) {
         systemPrompt: SYSTEM_PROMPT
     });
 
-    const sessionObj = {
-        context,
-        sequence,
-        chatSession,
-        lastActive: Date.now()
-    };
-
-    sessions.set(sessionId, sessionObj);
+    sessions.set(sessionId, { context, sequence, chatSession, lastActive: Date.now() });
     return chatSession;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /chat — Hybrid RAG Commerce Intelligence Endpoint
+// ─────────────────────────────────────────────────────────────────────────────
+
 app.post("/chat", async (req, res) => {
-    console.log("\n--- POST /chat received ---");
-    
-    let prompt;
-    let sessionId;
-    let modelId;
+    console.log("\n--- POST /chat ---");
+
+    let prompt, sessionId, modelId;
     try {
         prompt = req.body.prompt;
         sessionId = req.body.sessionId || req.headers["x-session-id"] || "default-session";
         modelId = req.body.modelId || "MamaPrice 4o";
         console.log(`[SESSION: ${sessionId}] [MODEL: ${modelId}] Prompt: "${prompt}"`);
-    } catch (error) {
-        console.error("❌ Stage [parse_body] failed:", error);
-        return res.status(400).json({ stage: "parse_body", error: error.message });
+    } catch (err) {
+        return res.status(400).json({ stage: "parse_body", error: err.message });
     }
 
     if (!model) {
-        console.error("❌ Stage [model_check] failed: OjaLM model is not loaded.");
-        return res.status(500).json({ stage: "model_check", error: "Model not loaded" });
+        return res.status(500).json({ stage: "model_check", error: "OjaLM model not loaded" });
     }
 
     let chatSession;
     try {
         chatSession = await getOrCreateSession(sessionId);
-    } catch (error) {
-        console.error(`❌ Stage [getOrCreateSession] failed for session "${sessionId}":`, error);
-        return res.status(500).json({ stage: "getOrCreateSession", error: error.message });
+    } catch (err) {
+        return res.status(500).json({ stage: "getOrCreateSession", error: err.message });
     }
 
-    // Stage 1: RAG Retrieval over OjaGraph (Enabled for MamaPrice 4o and OjaGraph RAG)
-    const enableRAG = (modelId === "MamaPrice 4o" || modelId === "OjaGraph RAG");
-    
-    let matchedEvidence = [];
+    // ─── Hybrid RAG Retrieval ────────────────────────────────────────────────
+    const enableRAG = ["MamaPrice 4o", "OjaGraph RAG", "OjaLM Commerce"].includes(modelId);
+    let allEvidence = {};
+    let detectedIntents = [];
+
     if (enableRAG) {
-        console.log(`[RAG] Searching OjaGraph for: "${prompt}"`);
-        matchedEvidence = ojaGraph.searchPriceObservations(prompt);
-        console.log(`[RAG] Retained ${matchedEvidence.length} matching price observations from OjaGraph.`);
+        // Step 1: Detect query intent(s)
+        detectedIntents = detectQueryIntents(prompt);
+        console.log(`[RAG] Detected intents: [${detectedIntents.join(", ")}] for query: "${prompt}"`);
+
+        // Step 2: Multi-channel retrieval across all Commerce Graph document types
+        allEvidence = ojaGraph.searchCommerceIntelligence(prompt);
+
+        const totalMatches = Object.values(allEvidence).reduce((sum, arr) => sum + arr.length, 0);
+        console.log(`[RAG] Retrieved ${totalMatches} total evidence documents across ${Object.keys(allEvidence).length} categories.`);
     } else {
-        console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF inference mode.`);
+        console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF inference.`);
     }
 
-    let augmentedPrompt = prompt;
-    if (matchedEvidence.length > 0) {
-        const evidenceStr = JSON.stringify(matchedEvidence.map(obs => ({
-            product: obs.product,
-            brand: obs.brand,
-            market: obs.market,
-            state: obs.state,
-            price_ngn: obs.observed_price,
-            unit: obs.quantity,
-            confidence: obs.confidence,
-            freshness_hours: obs.freshness_hours
-        })), null, 2);
+    // Step 3: Build grounded context from multi-type evidence
+    const groundedContext = buildGroundedContext(prompt, allEvidence);
 
-        augmentedPrompt = `GROUNDED OJAGRAPH EVIDENCE:\n${evidenceStr}\n\nUSER QUESTION: ${prompt}`;
-    }
+    const augmentedPrompt = groundedContext
+        ? `${groundedContext}\n\nUSER QUESTION: ${prompt}`
+        : prompt;
 
+    // Step 4: OjaLM Reasoning & Response Generation
     try {
-        console.log(`[SESSION: ${sessionId}] [MODEL: ${modelId}] Generating response...`);
+        console.log(`[OjaLM] Generating response for session "${sessionId}"...`);
         const responseText = await chatSession.prompt(augmentedPrompt);
-        console.log(`[SESSION: ${sessionId}] Response complete (${responseText.length} chars).`);
-        return res.json({ 
-            sessionId: sessionId,
+        console.log(`[OjaLM] Response complete (${responseText.length} chars).`);
+
+        return res.json({
+            sessionId,
             modelUsed: modelId,
             response: responseText.trim(),
-            evidence: matchedEvidence
+            intents: detectedIntents,
+            evidence: allEvidence
         });
-    } catch (error) {
-        console.error(`❌ Stage [session.prompt] failed for session "${sessionId}":`, error);
-        return res.status(500).json({ stage: "session.prompt", error: error.message });
+    } catch (err) {
+        console.error(`❌ [session.prompt] failed for session "${sessionId}":`, err);
+        return res.status(500).json({ stage: "session.prompt", error: err.message });
     }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /observe — Ingest a new Commerce Observation from an Agent
+// ─────────────────────────────────────────────────────────────────────────────
+app.post("/observe", async (req, res) => {
+    const { reportType = "PRICE", data } = req.body;
+    if (!data) return res.status(400).json({ error: "data is required" });
+
+    try {
+        const newDoc = ojaGraph.addObservation(data, reportType);
+        console.log(`[OjaGraph] New ${reportType} observation ingested: ${newDoc.id}`);
+        res.json({ success: true, document: newDoc });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Model Initialization
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function initLlama() {
     try {
@@ -129,26 +235,23 @@ async function initLlama() {
         console.log("✓ STEP 1 COMPLETE");
 
         console.log("STEP 2 - loadModel()");
-        model = await llama.loadModel({
-            modelPath: MODEL_PATH
-        });
-        console.log("✓ STEP 2 COMPLETE");
-
-        console.log("OjaLM Model loaded successfully onto CPU!");
-    } catch (error) {
+        model = await llama.loadModel({ modelPath: MODEL_PATH });
+        console.log("✓ STEP 2 COMPLETE — OjaLM loaded on CPU.");
+    } catch (err) {
         console.error("\n❌ FAILED TO LOAD OJALM MODEL ❌");
-        console.error(error);
-        if (error.stack) console.error(error.stack);
+        console.error(err);
+        if (err.stack) console.error(err.stack);
         process.exit(1);
     }
 }
 
 async function startServer() {
     await initLlama();
-
     const PORT = 3001;
     app.listen(PORT, () => {
-        console.log(`MamaPrice API (powered by OjaLM + OjaGraph RAG) listening locally on port ${PORT}`);
+        console.log(`\n✅ MamaPrice Commerce Intelligence API`);
+        console.log(`   Powered by OjaLM + OjaGraph v2 Hybrid RAG`);
+        console.log(`   Listening on http://localhost:${PORT}\n`);
     });
 }
 

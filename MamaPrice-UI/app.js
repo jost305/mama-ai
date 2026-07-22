@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navExplore = document.getElementById('nav-explore');
     const navMap = document.getElementById('nav-map');
     const navMarkets = document.getElementById('nav-markets');
-    const navScout = document.getElementById('nav-scout');
+    const navAgent = document.getElementById('nav-agent');
     const navHistory = document.getElementById('nav-history');
     const brandLogoBtn = document.getElementById('brand-logo-btn');
 
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageExplore = document.getElementById('page-explore');
     const pageMap = document.getElementById('page-map');
     const pageMarkets = document.getElementById('page-markets');
-    const pageScout = document.getElementById('page-scout');
+    const pageAgent = document.getElementById('page-agent');
     const pageHistory = document.getElementById('page-history');
 
     // Dropdown & Modals
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const orbStates = [
         { label: "OjaGraph RAG Active", color: "linear-gradient(135deg, #a5b4fc, #818cf8)", badgeBg: "#e0e7ff", badgeText: "#4338ca", badgeBorder: "#c7d2fe" },
-        { label: "Scout Verification Mode", color: "linear-gradient(135deg, #34d399, #10b981)", badgeBg: "#d1fae5", badgeText: "#065f46", badgeBorder: "#a7f3d0" },
+        { label: "Agent Verification Mode", color: "linear-gradient(135deg, #34d399, #10b981)", badgeBg: "#d1fae5", badgeText: "#065f46", badgeBorder: "#a7f3d0" },
         { label: "OjaLM Local CPU Engine", color: "linear-gradient(135deg, #f472b6, #ec4899)", badgeBg: "#fce7f3", badgeText: "#9d174d", badgeBorder: "#fbcfe8" },
         { label: "Deep Research Engine", color: "linear-gradient(135deg, #60a5fa, #3b82f6)", badgeBg: "#dbeafe", badgeText: "#1e40af", badgeBorder: "#bfdbfe" }
     ];
@@ -142,14 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const mNavPrices = document.getElementById('m-nav-prices');
     const mNavMarkets = document.getElementById('m-nav-markets');
     const mNavMap = document.getElementById('m-nav-map');
-    const mNavScout = document.getElementById('m-nav-scout');
+    const mNavAgent = document.getElementById('m-nav-agent');
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); switchView(navHome, pageHome); });
     if (navPrices) navPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(navPrices, pagePrices); });
     if (navExplore) navExplore.addEventListener('click', (e) => { e.preventDefault(); switchView(navExplore, pageExplore); });
     if (navMap) navMap.addEventListener('click', (e) => { e.preventDefault(); switchView(navMap, pageMap); });
     if (navMarkets) navMarkets.addEventListener('click', (e) => { e.preventDefault(); switchView(navMarkets, pageMarkets); });
-    if (navScout) navScout.addEventListener('click', (e) => { e.preventDefault(); switchView(navScout, pageScout); });
+    if (navAgent) navAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(navAgent, pageAgent); });
     if (navLibrary) navLibrary.addEventListener('click', (e) => { e.preventDefault(); switchView(navLibrary, pageLibrary); });
     if (navHistory) navHistory.addEventListener('click', (e) => { 
         e.preventDefault(); 
@@ -163,12 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mNavPrices) mNavPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavPrices, pagePrices); });
     if (mNavMarkets) mNavMarkets.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavMarkets, pageMarkets); });
     if (mNavMap) mNavMap.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavMap, pageMap); });
-    if (mNavScout) mNavScout.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavScout, pageScout); });
+    if (mNavAgent) mNavAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavAgent, pageAgent); });
 
-    // Scout Report Form Submission
-    const scoutReportForm = document.getElementById('scout-report-form');
-    if (scoutReportForm) {
-        scoutReportForm.addEventListener('submit', (e) => {
+    // Agent Report Form Submission
+    const agentReportForm = document.getElementById('agent-report-form');
+    if (agentReportForm) {
+        agentReportForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const commodity = document.getElementById('report-commodity').value;
             const market = document.getElementById('report-market').value;
