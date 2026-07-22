@@ -48,6 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let API_URL = 'http://localhost:3001';
     let currentSessionId = `session_${Date.now()}`;
+    let agentEarnings = 148500;
+
+    function updateAgentBadge(amount) {
+        if (amount) agentEarnings += amount;
+        const badge = document.getElementById('nav-agent-badge');
+        if (badge) {
+            const formatted = agentEarnings >= 1000 ? `₦${(agentEarnings / 1000).toFixed(1)}k` : `₦${agentEarnings.toLocaleString()}`;
+            badge.textContent = formatted;
+        }
+    }
+    updateAgentBadge();
 
     // Dynamic Time-of-day Greeting
     const heroGreetingTitle = document.getElementById('hero-greeting-title');
@@ -722,11 +733,26 @@ document.addEventListener('DOMContentLoaded', () => {
         clockEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
 
+    async function getCityFromCoords(lat, lon) {
+        try {
+            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+            const data = await res.json();
+            const city = data.city || data.locality || data.principalSubdivision || 'Lagos';
+            const country = data.countryCode || 'NG';
+            return `${city}, ${country}`;
+        } catch {
+            return CITY_COORDS.name;
+        }
+    }
+
     function load(lat, lon, name) {
         if (!lat || !lon) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    pos => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Nearby'),
+                    async pos => {
+                        const cityName = await getCityFromCoords(pos.coords.latitude, pos.coords.longitude);
+                        fetchWeather(pos.coords.latitude, pos.coords.longitude, cityName);
+                    },
                     () => fetchWeather(CITY_COORDS.lat, CITY_COORDS.lon, CITY_COORDS.name)
                 );
             } else {

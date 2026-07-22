@@ -172,15 +172,22 @@ body {
 
 .nav-earned-badge {
     margin-left: auto;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    color: #15803d;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    padding: 2px 6px;
-    border-radius: 10px;
-    line-height: 1;
-    letter-spacing: -0.01em;
+    color: #ffffff;
+    background: linear-gradient(135deg, #15803d, #166534);
+    padding: 3px 9px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(21, 128, 61, 0.3);
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-item:hover .nav-earned-badge {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    transform: scale(1.06);
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
 }
 
 .nav-item:hover, .nav-item.active {
