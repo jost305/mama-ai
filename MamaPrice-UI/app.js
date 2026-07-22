@@ -350,6 +350,88 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tabBtn) tabBtn.click();
     });
 
+    // ── WhatsApp Reverse Authentication Engine (No OTP, No OAuth) ──
+    const waAuthBtn = document.getElementById('wa-auth-btn');
+    const waAuthModal = document.getElementById('wa-auth-modal');
+    const closeWaModal = document.getElementById('close-wa-modal');
+    const waCodeVal = document.getElementById('wa-code-val');
+    const waDeepLinkBtn = document.getElementById('wa-deep-link-btn');
+    const waCopyCodeBtn = document.getElementById('wa-copy-code-btn');
+    const waSimVerifyBtn = document.getElementById('wa-sim-verify-btn');
+    const waStatusText = document.getElementById('wa-status-text');
+
+    let currentWaSession = null;
+
+    function generateWaLoginSession() {
+        const randomCode = 'LOGIN_' + Math.random().toString(36).substring(2, 8).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+        const sessionId = `wa_sess_${Date.now()}`;
+        const whatsappNumber = '2348123456789';
+        const deepLink = `https://wa.me/${whatsappNumber}?text=${randomCode}`;
+
+        currentWaSession = {
+            sessionId,
+            loginCode: randomCode,
+            deepLink,
+            status: 'pending',
+            expiresAt: Date.now() + 300000
+        };
+
+        if (waCodeVal) waCodeVal.textContent = randomCode;
+        if (waDeepLinkBtn) waDeepLinkBtn.href = deepLink;
+        if (waStatusText) waStatusText.textContent = 'Listening for WhatsApp Confirmation...';
+
+        return currentWaSession;
+    }
+
+    if (waAuthBtn && waAuthModal) {
+        waAuthBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            generateWaLoginSession();
+            waAuthModal.classList.add('open');
+        });
+    }
+
+    if (closeWaModal && waAuthModal) {
+        closeWaModal.addEventListener('click', () => {
+            waAuthModal.classList.remove('open');
+        });
+    }
+
+    if (waCopyCodeBtn) {
+        waCopyCodeBtn.addEventListener('click', () => {
+            if (currentWaSession && currentWaSession.loginCode) {
+                navigator.clipboard.writeText(currentWaSession.loginCode);
+                alert(`Copied verification code: ${currentWaSession.loginCode}`);
+            }
+        });
+    }
+
+    function completeWaAuthentication(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf') {
+        if (!currentWaSession) return;
+        currentWaSession.status = 'authenticated';
+        const dummyJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: phoneNumber, user: userName, exp: Date.now() + 900000 }))}.signature`;
+        localStorage.setItem('mamaprice_jwt_token', dummyJwt);
+        localStorage.setItem('mamaprice_auth_user', JSON.stringify({ name: userName, phone: phoneNumber }));
+
+        if (waStatusText) waStatusText.innerHTML = '✅ <span style="color: #15803d;">Authenticated Successfully!</span>';
+        alert(`✅ WhatsApp Reverse Authentication Successful!\n\nAuthenticated Phone: ${phoneNumber}\nUser: ${userName}\nSession Token: Stored`);
+
+        setTimeout(() => {
+            if (waAuthModal) waAuthModal.classList.remove('open');
+            const pageProfile = document.getElementById('page-profile');
+            const navProfile = document.getElementById('nav-profile');
+            if (pageProfile && typeof switchView === 'function') {
+                switchView(navProfile, pageProfile);
+            }
+        }, 1000);
+    }
+
+    if (waSimVerifyBtn) {
+        waSimVerifyBtn.addEventListener('click', () => {
+            completeWaAuthentication();
+        });
+    }
+
     // Close modals on overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
