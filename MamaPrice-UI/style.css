@@ -3449,6 +3449,59 @@ body.sidebar-docked .top-dock-btn {
     background: linear-gradient(135deg, #9333ea, #6b21a8);
 }
 
+/* ── Popular Search Chips Row Layout ── */
+.search-chips-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 0 20px 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.chips-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #64748b;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.chips-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 0;
+}
+
+.chips-container::-webkit-scrollbar {
+    display: none;
+}
+
+.chip-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    flex-shrink: 0;
+}
+
+.chip-btn:hover {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
 @media (max-width: 768px) {
     .mobile-bottom-nav {
         display: flex;
@@ -3456,5 +3509,20 @@ body.sidebar-docked .top-dock-btn {
     .pill-clock-divider,
     .pill-clock {
         display: none !important;
+    }
+    .search-chips-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin: 10px 0 14px 0;
+    }
+    .chips-container {
+        width: 100%;
+        gap: 5px;
+    }
+    .chip-btn {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+        border-radius: 12px;
     }
 }
