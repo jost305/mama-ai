@@ -2496,7 +2496,7 @@ body {
     position: absolute;
     top: calc(100% + 12px);
     right: 0;
-    width: 410px;
+    width: 340px;
     background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -2521,11 +2521,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px 12px 20px;
+    padding: 14px 16px 10px 16px;
 }
 
 .notif-popover-header h3 {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
     font-weight: 700;
     color: #0f172a;
 }
@@ -2533,7 +2533,7 @@ body {
 .mark-all-read-link {
     background: transparent;
     border: none;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: #15803d;
     cursor: pointer;
@@ -2549,28 +2549,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 18px;
+    padding: 0 14px;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .tab-list {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .pop-tab {
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
-    padding: 8px 0 10px 0;
-    font-size: 0.85rem;
+    padding: 6px 0 8px 0;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #64748b;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     transition: color 0.15s, border-color 0.15s;
 }
 
@@ -2582,9 +2582,9 @@ body {
 .tab-badge {
     background: #16a34a;
     color: #ffffff;
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    padding: 1px 6px;
+    padding: 1px 5px;
     border-radius: 10px;
 }
 
@@ -2592,7 +2592,7 @@ body {
     background: transparent;
     border: none;
     color: #64748b;
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     cursor: pointer;
     padding: 4px;
     transition: color 0.15s;
@@ -2603,10 +2603,18 @@ body {
 }
 
 .notif-popover-body {
-    max-height: 420px;
+    max-height: 380px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.notif-popover-body::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .notif-row-item {
