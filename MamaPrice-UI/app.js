@@ -569,7 +569,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 "'": '&#39;',
                 '"': '&quot;'
             }[tag] || tag)
-        );
+    // Sidebar Docking & Undocking Toggles
+    const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
+    const topDockBtn = document.getElementById('top-dock-btn');
+
+    if (sidebarDockBtn) {
+        sidebarDockBtn.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.add('docked');
+            document.body.classList.add('sidebar-docked');
+        });
+    }
+
+    if (topDockBtn) {
+        topDockBtn.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.remove('docked');
+            document.body.classList.remove('sidebar-docked');
+        });
     }
 });
 

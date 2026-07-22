@@ -59,7 +59,7 @@ body {
     margin-left: -220px;
 }
 
-.dock-toggle-btn, .top-dock-btn {
+.dock-toggle-btn {
     background: transparent;
     border: none;
     font-size: 1rem;
@@ -73,9 +73,29 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 
+.top-dock-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
 .dock-toggle-btn:hover, .top-dock-btn:hover {
     background: #f2f4f7;
     color: var(--text-primary);
+}
+
+.sidebar.docked ~ .chat-main .top-dock-btn,
+body.sidebar-docked .top-dock-btn {
+    display: flex;
 }
 
 .brand-header {
