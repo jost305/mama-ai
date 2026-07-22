@@ -2535,13 +2535,13 @@ body {
     border: none;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #2563eb;
+    color: #15803d;
     cursor: pointer;
     transition: color 0.15s;
 }
 
 .mark-all-read-link:hover {
-    color: #1d4ed8;
+    color: #166534;
     text-decoration: underline;
 }
 
@@ -2575,12 +2575,12 @@ body {
 }
 
 .pop-tab:hover, .pop-tab.active {
-    color: #0f172a;
-    border-bottom-color: #2563eb;
+    color: #122218;
+    border-bottom-color: #16a34a;
 }
 
 .tab-badge {
-    background: #6366f1;
+    background: #16a34a;
     color: #ffffff;
     font-size: 0.68rem;
     font-weight: 700;
@@ -2599,7 +2599,7 @@ body {
 }
 
 .pop-tab-gear:hover {
-    color: #0f172a;
+    color: #122218;
 }
 
 .notif-popover-body {
@@ -2652,7 +2652,7 @@ body {
 }
 
 .notif-status-dot.active { background: #22c55e; }
-.notif-status-dot.unread-purple { background: #6366f1; }
+.notif-status-dot.unread-purple { background: #16a34a; }
 
 .notif-row-content {
     flex: 1;
@@ -2709,7 +2709,7 @@ body {
 }
 
 .btn-notif-primary {
-    background: #2563eb;
+    background: #15803d;
     border: none;
     border-radius: 8px;
     padding: 6px 16px;
@@ -2721,7 +2721,7 @@ body {
 }
 
 .btn-notif-primary:hover {
-    background: #1d4ed8;
+    background: #166534;
 }
 
 .notif-attachment-pill {

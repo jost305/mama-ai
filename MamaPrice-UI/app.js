@@ -825,53 +825,51 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             id: 'notif_001',
             type: 'inbox',
-            user: 'Wei Chen',
+            user: 'Balogun Scout Agent',
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-            actionText: 'joined to <strong>Final Presentation & Price Intelligence</strong>',
+            actionText: 'reported 3.5% price drop on <strong>Dangote Cement (50kg)</strong>',
             time: '8 min ago',
-            tag: 'Horizon Shift',
+            tag: 'Balogun Market',
             read: false,
-            dotColor: 'unread-purple',
             actionQuery: 'Dangote Cement 50kg price today Lagos'
         },
         {
             id: 'notif_002',
             type: 'inbox',
-            user: 'Sophia Williams',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
-            actionText: 'invites you to <strong>synergy.fig</strong> price file with you',
+            user: 'Oshodi Steel Specialist',
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+            actionText: 'invited you to verify <strong>Turkish 12mm Rebar</strong> price surge',
             time: '2 hours ago',
-            tag: 'Synergy HR',
+            tag: 'Steel Vertical',
             read: false,
-            dotColor: 'unread-purple',
             hasButtons: true,
-            denyText: 'Deny',
-            approveText: 'Approve',
-            actionQuery: 'Oshodi market closure alternatives'
+            denyText: 'Decline',
+            approveText: 'Verify Report',
+            actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
         },
         {
             id: 'notif_003',
             type: 'price',
-            user: 'Arthur Taylor',
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-            actionText: 'uploaded an <strong>arthur.csv</strong> market audit file',
+            user: 'Mile 12 Market Reporter',
+            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+            actionText: 'uploaded <strong>mile12_tomato_audit.csv</strong> market audit file',
             time: '3 hours ago',
-            tag: 'Apex Financial',
+            tag: 'Agriculture',
             read: true,
-            attachment: 'arthur.csv (4mb)',
-            actionQuery: 'Kano Dawanau grain market report'
+            attachment: 'mile12_tomato_audit.csv (4mb)',
+            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
         },
         {
             id: 'notif_004',
             type: 'price',
-            user: 'Laura Perez',
+            user: 'Ladipo Verification Hub',
             avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80',
-            actionText: 'commented on your <strong>Tomato Basket Trend</strong> post',
+            actionText: 'flagged suspicious <strong>Indomie packaging</strong> at Ladipo Market',
             time: '2 days ago',
-            tag: 'Solaris Commodities',
+            tag: 'NAFDAC Safety',
             read: true,
-            commentBox: "Fantastic! Let's dive right in 🚀",
-            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
+            commentBox: "Alert sent to NAFDAC anti-counterfeit division ⚠️",
+            actionQuery: 'Counterfeit Indomie warning details'
         }
     ];
 
