@@ -122,11 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (topDockBtn) topDockBtn.addEventListener('click', toggleSidebarDock);
 
     // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-        if(this.value === '') this.style.height = 'auto';
-    });
+    if (messageInput) {
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value === '') this.style.height = 'auto';
+        });
+    }
 
     // ----------------------------------------------------
     // 1. Navigation & View Switching
@@ -138,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetNav) targetNav.classList.add('active');
         if (targetPage) targetPage.classList.add('active');
 
-        if (sidebar.classList.contains('open')) {
+        if (sidebar && sidebar.classList.contains('open')) {
             sidebar.classList.remove('open');
         }
     }
@@ -359,42 +361,46 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     window.sendSuggestion = function(text) {
         switchView(navHome, pageHome);
-        messageInput.value = text;
-        chatForm.dispatchEvent(new Event('submit'));
+        if (messageInput) messageInput.value = text;
+        if (chatForm) chatForm.dispatchEvent(new Event('submit'));
     };
 
     // New Chat handler
     if (newChatBtn) {
         newChatBtn.addEventListener('click', () => {
             currentSessionId = `session_${Date.now()}`;
-            chatHistory.innerHTML = '';
+            if (chatHistory) chatHistory.innerHTML = '';
             if (welcomeScreen) {
                 welcomeScreen.style.display = 'block';
-                chatHistory.appendChild(welcomeScreen);
+                if (chatHistory) chatHistory.appendChild(welcomeScreen);
             }
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
+            if (messageInput) {
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+            }
             switchView(navHome, pageHome);
         });
     }
 
     // Handle form submission
-    chatForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const message = messageInput.value.trim();
-        if(!message) return;
+    if (chatForm) {
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!messageInput) return;
+            const message = messageInput.value.trim();
+            if (!message) return;
 
-        // Hide welcome screen on first message
-        if (welcomeScreen && welcomeScreen.parentNode) {
-            welcomeScreen.style.display = 'none';
-        }
+            // Hide welcome screen on first message
+            if (welcomeScreen && welcomeScreen.parentNode) {
+                welcomeScreen.style.display = 'none';
+            }
 
-        // 1. Add user message
-        addUserMessage(message);
-        
-        // Reset input
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
+            // 1. Add user message
+            addUserMessage(message);
+            
+            // Reset input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
 
         // 2. Show Typing Indicator
         showTypingIndicator();
@@ -431,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addAgentErrorMessage("Connection to local OjaLM API failed: " + error.message);
         }
     });
+}
 
     function addUserMessage(text) {
         const msgDiv = document.createElement('div');
@@ -570,24 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 '"': '&#34;'
             }[tag] || tag)
         );
-    }
-
-    // Sidebar Docking & Undocking Toggles
-    const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
-    const topDockBtn = document.getElementById('top-dock-btn');
-
-    if (sidebarDockBtn) {
-        sidebarDockBtn.addEventListener('click', () => {
-            if (sidebar) sidebar.classList.add('docked');
-            document.body.classList.add('sidebar-docked');
-        });
-    }
-
-    if (topDockBtn) {
-        topDockBtn.addEventListener('click', () => {
-            if (sidebar) sidebar.classList.remove('docked');
-            document.body.classList.remove('sidebar-docked');
-        });
     }
 });
 
