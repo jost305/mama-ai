@@ -567,8 +567,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 '<': '&lt;',
                 '>': '&gt;',
                 "'": '&#39;',
-                '"': '&quot;'
+                '"': '&#34;'
             }[tag] || tag)
+        );
+    }
+
     // Sidebar Docking & Undocking Toggles
     const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
     const topDockBtn = document.getElementById('top-dock-btn');
