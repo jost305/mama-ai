@@ -312,6 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
         closePlanModal.addEventListener('click', () => planModal.classList.remove('open'));
     }
 
+    // Profile Dashboard Tab Switching
+    document.querySelectorAll('.prof-tab-btn').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.prof-tab-btn').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const targetPaneId = `prof-pane-${tab.dataset.profTab}`;
+            document.querySelectorAll('.prof-tab-pane').forEach(pane => {
+                pane.style.display = (pane.id === targetPaneId) ? 'block' : 'none';
+            });
+        });
+    });
+
+    // Payout / Cashout Handlers
+    const cashoutBtn = document.getElementById('cashout-now-btn');
+    const profPayoutBtn = document.getElementById('prof-payout-btn');
+    const profWalletVal = document.getElementById('prof-wallet-val');
+
+    function triggerPayout() {
+        alert("💰 Payout Request Initiated!\n\n₦148,500 transferred to OPay Account (703****892 - Amina Yusuf). Payout processed via MamaPrice Instant Settlement.");
+        if (profWalletVal) profWalletVal.textContent = '₦0';
+        updateAgentBadge(-148500);
+    }
+
+    if (cashoutBtn) cashoutBtn.addEventListener('click', triggerPayout);
+    if (profPayoutBtn) profPayoutBtn.addEventListener('click', () => {
+        const tabBtn = document.querySelector('[data-prof-tab="payouts"]');
+        if (tabBtn) tabBtn.click();
+    });
+
     // Close modals on overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {

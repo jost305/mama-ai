@@ -696,31 +696,134 @@
         <a href="#" class="m-nav-item" id="m-nav-agent"><i class="fa-solid fa-bullhorn"></i><span>Reports</span></a>
     </nav>
 
-    <!-- Modal 1: User Profile -->
+    <!-- Modal 1: User Profile & Scout Intelligence Dashboard -->
     <div class="modal-overlay" id="profile-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-id-card"></i> Market Reporter Profile</h3>
-                <button class="modal-close" id="close-profile-modal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="profile-stats">
-                    <div class="stat-box">
-                        <span class="num">4,320</span>
-                        <span class="lbl">Points</span>
+        <div class="modal-card profile-dashboard-card">
+            <!-- Green Cover Banner Header -->
+            <div class="profile-banner-header">
+                <div class="banner-title-row">
+                    <span><i class="fa-solid fa-user-shield"></i> Scout Intelligence Dashboard</span>
+                    <button class="modal-close" id="close-profile-modal"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="profile-hero-row">
+                    <div class="profile-avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Amina Yusuf" class="profile-avatar-img">
+                        <span class="avatar-verified-check" title="Verified Scout"><i class="fa-solid fa-check"></i></span>
                     </div>
-                    <div class="stat-box">
-                        <span class="num">56</span>
-                        <span class="lbl">Reports</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="num">28</span>
-                        <span class="lbl">Following</span>
+                    <div class="profile-identity-info">
+                        <h2>Amina Yusuf <span class="tier-pill">Level 4 Senior Scout</span></h2>
+                        <p class="profile-location"><i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets · Kano Hub</p>
+                        <p class="profile-bio">Verifying grain, flour & cement price movements across Northern market hubs.</p>
                     </div>
                 </div>
-                <p style="font-size: 0.88em; color: var(--text-secondary); margin-top: 16px;">
-                    Active Contributor Level: <strong>Tier 2 Alpha Contributor</strong>. Submitting price reports updates OjaGraph in real time.
-                </p>
+            </div>
+
+            <div class="modal-body profile-dash-body">
+                <!-- 4 Metrics Stats Grid -->
+                <div class="profile-metrics-grid">
+                    <div class="pm-stat-card green-glow">
+                        <span class="pm-lbl">Scout Wallet</span>
+                        <strong class="pm-val green" id="prof-wallet-val">₦148,500</strong>
+                        <button class="pm-action-btn" id="prof-payout-btn">Withdraw Funds</button>
+                    </div>
+                    <div class="pm-stat-card">
+                        <span class="pm-lbl">Verified Reports</span>
+                        <strong class="pm-val">142</strong>
+                        <span class="pm-sub">+12 this week</span>
+                    </div>
+                    <div class="pm-stat-card">
+                        <span class="pm-lbl">Accuracy Rating</span>
+                        <strong class="pm-val">98.4%</strong>
+                        <span class="pm-sub">Top 5% in Kano</span>
+                    </div>
+                    <div class="pm-stat-card">
+                        <span class="pm-lbl">Community XP</span>
+                        <strong class="pm-val">4,850 XP</strong>
+                        <span class="pm-sub">Rank #4 Hub Leader</span>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation Bar -->
+                <div class="profile-tab-nav">
+                    <button class="prof-tab-btn active" data-prof-tab="activity">Recent Activity</button>
+                    <button class="prof-tab-btn" data-prof-tab="alertgraph">AlertGraph Settings</button>
+                    <button class="prof-tab-btn" data-prof-tab="payouts">Bank & Payouts</button>
+                </div>
+
+                <!-- Tab 1: Activity -->
+                <div class="prof-tab-pane active" id="prof-pane-activity">
+                    <div class="activity-feed-list">
+                        <div class="act-feed-item">
+                            <i class="fa-solid fa-circle-check act-icon green"></i>
+                            <div class="act-info">
+                                <strong>Submitted Price Report: Rice 50kg (₦72,000)</strong>
+                                <span>Dawanau Market · Verified by 5 Agents · Earned +₦1,500</span>
+                            </div>
+                            <span class="act-time">2h ago</span>
+                        </div>
+                        <div class="act-feed-item">
+                            <i class="fa-solid fa-circle-check act-icon green"></i>
+                            <div class="act-info">
+                                <strong>Verified Cement Price: Dangote 50kg (₦8,500)</strong>
+                                <span>Sabon Gari Market · Confidence 99% · Earned +₦800</span>
+                            </div>
+                            <span class="act-time">Yesterday</span>
+                        </div>
+                        <div class="act-feed-item">
+                            <i class="fa-solid fa-receipt act-icon purple"></i>
+                            <div class="act-info">
+                                <strong>Uploaded Market Receipt: Golden Penny Flour</strong>
+                                <span>Mile 12 Audit Batch · Earned +50 XP</span>
+                            </div>
+                            <span class="act-time">3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: AlertGraph Settings -->
+                <div class="prof-tab-pane" id="prof-pane-alertgraph" style="display: none;">
+                    <div class="alertgraph-settings-list">
+                        <div class="ag-setting-row">
+                            <div>
+                                <strong>Food & Agriculture Alerts</strong>
+                                <p>Receive alerts when Rice, Tomatoes, or Flour prices shift >5%</p>
+                            </div>
+                            <input type="checkbox" checked class="ag-toggle-switch">
+                        </div>
+                        <div class="ag-setting-row">
+                            <div>
+                                <strong>Building Materials & Steel</strong>
+                                <p>Alerts for Cement, 12mm Rebar, and Roofing Sheets</p>
+                            </div>
+                            <input type="checkbox" checked class="ag-toggle-switch">
+                        </div>
+                        <div class="ag-setting-row">
+                            <div>
+                                <strong>Fuel & Energy Intelligence</strong>
+                                <p>PMS/AGO scarcity warnings and station pricing</p>
+                            </div>
+                            <input type="checkbox" checked class="ag-toggle-switch">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Bank & Payouts -->
+                <div class="prof-tab-pane" id="prof-pane-payouts" style="display: none;">
+                    <div class="payout-bank-card">
+                        <div class="bank-details-row">
+                            <i class="fa-solid fa-building-columns bank-icon"></i>
+                            <div>
+                                <strong>OPay Digital Bank</strong>
+                                <p>Account: 703****892 · Amina Yusuf</p>
+                            </div>
+                            <span class="bank-verified-tag">Default Bank</span>
+                        </div>
+                        <div class="payout-action-box">
+                            <p>Available balance ready for instant transfer to your bank account:</p>
+                            <button class="cashout-now-btn" id="cashout-now-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Cashout ₦148,500 to Bank Now</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
