@@ -817,4 +817,205 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 25);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Dynamic System Notifications & Alerts Engine
+    // ─────────────────────────────────────────────────────────────────────────
+    let systemNotifications = [
+        {
+            id: 'notif_001',
+            type: 'price',
+            title: 'Dangote Cement Price Drop',
+            desc: 'Price dropped 3.5% at Balogun Market (now ₦8,500 per 50kg bag).',
+            time: '2 mins ago',
+            read: false,
+            actionQuery: 'Dangote Cement 50kg price today Lagos'
+        },
+        {
+            id: 'notif_002',
+            type: 'event',
+            title: 'Oshodi Market Partial Closure',
+            desc: 'Renovation works ongoing on Tuesdays and Thursdays. Balogun Market suggested as alternative.',
+            time: '15 mins ago',
+            read: false,
+            actionQuery: 'Oshodi market closure alternatives'
+        },
+        {
+            id: 'notif_003',
+            type: 'reward',
+            title: 'Scout Payout Received (+₦1,500)',
+            desc: 'Your scout report on Mile 12 Tomato Basket verification was approved by OjaGraph.',
+            time: '1 hour ago',
+            read: false,
+            actionQuery: ''
+        },
+        {
+            id: 'notif_004',
+            type: 'counterfeit',
+            title: '⚠️ Counterfeit Indomie Alert',
+            desc: 'Counterfeit packaging detected at Ladipo Market. Verify hologram sticker.',
+            time: '3 hours ago',
+            read: true,
+            actionQuery: 'Counterfeit Indomie warning details'
+        }
+    ];
+
+    let currentNotifFilter = 'all';
+
+    function renderNotifications() {
+        const notifBadge = document.querySelector('.notif-badge');
+        const notifBtn = document.getElementById('notif-btn');
+        const unreadCount = systemNotifications.filter(n => !n.read).length;
+
+        if (notifBadge) {
+            notifBadge.textContent = unreadCount;
+            notifBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+        }
+        if (notifBtn) {
+            notifBtn.title = `${unreadCount} Unread Market Alerts`;
+        }
+
+        const unreadModalBadge = document.getElementById('notif-modal-unread-count');
+        if (unreadModalBadge) {
+            unreadModalBadge.textContent = `${unreadCount} Unread`;
+        }
+
+        // Update Tab Counts
+        const counts = {
+            all: systemNotifications.length,
+            price: systemNotifications.filter(n => n.type === 'price').length,
+            event: systemNotifications.filter(n => n.type === 'event').length,
+            reward: systemNotifications.filter(n => n.type === 'reward').length,
+            counterfeit: systemNotifications.filter(n => n.type === 'counterfeit').length
+        };
+        for (const [key, val] of Object.entries(counts)) {
+            const el = document.getElementById(`count-${key}`);
+            if (el) el.textContent = val;
+        }
+
+        const container = document.getElementById('notif-list-container');
+        if (!container) return;
+
+        const filtered = currentNotifFilter === 'all'
+            ? systemNotifications
+            : systemNotifications.filter(n => n.type === currentNotifFilter);
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.88rem; font-weight: 600;">No notifications found in this category.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const typeIcons = {
+            price: '<i class="fa-solid fa-tag"></i>',
+            event: '<i class="fa-solid fa-triangle-exclamation"></i>',
+            reward: '<i class="fa-solid fa-coins"></i>',
+            counterfeit: '<i class="fa-solid fa-shield-cat"></i>'
+        };
+
+        container.innerHTML = filtered.map(n => `
+            <div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}" data-query="${n.actionQuery || ''}">
+                <div class="notif-icon-box ${n.type}">
+                    ${typeIcons[n.type] || '<i class="fa-solid fa-bell"></i>'}
+                </div>
+                <div class="notif-content">
+                    <div class="notif-title-row">
+                        <span class="notif-item-title">${n.title}</span>
+                        <span class="notif-time">${n.time}</span>
+                    </div>
+                    <span class="notif-item-desc">${n.desc}</span>
+                </div>
+                ${n.read ? '' : '<span class="notif-unread-dot"></span>'}
+            </div>
+        `).join('');
+
+        // Item Click Listeners
+        container.querySelectorAll('.notif-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = item.dataset.id;
+                const query = item.dataset.query;
+                const target = systemNotifications.find(n => n.id === id);
+                if (target) target.read = true;
+                renderNotifications();
+
+                if (query) {
+                    const modal = document.getElementById('notif-modal');
+                    if (modal) modal.classList.remove('open');
+                    if (typeof sendSuggestion === 'function') {
+                        sendSuggestion(query);
+                    }
+                }
+            });
+        });
+    }
+
+    // Modal Triggers & Event Listeners
+    const notifBtn = document.getElementById('notif-btn');
+    const notifModal = document.getElementById('notif-modal');
+    const closeNotifModal = document.getElementById('close-notif-modal');
+    const markAllReadBtn = document.getElementById('mark-all-read-btn');
+
+    if (notifBtn && notifModal) {
+        notifBtn.addEventListener('click', () => {
+            notifModal.classList.add('open');
+            renderNotifications();
+        });
+    }
+    if (closeNotifModal && notifModal) {
+        closeNotifModal.addEventListener('click', () => {
+            notifModal.classList.remove('open');
+        });
+    }
+    if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', () => {
+            systemNotifications.forEach(n => n.read = true);
+            renderNotifications();
+        });
+    }
+
+    // Tab Filters
+    document.querySelectorAll('.notif-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentNotifFilter = tab.dataset.filter || 'all';
+            renderNotifications();
+        });
+    });
+
+    // Simulated Real-Time System Notification Ingestion (Every 45s)
+    setInterval(() => {
+        const dynamicEvents = [
+            {
+                type: 'price', title: 'Turkish Rebar Steel Trend Alert',
+                desc: 'Oshodi Steel Market reports rebar at ₦1,250,000 per tonne (+4%).',
+                actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
+            },
+            {
+                type: 'reward', title: 'Scout Payout Approved (+₦2,000)',
+                desc: 'Your observation on Coartem NAFDAC verification in Idumota was confirmed.',
+                actionQuery: ''
+            },
+            {
+                type: 'event', title: 'Bodija Market Heavy Rain Notice',
+                desc: 'Slow traffic around foodstuff section due to afternoon downpour.',
+                actionQuery: 'Bodija market traffic and rain status'
+            }
+        ];
+        const randomEvt = dynamicEvents[Math.floor(Math.random() * dynamicEvents.length)];
+        const newNotif = {
+            id: `notif_${Date.now()}`,
+            ...randomEvt,
+            time: 'Just now',
+            read: false
+        };
+        systemNotifications.unshift(newNotif);
+        renderNotifications();
+    }, 45000);
+
+    renderNotifications();
 })();
