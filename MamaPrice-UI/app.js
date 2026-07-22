@@ -819,44 +819,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Dynamic System Notifications & Alerts Engine
+    // Dynamic System Notifications & Alerts Popover Engine (Reference Design Match)
     // ─────────────────────────────────────────────────────────────────────────
     let systemNotifications = [
         {
             id: 'notif_001',
-            type: 'price',
-            title: 'Dangote Cement Price Drop',
-            desc: 'Price dropped 3.5% at Balogun Market (now ₦8,500 per 50kg bag).',
-            time: '2 mins ago',
+            type: 'inbox',
+            user: 'Wei Chen',
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+            actionText: 'joined to <strong>Final Presentation & Price Intelligence</strong>',
+            time: '8 min ago',
+            tag: 'Horizon Shift',
             read: false,
+            dotColor: 'unread-purple',
             actionQuery: 'Dangote Cement 50kg price today Lagos'
         },
         {
             id: 'notif_002',
-            type: 'event',
-            title: 'Oshodi Market Partial Closure',
-            desc: 'Renovation works ongoing on Tuesdays and Thursdays. Balogun Market suggested as alternative.',
-            time: '15 mins ago',
+            type: 'inbox',
+            user: 'Sophia Williams',
+            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+            actionText: 'invites you to <strong>synergy.fig</strong> price file with you',
+            time: '2 hours ago',
+            tag: 'Synergy HR',
             read: false,
+            dotColor: 'unread-purple',
+            hasButtons: true,
+            denyText: 'Deny',
+            approveText: 'Approve',
             actionQuery: 'Oshodi market closure alternatives'
         },
         {
             id: 'notif_003',
-            type: 'reward',
-            title: 'Scout Payout Received (+₦1,500)',
-            desc: 'Your scout report on Mile 12 Tomato Basket verification was approved by OjaGraph.',
-            time: '1 hour ago',
-            read: false,
-            actionQuery: ''
+            type: 'price',
+            user: 'Arthur Taylor',
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+            actionText: 'uploaded an <strong>arthur.csv</strong> market audit file',
+            time: '3 hours ago',
+            tag: 'Apex Financial',
+            read: true,
+            attachment: 'arthur.csv (4mb)',
+            actionQuery: 'Kano Dawanau grain market report'
         },
         {
             id: 'notif_004',
-            type: 'counterfeit',
-            title: '⚠️ Counterfeit Indomie Alert',
-            desc: 'Counterfeit packaging detected at Ladipo Market. Verify hologram sticker.',
-            time: '3 hours ago',
+            type: 'price',
+            user: 'Laura Perez',
+            avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80',
+            actionText: 'commented on your <strong>Tomato Basket Trend</strong> post',
+            time: '2 days ago',
+            tag: 'Solaris Commodities',
             read: true,
-            actionQuery: 'Counterfeit Indomie warning details'
+            commentBox: "Fantastic! Let's dive right in 🚀",
+            actionQuery: 'Tomatoes Basket price today Lagos Mile 12'
         }
     ];
 
@@ -875,22 +890,11 @@ document.addEventListener('DOMContentLoaded', () => {
             notifBtn.title = `${unreadCount} Unread Market Alerts`;
         }
 
-        const unreadModalBadge = document.getElementById('notif-modal-unread-count');
-        if (unreadModalBadge) {
-            unreadModalBadge.textContent = `${unreadCount} Unread`;
-        }
-
-        // Update Tab Counts
-        const counts = {
-            all: systemNotifications.length,
-            price: systemNotifications.filter(n => n.type === 'price').length,
-            event: systemNotifications.filter(n => n.type === 'event').length,
-            reward: systemNotifications.filter(n => n.type === 'reward').length,
-            counterfeit: systemNotifications.filter(n => n.type === 'counterfeit').length
-        };
-        for (const [key, val] of Object.entries(counts)) {
-            const el = document.getElementById(`count-${key}`);
-            if (el) el.textContent = val;
+        const countInboxBadge = document.getElementById('count-inbox-badge');
+        if (countInboxBadge) {
+            const inboxUnread = systemNotifications.filter(n => n.type === 'inbox' && !n.read).length;
+            countInboxBadge.textContent = inboxUnread;
+            countInboxBadge.style.display = inboxUnread > 0 ? 'inline-block' : 'none';
         }
 
         const container = document.getElementById('notif-list-container');
@@ -898,43 +902,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const filtered = currentNotifFilter === 'all'
             ? systemNotifications
-            : systemNotifications.filter(n => n.type === currentNotifFilter);
+            : (currentNotifFilter === 'inbox'
+                ? systemNotifications.filter(n => n.type === 'inbox')
+                : (currentNotifFilter === 'price'
+                    ? systemNotifications.filter(n => n.type === 'price')
+                    : systemNotifications.filter(n => n.read)));
 
         if (filtered.length === 0) {
             container.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-                    <i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                    <p style="font-size: 0.88rem; font-weight: 600;">No notifications found in this category.</p>
+                <div style="text-align: center; padding: 36px 20px; color: #94a3b8;">
+                    <i class="fa-regular fa-bell-slash" style="font-size: 1.8rem; margin-bottom: 8px;"></i>
+                    <p style="font-size: 0.85rem; font-weight: 600;">No notifications found in this view.</p>
                 </div>
             `;
             return;
         }
 
-        const typeIcons = {
-            price: '<i class="fa-solid fa-tag"></i>',
-            event: '<i class="fa-solid fa-triangle-exclamation"></i>',
-            reward: '<i class="fa-solid fa-coins"></i>',
-            counterfeit: '<i class="fa-solid fa-shield-cat"></i>'
-        };
-
         container.innerHTML = filtered.map(n => `
-            <div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}" data-query="${n.actionQuery || ''}">
-                <div class="notif-icon-box ${n.type}">
-                    ${typeIcons[n.type] || '<i class="fa-solid fa-bell"></i>'}
+            <div class="notif-row-item ${n.read ? '' : 'unread'}" data-id="${n.id}" data-query="${n.actionQuery || ''}">
+                <div class="notif-avatar-wrapper">
+                    <img src="${n.avatar}" alt="${n.user}" class="notif-avatar-img">
+                    <span class="notif-status-dot ${n.read ? 'active' : 'unread-purple'}"></span>
                 </div>
-                <div class="notif-content">
-                    <div class="notif-title-row">
-                        <span class="notif-item-title">${n.title}</span>
-                        <span class="notif-time">${n.time}</span>
+                <div class="notif-row-content">
+                    <div class="notif-row-text">
+                        <strong>${n.user}</strong> ${n.actionText}
                     </div>
-                    <span class="notif-item-desc">${n.desc}</span>
+                    <div class="notif-row-meta">
+                        <span>${n.time}</span>
+                        ${n.tag ? `• <span class="notif-tag-pill">${n.tag}</span>` : ''}
+                    </div>
+                    ${n.hasButtons ? `
+                        <div class="notif-action-row">
+                            <button class="btn-notif-secondary" onclick="event.stopPropagation();">${n.denyText || 'Deny'}</button>
+                            <button class="btn-notif-primary" onclick="event.stopPropagation();">${n.approveText || 'Approve'}</button>
+                        </div>
+                    ` : ''}
+                    ${n.attachment ? `
+                        <div class="notif-attachment-pill">
+                            <i class="fa-regular fa-file-lines"></i> ${n.attachment}
+                        </div>
+                    ` : ''}
+                    ${n.commentBox ? `
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; color: #475569; margin-top: 4px; border: 1px solid #f1f5f9;">
+                            ${n.commentBox}
+                        </div>
+                    ` : ''}
                 </div>
-                ${n.read ? '' : '<span class="notif-unread-dot"></span>'}
             </div>
         `).join('');
 
-        // Item Click Listeners
-        container.querySelectorAll('.notif-item').forEach(item => {
+        // Row Click Handler
+        container.querySelectorAll('.notif-row-item').forEach(item => {
             item.addEventListener('click', () => {
                 const id = item.dataset.id;
                 const query = item.dataset.query;
@@ -942,76 +961,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (target) target.read = true;
                 renderNotifications();
 
-                if (query) {
-                    const modal = document.getElementById('notif-modal');
-                    if (modal) modal.classList.remove('open');
-                    if (typeof sendSuggestion === 'function') {
-                        sendSuggestion(query);
-                    }
+                const popover = document.getElementById('notif-popover');
+                if (popover) popover.classList.remove('open');
+
+                if (query && typeof sendSuggestion === 'function') {
+                    sendSuggestion(query);
                 }
             });
         });
     }
 
-    // Modal Triggers & Event Listeners
+    // Toggle Popover Dropdown
     const notifBtn = document.getElementById('notif-btn');
-    const notifModal = document.getElementById('notif-modal');
-    const closeNotifModal = document.getElementById('close-notif-modal');
+    const notifPopover = document.getElementById('notif-popover');
     const markAllReadBtn = document.getElementById('mark-all-read-btn');
 
-    if (notifBtn && notifModal) {
-        notifBtn.addEventListener('click', () => {
-            notifModal.classList.add('open');
+    if (notifBtn && notifPopover) {
+        notifBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notifPopover.classList.toggle('open');
             renderNotifications();
         });
-    }
-    if (closeNotifModal && notifModal) {
-        closeNotifModal.addEventListener('click', () => {
-            notifModal.classList.remove('open');
+
+        document.addEventListener('click', (e) => {
+            if (!notifPopover.contains(e.target) && !notifBtn.contains(e.target)) {
+                notifPopover.classList.remove('open');
+            }
         });
     }
+
     if (markAllReadBtn) {
-        markAllReadBtn.addEventListener('click', () => {
+        markAllReadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             systemNotifications.forEach(n => n.read = true);
             renderNotifications();
         });
     }
 
-    // Tab Filters
-    document.querySelectorAll('.notif-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+    // Filter Tabs
+    document.querySelectorAll('.pop-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.pop-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             currentNotifFilter = tab.dataset.filter || 'all';
             renderNotifications();
         });
     });
 
-    // Simulated Real-Time System Notification Ingestion (Every 45s)
+    // Background Ingestion of Live Intelligence Notifications
     setInterval(() => {
         const dynamicEvents = [
             {
-                type: 'price', title: 'Turkish Rebar Steel Trend Alert',
-                desc: 'Oshodi Steel Market reports rebar at ₦1,250,000 per tonne (+4%).',
+                user: 'James Miller',
+                avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+                actionText: 'left a comment on <strong>Turkish Steel 12mm</strong>',
+                tag: 'Oshodi Market',
                 actionQuery: 'Turkish 12mm rebar steel price today Oshodi'
             },
             {
-                type: 'reward', title: 'Scout Payout Approved (+₦2,000)',
-                desc: 'Your observation on Coartem NAFDAC verification in Idumota was confirmed.',
-                actionQuery: ''
-            },
-            {
-                type: 'event', title: 'Bodija Market Heavy Rain Notice',
-                desc: 'Slow traffic around foodstuff section due to afternoon downpour.',
-                actionQuery: 'Bodija market traffic and rain status'
+                user: 'Dima Phizeg',
+                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
+                actionText: 'edited <strong>ACME_guideline.pdf</strong> report',
+                tag: 'ACME 2.1',
+                attachment: 'ACME_guideline.pdf',
+                actionQuery: 'ACME price guideline'
             }
         ];
         const randomEvt = dynamicEvents[Math.floor(Math.random() * dynamicEvents.length)];
         const newNotif = {
             id: `notif_${Date.now()}`,
+            type: 'inbox',
             ...randomEvt,
             time: 'Just now',
-            read: false
+            read: false,
+            dotColor: 'unread-purple'
         };
         systemNotifications.unshift(newNotif);
         renderNotifications();

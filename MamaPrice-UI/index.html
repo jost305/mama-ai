@@ -167,11 +167,39 @@
                         </div>
                     </div>
 
-                    <!-- Notification Bell Button -->
-                    <button class="notif-btn" id="notif-btn" title="3 New Market Alerts">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="notif-badge">3</span>
-                    </button>
+                    <!-- Notification Bell & Dropdown Popover (Exact Match to Design Reference) -->
+                    <div class="notif-popover-wrapper" style="position: relative;">
+                        <button class="notif-btn" id="notif-btn" title="3 New Market Alerts">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notif-badge">3</span>
+                        </button>
+
+                        <div class="notif-popover-card" id="notif-popover">
+                            <div class="notif-popover-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-all-read-link" id="mark-all-read-btn">Mark all as read</button>
+                            </div>
+
+                            <div class="notif-popover-tabs">
+                                <div class="tab-list">
+                                    <button class="pop-tab active" data-filter="all">All</button>
+                                    <button class="pop-tab" data-filter="inbox">Inbox <span class="tab-badge" id="count-inbox-badge">2</span></button>
+                                    <button class="pop-tab" data-filter="price">Price Alerts</button>
+                                    <button class="pop-tab" data-filter="archived">Archived</button>
+                                </div>
+                                <button class="pop-tab-gear" title="Notification Settings"><i class="fa-solid fa-sliders"></i></button>
+                            </div>
+
+                            <div class="notif-popover-body" id="notif-list-container">
+                                <!-- Populated dynamically by app.js -->
+                            </div>
+
+                            <div class="notif-popover-footer">
+                                <span class="nav-hint"><kbd>Use ↑ ↓</kbd> to navigate</span>
+                                <a href="#" class="manage-notif-link" id="manage-notif-link"><i class="fa-solid fa-gear"></i> Manage Notification</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- New Chat Button -->
                     <button class="new-chat-action-btn" id="new-chat-btn">
@@ -726,32 +754,6 @@
                 <p style="font-size: 0.88em; color: var(--text-secondary); margin-top: 16px;">
                     Active Contributor Level: <strong>Tier 2 Alpha Contributor</strong>. Submitting price reports updates OjaGraph in real time.
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal 2: Dynamic System Notifications & Alerts -->
-    <div class="modal-overlay" id="notif-modal">
-        <div class="modal-card notif-modal-card">
-            <div class="modal-header">
-                <div class="notif-modal-title">
-                    <h3><i class="fa-solid fa-bell"></i> Market Alerts & System Notifications</h3>
-                    <span class="notif-modal-badge" id="notif-modal-unread-count">0 Unread</span>
-                </div>
-                <div class="notif-header-actions">
-                    <button class="notif-action-text" id="mark-all-read-btn"><i class="fa-solid fa-check-double"></i> Mark all read</button>
-                    <button class="modal-close" id="close-notif-modal"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            </div>
-            <div class="notif-filter-bar">
-                <button class="notif-tab active" data-filter="all">All (<span id="count-all">0</span>)</button>
-                <button class="notif-tab" data-filter="price">Price Alerts (<span id="count-price">0</span>)</button>
-                <button class="notif-tab" data-filter="event">Market Events (<span id="count-event">0</span>)</button>
-                <button class="notif-tab" data-filter="reward">Agent Rewards (<span id="count-reward">0</span>)</button>
-                <button class="notif-tab" data-filter="counterfeit">Counterfeit (<span id="count-counterfeit">0</span>)</button>
-            </div>
-            <div class="modal-body notif-modal-body" id="notif-list-container">
-                <!-- Populated dynamically by app.js -->
             </div>
         </div>
     </div>
