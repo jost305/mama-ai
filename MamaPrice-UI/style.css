@@ -2807,7 +2807,206 @@ body.sidebar-docked .top-dock-btn {
     color: #64748b;
 }
 
-/* ── Modal Backdrop & Profile Dashboard Card ── */
+/* ── Full Profile Page View Layout (#page-profile) ── */
+.profile-page-container {
+    padding: 28px 36px;
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.profile-page-banner {
+    background: linear-gradient(135deg, #15803d, #166534);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 28px 32px;
+    box-shadow: 0 12px 32px rgba(21, 128, 61, 0.18);
+    margin-bottom: 24px;
+}
+
+.banner-top-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #bbf7d0;
+    margin-bottom: 20px;
+}
+
+.active-status-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4ade80;
+}
+
+.profile-hero-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-avatar-box {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    flex-shrink: 0;
+}
+
+.hero-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-hero-text h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hero-loc {
+    font-size: 0.9rem;
+    color: #dcfce7;
+    margin-top: 4px;
+}
+
+.hero-desc {
+    font-size: 0.84rem;
+    color: #f0fdf4;
+    opacity: 0.92;
+    margin-top: 6px;
+    max-width: 600px;
+}
+
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.prof-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.prof-stat-card.green-highlight {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.stat-lbl {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.stat-val {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 6px;
+}
+
+.stat-val.green {
+    color: #15803d;
+}
+
+.stat-sub {
+    font-size: 0.74rem;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+.stat-btn-action {
+    margin-top: 10px;
+    background: #15803d;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.stat-btn-action:hover {
+    background: #166534;
+}
+
+.profile-tab-header {
+    display: flex;
+    gap: 16px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 24px;
+}
+
+.prof-page-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 4px 14px 4px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -2px;
+}
+
+.prof-page-tab.active, .prof-page-tab:hover {
+    color: #15803d;
+    border-bottom-color: #15803d;
+}
+
+.activity-feed-card, .alertgraph-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.activity-feed-card h3, .alertgraph-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.activity-feed-card h3 i, .alertgraph-card h3 i {
+    color: #15803d;
+}
 .modal-overlay {
     position: fixed;
     inset: 0;

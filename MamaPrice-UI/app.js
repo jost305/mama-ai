@@ -169,6 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
         populateFullHistory();
         switchView(navHistory, pageHistory); 
     });
+    const pageProfile = document.getElementById('page-profile');
+
+    if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(null, pageProfile));
     if (brandLogoBtn) brandLogoBtn.addEventListener('click', () => switchView(navHome, pageHome));
 
     // Mobile Bottom Nav Listeners
@@ -312,13 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
         closePlanModal.addEventListener('click', () => planModal.classList.remove('open'));
     }
 
-    // Profile Dashboard Tab Switching
-    document.querySelectorAll('.prof-tab-btn').forEach(tab => {
+    // Profile Dashboard Page Tab Switching
+    document.querySelectorAll('.prof-page-tab, .prof-tab-btn').forEach(tab => {
         tab.addEventListener('click', () => {
-            document.querySelectorAll('.prof-tab-btn').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.prof-page-tab, .prof-tab-btn').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const targetPaneId = `prof-pane-${tab.dataset.profTab}`;
-            document.querySelectorAll('.prof-tab-pane').forEach(pane => {
+            document.querySelectorAll('.prof-page-pane, .prof-tab-pane').forEach(pane => {
                 pane.style.display = (pane.id === targetPaneId) ? 'block' : 'none';
             });
         });
