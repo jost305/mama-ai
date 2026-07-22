@@ -770,4 +770,25 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     setInterval(updateClock, 1000);
     setInterval(load, 10 * 60 * 1000);
+
+    // Automatic Silky-Smooth Auto-Slider for Snapshot Cards
+    const snapshotGrid = document.getElementById('snapshot-grid');
+    if (snapshotGrid) {
+        let isHovered = false;
+        let autoScrollSpeed = 0.6;
+
+        snapshotGrid.addEventListener('mouseenter', () => { isHovered = true; });
+        snapshotGrid.addEventListener('mouseleave', () => { isHovered = false; });
+        snapshotGrid.addEventListener('touchstart', () => { isHovered = true; }, { passive: true });
+        snapshotGrid.addEventListener('touchend', () => { isHovered = false; }, { passive: true });
+
+        setInterval(() => {
+            if (!isHovered && snapshotGrid) {
+                snapshotGrid.scrollLeft += autoScrollSpeed;
+                if (snapshotGrid.scrollLeft >= (snapshotGrid.scrollWidth - snapshotGrid.clientWidth - 2)) {
+                    snapshotGrid.scrollLeft = 0;
+                }
+            }
+        }, 25);
+    }
 })();
