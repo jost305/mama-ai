@@ -5,72 +5,129 @@ import random
 DYNAMIC_DIR = "../ojagraph/dynamic"
 OUTPUT_FILE = "v0.2_commerce_graph.jsonl"
 
+def is_training_eligible(conversation_log):
+    """
+    Determines if a conversation log is eligible for OjaData inclusion.
+    Specified in Section 2.4 of MARKETMAMA COMMERCE INTELLIGENCE ARCHITECTURE v2.0.
+    """
+    if not isinstance(conversation_log, dict):
+        return False
+        
+    res_type = conversation_log.get("resolution_type", "")
+    satisfaction = conversation_log.get("satisfaction_signal", "")
+    training_eligible = conversation_log.get("training_eligible", True)
+    query_count = conversation_log.get("query_count", 2)
+    products = conversation_log.get("products_mentioned", [])
+    
+    return (
+        res_type in ["price_answered", "knowledge_answered", "availability_answered"] and
+        satisfaction != "thumbs_down" and
+        training_eligible is True and
+        query_count >= 2 and
+        len(products) > 0
+    )
+
 def generate_training_data():
     examples = []
     
-    # Generate Availability Data
+    # 1. Price Q&A Single-Turn Format (Section 2.4)
+    examples.append({
+        "instruction": "How much is tomato per basket at Mile 12?",
+        "output": "Tomato dey around ₦18,000–₦24,000 per basket at Mile 12 right now. Rainy season dey push am up — dry season e go come down to ₦12k–₦18k range. You dey buy for home or for your shop?",
+        "metadata": {
+            "domain": "price_intelligence",
+            "product": "fresh-tomato",
+            "market": "mile-12",
+            "language": "pidgin",
+            "verified": True
+        }
+    })
+
+    # 2. Multi-turn Conversation Format (Section 2.4)
+    examples.append({
+        "conversations": [
+            {"role": "user", "content": "Abeg check price of garri"},
+            {"role": "assistant", "content": "Garri dey around ₦2,500–₦4,500 per paint for most Lagos markets. Which area you dey — and you want yellow ijebu or white?"},
+            {"role": "user", "content": "yellow one, I dey Surulere"},
+            {"role": "assistant", "content": "Yellow ijebu garri for Surulere dey go for ₦3,000–₦5,000 per paint. If you wan go cheaper, Mushin or Daleko go save you ₦500–₦800 per paint. Worth the trip if you dey buy multiple paints."}
+        ],
+        "metadata": {
+            "domain": "price_intelligence",
+            "products": ["garri-yellow"],
+            "market": "surulere",
+            "language": "mixed",
+            "verified": True
+        }
+    })
+
+    # 3. Generate from Availability Data
     avail_dir = os.path.join(DYNAMIC_DIR, "availability")
     if os.path.exists(avail_dir):
         for f in os.listdir(avail_dir):
             if f.endswith(".json"):
                 with open(os.path.join(avail_dir, f), 'r', encoding='utf-8') as file:
                     doc = json.load(file)
+                    prod = doc.get('product', 'product')
+                    mkt = doc.get('market', 'market')
                     examples.append({
-                        "system": "You are MamaPrice, the intelligent Commerce AI for African markets. Answer accurately based on grounded evidence.",
-                        "instruction": f"Is {doc.get('product')} available at {doc.get('market')}?",
-                        "output": f"Yes, {doc.get('product')} is currently {doc.get('stock_level', 'available')} at {doc.get('market')}. It was reported as in stock." if doc.get('in_stock') else f"No, {doc.get('product')} is currently OUT OF STOCK at {doc.get('market')}.",
-                        "source": "availability_report"
+                        "instruction": f"Is {prod} available at {mkt}?",
+                        "output": f"Yes, {prod} is currently {doc.get('stock_level', 'available')} at {mkt}. Report confirmed in stock." if doc.get('in_stock') else f"No, {prod} is currently OUT OF STOCK at {mkt}.",
+                        "metadata": {
+                            "domain": "availability",
+                            "product": prod,
+                            "market": mkt,
+                            "language": "english",
+                            "verified": True
+                        }
                     })
 
-    # Generate Counterfeit Alert Data
+    # 4. Generate from Counterfeit Alerts
     fake_dir = os.path.join(DYNAMIC_DIR, "counterfeit_alerts")
     if os.path.exists(fake_dir):
         for f in os.listdir(fake_dir):
             if f.endswith(".json"):
                 with open(os.path.join(fake_dir, f), 'r', encoding='utf-8') as file:
                     doc = json.load(file)
+                    prod = doc.get('product', 'product')
+                    mkt = doc.get('market', 'market')
                     examples.append({
-                        "system": "You are MamaPrice, the intelligent Commerce AI for African markets. Answer accurately based on grounded evidence.",
-                        "instruction": f"Are there any fake {doc.get('product')} in {doc.get('market')}?",
-                        "output": f"⚠️ COUNTERFEIT WARNING: There is a {doc.get('risk_level')} risk of counterfeit {doc.get('product')} at {doc.get('market')}. Details: {doc.get('description')}",
-                        "source": "counterfeit_alert"
+                        "instruction": f"Are there fake {prod} in {mkt}?",
+                        "output": f"⚠️ COUNTERFEIT WARNING: There is a {doc.get('risk_level')} risk of counterfeit {prod} at {mkt}. Details: {doc.get('description')}",
+                        "metadata": {
+                            "domain": "counterfeit_guidance",
+                            "product": prod,
+                            "market": mkt,
+                            "language": "english",
+                            "verified": True
+                        }
                     })
 
-    # Generate Market Event Data
+    # 5. Generate from Market Events
     event_dir = os.path.join(DYNAMIC_DIR, "market_events")
     if os.path.exists(event_dir):
         for f in os.listdir(event_dir):
             if f.endswith(".json"):
                 with open(os.path.join(event_dir, f), 'r', encoding='utf-8') as file:
                     doc = json.load(file)
+                    mkt = doc.get('market', 'market')
                     examples.append({
-                        "system": "You are MamaPrice, the intelligent Commerce AI for African markets. Answer accurately based on grounded evidence.",
-                        "instruction": f"What's happening at {doc.get('market')}?",
-                        "output": f"Market Event: {doc.get('title')}. {doc.get('description')} (Severity: {doc.get('severity')})",
-                        "source": "market_event"
+                        "instruction": f"What is happening at {mkt}?",
+                        "output": f"Market Event Alert: {doc.get('title')}. {doc.get('description')} (Severity: {doc.get('severity')})",
+                        "metadata": {
+                            "domain": "market_knowledge",
+                            "market": mkt,
+                            "language": "english",
+                            "verified": True
+                        }
                     })
 
-    # Generate Vendor Review Data
-    vendor_dir = os.path.join(DYNAMIC_DIR, "vendor_reviews")
-    if os.path.exists(vendor_dir):
-        for f in os.listdir(vendor_dir):
-            if f.endswith(".json"):
-                with open(os.path.join(vendor_dir, f), 'r', encoding='utf-8') as file:
-                    doc = json.load(file)
-                    examples.append({
-                        "system": "You are MamaPrice, the intelligent Commerce AI for African markets. Answer accurately based on grounded evidence.",
-                        "instruction": f"Is {doc.get('vendor_name')} a good vendor at {doc.get('market')}?",
-                        "output": f"Vendor {doc.get('vendor_name')} at {doc.get('market')} has a {doc.get('rating')}/5 rating and is considered {doc.get('reliability')} reliability. {doc.get('notes', '')}",
-                        "source": "vendor_review"
-                    })
-
-    # Write to JSONL
+    # Shuffle and write output
     random.shuffle(examples)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as out:
         for ex in examples:
             out.write(json.dumps(ex) + '\n')
             
-    print(f"Generated {len(examples)} new multi-type OjaData examples in {OUTPUT_FILE}")
+    print(f"Generated {len(examples)} OjaData v2.0 training rows in {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     generate_training_data()

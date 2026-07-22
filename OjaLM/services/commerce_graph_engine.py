@@ -248,6 +248,39 @@ class CommerceGraphEngine:
 
     # ─── Utility ─────────────────────────────────────────────────────────────────
 
+    # ─── Agent DNA Helper (Section 1.4) ─────────────────────────────────────────
+
+    @staticmethod
+    def build_agent_dna(agent_id, profile):
+        """
+        Builds a structured Agent DNA profile matching Section 1.4 of Architecture v2.0.
+        """
+        submitted = profile.get("completed_missions", 0) + profile.get("rejected_reports", 0)
+        verified = profile.get("verified_reports", 0)
+        rejected = profile.get("rejected_reports", 0)
+        acceptance_rate = round(verified / max(1, submitted), 3)
+
+        return {
+            "agent_id": agent_id,
+            "verification_level": profile.get("level", "starter").lower(),
+            "trust_score": round(profile.get("trustTier", 1) * 0.20, 2),
+            "reputation_score": round(profile.get("reputationScore", 100) / 100.0, 2),
+            "expertise_tags": profile.get("domainExpertise", ["general_commerce"]),
+            "markets_covered": profile.get("markets_covered", []),
+            "report_stats": {
+                "total_submitted": submitted,
+                "total_verified": verified,
+                "total_rejected": rejected,
+                "total_flagged": profile.get("fraud_flags", 0),
+                "acceptance_rate": acceptance_rate,
+            },
+            "badges": profile.get("badges", ["verified_agent"]),
+            "fraud_flags": profile.get("fraud_flags", 0),
+            "income_earned_naira": profile.get("wallet", {}).get("ngn", 0),
+            "level": profile.get("level", "starter").lower(),
+            "active": profile.get("isActive", True)
+        }
+
     @staticmethod
     def _persist_observation(folder, observation):
         """Save an observation to the appropriate dynamic graph folder."""

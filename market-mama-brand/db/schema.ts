@@ -707,3 +707,199 @@ export const analyticsEvent = pgTable(
 );
 
 export type AnalyticsEvent = InferSelectModel<typeof analyticsEvent>;
+
+// ============ ARCHITECTURE V2.0 COMPLETENESS TABLES ============
+
+// Administrative geography
+export const stateTable = pgTable("State", {
+  code: varchar("code", { length: 10 }).primaryKey().notNull(), // "LA", "KN", "AB"
+  name: varchar("name", { length: 100 }).notNull(),
+  region: varchar("region", { length: 50 }), // "SW", "NC", "NW", etc.
+  population: integer("population"),
+});
+export type StateTable = InferSelectModel<typeof stateTable>;
+
+export const lgaTable = pgTable(
+  "Lga",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    stateCode: varchar("stateCode", { length: 10 })
+      .notNull()
+      .references(() => stateTable.code),
+    name: varchar("name", { length: 100 }).notNull(),
+    urbanRural: varchar("urbanRural", { length: 20 }), // "urban", "peri-urban", "rural"
+  },
+  (table) => ({
+    stateIdx: index("lga_state_idx").on(table.stateCode),
+  })
+);
+export type LgaTable = InferSelectModel<typeof lgaTable>;
+
+// Product Manufacturers & Brands
+export const manufacturerTable = pgTable("Manufacturer", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  name: varchar("name", { length: 255 }).notNull(),
+  country: varchar("country", { length: 100 }),
+  nafdacStatus: varchar("nafdacStatus", { length: 50 }).default("registered"),
+  regulatoryFlags: json("regulatoryFlags").default([]),
+});
+export type ManufacturerTable = InferSelectModel<typeof manufacturerTable>;
+
+export const brandTable = pgTable(
+  "Brand",
+  {
+    slug: varchar("slug", { length: 255 }).primaryKey().notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    manufacturerId: uuid("manufacturerId").references(() => manufacturerTable.id),
+    originCountry: varchar("originCountry", { length: 100 }),
+    category: varchar("category", { length: 100 }),
+    trustScore: decimal("trustScore", { precision: 3, scale: 2 }).default("0.80"),
+    verified: boolean("verified").default(false),
+    knownFakes: json("knownFakes").default([]),
+    authenticitySignals: json("authenticitySignals").default([]),
+  },
+  (table) => ({
+    manufacturerIdx: index("brand_manufacturer_idx").on(table.manufacturerId),
+  })
+);
+export type BrandTable = InferSelectModel<typeof brandTable>;
+
+// Supply & Demand Intelligence Signals
+export const supplySignalTable = pgTable(
+  "SupplySignal",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    productId: uuid("productId").references(() => product.id),
+    marketId: uuid("marketId").references(() => market.id),
+    signalType: varchar("signalType", { length: 50 }).notNull(), // "abundance", "normal", "shortage", "disruption"
+    cause: varchar("cause", { length: 50 }), // "seasonal", "transport", "flood", "strike", "harvest", "policy"
+    severity: varchar("severity", { length: 20 }).default("medium"),
+    affectedStates: json("affectedStates").default([]),
+    agentId: uuid("agentId").references(() => agentProfile.id),
+    reportedAt: timestamp("reportedAt").notNull().defaultNow(),
+    notes: text("notes"),
+  },
+  (table) => ({
+    productIdx: index("supply_signal_product_idx").on(table.productId),
+    marketIdx: index("supply_signal_market_idx").on(table.marketId),
+    signalTypeIdx: index("supply_signal_type_idx").on(table.signalType),
+  })
+);
+export type SupplySignalTable = InferSelectModel<typeof supplySignalTable>;
+
+export const demandSignalTable = pgTable(
+  "DemandSignal",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    productId: uuid("productId").references(() => product.id),
+    area: varchar("area", { length: 100 }),
+    stateCode: varchar("stateCode", { length: 10 }).references(() => stateTable.code),
+    signalType: varchar("signalType", { length: 50 }).notNull(), // "query", "search", "purchase_intent", "basket"
+    volume: integer("volume").default(1),
+    periodStart: timestamp("periodStart").notNull().defaultNow(),
+    periodEnd: timestamp("periodEnd"),
+    source: varchar("source", { length: 50 }).default("mamaprice"),
+  },
+  (table) => ({
+    productIdx: index("demand_signal_product_idx").on(table.productId),
+    stateIdx: index("demand_signal_state_idx").on(table.stateCode),
+  })
+);
+export type DemandSignalTable = InferSelectModel<typeof demandSignalTable>;
+
+// Recipes & Culinary Intelligence
+export const recipeTable = pgTable("Recipe", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  name: varchar("name", { length: 255 }).notNull(),
+  cuisineType: varchar("cuisineType", { length: 100 }), // "yoruba", "igbo", "hausa", "pan-nigerian"
+  mealType: varchar("mealType", { length: 50 }), // "main", "side", "snack"
+  preparationTime: integer("preparationTime"), // minutes
+  servings: integer("servings"),
+  description: text("description"),
+  steps: json("steps").default([]),
+  estimatedCost: json("estimatedCost"), // {min: 8000, max: 15000}
+  seasonalNotes: text("seasonalNotes"),
+  regionalVariants: json("regionalVariants"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+export type RecipeTable = InferSelectModel<typeof recipeTable>;
+
+export const recipeIngredientTable = pgTable(
+  "RecipeIngredient",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    recipeId: uuid("recipeId")
+      .notNull()
+      .references(() => recipeTable.id),
+    productId: uuid("productId").references(() => product.id),
+    quantity: decimal("quantity", { precision: 10, scale: 2 }),
+    unit: varchar("unit", { length: 50 }),
+    optional: boolean("optional").default(false),
+    substituteForProductId: uuid("substituteForProductId").references(() => product.id),
+  },
+  (table) => ({
+    recipeIdx: index("ingredient_recipe_idx").on(table.recipeId),
+    productIdx: index("ingredient_product_idx").on(table.productId),
+  })
+);
+export type RecipeIngredientTable = InferSelectModel<typeof recipeIngredientTable>;
+
+// Research Reports & Bulletins
+export const researchReportTable = pgTable("ResearchReport", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  title: varchar("title", { length: 255 }).notNull(),
+  sourceOrg: varchar("sourceOrg", { length: 100 }), // "government", "academic", "ngo", "internal"
+  reportType: varchar("reportType", { length: 50 }),
+  datePublished: timestamp("datePublished"),
+  statesCovered: json("statesCovered").default([]),
+  productsCovered: json("productsCovered").default([]),
+  summary: text("summary"),
+  keyFindings: json("keyFindings").default([]),
+  pdfPath: varchar("pdfPath", { length: 500 }),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+export type ResearchReportTable = InferSelectModel<typeof researchReportTable>;
+
+// Receipts & OCR Data
+export const receiptTable = pgTable("Receipt", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  imagePath: varchar("imagePath", { length: 500 }).notNull(),
+  ocrRawText: text("ocrRawText"),
+  ocrConfidence: decimal("ocrConfidence", { precision: 3, scale: 2 }),
+  parsedItems: json("parsedItems").default([]),
+  marketIdDetected: uuid("marketIdDetected").references(() => market.id),
+  receiptDate: timestamp("receiptDate"),
+  totalAmount: decimal("totalAmount", { precision: 12, scale: 2 }),
+  currency: varchar("currency", { length: 3 }).default("NGN"),
+  agentId: uuid("agentId").references(() => agentProfile.id),
+  processingStatus: varchar("processingStatus", { length: 50 }).default("raw"), // "raw", "ocr_done", "parsed", "verified"
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+export type ReceiptTable = InferSelectModel<typeof receiptTable>;
+
+// Trend Memory (Price Snapshots over time)
+export const priceSnapshotTable = pgTable(
+  "PriceSnapshot",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    productId: uuid("productId")
+      .notNull()
+      .references(() => product.id),
+    marketId: uuid("marketId").references(() => market.id),
+    stateCode: varchar("stateCode", { length: 10 }).references(() => stateTable.code),
+    unit: varchar("unit", { length: 50 }).notNull(),
+    avgPrice: decimal("avgPrice", { precision: 12, scale: 2 }).notNull(),
+    minPrice: decimal("minPrice", { precision: 12, scale: 2 }),
+    maxPrice: decimal("maxPrice", { precision: 12, scale: 2 }),
+    sampleCount: integer("sampleCount").default(1),
+    weekStart: timestamp("weekStart").notNull(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    productIdx: index("snapshot_product_idx").on(table.productId),
+    marketIdx: index("snapshot_market_idx").on(table.marketId),
+    weekIdx: index("snapshot_week_idx").on(table.weekStart),
+  })
+);
+export type PriceSnapshotTable = InferSelectModel<typeof priceSnapshotTable>;
+

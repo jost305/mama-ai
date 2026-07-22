@@ -62,50 +62,80 @@ function detectQueryIntents(query) {
 // Hybrid RAG: Multi-Intent Commerce Intelligence Retrieval
 // ─────────────────────────────────────────────────────────────────────────────
 
+function calculateConfidence(priceData, knowledgeChunks, qualityFlags) {
+    let score = 1.0;
+    if (qualityFlags.includes("STALE_PRICE"))          score -= 0.20;
+    if (qualityFlags.includes("LOW_CONFIDENCE_PRICE")) score -= 0.15;
+    if (qualityFlags.includes("ESTIMATED_PRICE"))      score -= 0.25;
+    if (qualityFlags.includes("NO_PRICE_DATA"))        score -= 0.40;
+    if (qualityFlags.includes("SUPPLY_DISRUPTION_DETECTED")) score -= 0.10;
+    if (!knowledgeChunks || knowledgeChunks.length === 0)   score -= 0.10;
+    return Math.max(0.0, Math.round(score * 100) / 100);
+}
+
 function buildGroundedContext(query, evidence) {
+    const qualityFlags = [];
     const sections = [];
 
-    if (evidence.prices?.length > 0) {
+    // Assess Price Data Quality (Section 3.5)
+    if (evidence.prices && evidence.prices.length > 0) {
+        const topPrice = evidence.prices[0];
+        if (topPrice.freshness_hours > 72) qualityFlags.push("STALE_PRICE");
+        if ((topPrice.confidence || 0) < 0.60) qualityFlags.push("LOW_CONFIDENCE_PRICE");
+        if (topPrice.is_estimated) qualityFlags.push("ESTIMATED_PRICE");
+
         const priceLines = evidence.prices.map(obs =>
             `• ${obs.product}${obs.brand ? ` (${obs.brand})` : ""} at ${obs.market}, ${obs.state}: ₦${obs.observed_price?.toLocaleString() || "N/A"} per ${obs.quantity || "unit"} — Confidence: ${Math.round((obs.confidence || 0) * 100)}%, Freshness: ${obs.freshness_hours}h ago`
         );
-        sections.push(`PRICE INTELLIGENCE:\n${priceLines.join("\n")}`);
+        sections.push(`--- PRICE INTELLIGENCE ---\n${priceLines.join("\n")}`);
+    } else {
+        qualityFlags.push("NO_PRICE_DATA");
+    }
+
+    // Assess Supply & Disruption Signals
+    if (evidence.market_events?.length > 0) {
+        qualityFlags.push("ACTIVE_MARKET_EVENT");
+        const eventLines = evidence.market_events.map(e =>
+            `• [${e.severity || "INFO"}] ${e.title} — ${e.market}: ${e.description}${e.end_date ? ` (Until ${e.end_date})` : ""}`
+        );
+        sections.push(`--- ACTIVE MARKET EVENTS ---\n${eventLines.join("\n")}`);
     }
 
     if (evidence.availability?.length > 0) {
+        const hasShortage = evidence.availability.some(a => !a.in_stock || a.stock_level === "LOW");
+        if (hasShortage) qualityFlags.push("SUPPLY_DISRUPTION_DETECTED");
+
         const availLines = evidence.availability.map(a =>
             `• ${a.product} at ${a.market}: ${a.in_stock ? `IN STOCK (${a.stock_level || "unknown level"})` : "OUT OF STOCK"}${a.vendor_section ? ` — ${a.vendor_section}` : ""}${a.notes ? `. Note: ${a.notes}` : ""}`
         );
-        sections.push(`AVAILABILITY REPORTS:\n${availLines.join("\n")}`);
+        sections.push(`--- AVAILABILITY REPORTS ---\n${availLines.join("\n")}`);
     }
 
+    // Trend Memory (Section 3.4 Source 5)
+    if (evidence.trend) {
+        const t = evidence.trend;
+        sections.push(`--- PRICE TREND ---\nDirection: ${t.direction.toUpperCase()} ${t.percent}%\nPeriod: ${t.from_date} to ${t.to_date}\nFrom: ₦${t.from_price.toLocaleString()} → To: ₦${t.to_price.toLocaleString()}`);
+    }
+
+    // Vendor Intelligence
     if (evidence.vendor_reviews?.length > 0) {
         const vendorLines = evidence.vendor_reviews.map(v =>
             `• ${v.vendor_name} at ${v.market}: Rating ${v.rating}/5 (${v.reliability} reliability)${v.notes ? `. ${v.notes}` : ""}`
         );
-        sections.push(`VENDOR INTELLIGENCE:\n${vendorLines.join("\n")}`);
+        sections.push(`--- VENDOR INTELLIGENCE ---\n${vendorLines.join("\n")}`);
     }
 
-    if (evidence.market_events?.length > 0) {
-        const eventLines = evidence.market_events.map(e =>
-            `• [${e.severity || "INFO"}] ${e.title} — ${e.market}: ${e.description}${e.end_date ? ` (Until ${e.end_date})` : ""}`
-        );
-        sections.push(`MARKET EVENTS:\n${eventLines.join("\n")}`);
-    }
-
+    // Counterfeit Warnings
     if (evidence.counterfeit_alerts?.length > 0) {
         const fakeLines = evidence.counterfeit_alerts.map(c =>
             `• ⚠️ COUNTERFEIT ALERT — ${c.product}${c.brand ? ` (${c.brand})` : ""} at ${c.market}: ${c.description} [Risk: ${c.risk_level}]`
         );
-        sections.push(`COUNTERFEIT WARNINGS:\n${fakeLines.join("\n")}`);
+        sections.push(`--- COUNTERFEIT WARNINGS ---\n${fakeLines.join("\n")}`);
     }
 
-    if (evidence.quality_assessments?.length > 0) {
-        const qualLines = evidence.quality_assessments.map(q =>
-            `• ${q.product_id || "Product"}: Quality ${q.quality_rating}/5${q.notes ? ` — ${q.notes}` : ""}`
-        );
-        sections.push(`QUALITY ASSESSMENTS:\n${qualLines.join("\n")}`);
-    }
+    // System Confidence & Quality Flags
+    const overallConfidence = calculateConfidence(evidence.prices, evidence.knowledge, qualityFlags);
+    sections.push(`--- PARSED QUERY & SYSTEM FLAGS ---\nOverall Confidence: ${overallConfidence}\nSystem Flags: ${qualityFlags.length > 0 ? qualityFlags.join(", ") : "NONE"}\n(OjaLM must calibrate response honesty to these flags)`);
 
     if (sections.length === 0) return null;
 
@@ -175,9 +205,10 @@ app.post("/chat", async (req, res) => {
 
         // Step 2: Multi-channel retrieval across all Commerce Graph document types
         allEvidence = ojaGraph.searchCommerceIntelligence(prompt);
+        allEvidence.trend = ojaGraph.retrieveTrend(prompt);
 
-        const totalMatches = Object.values(allEvidence).reduce((sum, arr) => sum + arr.length, 0);
-        console.log(`[RAG] Retrieved ${totalMatches} total evidence documents across ${Object.keys(allEvidence).length} categories.`);
+        const totalMatches = Object.values(allEvidence).reduce((sum, val) => sum + (Array.isArray(val) ? val.length : (val ? 1 : 0)), 0);
+        console.log(`[RAG] Retrieved ${totalMatches} total evidence items (including trend memory).`);
     } else {
         console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF inference.`);
     }
