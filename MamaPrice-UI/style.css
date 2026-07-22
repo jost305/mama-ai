@@ -646,27 +646,27 @@ body {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 6px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
 }
 
 .hero-title {
-    font-size: 1.5rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--text-primary);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     margin: 0;
 }
 
 .hero-title-divider {
     color: var(--border-hover);
-    font-size: 1.3rem;
+    font-size: 0.85rem;
     font-weight: 300;
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--accent-green);
     margin: 0;
