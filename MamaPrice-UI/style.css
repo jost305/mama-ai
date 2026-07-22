@@ -2417,6 +2417,13 @@ body {
     min-width: 0;
 }
 
+.snap-name-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
 .snap-info strong {
     font-size: 0.72rem;
     font-weight: 600;
