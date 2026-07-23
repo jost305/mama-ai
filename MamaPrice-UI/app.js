@@ -217,6 +217,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Agent Report Form Submission
+    window.recordAgentReport = function(commodityName = 'Commodity', marketName = 'Mile 12', priceVal = 0) {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        const userName = userJson ? JSON.parse(userJson).name : 'Amina Yusuf';
+        const userPhone = userJson ? JSON.parse(userJson).phone : '0801 234 5678';
+        
+        let agent = scoutsData.find(a => a.name.toLowerCase() === userName.toLowerCase() || a.phone === userPhone);
+        
+        if (agent) {
+            agent.reports += 1;
+            agent.earnings += 250;
+            agent.trustScore = Math.min(100, agent.trustScore + 1);
+            if (marketName && !agent.markets.includes(marketName)) {
+                agent.markets.push(marketName);
+            }
+            // Recalculate Agent Level & Leaderboard Ranking
+            if (agent.reports > 400) agent.level = 'Market Captain';
+            else if (agent.reports > 200) agent.level = 'Senior Agent';
+            else if (agent.reports > 50) agent.level = 'Market Agent';
+            else agent.level = 'Agent Explorer';
+        } else {
+            agent = {
+                id: `AG-${Math.floor(1000 + Math.random() * 9000)}`,
+                name: userName,
+                phone: userPhone,
+                level: 'Agent Explorer',
+                markets: [marketName || 'Mile 12'],
+                reports: 1,
+                trustScore: 85,
+                trustLabel: 'Great',
+                earnings: 250,
+                status: 'Active',
+                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80'
+            };
+            scoutsData.unshift(agent);
+        }
+        
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: `🎯 <strong>Report Verified (+25 MarketPoints)</strong><br>${commodityName} price report for ${marketName} logged: ₦${parseInt(priceVal || 0).toLocaleString()} (+₦250 credited)`,
+                tag: 'Agent Payout',
+                actionQuery: ''
+            });
+        }
+
+        if (typeof updateScoutsDashboard === 'function') {
+            updateScoutsDashboard();
+        }
+    };
+
     const agentReportForm = document.getElementById('agent-report-form');
     if (agentReportForm) {
         agentReportForm.addEventListener('submit', (e) => {
@@ -225,6 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const market = document.getElementById('report-market').value;
             const price = document.getElementById('report-price').value;
             if (!price) return;
+            
+            // Record Agent Report & Award MarketPoints
+            window.recordAgentReport(commodity, market, price);
+
             const queryText = `Report price: ${commodity} ₦${parseInt(price).toLocaleString()} at ${market}`;
             switchView(navHome, pageHome);
             sendSuggestion(queryText);
