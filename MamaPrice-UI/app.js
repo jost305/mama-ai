@@ -476,6 +476,169 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ── Dynamic Market Scouts Management & Real-time Filter Engine ──
+    const scoutsData = [
+        { id: 'SC-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Scout', markets: ['Onitsha Main', 'Ariaria'], reports: 356, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Scout', markets: ['Computer Village', 'Ikeja'], reports: 298, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Scout', markets: ['Mile 12'], reports: 215, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Scout', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Explorer', markets: ['Computer Village'], reports: 42, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
+        { id: 'SC-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Explorer', markets: ['Mile 12'], reports: 28, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
+    ];
+
+    const scoutSearchInput = document.getElementById('scout-search-input');
+    const scoutStatusFilter = document.getElementById('scout-status-filter');
+    const scoutLevelFilter = document.getElementById('scout-level-filter');
+    const scoutMarketFilter = document.getElementById('scout-market-filter');
+    const scoutMoreFiltersBtn = document.getElementById('scout-more-filters-btn');
+    const scoutsTableBody = document.getElementById('scouts-table-body');
+    const scoutsCountLabel = document.getElementById('scouts-count-label');
+
+    const kpiTotalEl = document.getElementById('scout-kpi-total');
+    const kpiActiveEl = document.getElementById('scout-kpi-active');
+    const kpiReportsEl = document.getElementById('scout-kpi-reports');
+    const kpiPaidEl = document.getElementById('scout-kpi-paid');
+    const kpiTrustEl = document.getElementById('scout-kpi-trust');
+
+    function getLevelBadgeClass(level) {
+        switch (level) {
+            case 'Market Captain': return 'lvl-captain';
+            case 'Senior Scout': return 'lvl-senior';
+            case 'Scout': return 'lvl-scout';
+            default: return 'lvl-explorer';
+        }
+    }
+
+    function getTrustScoreClass(score) {
+        if (score >= 92) return 'score-excellent';
+        if (score >= 85) return 'score-great';
+        if (score >= 70) return 'score-good';
+        return 'score-fair';
+    }
+
+    window.viewScoutDetails = function(id) {
+        const s = scoutsData.find(x => x.id === id);
+        if (!s) return;
+        alert(`👤 Scout Details:\n\nName: ${s.name}\nPhone: ${s.phone}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
+    };
+
+    window.triggerScoutActions = function(id) {
+        const s = scoutsData.find(x => x.id === id);
+        if (!s) return;
+        alert(`⚡ Quick Actions for ${s.name}:\n\n1. Send WhatsApp Message (${s.phone})\n2. Assign Market Mission\n3. Toggle Scout Status (Current: ${s.status})`);
+    };
+
+    function renderScoutsTable(list) {
+        if (!scoutsTableBody) return;
+        if (list.length === 0) {
+            scoutsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 32px 16px; color: #64748b;">
+                        <i class="fa-solid fa-user-slash" style="font-size: 1.8rem; margin-bottom: 8px; color: #cbd5e1; display: block;"></i>
+                        <strong>No Market Scouts found matching your filters.</strong>
+                        <p style="font-size: 0.76rem; margin-top: 4px;">Try adjusting your search query, status, level, or market filter.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        scoutsTableBody.innerHTML = list.map(s => `
+            <tr>
+                <td>
+                    <div class="scout-user-cell">
+                        <img src="${s.avatar}" alt="${s.name}" class="scout-avatar" />
+                        <div>
+                            <strong class="scout-name">${s.name}</strong>
+                            <span class="scout-meta">${s.phone} · ${s.id}</span>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="scout-lvl-badge ${getLevelBadgeClass(s.level)}">${s.level}</span></td>
+                <td><span class="scout-markets-text">${s.markets.join(', ')}</span></td>
+                <td><strong class="scout-stat-num">${s.reports.toLocaleString()}</strong></td>
+                <td>
+                    <div class="trust-score-pill ${getTrustScoreClass(s.trustScore)}">
+                        <i class="fa-solid fa-shield"></i> <strong>${s.trustScore}%</strong> <small>${s.trustLabel}</small>
+                    </div>
+                </td>
+                <td><strong class="scout-earning-val">₦${s.earnings.toLocaleString()}</strong></td>
+                <td><span class="scout-status-badge ${s.status === 'Active' ? 'status-active' : 'status-inactive'}">${s.status}</span></td>
+                <td style="text-align: right;">
+                    <div class="table-action-btns">
+                        <button class="tbl-act-btn" onclick="viewScoutDetails('${s.id}')" title="View Scout Profile"><i class="fa-regular fa-eye"></i></button>
+                        <button class="tbl-act-btn" onclick="triggerScoutActions('${s.id}')" title="Scout Actions"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function updateScoutsDashboard() {
+        const query = scoutSearchInput ? scoutSearchInput.value.toLowerCase().trim() : '';
+        const statusVal = scoutStatusFilter ? scoutStatusFilter.value : 'all';
+        const levelVal = scoutLevelFilter ? scoutLevelFilter.value : 'all';
+        const marketVal = scoutMarketFilter ? scoutMarketFilter.value : 'all';
+
+        const filtered = scoutsData.filter(s => {
+            const matchesQuery = !query || s.name.toLowerCase().includes(query) || s.phone.includes(query) || s.id.toLowerCase().includes(query);
+            const matchesStatus = statusVal === 'all' || s.status === statusVal;
+            const matchesLevel = levelVal === 'all' || s.level === levelVal;
+            const matchesMarket = marketVal === 'all' || s.markets.some(m => m.toLowerCase().includes(marketVal.toLowerCase()));
+
+            return matchesQuery && matchesStatus && matchesLevel && matchesMarket;
+        });
+
+        // Recalculate Live KPIs
+        const activeCount = filtered.filter(s => s.status === 'Active').length;
+        const totalReports = filtered.reduce((acc, s) => acc + s.reports, 0);
+        const totalPaid = filtered.reduce((acc, s) => acc + s.earnings, 0);
+        const avgTrust = filtered.length ? Math.round(filtered.reduce((acc, s) => acc + s.trustScore, 0) / filtered.length) : 0;
+
+        if (kpiTotalEl) kpiTotalEl.textContent = filtered.length.toLocaleString();
+        if (kpiActiveEl) kpiActiveEl.textContent = activeCount.toLocaleString();
+        if (kpiReportsEl) kpiReportsEl.textContent = totalReports.toLocaleString();
+        if (kpiPaidEl) kpiPaidEl.textContent = `₦${totalPaid.toLocaleString()}`;
+        if (kpiTrustEl) kpiTrustEl.textContent = `${avgTrust}%`;
+
+        if (scoutsCountLabel) {
+            scoutsCountLabel.textContent = `Showing ${filtered.length > 0 ? 1 : 0} to ${filtered.length} of ${scoutsData.length} scouts`;
+        }
+
+        renderScoutsTable(filtered);
+    }
+
+    if (scoutSearchInput) scoutSearchInput.addEventListener('input', updateScoutsDashboard);
+    if (scoutStatusFilter) scoutStatusFilter.addEventListener('change', updateScoutsDashboard);
+    if (scoutLevelFilter) scoutLevelFilter.addEventListener('change', updateScoutsDashboard);
+    if (scoutMarketFilter) scoutMarketFilter.addEventListener('change', updateScoutsDashboard);
+
+    if (scoutMoreFiltersBtn) {
+        scoutMoreFiltersBtn.addEventListener('click', () => {
+            alert("🔍 Extended Scout Filters:\n\n- Filter by Trust Score Range (60% - 100%)\n- Filter by Monthly Earnings Range\n- Filter by Region (Lagos, Kano, Oyo, Anambra, Rivers)");
+        });
+    }
+
+    // View mode toggle
+    const vmBtnList = document.getElementById('vm-btn-list');
+    const vmBtnGrid = document.getElementById('vm-btn-grid');
+    if (vmBtnList && vmBtnGrid) {
+        vmBtnList.addEventListener('click', () => {
+            vmBtnList.classList.add('active');
+            vmBtnGrid.classList.remove('active');
+        });
+        vmBtnGrid.addEventListener('click', () => {
+            vmBtnGrid.classList.add('active');
+            vmBtnList.classList.remove('active');
+            alert("Grid View Mode Toggled! (Showing compact scout avatar cards grid).");
+        });
+    }
+
+    // Initial render of Scouts Dashboard
+    updateScoutsDashboard();
+
     function updateAuthUIState() {
         const token = localStorage.getItem('mamaprice_jwt_token');
         const userJson = localStorage.getItem('mamaprice_auth_user');

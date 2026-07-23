@@ -607,7 +607,7 @@
                                 <span class="kpi-lbl">Total Scouts</span>
                                 <div class="kpi-icon-circle"><i class="fa-solid fa-users"></i></div>
                             </div>
-                            <strong class="kpi-val">8,742</strong>
+                            <strong class="kpi-val" id="scout-kpi-total">8,742</strong>
                             <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 15.4% <small>vs last month</small></span>
                         </div>
 
@@ -616,7 +616,7 @@
                                 <span class="kpi-lbl">Active This Week</span>
                                 <div class="kpi-icon-circle green-bg"><i class="fa-solid fa-chart-line"></i></div>
                             </div>
-                            <strong class="kpi-val">5,218</strong>
+                            <strong class="kpi-val" id="scout-kpi-active">5,218</strong>
                             <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 22.7% <small>vs last week</small></span>
                         </div>
 
@@ -625,7 +625,7 @@
                                 <span class="kpi-lbl">Reports This Week</span>
                                 <div class="kpi-icon-circle blue-bg"><i class="fa-regular fa-file-lines"></i></div>
                             </div>
-                            <strong class="kpi-val">12,450</strong>
+                            <strong class="kpi-val" id="scout-kpi-reports">12,450</strong>
                             <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 18.6% <small>vs last week</small></span>
                         </div>
 
@@ -634,7 +634,7 @@
                                 <span class="kpi-lbl">Amount Paid (This Month)</span>
                                 <div class="kpi-icon-circle red-bg"><i class="fa-solid fa-wallet"></i></div>
                             </div>
-                            <strong class="kpi-val">₦2,348,500</strong>
+                            <strong class="kpi-val" id="scout-kpi-paid">₦2,348,500</strong>
                             <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 21.4% <small>vs last month</small></span>
                         </div>
 
@@ -643,7 +643,7 @@
                                 <span class="kpi-lbl">Avg. Trust Score</span>
                                 <div class="kpi-icon-circle teal-bg"><i class="fa-solid fa-shield-halved"></i></div>
                             </div>
-                            <strong class="kpi-val">92%</strong>
+                            <strong class="kpi-val" id="scout-kpi-trust">92%</strong>
                             <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 3% <small>vs last month</small></span>
                         </div>
                     </div>
@@ -652,16 +652,34 @@
                     <div class="scout-filter-bar">
                         <div class="search-input-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" placeholder="Search scouts by name, phone or ID..." />
+                            <input type="text" id="scout-search-input" placeholder="Search scouts by name, phone or ID..." />
                         </div>
-                        <select class="scout-select"><option>All Status</option><option>Active</option><option>Inactive</option></select>
-                        <select class="scout-select"><option>All Levels</option><option>Market Captain</option><option>Senior Scout</option><option>Scout</option><option>Explorer</option></select>
-                        <select class="scout-select"><option>All Markets</option><option>Mile 12</option><option>Balogun</option><option>Oyingbo</option><option>Dawanau</option></select>
-                        <button class="btn-compact-outline filter-btn"><i class="fa-solid fa-sliders"></i> More Filters <i class="fa-solid fa-chevron-down"></i></button>
+                        <select class="scout-select" id="scout-status-filter">
+                            <option value="all">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <select class="scout-select" id="scout-level-filter">
+                            <option value="all">All Levels</option>
+                            <option value="Market Captain">Market Captain</option>
+                            <option value="Senior Scout">Senior Scout</option>
+                            <option value="Scout">Scout</option>
+                            <option value="Explorer">Explorer</option>
+                        </select>
+                        <select class="scout-select" id="scout-market-filter">
+                            <option value="all">All Markets</option>
+                            <option value="Mile 12">Mile 12</option>
+                            <option value="Balogun">Balogun</option>
+                            <option value="Oyingbo">Oyingbo</option>
+                            <option value="Dawanau">Dawanau</option>
+                            <option value="Bodija">Bodija</option>
+                            <option value="Ariaria">Ariaria</option>
+                        </select>
+                        <button class="btn-compact-outline filter-btn" id="scout-more-filters-btn"><i class="fa-solid fa-sliders"></i> More Filters <i class="fa-solid fa-chevron-down"></i></button>
 
                         <div class="view-mode-toggle">
-                            <button class="vm-btn active"><i class="fa-solid fa-list-ul"></i></button>
-                            <button class="vm-btn"><i class="fa-solid fa-border-all"></i></button>
+                            <button class="vm-btn active" id="vm-btn-list"><i class="fa-solid fa-list-ul"></i></button>
+                            <button class="vm-btn" id="vm-btn-grid"><i class="fa-solid fa-border-all"></i></button>
                         </div>
                     </div>
 
@@ -680,7 +698,7 @@
                                     <th style="text-align: right;">ACTIONS</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="scouts-table-body">
                                 <tr>
                                     <td>
                                         <div class="scout-user-cell">
@@ -909,7 +927,7 @@
 
                         <!-- Table Pagination Footer -->
                         <div class="scout-table-footer">
-                            <span class="pagination-count">Showing 1 to 8 of 8,742 scouts</span>
+                            <span class="pagination-count" id="scouts-count-label">Showing 1 to 8 of 8,742 scouts</span>
                             <div class="pagination-controls">
                                 <button class="pg-btn"><i class="fa-solid fa-chevron-left"></i></button>
                                 <button class="pg-btn active">1</button>
