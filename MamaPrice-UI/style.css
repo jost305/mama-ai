@@ -4833,6 +4833,7 @@ body.sidebar-docked .top-dock-btn {
     .form-row-grid {
         grid-template-columns: 1fr;
     }
+}
 
 /* ── Live Interactive Market Map Page (Ref Images 1 & 2) ── */
 #page-map {
@@ -5297,7 +5298,6 @@ body.sidebar-docked .top-dock-btn {
     .sheet-drag-handle {
         display: block;
     }
-}
 }
 
 
