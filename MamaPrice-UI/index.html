@@ -583,67 +583,390 @@
                 </div>
             </div>
 
-            <!-- Page 5: Scout Reporter Hub (Ref Image 3 Screen 7 & 8) -->
+            <!-- Page 5: Market Scouts Directory & Agent Dashboard -->
             <div class="page-view" id="page-agent">
-                <div class="view-container">
-                    <div class="scout-hub-layout">
-                        <!-- Top Reporter Badge Banner -->
-                        <div class="reporter-gold-banner">
-                            <div class="r-badge-icon">🏆</div>
+                <div class="view-container scout-page-container">
+                    <!-- Page Header Row -->
+                    <div class="scout-header-row">
+                        <div class="scout-title-group">
+                            <div class="scout-star-badge"><i class="fa-solid fa-star"></i></div>
                             <div>
-                                <h3>Gold Reporter Level 3</h3>
-                                <p>Earn points by reporting accurate market prices in your local market.</p>
+                                <h2>Market Scouts</h2>
+                                <p>Manage and empower our amazing network of Market Scouts.</p>
                             </div>
-                            <button class="submit-report-btn">Submit Report</button>
+                        </div>
+                        <div class="scout-header-actions">
+                            <button class="btn-compact-outline"><i class="fa-solid fa-file-export"></i> Export <i class="fa-solid fa-chevron-down"></i></button>
+                            <button class="btn-compact-primary"><i class="fa-solid fa-plus"></i> Invite Scouts</button>
+                        </div>
+                    </div>
+
+                    <!-- 5 KPI Summary Cards Grid -->
+                    <div class="scout-kpi-row">
+                        <div class="scout-kpi-card">
+                            <div class="kpi-meta">
+                                <span class="kpi-lbl">Total Scouts</span>
+                                <div class="kpi-icon-circle"><i class="fa-solid fa-users"></i></div>
+                            </div>
+                            <strong class="kpi-val">8,742</strong>
+                            <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 15.4% <small>vs last month</small></span>
                         </div>
 
-                        <!-- Stats & Form Grid -->
-                        <div class="two-col-grid" style="margin-top: 20px;">
-                            <div class="stats-overview-box">
-                                <h3>My Reporter Stats</h3>
-                                <div class="agent-stat-cards">
-                                    <div class="s-card">
-                                        <span class="lbl">Today's Earnings</span>
-                                        <strong class="val green">₦2,450</strong>
-                                    </div>
-                                    <div class="s-card">
-                                        <span class="lbl">Reports Submitted</span>
-                                        <strong class="val">18</strong>
-                                    </div>
-                                    <div class="s-card">
-                                        <span class="lbl">Accuracy Score</span>
-                                        <strong class="val green">96%</strong>
-                                    </div>
+                        <div class="scout-kpi-card">
+                            <div class="kpi-meta">
+                                <span class="kpi-lbl">Active This Week</span>
+                                <div class="kpi-icon-circle green-bg"><i class="fa-solid fa-chart-line"></i></div>
+                            </div>
+                            <strong class="kpi-val">5,218</strong>
+                            <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 22.7% <small>vs last week</small></span>
+                        </div>
+
+                        <div class="scout-kpi-card">
+                            <div class="kpi-meta">
+                                <span class="kpi-lbl">Reports This Week</span>
+                                <div class="kpi-icon-circle blue-bg"><i class="fa-regular fa-file-lines"></i></div>
+                            </div>
+                            <strong class="kpi-val">12,450</strong>
+                            <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 18.6% <small>vs last week</small></span>
+                        </div>
+
+                        <div class="scout-kpi-card">
+                            <div class="kpi-meta">
+                                <span class="kpi-lbl">Amount Paid (This Month)</span>
+                                <div class="kpi-icon-circle red-bg"><i class="fa-solid fa-wallet"></i></div>
+                            </div>
+                            <strong class="kpi-val">₦2,348,500</strong>
+                            <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 21.4% <small>vs last month</small></span>
+                        </div>
+
+                        <div class="scout-kpi-card">
+                            <div class="kpi-meta">
+                                <span class="kpi-lbl">Avg. Trust Score</span>
+                                <div class="kpi-icon-circle teal-bg"><i class="fa-solid fa-shield-halved"></i></div>
+                            </div>
+                            <strong class="kpi-val">92%</strong>
+                            <span class="kpi-sub green"><i class="fa-solid fa-arrow-up"></i> 3% <small>vs last month</small></span>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar & View Options -->
+                    <div class="scout-filter-bar">
+                        <div class="search-input-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search scouts by name, phone or ID..." />
+                        </div>
+                        <select class="scout-select"><option>All Status</option><option>Active</option><option>Inactive</option></select>
+                        <select class="scout-select"><option>All Levels</option><option>Market Captain</option><option>Senior Scout</option><option>Scout</option><option>Explorer</option></select>
+                        <select class="scout-select"><option>All Markets</option><option>Mile 12</option><option>Balogun</option><option>Oyingbo</option><option>Dawanau</option></select>
+                        <button class="btn-compact-outline filter-btn"><i class="fa-solid fa-sliders"></i> More Filters <i class="fa-solid fa-chevron-down"></i></button>
+
+                        <div class="view-mode-toggle">
+                            <button class="vm-btn active"><i class="fa-solid fa-list-ul"></i></button>
+                            <button class="vm-btn"><i class="fa-solid fa-border-all"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Tight Scouts Data Table -->
+                    <div class="scout-table-card">
+                        <table class="scout-data-table">
+                            <thead>
+                                <tr>
+                                    <th>SCOUT</th>
+                                    <th>LEVEL</th>
+                                    <th>MARKETS</th>
+                                    <th>REPORTS <small>(THIS MONTH)</small></th>
+                                    <th>TRUST SCORE</th>
+                                    <th>EARNINGS <small>(THIS MONTH)</small></th>
+                                    <th>STATUS</th>
+                                    <th style="text-align: right;">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Maryam Abubakar" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Maryam Abubakar</strong>
+                                                <span class="scout-meta">0803 123 4567 · SC-0001</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-captain">Market Captain</span></td>
+                                    <td><span class="scout-markets-text">Mile 12, Balogun, Oyingbo</span></td>
+                                    <td><strong class="scout-stat-num">482</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-excellent">
+                                            <i class="fa-solid fa-shield"></i> <strong>98%</strong> <small>Excellent</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦84,750</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Chinedu Okafor" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Chinedu Okafor</strong>
+                                                <span class="scout-meta">0812 345 6789 · SC-0002</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-senior">Senior Scout</span></td>
+                                    <td><span class="scout-markets-text">Onitsha Main, Ariaria</span></td>
+                                    <td><strong class="scout-stat-num">356</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-excellent">
+                                            <i class="fa-solid fa-shield"></i> <strong>94%</strong> <small>Excellent</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦61,200</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80" alt="Aisha Bello" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Aisha Bello</strong>
+                                                <span class="scout-meta">0706 789 0123 · SC-0003</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-senior">Senior Scout</span></td>
+                                    <td><span class="scout-markets-text">Comput. Village, Ikeja</span></td>
+                                    <td><strong class="scout-stat-num">298</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-excellent">
+                                            <i class="fa-solid fa-shield"></i> <strong>92%</strong> <small>Excellent</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦48,600</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" alt="Emeka Nwosu" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Emeka Nwosu</strong>
+                                                <span class="scout-meta">0810 222 3344 · SC-0004</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-scout">Scout</span></td>
+                                    <td><span class="scout-markets-text">Mile 12</span></td>
+                                    <td><strong class="scout-stat-num">215</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-great">
+                                            <i class="fa-solid fa-shield"></i> <strong>90%</strong> <small>Great</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦31,450</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" alt="Grace Adeyemi" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Grace Adeyemi</strong>
+                                                <span class="scout-meta">0901 556 7788 · SC-0005</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-scout">Scout</span></td>
+                                    <td><span class="scout-markets-text">Bodija, Dugbe, Sango</span></td>
+                                    <td><strong class="scout-stat-num">184</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-great">
+                                            <i class="fa-solid fa-shield"></i> <strong>88%</strong> <small>Great</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦26,200</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80" alt="Ibrahim Musa" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Ibrahim Musa</strong>
+                                                <span class="scout-meta">0815 667 8899 · SC-0006</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-explorer">Explorer</span></td>
+                                    <td><span class="scout-markets-text">Kano Main Market</span></td>
+                                    <td><strong class="scout-stat-num">76</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-good">
+                                            <i class="fa-solid fa-shield"></i> <strong>76%</strong> <small>Good</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦9,800</strong></td>
+                                    <td><span class="scout-status-badge status-active">Active</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" alt="Patience Johnson" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">Patience Johnson</strong>
+                                                <span class="scout-meta">0702 334 5678 · SC-0007</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-explorer">Explorer</span></td>
+                                    <td><span class="scout-markets-text">Computer Village</span></td>
+                                    <td><strong class="scout-stat-num">42</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-fair">
+                                            <i class="fa-solid fa-shield"></i> <strong>68%</strong> <small>Fair</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦5,250</strong></td>
+                                    <td><span class="scout-status-badge status-inactive">Inactive</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="scout-user-cell">
+                                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80" alt="David Williams" class="scout-avatar" />
+                                            <div>
+                                                <strong class="scout-name">David Williams</strong>
+                                                <span class="scout-meta">0807 889 9900 · SC-0008</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="scout-lvl-badge lvl-explorer">Explorer</span></td>
+                                    <td><span class="scout-markets-text">Mile 12</span></td>
+                                    <td><strong class="scout-stat-num">28</strong></td>
+                                    <td>
+                                        <div class="trust-score-pill score-fair">
+                                            <i class="fa-solid fa-shield"></i> <strong>64%</strong> <small>Fair</small>
+                                        </div>
+                                    </td>
+                                    <td><strong class="scout-earning-val">₦3,500</strong></td>
+                                    <td><span class="scout-status-badge status-inactive">Inactive</span></td>
+                                    <td style="text-align: right;">
+                                        <div class="table-action-btns">
+                                            <button class="tbl-act-btn"><i class="fa-regular fa-eye"></i></button>
+                                            <button class="tbl-act-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Table Pagination Footer -->
+                        <div class="scout-table-footer">
+                            <span class="pagination-count">Showing 1 to 8 of 8,742 scouts</span>
+                            <div class="pagination-controls">
+                                <button class="pg-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="pg-btn active">1</button>
+                                <button class="pg-btn">2</button>
+                                <button class="pg-btn">3</button>
+                                <button class="pg-btn">4</button>
+                                <button class="pg-btn">5</button>
+                                <span class="pg-dots">...</span>
+                                <button class="pg-btn">1,093</button>
+                                <button class="pg-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Banner Card ("Why become a Market Scout?") -->
+                    <div class="why-scout-card">
+                        <h3>Why become a Market Scout?</h3>
+                        <div class="why-scout-grid">
+                            <div class="why-item">
+                                <span class="why-icon">💰</span>
+                                <div>
+                                    <strong>Earn Extra Cash</strong>
+                                    <p>Get paid instantly for every verified report.</p>
                                 </div>
                             </div>
-
-                            <div class="report-form-box">
-                                <h3><i class="fa-solid fa-pen-to-square"></i> Report Price (Step 3 of 3)</h3>
-                                <form id="agent-report-form">
-                                    <div class="form-group">
-                                        <label>Select Commodity</label>
-                                        <select id="report-commodity">
-                                            <option>Onions (Bag)</option>
-                                            <option>Golden Penny Flour (50kg)</option>
-                                            <option>Dangote Cement (50kg)</option>
-                                            <option>Fresh Tomatoes (Basket)</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Select Market</label>
-                                        <select id="report-market">
-                                            <option>Dawanau Market, Kano</option>
-                                            <option>Mile 12 Market, Lagos</option>
-                                            <option>Bodija Market, Ibadan</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Current Price (₦ NGN)</label>
-                                        <input type="number" id="report-price" value="82000" required />
-                                    </div>
-                                    <button type="submit" class="green-btn" style="width: 100%; margin-top: 10px;">Submit Report →</button>
-                                </form>
+                            <div class="why-item">
+                                <span class="why-icon">⏱️</span>
+                                <div>
+                                    <strong>Work On Your Time</strong>
+                                    <p>Report when you visit the market.</p>
+                                </div>
                             </div>
+                            <div class="why-item">
+                                <span class="why-icon">❤️</span>
+                                <div>
+                                    <strong>Help Your Community</strong>
+                                    <p>Your reports help families save money.</p>
+                                </div>
+                            </div>
+                            <div class="why-item">
+                                <span class="why-icon">⭐</span>
+                                <div>
+                                    <strong>Grow with MarketMama</strong>
+                                    <p>Top scouts earn more & unlock special missions.</p>
+                                </div>
+                            </div>
+                            <div class="why-item">
+                                <span class="why-icon">🎁</span>
+                                <div>
+                                    <strong>Bonuses & Rewards</strong>
+                                    <p>Win bonuses, rewards & climb the leaderboard.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="why-scout-footer">
+                            Every report you send helps someone save. Every mission you complete changes lives. 💚
                         </div>
                     </div>
                 </div>
