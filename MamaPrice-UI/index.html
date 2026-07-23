@@ -413,125 +413,157 @@
                 </div>
             </div>
 
-            <!-- Page 3: Live Map Page (Ref Image 1 & 3) -->
+            <!-- Page 3: Live Interactive Market Map Page (Redesigned matching Ref Images 1 & 2) -->
             <div class="page-view" id="page-map">
-                <div class="view-container">
-                    <div class="map-view-layout">
-                        <!-- Left Sidebar Filters -->
-                        <div class="map-sidebar-panel">
-                            <div class="m-panel-header">
-                                <h3>LIVE MARKET MAP</h3>
-                                <span class="live-pill">● Live</span>
-                                <p>Real-time prices from markets across Nigeria. Updates every 2 minutes.</p>
-                                <button class="share-price-btn"><i class="fa-solid fa-plus"></i> Share My Price</button>
-                            </div>
-
-                        <div class="m-filter-group">
-                            <label>SELECT PRODUCT</label>
-                            <div class="product-select-list">
-                                <div class="p-item"><span class="p-icon">🍅</span> Tomatoes</div>
-                                <div class="p-item"><span class="p-icon">🧅</span> Onions</div>
-                                <div class="p-item active"><span class="p-icon">🌶️</span> Pepper</div>
-                                <div class="p-item"><span class="p-icon">🐄</span> Cows</div>
-                                <div class="p-item"><span class="p-icon">🐐</span> Goats</div>
-                                <div class="p-item"><span class="p-icon">🍠</span> Yam</div>
+                <div class="view-container map-page-container">
+                    
+                    <!-- Top Floating Header Bar (Ref Image 1 & 2) -->
+                    <div class="map-top-header-bar">
+                        <div class="mth-left">
+                            <div class="mth-location-box">
+                                <i class="fa-solid fa-location-dot mth-loc-icon"></i>
+                                <div>
+                                    <span class="mth-lbl">Location</span>
+                                    <strong class="mth-val">Kano State, Nigeria <i class="fa-solid fa-chevron-down"></i></strong>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="m-filter-group">
-                            <label>FILTERS</label>
-                            <select><option>Location: All Regions</option></select>
-                            <select><option>Price Range: All Prices</option></select>
-                            <select><option>Supply Level: All Levels</option></select>
+                        <div class="mth-center-search">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" placeholder="Start your search for commodity or market..." id="map-search-input" />
+                            <button class="mth-filter-btn" title="Filter Markets"><i class="fa-solid fa-sliders"></i></button>
                         </div>
 
-                        <div class="map-footer-count">● Live · 1,248 reports today</div>
+                        <div class="mth-right-actions">
+                            <button class="mth-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
+                            <div class="mth-user-avatar">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Agent" />
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Center Nigeria Interactive Map Area -->
-                    <div class="map-main-area">
-                        <div class="map-top-bar">
-                            <div class="map-toggle-group">
-                                <button class="m-btn active">Map</button>
-                                <button class="m-btn">List</button>
+                    <!-- Horizontal Category Filter Pills (Ref Image 1 & 2) -->
+                    <div class="map-category-pills-row">
+                        <button class="map-pill-btn active"><i class="fa-solid fa-shop"></i> All Markets</button>
+                        <button class="map-pill-btn"><i class="fa-solid fa-wheat-awn"></i> Grain Wholesalers</button>
+                        <button class="map-pill-btn"><i class="fa-solid fa-carrot"></i> Fresh Produce</button>
+                        <button class="map-pill-btn"><i class="fa-solid fa-trowel-bricks"></i> Building Materials</button>
+                        <button class="map-pill-btn"><i class="fa-solid fa-gas-pump"></i> Energy & Fuel</button>
+                    </div>
+
+                    <!-- Map Canvas Area with Controls & Sheet Overlay -->
+                    <div class="map-canvas-wrapper">
+                        <!-- Custom Map Canvas Background -->
+                        <div class="map-vector-canvas" id="map-vector-canvas">
+                            <div class="map-grid-pattern"></div>
+
+                            <!-- Interactive Market Pins on Map (Ref Image 1 & 2) -->
+                            <div class="map-pin-item active" style="top: 32%; left: 45%;" onclick="selectMapMarket('dawanau')">
+                                <div class="pin-badge-box">
+                                    <span class="pin-icon">🌾</span>
+                                    <div class="pin-txt-group">
+                                        <strong>Dawanau Market</strong>
+                                        <small class="green">₦72,000 / bag</small>
+                                    </div>
+                                </div>
+                                <div class="pin-pulse-dot"></div>
                             </div>
-                            <div class="supply-legend">
-                                <span>SUPPLY LEVEL:</span>
-                                <span><span class="dot green"></span> High</span>
-                                <span><span class="dot yellow"></span> Medium</span>
-                                <span><span class="dot red"></span> Low</span>
+
+                            <div class="map-pin-item" style="top: 68%; left: 28%;" onclick="selectMapMarket('mile12')">
+                                <div class="pin-badge-box">
+                                    <span class="pin-icon">🍅</span>
+                                    <div class="pin-txt-group">
+                                        <strong>Mile 12 Market</strong>
+                                        <small class="green">₦41,650 / basket</small>
+                                    </div>
+                                </div>
+                                <div class="pin-pulse-dot"></div>
+                            </div>
+
+                            <div class="map-pin-item" style="top: 38%; left: 42%;" onclick="selectMapMarket('sabongari')">
+                                <div class="pin-badge-box">
+                                    <span class="pin-icon">🏗️</span>
+                                    <div class="pin-txt-group">
+                                        <strong>Sabon Gari Market</strong>
+                                        <small class="green">₦8,500 / bag</small>
+                                    </div>
+                                </div>
+                                <div class="pin-pulse-dot"></div>
+                            </div>
+
+                            <div class="map-pin-item" style="top: 58%; left: 35%;" onclick="selectMapMarket('bodija')">
+                                <div class="pin-badge-box">
+                                    <span class="pin-icon">🌴</span>
+                                    <div class="pin-txt-group">
+                                        <strong>Bodija Market</strong>
+                                        <small class="green">₦54,000 / 25L</small>
+                                    </div>
+                                </div>
+                                <div class="pin-pulse-dot"></div>
+                            </div>
+
+                            <div class="map-pin-item" style="top: 65%; left: 52%;" onclick="selectMapMarket('onitsha')">
+                                <div class="pin-badge-box">
+                                    <span class="pin-icon">🍞</span>
+                                    <div class="pin-txt-group">
+                                        <strong>Onitsha Main Market</strong>
+                                        <small class="green">₦64,800 / bag</small>
+                                    </div>
+                                </div>
+                                <div class="pin-pulse-dot"></div>
                             </div>
                         </div>
 
-                        <!-- Graphic Map of Nigeria with City Pins -->
-                        <div class="nigeria-map-graphic">
-                            <div class="map-grid-overlay"></div>
+                        <!-- Floating Map Action Controls (Ref Image 1 & 2 Right Controls) -->
+                        <div class="map-floating-controls">
+                            <button class="mfc-btn" title="Map Layers"><i class="fa-solid fa-layer-group"></i></button>
+                            <button class="mfc-btn" title="Recenter Location"><i class="fa-solid fa-crosshairs"></i></button>
+                            <button class="mfc-btn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                            <button class="mfc-btn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                        </div>
+
+                        <!-- Floating Featured Market Card / Place Sheet Overlay (Ref Image 1 & 2 Card) -->
+                        <div class="map-featured-sheet-card" id="map-featured-card">
+                            <div class="sheet-drag-handle"></div>
                             
-                            <!-- City Pins (Ref Image 1 & 3) -->
-                            <div class="map-city-pin pin-sokoto">
-                                <span class="pin-title">Sokoto</span>
-                                <strong class="pin-price">₦14,000</strong>
-                                <small class="pin-trend down">↓ 5%</small>
+                            <div class="mfc-cover-wrapper">
+                                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80" alt="Dawanau Market" class="mfc-cover-img" id="sheet-market-img" />
+                                <span class="mfc-status-tag open" id="sheet-status-tag"><span class="dot-green"></span> Open for trading</span>
+                                <button class="mfc-fav-btn" title="Save Market"><i class="fa-regular fa-heart"></i></button>
                             </div>
-                            <div class="map-city-pin pin-katsina">
-                                <span class="pin-title">Katsina</span>
-                                <strong class="pin-price">₦13,500</strong>
-                                <small class="pin-trend up">↑ 4%</small>
-                            </div>
-                            <div class="map-city-pin pin-kano">
-                                <span class="pin-title">Kano</span>
-                                <strong class="pin-price">₦13,800</strong>
-                                <small class="pin-trend down">↓ 3%</small>
-                            </div>
-                            <div class="map-city-pin pin-maiduguri low-supply">
-                                <span class="pin-title">Maiduguri</span>
-                                <strong class="pin-price">₦15,000</strong>
-                                <small class="pin-trend up">↑ 6%</small>
-                            </div>
-                            <div class="map-city-pin pin-zaria">
-                                <span class="pin-title">Zaria</span>
-                                <strong class="pin-price">₦13,600</strong>
-                                <small class="pin-trend down">↓ 2%</small>
-                            </div>
-                            <div class="map-city-pin pin-kaduna">
-                                <span class="pin-title">Kaduna</span>
-                                <strong class="pin-price">₦13,700</strong>
-                                <small class="pin-trend down">↓ 4%</small>
-                            </div>
-                            <div class="map-city-pin pin-minna">
-                                <span class="pin-title">Minna</span>
-                                <strong class="pin-price">₦13,200</strong>
-                                <small class="pin-trend down">↓ 6%</small>
-                            </div>
-                            <div class="map-city-pin pin-jos">
-                                <span class="pin-title">Jos</span>
-                                <strong class="pin-price">₦13,900</strong>
-                                <small class="pin-trend up">↑ 3%</small>
-                            </div>
-                            <div class="map-city-pin pin-yola">
-                                <span class="pin-title">Yola</span>
-                                <strong class="pin-price">₦14,200</strong>
-                                <small class="pin-trend down">↓ 2%</small>
-                            </div>
-                            <div class="map-city-pin pin-lagos">
-                                <span class="pin-title">Lagos (Oyingbo)</span>
-                                <strong class="pin-price">₦14,500</strong>
-                                <small class="pin-trend up">↑ 3%</small>
-                            </div>
-                            <div class="map-city-pin pin-enugu">
-                                <span class="pin-title">Enugu</span>
-                                <strong class="pin-price">₦13,300</strong>
-                                <small class="pin-trend down">↓ 2%</small>
-                            </div>
-                            <div class="map-city-pin pin-ph">
-                                <span class="pin-title">Port Harcourt</span>
-                                <strong class="pin-price">₦13,000</strong>
-                                <small class="pin-trend down">↓ 5%</small>
+
+                            <div class="mfc-body">
+                                <div class="mfc-title-row">
+                                    <div>
+                                        <h3 id="sheet-market-title">Dawanau Wholesale Market</h3>
+                                        <p class="mfc-sub" id="sheet-market-address">📍 Katsina Road, Dawakin Tofa LGA, Kano State</p>
+                                    </div>
+                                    <div class="mfc-price-box">
+                                        <strong id="sheet-market-price">₦72,000</strong>
+                                        <small>Lowest Rice 50kg</small>
+                                    </div>
+                                </div>
+
+                                <div class="mfc-meta-row">
+                                    <span><i class="fa-solid fa-wheat-awn"></i> 500+ Commodities</span>
+                                    <span><i class="fa-solid fa-users"></i> 142 Agents</span>
+                                    <span><i class="fa-solid fa-location-arrow"></i> 12.4 km away</span>
+                                    <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.9 (128 reviews)</span>
+                                </div>
+
+                                <!-- Action Buttons Row -->
+                                <div class="mfc-actions-grid">
+                                    <button class="mfc-btn-primary" onclick="askMamaAboutMarket('Dawanau Market', 'Kano')"><i class="fa-solid fa-compass"></i> Get Directions</button>
+                                    <button class="mfc-btn-outline" onclick="askMamaAboutMarket('Dawanau Market', 'Kano')"><i class="fa-solid fa-robot"></i> Ask Mama AI</button>
+                                    <a href="#prices" class="mfc-btn-outline"><i class="fa-solid fa-tag"></i> View Live Prices</a>
+                                </div>
                             </div>
                         </div>
+
                     </div>
+
                 </div>
-            </div>
             </div>
 
             <!-- Page 4: Markets & Verified Vendors (Ref Image 3 Screen 5 & 6) -->

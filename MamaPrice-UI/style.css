@@ -4838,9 +4838,470 @@ body.sidebar-docked .top-dock-btn {
         grid-template-columns: 1fr;
     }
 
-    .prof-settings-card {
-        padding: 16px;
+/* ── Live Interactive Market Map Page (Ref Images 1 & 2) ── */
+#page-map {
+    height: 100%;
+    overflow: hidden;
+}
+
+.map-page-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Floating Header Bar */
+.map-top-header-bar {
+    display: grid;
+    grid-template-columns: 240px 1fr 140px;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.mth-location-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 8px 14px;
+}
+
+.mth-loc-icon {
+    font-size: 1.1rem;
+    color: #16a34a;
+}
+
+.mth-lbl {
+    display: block;
+    font-size: 0.68rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.mth-val {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.mth-center-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 4px 6px 4px 16px;
+}
+
+.mth-center-search .search-icon {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-right: 10px;
+}
+
+.mth-center-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.mth-filter-btn {
+    width: 36px;
+    height: 36px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    color: #334155;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+}
+
+.mth-filter-btn:hover {
+    background: #f1f5f9;
+}
+
+.mth-right-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.mth-icon-btn {
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    color: #475569;
+    font-size: 1.05rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mth-user-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Category Filter Pills */
+.map-category-pills-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.map-pill-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #334155;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+}
+
+.map-pill-btn.active, .map-pill-btn:hover {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+/* Map Canvas Container */
+.map-canvas-wrapper {
+    position: relative;
+    flex: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #f1f5f9;
+    min-height: 480px;
+}
+
+.map-vector-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e5e7eb;
+    background-image: 
+        radial-gradient(#cbd5e1 1.5px, transparent 1.5px),
+        linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+        linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+    background-size: 30px 30px, 60px 60px, 60px 60px;
+}
+
+/* Interactive Pins */
+.map-pin-item {
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease;
+}
+
+.map-pin-item:hover, .map-pin-item.active {
+    transform: scale(1.08);
+    z-index: 20;
+}
+
+.pin-badge-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.map-pin-item.active .pin-badge-box {
+    border-color: #16a34a;
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.25);
+}
+
+.pin-icon {
+    font-size: 1.1rem;
+}
+
+.pin-txt-group strong {
+    display: block;
+    font-size: 0.78rem;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.pin-txt-group small.green {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #16a34a;
+}
+
+.pin-pulse-dot {
+    width: 12px;
+    height: 12px;
+    background: #16a34a;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    margin: 4px auto 0;
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.25);
+}
+
+/* Floating Controls Right Side */
+.map-floating-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 30;
+}
+
+.mfc-btn {
+    width: 42px;
+    height: 42px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 50%;
+    color: #334155;
+    font-size: 1.05rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: background 0.15s ease;
+}
+
+.mfc-btn:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* Floating Featured Market Sheet Card Overlay (Ref Images 1 & 2) */
+.map-featured-sheet-card {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 380px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+    z-index: 40;
+    transition: all 0.25s ease;
+}
+
+.sheet-drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #cbd5e1;
+    border-radius: 4px;
+    margin: 8px auto 0;
+    display: none;
+}
+
+.mfc-cover-wrapper {
+    position: relative;
+    height: 160px;
+}
+
+.mfc-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mfc-status-tag.open {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dot-green {
+    width: 7px;
+    height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.mfc-fav-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: #475569;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mfc-body {
+    padding: 16px;
+}
+
+.mfc-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.mfc-title-row h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.mfc-sub {
+    font-size: 0.76rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.mfc-price-box {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.mfc-price-box strong {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #16a34a;
+}
+
+.mfc-price-box small {
+    display: block;
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.mfc-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.74rem;
+    color: #475569;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mfc-actions-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 8px;
+}
+
+.mfc-btn-primary {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.mfc-btn-outline {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Mobile Responsive Specs (Ref Image 2 Bottom Sheet Drawer) */
+@media (max-width: 768px) {
+    .map-top-header-bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
+
+    .mth-right-actions {
+        display: none;
+    }
+
+    .map-featured-sheet-card {
+        width: calc(100% - 24px);
+        left: 12px;
+        bottom: 12px;
+    }
+
+    .sheet-drag-handle {
+        display: block;
+    }
+}
 }
 
 

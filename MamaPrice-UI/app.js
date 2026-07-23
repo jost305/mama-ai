@@ -1571,4 +1571,96 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 30000);
 
     renderNotifications();
+
+    // ── Interactive Map Market Sheet Selector (Ref Images 1 & 2) ──
+    const mapMarketsDataset = {
+        dawanau: {
+            title: 'Dawanau Wholesale Market',
+            address: '📍 Katsina Road, Dawakin Tofa LGA, Kano State',
+            price: '₦72,000',
+            priceSub: 'Lowest Rice 50kg',
+            status: '🟢 Open for trading',
+            img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+            commodities: '500+ Commodities',
+            agents: '142 Agents',
+            distance: '12.4 km away',
+            rating: '4.9 (128 reviews)'
+        },
+        mile12: {
+            title: 'Mile 12 Perishable Market',
+            address: '📍 Ikorodu Road, Ketu-Mile 12, Lagos State',
+            price: '₦41,650',
+            priceSub: 'Lowest Tomatoes Basket',
+            status: '🟢 Open for trading',
+            img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+            commodities: '350+ Perishables',
+            agents: '210 Agents',
+            distance: '4.2 km away',
+            rating: '4.8 (210 reviews)'
+        },
+        sabongari: {
+            title: 'Sabon Gari Building Hub',
+            address: '📍 France Road, Fagge LGA, Kano State',
+            price: '₦8,500',
+            priceSub: 'Dangote Cement 50kg',
+            status: '🟢 Open for trading',
+            img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
+            commodities: '180+ Hardware Items',
+            agents: '94 Agents',
+            distance: '6.8 km away',
+            rating: '4.7 (94 reviews)'
+        },
+        bodija: {
+            title: 'Bodija International Market',
+            address: '📍 Bodija-Secretariat Road, Ibadan, Oyo State',
+            price: '₦54,000',
+            priceSub: 'Refined Palm Oil 25L',
+            status: '🟢 Open for trading',
+            img: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=600&auto=format&fit=crop&q=80',
+            commodities: '420+ Commodities',
+            agents: '115 Agents',
+            distance: '18.1 km away',
+            rating: '4.6 (115 reviews)'
+        },
+        onitsha: {
+            title: 'Onitsha Main Wholesale Market',
+            address: '📍 Commercial Avenue, Onitsha, Anambra State',
+            price: '₦64,800',
+            priceSub: 'Golden Penny Flour 50kg',
+            status: '🟢 Open for trading',
+            img: 'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=600&auto=format&fit=crop&q=80',
+            commodities: '600+ General Items',
+            agents: '165 Agents',
+            distance: '24.5 km away',
+            rating: '4.9 (185 reviews)'
+        }
+    };
+
+    window.selectMapMarket = function(marketKey) {
+        const data = mapMarketsDataset[marketKey];
+        if (!data) return;
+
+        // Update active pin UI state
+        document.querySelectorAll('.map-pin-item').forEach(pin => pin.classList.remove('active'));
+        if (window.event && window.event.currentTarget) {
+            window.event.currentTarget.classList.add('active');
+        }
+
+        // Update sheet elements
+        const titleEl = document.getElementById('sheet-market-title');
+        const addrEl = document.getElementById('sheet-market-address');
+        const priceEl = document.getElementById('sheet-market-price');
+        const imgEl = document.getElementById('sheet-market-img');
+        const cardEl = document.getElementById('map-featured-card');
+
+        if (titleEl) titleEl.textContent = data.title;
+        if (addrEl) addrEl.textContent = data.address;
+        if (priceEl) priceEl.textContent = data.price;
+        if (imgEl) imgEl.src = data.img;
+
+        if (cardEl) {
+            cardEl.style.transform = 'translateY(0)';
+            cardEl.style.opacity = '1';
+        }
+    };
 })();
