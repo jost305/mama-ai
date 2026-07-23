@@ -4324,10 +4324,15 @@ body.sidebar-docked .top-dock-btn {
 }
 
 /* ── Custom MamaPrice Market Savings Intelligence Dashboard UI (Ultra-Tight & Shadow-Free) ── */
+#page-profile {
+    overflow-y: auto !important;
+    height: 100%;
+}
+
 .profile-page-container {
-    max-width: 1180px;
+    max-width: 1240px;
     margin: 0 auto;
-    padding: 12px 16px 40px;
+    padding: 24px 32px 80px;
 }
 
 .savings-page-header {
