@@ -2520,10 +2520,6 @@ body.sidebar-docked .top-dock-btn {
     align-items: center;
     gap: 2px;
 }
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-}
 
 .snap-trend.up {
     color: #16a34a;
