@@ -1031,74 +1031,157 @@
                 </div>
             </div>
 
-            <!-- Page 8: Full Profile & Agent Intelligence Dashboard Page -->
+            <!-- Page 8: Full Profile & Agent Intelligence Dashboard Page (Redesigned) -->
             <div class="page-view" id="page-profile">
                 <div class="view-container profile-page-container">
-                    <!-- Hero Header Banner Card -->
-                    <div class="profile-page-banner">
-                        <div class="banner-top-title">
-                            <span class="hub-tag"><i class="fa-solid fa-user-shield"></i> Agent Intelligence Dashboard</span>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="active-status-badge"><span class="live-dot"></span> Active Agent</span>
-                                <button type="button" class="prof-logout-btn" id="prof-logout-btn" title="Log Out of MamaPrice"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
+                    
+                    <!-- Top Cover & Avatar Banner Card (Ref Image 1 & 3) -->
+                    <div class="prof-redesign-hero">
+                        <div class="prof-gradient-cover"></div>
+                        <div class="prof-hero-body">
+                            <div class="prof-avatar-wrapper">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Amina Yusuf" class="prof-avatar-img" />
+                                <span class="prof-verified-badge" title="Verified Market Agent"><i class="fa-solid fa-check"></i></span>
                             </div>
-                        </div>
-                        <div class="profile-hero-content">
-                            <div class="profile-avatar-box">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Amina Yusuf" class="hero-avatar-img">
-                                <span class="avatar-verified-check"><i class="fa-solid fa-check"></i></span>
+                            <div class="prof-user-info">
+                                <div class="prof-name-row">
+                                    <h1 id="prof-hero-name">Amina Yusuf</h1>
+                                    <span class="prof-status-pill"><span class="live-dot"></span> Active Agent</span>
+                                    <span class="prof-badge-pill" id="prof-hero-level">Level 4 Senior Agent</span>
+                                </div>
+                                <p class="prof-user-sub"><i class="fa-solid fa-phone"></i> +234 801 *** 5678 · <i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets, Kano</p>
                             </div>
-                            <div class="profile-hero-text">
-                                <h1><span id="prof-hero-name">Amina Yusuf</span> <span class="tier-pill" id="prof-hero-level">Level 4 Senior Agent</span></h1>
-                                <p class="hero-loc"><i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets · Kano Hub</p>
-                                <p class="hero-desc">Verifying grain, flour & cement price movements across Northern market hubs.</p>
+                            <div class="prof-hero-actions">
+                                <button type="button" class="btn-prof-primary" id="prof-payout-btn"><i class="fa-solid fa-wallet"></i> Withdraw Funds</button>
+                                <button type="button" class="btn-prof-outline" id="prof-logout-btn" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 4 Stat Cards Grid -->
-                    <div class="profile-stats-grid">
-                        <div class="prof-stat-card green-highlight">
-                            <span class="stat-lbl">Agent Earnings</span>
-                            <strong class="stat-val green" id="prof-wallet-val">₦148,500</strong>
-                            <button class="stat-btn-action" id="prof-payout-btn">Withdraw Funds</button>
+                    <!-- 4 Ultra-Compact Stat Cards (Ref Images 2 & 3) -->
+                    <div class="prof-stats-row">
+                        <div class="prof-pill-card highlight-green">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">AGENT EARNINGS</span>
+                                <i class="fa-solid fa-wallet p-icon green"></i>
+                            </div>
+                            <strong class="p-card-val green" id="prof-wallet-val">₦148,500</strong>
+                            <span class="p-card-sub">Available Balance</span>
                         </div>
-                        <div class="prof-stat-card">
-                            <span class="stat-lbl">MarketPoints</span>
-                            <strong class="stat-val" id="prof-points-val" style="color: #d97706;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>3,550 pts</strong>
-                            <span class="stat-sub">+25 pts per report</span>
+
+                        <div class="prof-pill-card highlight-amber">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">MARKETPOINTS</span>
+                                <i class="fa-solid fa-coins p-icon amber"></i>
+                            </div>
+                            <strong class="p-card-val amber" id="prof-points-val">3,550 pts</strong>
+                            <span class="p-card-sub">+25 pts per report</span>
                         </div>
-                        <div class="prof-stat-card">
-                            <span class="stat-lbl">Verified Reports</span>
-                            <strong class="stat-val" id="prof-reports-val">142</strong>
-                            <span class="stat-sub">+12 this week</span>
+
+                        <div class="prof-pill-card">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">REPORTS LOGGED</span>
+                                <i class="fa-regular fa-file-lines p-icon blue"></i>
+                            </div>
+                            <strong class="p-card-val" id="prof-reports-val">142</strong>
+                            <span class="p-card-sub">+12 this week</span>
                         </div>
-                        <div class="prof-stat-card">
-                            <span class="stat-lbl">Accuracy & Trust</span>
-                            <strong class="stat-val" id="prof-trust-val">98.4%</strong>
-                            <span class="stat-sub">Top 5% in Kano</span>
+
+                        <div class="prof-pill-card">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">ACCURACY & TRUST</span>
+                                <i class="fa-solid fa-shield-halved p-icon teal"></i>
+                            </div>
+                            <strong class="p-card-val" id="prof-trust-val">98.4%</strong>
+                            <span class="p-card-sub">Top 5% in Kano</span>
                         </div>
                     </div>
 
-                    <!-- Tabbed Dashboard Navigation -->
-                    <div class="profile-tab-header">
-                        <button class="prof-page-tab active" data-prof-tab="activity">Recent Activity & Reports</button>
-                        <button class="prof-page-tab" data-prof-tab="alertgraph">AlertGraph Notification Settings</button>
-                        <button class="prof-page-tab" data-prof-tab="payouts">Bank Account & Settlement</button>
+                    <!-- Sleek Tab Bar (Ref Image 1 & 3) -->
+                    <div class="prof-tab-bar">
+                        <button class="prof-tab-btn active" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
+                        <button class="prof-tab-btn" data-prof-tab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</button>
+                        <button class="prof-tab-btn" data-prof-tab="alertgraph"><i class="fa-solid fa-sliders"></i> Alert Preferences</button>
+                        <button class="prof-tab-btn" data-prof-tab="payouts"><i class="fa-solid fa-building-columns"></i> Bank & Payouts</button>
                     </div>
 
-                    <!-- Tab Panes -->
-                    <div class="profile-pane-container">
-                        <!-- Pane 1: Activity -->
-                        <div class="prof-page-pane active" id="prof-pane-activity">
-                            <div class="activity-feed-card">
+                    <!-- Profile Panes -->
+                    <div class="prof-panes-wrapper">
+                        <!-- Pane 1: My Details (Ref Image 1 Settings UI) -->
+                        <div class="prof-pane active" id="prof-pane-details">
+                            <div class="prof-settings-card">
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Public Profile</h4>
+                                        <p>Update your public agent information and market hub location.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="form-row-grid">
+                                            <div class="form-field">
+                                                <label>Agent Full Name</label>
+                                                <input type="text" value="Amina Yusuf" id="input-prof-name" />
+                                            </div>
+                                            <div class="form-field">
+                                                <label>Primary Phone Number</label>
+                                                <input type="text" value="+234 801 234 5678" id="input-prof-phone" />
+                                            </div>
+                                        </div>
+                                        <div class="form-field margin-top">
+                                            <label>Assigned Markets & Region</label>
+                                            <input type="text" value="Dawanau & Sabon Gari Markets, Kano" id="input-prof-markets" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Profile Picture</h4>
+                                        <p>Upload a clear face photo for agent badge verification.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="avatar-upload-dropzone">
+                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                            <strong>Click to upload or drag and drop</strong>
+                                            <span>SVG, PNG, JPG, GIF (Max 800×800px)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Default Settlement Bank</h4>
+                                        <p>Bank account linked for automatic reward cashouts.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="bank-pill-card">
+                                            <div class="bank-pill-left">
+                                                <i class="fa-solid fa-building-columns bank-badge-icon"></i>
+                                                <div>
+                                                    <strong>OPay Digital Bank</strong>
+                                                    <p>Account: 703****892 · Amina Yusuf</p>
+                                                </div>
+                                            </div>
+                                            <span class="bank-tag-verified">Verified</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pane 2: Activity Log -->
+                        <div class="prof-pane" id="prof-pane-activity" style="display: none;">
+                            <div class="prof-settings-card">
                                 <h3><i class="fa-solid fa-clock-rotate-left"></i> Submitted Intelligence Activity</h3>
                                 <div class="activity-feed-list">
                                     <div class="act-feed-item">
                                         <i class="fa-solid fa-circle-check act-icon green"></i>
                                         <div class="act-info">
                                             <strong>Submitted Price Report: Rice 50kg (₦72,000)</strong>
-                                            <span>Dawanau Market · Verified by 5 Agents · Earned +₦1,500</span>
+                                            <span>Dawanau Market · Verified by 5 Agents · Earned +25 MarketPoints (+₦1,500)</span>
                                         </div>
                                         <span class="act-time">2h ago</span>
                                     </div>
@@ -1106,7 +1189,7 @@
                                         <i class="fa-solid fa-circle-check act-icon green"></i>
                                         <div class="act-info">
                                             <strong>Verified Cement Price: Dangote 50kg (₦8,500)</strong>
-                                            <span>Sabon Gari Market · Confidence 99% · Earned +₦800</span>
+                                            <span>Sabon Gari Market · Confidence 99% · Earned +25 MarketPoints (+₦800)</span>
                                         </div>
                                         <span class="act-time">Yesterday</span>
                                     </div>
@@ -1114,7 +1197,7 @@
                                         <i class="fa-solid fa-receipt act-icon purple"></i>
                                         <div class="act-info">
                                             <strong>Uploaded Market Receipt: Golden Penny Flour</strong>
-                                            <span>Mile 12 Audit Batch · Earned +50 XP</span>
+                                            <span>Mile 12 Audit Batch · Earned +50 MarketPoints</span>
                                         </div>
                                         <span class="act-time">3 days ago</span>
                                     </div>
@@ -1122,9 +1205,9 @@
                             </div>
                         </div>
 
-                        <!-- Pane 2: AlertGraph Settings -->
-                        <div class="prof-page-pane" id="prof-pane-alertgraph" style="display: none;">
-                            <div class="alertgraph-card">
+                        <!-- Pane 3: AlertGraph Settings -->
+                        <div class="prof-pane" id="prof-pane-alertgraph" style="display: none;">
+                            <div class="prof-settings-card">
                                 <h3><i class="fa-solid fa-sliders"></i> AlertGraph Distribution Preferences</h3>
                                 <div class="alertgraph-settings-list">
                                     <div class="ag-setting-row">
@@ -1152,9 +1235,9 @@
                             </div>
                         </div>
 
-                        <!-- Pane 3: Bank Payouts -->
-                        <div class="prof-page-pane" id="prof-pane-payouts" style="display: none;">
-                            <div class="payout-bank-card">
+                        <!-- Pane 4: Bank & Payouts -->
+                        <div class="prof-pane" id="prof-pane-payouts" style="display: none;">
+                            <div class="prof-settings-card">
                                 <div class="bank-details-row">
                                     <i class="fa-solid fa-building-columns bank-icon"></i>
                                     <div>

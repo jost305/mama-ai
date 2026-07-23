@@ -713,6 +713,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Redesigned Profile Tab Switcher
+    const profTabBtns = document.querySelectorAll('.prof-tab-btn');
+    profTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabTarget = btn.getAttribute('data-prof-tab');
+            profTabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const panes = document.querySelectorAll('.prof-pane');
+            panes.forEach(pane => {
+                if (pane.id === `prof-pane-${tabTarget}`) {
+                    pane.style.display = 'block';
+                    pane.classList.add('active');
+                } else {
+                    pane.style.display = 'none';
+                    pane.classList.remove('active');
+                }
+            });
+        });
+    });
+
     // View mode toggle
     const vmBtnList = document.getElementById('vm-btn-list');
     const vmBtnGrid = document.getElementById('vm-btn-grid');
