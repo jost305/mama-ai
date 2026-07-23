@@ -446,6 +446,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ── Invite Market Scouts Referral Modal Handlers ──
+    const inviteScoutsBtn = document.getElementById('invite-scouts-btn');
+    const inviteScoutsModal = document.getElementById('invite-scouts-modal');
+    const closeInviteModal = document.getElementById('close-invite-modal');
+    const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
+    const referralLinkInput = document.getElementById('referral-link-input');
+
+    if (inviteScoutsBtn && inviteScoutsModal) {
+        inviteScoutsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            inviteScoutsModal.classList.add('open');
+        });
+    }
+
+    if (closeInviteModal && inviteScoutsModal) {
+        closeInviteModal.addEventListener('click', () => {
+            inviteScoutsModal.classList.remove('open');
+        });
+    }
+
+    if (copyRefLinkBtn && referralLinkInput) {
+        copyRefLinkBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(referralLinkInput.value);
+            copyRefLinkBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+            setTimeout(() => {
+                copyRefLinkBtn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
+            }, 2000);
+        });
+    }
+
     function updateAuthUIState() {
         const token = localStorage.getItem('mamaprice_jwt_token');
         const userJson = localStorage.getItem('mamaprice_auth_user');

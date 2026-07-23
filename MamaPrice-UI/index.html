@@ -596,7 +596,7 @@
                             </div>
                         </div>
                         <div class="scout-header-actions">
-                            <button class="btn-compact-primary"><i class="fa-solid fa-plus"></i> Invite Scouts</button>
+                            <button class="btn-compact-primary" id="invite-scouts-btn"><i class="fa-solid fa-plus"></i> Invite Scouts</button>
                         </div>
                     </div>
 
@@ -1200,6 +1200,44 @@
                         Authenticates via MamaPrice Reverse Handshake.
                     </p>
                 </form>
+            </div>
+        </div>
+    <!-- Modal 3: Tight Referral Modal for Invite Scouts -->
+    <div class="modal-overlay" id="invite-scouts-modal">
+        <div class="modal-card invite-referral-card">
+            <div class="referral-modal-header">
+                <div class="ref-header-left">
+                    <div class="ref-icon-badge"><i class="fa-solid fa-user-plus"></i></div>
+                    <div>
+                        <h3>Invite Market Scouts</h3>
+                        <p>Empower local scouts & earn referral bonuses.</p>
+                    </div>
+                </div>
+                <button class="modal-close" id="close-invite-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="referral-modal-body">
+                <div class="ref-perk-banner">
+                    <span class="gift-emoji">🎁</span>
+                    <div>
+                        <strong>Earn ₦1,000 Bonus per Scout</strong>
+                        <p>Received when your invited scout completes their first 5 verified price reports.</p>
+                    </div>
+                </div>
+
+                <div class="ref-link-group">
+                    <label>YOUR UNIQUE REFERRAL LINK</label>
+                    <div class="ref-link-box">
+                        <input type="text" id="referral-link-input" value="https://mamaprice.ng/invite?ref=AMINA92X" readonly />
+                        <button type="button" class="ref-copy-btn" id="copy-ref-link-btn" title="Copy Link"><i class="fa-regular fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+
+                <div class="ref-share-actions">
+                    <a href="https://wa.me/?text=Join%20me%20as%20a%20verified%20Market%20Scout%20on%20MamaPrice!%20Earn%20cash%20reporting%20local%20prices:%20https://mamaprice.ng/invite?ref=AMINA92X" target="_blank" class="wa-share-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+                    </a>
+                </div>
             </div>
         </div>
     </div>
