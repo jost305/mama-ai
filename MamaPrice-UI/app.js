@@ -532,14 +532,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
     const scoutsData = [
-        { id: 'SC-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Market Agent', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Agent Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Agent Explorer', markets: ['Computer Village'], reports: 42, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
-        { id: 'SC-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Agent Explorer', markets: ['Mile 12'], reports: 28, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
+        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, points: 8900, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, points: 7450, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, points: 5375, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Market Agent', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, points: 4600, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Agent Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, points: 1900, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Agent Explorer', markets: ['Computer Village'], reports: 42, points: 1050, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Agent Explorer', markets: ['Mile 12'], reports: 28, points: 700, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
     ];
 
     const scoutSearchInput = document.getElementById('scout-search-input');
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.viewScoutDetails = function(id) {
         const s = scoutsData.find(x => x.id === id);
         if (!s) return;
-        alert(`👤 Agent Details:\n\nName: ${s.name}\nPhone: ${maskPhoneNumber(s.phone)}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
+        alert(`👤 Agent Details:\n\nName: ${s.name}\nPhone: ${maskPhoneNumber(s.phone)}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nMarketPoints: ${(s.points || s.reports * 25).toLocaleString()} pts\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
     };
 
     window.triggerScoutActions = function(id) {
@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (list.length === 0) {
             scoutsTableBody.innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 32px 16px; color: #64748b;">
+                    <td colspan="9" style="text-align: center; padding: 32px 16px; color: #64748b;">
                         <i class="fa-solid fa-user-slash" style="font-size: 1.8rem; margin-bottom: 8px; color: #cbd5e1; display: block;"></i>
                         <strong>No Market Agents found matching your filters.</strong>
                         <p style="font-size: 0.76rem; margin-top: 4px;">Try adjusting your search query, status, level, or market filter.</p>
@@ -620,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="scout-lvl-badge ${getLevelBadgeClass(s.level)}">${s.level}</span></td>
                 <td><span class="scout-markets-text">${s.markets.join(', ')}</span></td>
                 <td><strong class="scout-stat-num">${s.reports.toLocaleString()}</strong></td>
+                <td><strong style="color: #d97706; font-size: 0.82rem;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>${(s.points || (s.reports * 25)).toLocaleString()} pts</strong></td>
                 <td>
                     <div class="trust-score-pill ${getTrustScoreClass(s.trustScore)}">
                         <i class="fa-solid fa-shield"></i> <strong>${s.trustScore}%</strong> <small>${s.trustLabel}</small>
