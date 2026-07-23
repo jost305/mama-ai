@@ -1097,9 +1097,10 @@
                         </div>
                     </div>
 
-                    <!-- Sleek Tab Bar (Ref Image 1 & 3) -->
+                    <!-- Sleek Tab Bar -->
                     <div class="prof-tab-bar">
                         <button class="prof-tab-btn active" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
+                        <button class="prof-tab-btn" data-prof-tab="savings"><i class="fa-solid fa-piggy-bank"></i> Market Savings</button>
                         <button class="prof-tab-btn" data-prof-tab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</button>
                         <button class="prof-tab-btn" data-prof-tab="alertgraph"><i class="fa-solid fa-sliders"></i> Alert Preferences</button>
                         <button class="prof-tab-btn" data-prof-tab="payouts"><i class="fa-solid fa-building-columns"></i> Bank & Payouts</button>
@@ -1107,7 +1108,7 @@
 
                     <!-- Profile Panes -->
                     <div class="prof-panes-wrapper">
-                        <!-- Pane 1: My Details (Ref Image 1 Settings UI) -->
+                        <!-- Pane 1: My Details -->
                         <div class="prof-pane active" id="prof-pane-details">
                             <div class="prof-settings-card">
                                 <div class="settings-section">
@@ -1168,6 +1169,105 @@
                                             <span class="bank-tag-verified">Verified</span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pane 2: Market Savings Intelligence Breakdown Table -->
+                        <div class="prof-pane" id="prof-pane-savings" style="display: none;">
+                            <div class="prof-settings-card" style="padding: 20px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <h3 style="font-size: 1.05rem; margin: 0;"><i class="fa-solid fa-piggy-bank" style="color: #2563eb;"></i> Market Savings Intelligence Summary</h3>
+                                        <p style="font-size: 0.78rem; color: #64748b; margin: 3px 0 0;">Itemized log of verified savings discovered across regional markets using MamaPrice real-time intelligence.</p>
+                                    </div>
+                                    <div class="savings-total-pill">
+                                        <small style="color: #64748b; font-weight: 600;">Total Saved (This Month):</small>
+                                        <strong style="color: #15803d; font-size: 1.1rem; margin-left: 6px;">₦128,500</strong>
+                                    </div>
+                                </div>
+
+                                <div style="overflow-x: auto;">
+                                    <table class="scout-data-table savings-table">
+                                        <thead>
+                                            <tr>
+                                                <th>DATE & TIME</th>
+                                                <th>COMMODITY / ITEM</th>
+                                                <th>MARKET LOCATION</th>
+                                                <th>BENCHMARK PRICE</th>
+                                                <th>DISCOVERED PRICE</th>
+                                                <th>AMOUNT SAVED</th>
+                                                <th style="text-align: right;">ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><span style="font-size: 0.8rem; font-weight: 600; color: #334155;">Today, 2:15 PM</span></td>
+                                                <td><strong style="color: #0f172a;">Rice 50kg (Mama Gold)</strong></td>
+                                                <td><span class="scout-markets-text">Dawanau Market, Kano</span></td>
+                                                <td><span style="color: #64748b; text-decoration: line-through;">₦76,500</span></td>
+                                                <td><strong style="color: #16a34a;">₦72,000</strong></td>
+                                                <td><span class="savings-tag-badge">+₦4,500 (5.9%)</span></td>
+                                                <td style="text-align: right;">
+                                                    <button class="tbl-ask-mama-btn" onclick="askMamaAboutMarket('Rice 50kg', 'Dawanau Market, Kano')">
+                                                        <i class="fa-solid fa-robot"></i> Ask MamaPrice AI
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-size: 0.8rem; font-weight: 600; color: #334155;">Today, 11:30 AM</span></td>
+                                                <td><strong style="color: #0f172a;">Fresh Tomatoes (Big Basket)</strong></td>
+                                                <td><span class="scout-markets-text">Mile 12 Market, Lagos</span></td>
+                                                <td><span style="color: #64748b; text-decoration: line-through;">₦42,000</span></td>
+                                                <td><strong style="color: #16a34a;">₦41,650</strong></td>
+                                                <td><span class="savings-tag-badge">+₦350 (0.8%)</span></td>
+                                                <td style="text-align: right;">
+                                                    <button class="tbl-ask-mama-btn" onclick="askMamaAboutMarket('Fresh Tomatoes', 'Mile 12 Market, Lagos')">
+                                                        <i class="fa-solid fa-robot"></i> Ask MamaPrice AI
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-size: 0.8rem; font-weight: 600; color: #334155;">Yesterday, 4:45 PM</span></td>
+                                                <td><strong style="color: #0f172a;">Dangote Cement 50kg</strong></td>
+                                                <td><span class="scout-markets-text">Sabon Gari Market, Kano</span></td>
+                                                <td><span style="color: #64748b; text-decoration: line-through;">₦9,300</span></td>
+                                                <td><strong style="color: #16a34a;">₦8,500</strong></td>
+                                                <td><span class="savings-tag-badge">+₦800 (8.6%)</span></td>
+                                                <td style="text-align: right;">
+                                                    <button class="tbl-ask-mama-btn" onclick="askMamaAboutMarket('Dangote Cement 50kg', 'Sabon Gari Market, Kano')">
+                                                        <i class="fa-solid fa-robot"></i> Ask MamaPrice AI
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-size: 0.8rem; font-weight: 600; color: #334155;">22 Jul, 10:15 AM</span></td>
+                                                <td><strong style="color: #0f172a;">Golden Penny Flour 50kg</strong></td>
+                                                <td><span class="scout-markets-text">Bodija Market, Ibadan</span></td>
+                                                <td><span style="color: #64748b; text-decoration: line-through;">₦68,000</span></td>
+                                                <td><strong style="color: #16a34a;">₦64,800</strong></td>
+                                                <td><span class="savings-tag-badge">+₦3,200 (4.7%)</span></td>
+                                                <td style="text-align: right;">
+                                                    <button class="tbl-ask-mama-btn" onclick="askMamaAboutMarket('Golden Penny Flour 50kg', 'Bodija Market, Ibadan')">
+                                                        <i class="fa-solid fa-robot"></i> Ask MamaPrice AI
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-size: 0.8rem; font-weight: 600; color: #334155;">20 Jul, 1:20 PM</span></td>
+                                                <td><strong style="color: #0f172a;">Refined Palm Oil 25L</strong></td>
+                                                <td><span class="scout-markets-text">Onitsha Main Market, Anambra</span></td>
+                                                <td><span style="color: #64748b; text-decoration: line-through;">₦58,500</span></td>
+                                                <td><strong style="color: #16a34a;">₦54,000</strong></td>
+                                                <td><span class="savings-tag-badge">+₦4,500 (7.7%)</span></td>
+                                                <td style="text-align: right;">
+                                                    <button class="tbl-ask-mama-btn" onclick="askMamaAboutMarket('Refined Palm Oil 25L', 'Onitsha Main Market, Anambra')">
+                                                        <i class="fa-solid fa-robot"></i> Ask MamaPrice AI
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
