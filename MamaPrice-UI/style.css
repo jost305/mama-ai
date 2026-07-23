@@ -622,6 +622,27 @@ body.sidebar-docked .top-dock-btn {
     padding: 0 20px;
 }
 
+.hero-logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.hero-logo-img {
+    height: 54px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    filter: drop-shadow(0 4px 14px rgba(21, 128, 61, 0.18));
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-logo-img:hover {
+    transform: scale(1.06);
+}
+
 .hero-orb-wrapper {
     display: flex;
     flex-direction: column;
