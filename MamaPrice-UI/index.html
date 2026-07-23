@@ -1031,9 +1031,11 @@
                 </div>
             </div>
 
-            <!-- Page 8: Full Profile / Market Savings Intelligence Dashboard (Custom Redesign) -->
+            <!-- Page 8: Full Profile & Agent Intelligence Dashboard Page (Redesigned) -->
             <div class="page-view" id="page-profile">
-                    <!-- Top Cover & Avatar Banner Card -->
+                <div class="view-container profile-page-container">
+                    
+                    <!-- Top Cover & Avatar Banner Card (Ref Image 1 & 3) -->
                     <div class="prof-redesign-hero">
                         <div class="prof-gradient-cover"></div>
                         <div class="prof-hero-body">
@@ -1056,307 +1058,201 @@
                         </div>
                     </div>
 
-                    <!-- Page Section Header -->
-                    <div class="savings-page-header">
-                        <div class="sph-title-row">
-                            <h2>Market Savings Intelligence Summary <i class="fa-regular fa-circle-info sph-info-icon" title="Tracking verified price discovery savings across regional markets"></i></h2>
-                        </div>
-                        <p class="sph-desc">Tracking how much you saved on commodities by leveraging MamaPrice real-time price discovery.</p>
-                    </div>
-
-                    <!-- 4 Primary Stat Cards Row (Section 1) -->
-                    <div class="savings-stats-grid">
-                        <div class="savings-stat-card card-green">
-                            <div class="ssc-top">
-                                <span class="ssc-lbl green">SAVED TODAY</span>
-                                <div class="ssc-icon-box green-bg">
-                                    <i class="fa-solid fa-arrow-trend-up"></i>
-                                </div>
+                    <!-- 4 Ultra-Compact Stat Cards (Ref Images 2 & 3) -->
+                    <div class="prof-stats-row">
+                        <div class="prof-pill-card highlight-green">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">AGENT EARNINGS</span>
+                                <i class="fa-solid fa-wallet p-icon green"></i>
                             </div>
-                            <strong class="ssc-val">₦4,850</strong>
-                            <span class="ssc-sub green"><strong>2</strong> Price Comparisons</span>
+                            <strong class="p-card-val green" id="prof-wallet-val">₦148,500</strong>
+                            <span class="p-card-sub">Available Balance</span>
                         </div>
 
-                        <div class="savings-stat-card card-blue">
-                            <div class="ssc-top">
-                                <span class="ssc-lbl blue">SAVED THIS WEEK</span>
-                                <div class="ssc-icon-box blue-bg">
-                                    <i class="fa-regular fa-calendar-check"></i>
-                                </div>
+                        <div class="prof-pill-card highlight-amber">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">MARKETPOINTS</span>
+                                <i class="fa-solid fa-coins p-icon amber"></i>
                             </div>
-                            <strong class="ssc-val">₦32,400</strong>
-                            <span class="ssc-sub blue"><strong>8</strong> Market Deals</span>
+                            <strong class="p-card-val amber" id="prof-points-val">3,550 pts</strong>
+                            <span class="p-card-sub">+25 pts per report</span>
                         </div>
 
-                        <div class="savings-stat-card card-purple">
-                            <div class="ssc-top">
-                                <span class="ssc-lbl purple">SAVED THIS MONTH</span>
-                                <div class="ssc-icon-box purple-bg">
-                                    <i class="fa-solid fa-bag-shopping"></i>
-                                </div>
+                        <div class="prof-pill-card">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">REPORTS LOGGED</span>
+                                <i class="fa-regular fa-file-lines p-icon blue"></i>
                             </div>
-                            <strong class="ssc-val">₦128,500</strong>
-                            <span class="ssc-sub purple">Top 3% Smart Buyer</span>
+                            <strong class="p-card-val" id="prof-reports-val">142</strong>
+                            <span class="p-card-sub">+12 this week</span>
                         </div>
 
-                        <div class="savings-stat-card card-orange">
-                            <div class="ssc-top">
-                                <span class="ssc-lbl orange">SAVED THIS YEAR</span>
-                                <div class="ssc-icon-box orange-bg">
-                                    <i class="fa-solid fa-trophy"></i>
-                                </div>
+                        <div class="prof-pill-card">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">ACCURACY & TRUST</span>
+                                <i class="fa-solid fa-shield-halved p-icon teal"></i>
                             </div>
-                            <strong class="ssc-val">₦842,000</strong>
-                            <span class="ssc-sub orange">Lifetime Savings</span>
+                            <strong class="p-card-val" id="prof-trust-val">98.4%</strong>
+                            <span class="p-card-sub">Top 5% in Kano</span>
                         </div>
                     </div>
 
-                    <!-- Middle Grid: Your Savings Trend & Savings vs Last Year / Smart Rank (Section 2) -->
-                    <div class="savings-middle-grid">
-                        <!-- Chart Box -->
-                        <div class="savings-card-box trend-card-box">
-                            <div class="scb-header">
-                                <h3>Your Savings Trend</h3>
-                                <select class="scb-select">
-                                    <option value="year">This Year</option>
-                                    <option value="month">This Month</option>
-                                    <option value="week">This Week</option>
-                                </select>
-                            </div>
-
-                            <div class="chart-container-box">
-                                <svg class="savings-trend-svg" viewBox="0 0 540 180" preserveAspectRatio="none">
-                                    <!-- Grid lines -->
-                                    <line x1="40" y1="20" x2="520" y2="20" stroke="#f1f5f9" stroke-width="1" />
-                                    <line x1="40" y1="60" x2="520" y2="60" stroke="#f1f5f9" stroke-width="1" />
-                                    <line x1="40" y1="100" x2="520" y2="100" stroke="#f1f5f9" stroke-width="1" />
-                                    <line x1="40" y1="140" x2="520" y2="140" stroke="#f1f5f9" stroke-width="1" />
-
-                                    <!-- Y-Axis labels -->
-                                    <text x="5" y="24" class="svg-axis-txt">₦150K</text>
-                                    <text x="5" y="64" class="svg-axis-txt">₦120K</text>
-                                    <text x="5" y="104" class="svg-axis-txt">₦90K</text>
-                                    <text x="5" y="144" class="svg-axis-txt">₦60K</text>
-                                    <text x="20" y="175" class="svg-axis-txt">₦0</text>
-
-                                    <!-- Trend line -->
-                                    <path d="M 50 150 L 110 115 L 170 135 L 230 95 L 290 110 L 350 70 L 410 85 L 470 35" fill="none" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-
-                                    <!-- Data dots -->
-                                    <circle cx="50" cy="150" r="4" fill="#16a34a" />
-                                    <circle cx="110" cy="115" r="4" fill="#16a34a" />
-                                    <circle cx="170" cy="135" r="4" fill="#16a34a" />
-                                    <circle cx="230" cy="95" r="4" fill="#16a34a" />
-                                    <circle cx="290" cy="110" r="4" fill="#16a34a" />
-                                    <circle cx="350" cy="70" r="4" fill="#16a34a" />
-                                    <circle cx="410" cy="85" r="4" fill="#16a34a" />
-                                    <circle cx="470" cy="35" r="6" fill="#16a34a" stroke="#ffffff" stroke-width="2" />
-                                </svg>
-
-                                <!-- Active Tooltip Badge -->
-                                <div class="chart-active-tooltip">
-                                    <small>Nov 2024</small>
-                                    <strong>₦128,500</strong>
-                                </div>
-
-                                <!-- X-Axis Labels -->
-                                <div class="svg-x-axis-row">
-                                    <span>May</span>
-                                    <span>Jun</span>
-                                    <span>Jul</span>
-                                    <span>Aug</span>
-                                    <span>Sep</span>
-                                    <span>Oct</span>
-                                    <span>Nov</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stacked Side Column -->
-                        <div class="savings-side-column">
-                            <!-- Card 1: Savings vs Last Year -->
-                            <div class="savings-card-box vs-year-card">
-                                <h3>Savings vs Last Year</h3>
-                                <div class="vs-year-val-row">
-                                    <strong class="vs-year-badge">+38%</strong>
-                                </div>
-                                <p class="vs-year-sub">You're saving more this year! 🎉</p>
-                                
-                                <!-- Progress Bar -->
-                                <div class="vs-progress-track">
-                                    <div class="vs-progress-fill" style="width: 72%;"></div>
-                                </div>
-
-                                <div class="vs-year-footer">
-                                    <span>Last Year: <strong>₦610,000</strong></span>
-                                    <span>This Year: <strong>₦842,000</strong></span>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Smart Buyer Rank -->
-                            <div class="savings-card-box rank-card-box">
-                                <div class="rank-content-row">
-                                    <div class="rank-medal-icon">
-                                        <span>3</span>
-                                    </div>
-                                    <div class="rank-info-text">
-                                        <h4>Smart Buyer Rank</h4>
-                                        <strong class="rank-title">Top 3%</strong>
-                                        <p>You're among the top smart buyers on MamaPrice</p>
-                                        <a href="#agents" class="rank-link-btn">View Leaderboard <i class="fa-solid fa-arrow-right"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Sleek Tab Bar (Ref Image 1 & 3) -->
+                    <div class="prof-tab-bar">
+                        <button class="prof-tab-btn active" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
+                        <button class="prof-tab-btn" data-prof-tab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</button>
+                        <button class="prof-tab-btn" data-prof-tab="alertgraph"><i class="fa-solid fa-sliders"></i> Alert Preferences</button>
+                        <button class="prof-tab-btn" data-prof-tab="payouts"><i class="fa-solid fa-building-columns"></i> Bank & Payouts</button>
                     </div>
 
-                    <!-- Bottom Grid: Top Commodities You Saved On & Recent Savings (Section 3) -->
-                    <div class="savings-bottom-grid">
-                        <!-- Top Commodities You Saved On -->
-                        <div class="savings-card-box top-comm-box">
-                            <div class="scb-header">
-                                <h3>Top Commodities You Saved On</h3>
-                                <a href="#prices" class="scb-link">View All Commodities <i class="fa-solid fa-arrow-right"></i></a>
-                            </div>
+                    <!-- Profile Panes -->
+                    <div class="prof-panes-wrapper">
+                        <!-- Pane 1: My Details (Ref Image 1 Settings UI) -->
+                        <div class="prof-pane active" id="prof-pane-details">
+                            <div class="prof-settings-card">
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Public Profile</h4>
+                                        <p>Update your public agent information and market hub location.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="form-row-grid">
+                                            <div class="form-field">
+                                                <label>Agent Full Name</label>
+                                                <input type="text" value="Amina Yusuf" id="input-prof-name" />
+                                            </div>
+                                            <div class="form-field">
+                                                <label>Primary Phone Number</label>
+                                                <input type="text" value="+234 801 234 5678" id="input-prof-phone" />
+                                            </div>
+                                        </div>
+                                        <div class="form-field margin-top">
+                                            <label>Assigned Markets & Region</label>
+                                            <input type="text" value="Dawanau & Sabon Gari Markets, Kano" id="input-prof-markets" />
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div style="overflow-x: auto;">
-                                <table class="comm-savings-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Commodity</th>
-                                            <th>Total Saved</th>
-                                            <th>Compared Markets</th>
-                                            <th style="text-align: right;">Avg. Price Difference</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="comm-cell-info">
-                                                    <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=60&auto=format&fit=crop&q=80" alt="Rice" class="comm-thumb-img" />
-                                                    <strong>Rice (50kg)</strong>
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Profile Picture</h4>
+                                        <p>Upload a clear face photo for agent badge verification.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="avatar-upload-dropzone">
+                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                            <strong>Click to upload or drag and drop</strong>
+                                            <span>SVG, PNG, JPG, GIF (Max 800×800px)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Default Settlement Bank</h4>
+                                        <p>Bank account linked for automatic reward cashouts.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="bank-pill-card">
+                                            <div class="bank-pill-left">
+                                                <i class="fa-solid fa-building-columns bank-badge-icon"></i>
+                                                <div>
+                                                    <strong>OPay Digital Bank</strong>
+                                                    <p>Account: 703****892 · Amina Yusuf</p>
                                                 </div>
-                                            </td>
-                                            <td><strong class="comm-saved-amt">₦56,400</strong></td>
-                                            <td><span class="comm-market-cnt">12</span></td>
-                                            <td style="text-align: right;"><strong class="comm-diff-green">₦1,900 (8.4%)</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="comm-cell-info">
-                                                    <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=60&auto=format&fit=crop&q=80" alt="Tomatoes" class="comm-thumb-img" />
-                                                    <strong>Tomatoes (Basket)</strong>
-                                                </div>
-                                            </td>
-                                            <td><strong class="comm-saved-amt">₦18,750</strong></td>
-                                            <td><span class="comm-market-cnt">9</span></td>
-                                            <td style="text-align: right;"><strong class="comm-diff-green">₦2,080 (15.6%)</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="comm-cell-info">
-                                                    <img src="https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=60&auto=format&fit=crop&q=80" alt="Palm Oil" class="comm-thumb-img" />
-                                                    <strong>Palm Oil (25L)</strong>
-                                                </div>
-                                            </td>
-                                            <td><strong class="comm-saved-amt">₦15,600</strong></td>
-                                            <td><span class="comm-market-cnt">6</span></td>
-                                            <td style="text-align: right;"><strong class="comm-diff-green">₦2,600 (12.8%)</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="comm-cell-info">
-                                                    <img src="https://images.unsplash.com/photo-1551462147-37885acc36f1?w=60&auto=format&fit=crop&q=80" alt="Beans" class="comm-thumb-img" />
-                                                    <strong>Beans (Paint Bucket)</strong>
-                                                </div>
-                                            </td>
-                                            <td><strong class="comm-saved-amt">₦12,300</strong></td>
-                                            <td><span class="comm-market-cnt">5</span></td>
-                                            <td style="text-align: right;"><strong class="comm-diff-green">₦1,820 (10.3%)</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="comm-cell-info">
-                                                    <img src="https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=60&auto=format&fit=crop&q=80" alt="Garri" class="comm-thumb-img" />
-                                                    <strong>Garri (50kg)</strong>
-                                                </div>
-                                            </td>
-                                            <td><strong class="comm-saved-amt">₦9,850</strong></td>
-                                            <td><span class="comm-market-cnt">4</span></td>
-                                            <td style="text-align: right;"><strong class="comm-diff-green">₦1,640 (9.1%)</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            </div>
+                                            <span class="bank-tag-verified">Verified</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Recent Savings List -->
-                        <div class="savings-card-box recent-savings-box">
-                            <div class="scb-header">
-                                <h3>Recent Savings</h3>
-                                <a href="#history" class="scb-link">View All Savings <i class="fa-solid fa-arrow-right"></i></a>
+                        <!-- Pane 2: Activity Log -->
+                        <div class="prof-pane" id="prof-pane-activity" style="display: none;">
+                            <div class="prof-settings-card">
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> Submitted Intelligence Activity</h3>
+                                <div class="activity-feed-list">
+                                    <div class="act-feed-item">
+                                        <i class="fa-solid fa-circle-check act-icon green"></i>
+                                        <div class="act-info">
+                                            <strong>Submitted Price Report: Rice 50kg (₦72,000)</strong>
+                                            <span>Dawanau Market · Verified by 5 Agents · Earned +25 MarketPoints (+₦1,500)</span>
+                                        </div>
+                                        <span class="act-time">2h ago</span>
+                                    </div>
+                                    <div class="act-feed-item">
+                                        <i class="fa-solid fa-circle-check act-icon green"></i>
+                                        <div class="act-info">
+                                            <strong>Verified Cement Price: Dangote 50kg (₦8,500)</strong>
+                                            <span>Sabon Gari Market · Confidence 99% · Earned +25 MarketPoints (+₦800)</span>
+                                        </div>
+                                        <span class="act-time">Yesterday</span>
+                                    </div>
+                                    <div class="act-feed-item">
+                                        <i class="fa-solid fa-receipt act-icon purple"></i>
+                                        <div class="act-info">
+                                            <strong>Uploaded Market Receipt: Golden Penny Flour</strong>
+                                            <span>Mile 12 Audit Batch · Earned +50 MarketPoints</span>
+                                        </div>
+                                        <span class="act-time">3 days ago</span>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="recent-savings-list">
-                                <div class="recent-sav-item">
-                                    <div class="rsi-left">
-                                        <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=60&auto=format&fit=crop&q=80" alt="Rice" class="rsi-thumb" />
+                        <!-- Pane 3: AlertGraph Settings -->
+                        <div class="prof-pane" id="prof-pane-alertgraph" style="display: none;">
+                            <div class="prof-settings-card">
+                                <h3><i class="fa-solid fa-sliders"></i> AlertGraph Distribution Preferences</h3>
+                                <div class="alertgraph-settings-list">
+                                    <div class="ag-setting-row">
                                         <div>
-                                            <strong>Rice (50kg)</strong>
-                                            <span>Mile 12 Market, Lagos</span>
+                                            <strong>Food & Agriculture Alerts</strong>
+                                            <p>Receive immediate alerts when Rice, Tomatoes, or Flour prices shift >5%</p>
                                         </div>
+                                        <input type="checkbox" checked class="ag-toggle-switch">
                                     </div>
-                                    <div class="rsi-right">
-                                        <strong class="rsi-saved-val">Saved ₦2,400</strong>
-                                        <small class="rsi-time">Today, 09:45 AM</small>
+                                    <div class="ag-setting-row">
+                                        <div>
+                                            <strong>Building Materials & Steel</strong>
+                                            <p>Alerts for Cement, 12mm Rebar, and Roofing Sheets</p>
+                                        </div>
+                                        <input type="checkbox" checked class="ag-toggle-switch">
+                                    </div>
+                                    <div class="ag-setting-row">
+                                        <div>
+                                            <strong>Fuel & Energy Intelligence</strong>
+                                            <p>PMS/AGO scarcity warnings and station pricing</p>
+                                        </div>
+                                        <input type="checkbox" checked class="ag-toggle-switch">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div class="recent-sav-item">
-                                    <div class="rsi-left">
-                                        <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=60&auto=format&fit=crop&q=80" alt="Tomatoes" class="rsi-thumb" />
-                                        <div>
-                                            <strong>Tomatoes (Basket)</strong>
-                                            <span>Oyingbo Market, Lagos</span>
-                                        </div>
+                        <!-- Pane 4: Bank & Payouts -->
+                        <div class="prof-pane" id="prof-pane-payouts" style="display: none;">
+                            <div class="prof-settings-card">
+                                <div class="bank-details-row">
+                                    <i class="fa-solid fa-building-columns bank-icon"></i>
+                                    <div>
+                                        <strong>OPay Digital Bank</strong>
+                                        <p>Account: 703****892 · Amina Yusuf</p>
                                     </div>
-                                    <div class="rsi-right">
-                                        <strong class="rsi-saved-val">Saved ₦1,800</strong>
-                                        <small class="rsi-time">Today, 08:20 AM</small>
-                                    </div>
+                                    <span class="bank-verified-tag">Default Payout Bank</span>
                                 </div>
-
-                                <div class="recent-sav-item">
-                                    <div class="rsi-left">
-                                        <img src="https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=60&auto=format&fit=crop&q=80" alt="Palm Oil" class="rsi-thumb" />
-                                        <div>
-                                            <strong>Palm Oil (25L)</strong>
-                                            <span>Bodija Market, Ibadan</span>
-                                        </div>
-                                    </div>
-                                    <div class="rsi-right">
-                                        <strong class="rsi-saved-val">Saved ₦2,600</strong>
-                                        <small class="rsi-time">Yesterday, 05:10 PM</small>
-                                    </div>
-                                </div>
-
-                                <div class="recent-sav-item">
-                                    <div class="rsi-left">
-                                        <img src="https://images.unsplash.com/photo-1551462147-37885acc36f1?w=60&auto=format&fit=crop&q=80" alt="Beans" class="rsi-thumb" />
-                                        <div>
-                                            <strong>Beans (Paint Bucket)</strong>
-                                            <span>Sabo Market, Kano</span>
-                                        </div>
-                                    </div>
-                                    <div class="rsi-right">
-                                        <strong class="rsi-saved-val">Saved ₦1,650</strong>
-                                        <small class="rsi-time">Yesterday, 11:30 AM</small>
-                                    </div>
+                                <div class="payout-action-box">
+                                    <p>Available balance ready for instant transfer to your bank account:</p>
+                                    <button class="cashout-now-btn" id="cashout-now-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Cashout ₦148,500 to Bank Now</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </main>

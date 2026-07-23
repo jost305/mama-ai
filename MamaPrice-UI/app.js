@@ -713,20 +713,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Global Ask MamaPrice AI about Market Savings Helper
-    window.askMamaAboutMarket = function(commodity, market) {
-        const navHome = document.getElementById('nav-home');
-        const pageHome = document.getElementById('page-home');
-        const queryText = `Tell me more about price savings, trends, and verified sellers for ${commodity} at ${market}.`;
-        
-        if (typeof switchView === 'function') {
-            switchView(navHome, pageHome);
-        }
-        if (typeof sendSuggestion === 'function') {
-            sendSuggestion(queryText);
-        }
-    };
-
     // Redesigned Profile Tab Switcher
     const profTabBtns = document.querySelectorAll('.prof-tab-btn');
     profTabBtns.forEach(btn => {
