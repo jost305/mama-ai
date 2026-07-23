@@ -1031,15 +1031,15 @@
                 </div>
             </div>
 
-            <!-- Page 8: Full Profile & Scout Intelligence Dashboard Page -->
+            <!-- Page 8: Full Profile & Agent Intelligence Dashboard Page -->
             <div class="page-view" id="page-profile">
                 <div class="view-container profile-page-container">
                     <!-- Hero Header Banner Card -->
                     <div class="profile-page-banner">
                         <div class="banner-top-title">
-                            <span class="hub-tag"><i class="fa-solid fa-user-shield"></i> Scout Intelligence Dashboard</span>
+                            <span class="hub-tag"><i class="fa-solid fa-user-shield"></i> Agent Intelligence Dashboard</span>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="active-status-badge"><span class="live-dot"></span> Active Scout</span>
+                                <span class="active-status-badge"><span class="live-dot"></span> Active Agent</span>
                                 <button type="button" class="prof-logout-btn" id="prof-logout-btn" title="Log Out of MamaPrice"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
                             </div>
                         </div>
@@ -1049,7 +1049,7 @@
                                 <span class="avatar-verified-check"><i class="fa-solid fa-check"></i></span>
                             </div>
                             <div class="profile-hero-text">
-                                <h1>Amina Yusuf <span class="tier-pill">Level 4 Senior Scout</span></h1>
+                                <h1><span id="prof-hero-name">Amina Yusuf</span> <span class="tier-pill" id="prof-hero-level">Level 4 Senior Agent</span></h1>
                                 <p class="hero-loc"><i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets · Kano Hub</p>
                                 <p class="hero-desc">Verifying grain, flour & cement price movements across Northern market hubs.</p>
                             </div>
@@ -1059,24 +1059,24 @@
                     <!-- 4 Stat Cards Grid -->
                     <div class="profile-stats-grid">
                         <div class="prof-stat-card green-highlight">
-                            <span class="stat-lbl">Scout Earnings</span>
+                            <span class="stat-lbl">Agent Earnings</span>
                             <strong class="stat-val green" id="prof-wallet-val">₦148,500</strong>
                             <button class="stat-btn-action" id="prof-payout-btn">Withdraw Funds</button>
                         </div>
                         <div class="prof-stat-card">
+                            <span class="stat-lbl">MarketPoints</span>
+                            <strong class="stat-val" id="prof-points-val" style="color: #d97706;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>3,550 pts</strong>
+                            <span class="stat-sub">+25 pts per report</span>
+                        </div>
+                        <div class="prof-stat-card">
                             <span class="stat-lbl">Verified Reports</span>
-                            <strong class="stat-val">142</strong>
+                            <strong class="stat-val" id="prof-reports-val">142</strong>
                             <span class="stat-sub">+12 this week</span>
                         </div>
                         <div class="prof-stat-card">
-                            <span class="stat-lbl">Accuracy Rating</span>
-                            <strong class="stat-val">98.4%</strong>
+                            <span class="stat-lbl">Accuracy & Trust</span>
+                            <strong class="stat-val" id="prof-trust-val">98.4%</strong>
                             <span class="stat-sub">Top 5% in Kano</span>
-                        </div>
-                        <div class="prof-stat-card">
-                            <span class="stat-lbl">Community XP</span>
-                            <strong class="stat-val">4,850 XP</strong>
-                            <span class="stat-sub">Rank #4 Hub Leader</span>
                         </div>
                     </div>
 

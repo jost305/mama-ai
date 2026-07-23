@@ -674,6 +674,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         renderScoutsTable(filtered);
+        updateUserProfileDashboard();
+    }
+
+    function updateUserProfileDashboard() {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        const userName = userJson ? JSON.parse(userJson).name : 'Amina Yusuf';
+        const userPhone = userJson ? JSON.parse(userJson).phone : '0801 234 5678';
+
+        const agent = scoutsData.find(a => a.name.toLowerCase() === userName.toLowerCase() || a.phone === userPhone);
+
+        const profHeroName = document.getElementById('prof-hero-name');
+        const profHeroLevel = document.getElementById('prof-hero-level');
+        const profWalletVal = document.getElementById('prof-wallet-val');
+        const profPointsVal = document.getElementById('prof-points-val');
+        const profReportsVal = document.getElementById('prof-reports-val');
+        const profTrustVal = document.getElementById('prof-trust-val');
+
+        if (profHeroName) profHeroName.textContent = userName;
+        
+        if (agent) {
+            if (profHeroLevel) profHeroLevel.textContent = agent.level;
+            if (profWalletVal) profWalletVal.textContent = `₦${agent.earnings.toLocaleString()}`;
+            if (profPointsVal) profPointsVal.innerHTML = `<i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>${(agent.points || (agent.reports * 25)).toLocaleString()} pts`;
+            if (profReportsVal) profReportsVal.textContent = agent.reports.toLocaleString();
+            if (profTrustVal) profTrustVal.textContent = `${agent.trustScore}%`;
+        }
     }
 
     if (scoutSearchInput) scoutSearchInput.addEventListener('input', updateScoutsDashboard);
