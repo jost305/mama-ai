@@ -656,12 +656,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Recalculate Live KPIs
         const activeCount = filtered.filter(s => s.status === 'Active').length;
         const totalReports = filtered.reduce((acc, s) => acc + s.reports, 0);
+        const totalPoints = filtered.reduce((acc, s) => acc + (s.points || (s.reports * 25)), 0);
         const totalPaid = filtered.reduce((acc, s) => acc + s.earnings, 0);
         const avgTrust = filtered.length ? Math.round(filtered.reduce((acc, s) => acc + s.trustScore, 0) / filtered.length) : 0;
+
+        const kpiPointsEl = document.getElementById('scout-kpi-points');
 
         if (kpiTotalEl) kpiTotalEl.textContent = filtered.length.toLocaleString();
         if (kpiActiveEl) kpiActiveEl.textContent = activeCount.toLocaleString();
         if (kpiReportsEl) kpiReportsEl.textContent = totalReports.toLocaleString();
+        if (kpiPointsEl) kpiPointsEl.textContent = `${totalPoints.toLocaleString()} pts`;
         if (kpiPaidEl) kpiPaidEl.textContent = `₦${totalPaid.toLocaleString()}`;
         if (kpiTrustEl) kpiTrustEl.textContent = `${avgTrust}%`;
 
