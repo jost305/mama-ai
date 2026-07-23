@@ -147,7 +147,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mobileNav) mobileNav.classList.add('active');
 
         targetPage.classList.add('active');
+
+        // Update URL hash without scroll jump
+        const hashKey = (pageKey === 'agent') ? 'agents' : (pageKey === 'library' ? 'watchlist' : pageKey);
+        if (window.location.hash !== `#${hashKey}`) {
+            history.replaceState(null, '', `#${hashKey}`);
+        }
     }
+
+    function handleHashRouting() {
+        const hash = window.location.hash.replace('#', '').toLowerCase();
+        if (!hash) return;
+        let pageKey = hash;
+        if (hash === 'agents') pageKey = 'agent';
+        if (hash === 'watchlist') pageKey = 'library';
+        
+        const targetPage = document.getElementById(`page-${pageKey}`);
+        const desktopNav = document.getElementById(`nav-${pageKey}`);
+        if (targetPage) {
+            switchView(desktopNav, targetPage);
+        }
+    }
+
+    window.addEventListener('hashchange', handleHashRouting);
+    handleHashRouting();
 
     const navPrices = document.getElementById('nav-prices');
     const navLibrary = document.getElementById('nav-library');
