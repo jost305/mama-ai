@@ -4565,45 +4565,44 @@ body.sidebar-docked .top-dock-btn {
     display: block;
 }
 
-/* Market Savings Grid */
-.savings-grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 10px;
+/* Market Savings Table Elements */
+.savings-total-pill {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
 }
 
-.savings-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 14px;
+.savings-tag-badge {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 14px;
 }
 
-.s-box-lbl {
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: #64748b;
-    display: block;
-    margin-bottom: 4px;
+.tbl-ask-mama-btn {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
 }
 
-.s-box-val {
-    font-size: 1.35rem;
-    font-weight: 800;
-    display: block;
-}
-
-.s-box-val.green { color: #16a34a; }
-.s-box-val.blue { color: #2563eb; }
-.s-box-val.amber { color: #d97706; }
-.s-box-val.purple { color: #9333ea; }
-
-.savings-box small {
-    font-size: 0.7rem;
-    color: #64748b;
-    display: block;
-    margin-top: 2px;
+.tbl-ask-mama-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
 }
 
 /* Tab Bar Navigation */
