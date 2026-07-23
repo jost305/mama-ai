@@ -502,6 +502,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const kpiPaidEl = document.getElementById('scout-kpi-paid');
     const kpiTrustEl = document.getElementById('scout-kpi-trust');
 
+    function maskPhoneNumber(phone) {
+        if (!phone) return '';
+        const clean = phone.replace(/\s+/g, '');
+        if (clean.length < 8) return phone;
+        return `${clean.slice(0, 4)} *** ${clean.slice(-4)}`;
+    }
+
     function getLevelBadgeClass(level) {
         switch (level) {
             case 'Market Captain': return 'lvl-captain';
@@ -521,13 +528,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.viewScoutDetails = function(id) {
         const s = scoutsData.find(x => x.id === id);
         if (!s) return;
-        alert(`👤 Scout Details:\n\nName: ${s.name}\nPhone: ${s.phone}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
+        alert(`👤 Scout Details:\n\nName: ${s.name}\nPhone: ${maskPhoneNumber(s.phone)}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
     };
 
     window.triggerScoutActions = function(id) {
         const s = scoutsData.find(x => x.id === id);
         if (!s) return;
-        alert(`⚡ Quick Actions for ${s.name}:\n\n1. Send WhatsApp Message (${s.phone})\n2. Assign Market Mission\n3. Toggle Scout Status (Current: ${s.status})`);
+        alert(`⚡ Quick Actions for ${s.name}:\n\n1. Send WhatsApp Message (${maskPhoneNumber(s.phone)})\n2. Assign Market Mission\n3. Toggle Scout Status (Current: ${s.status})`);
     };
 
     function renderScoutsTable(list) {
@@ -552,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${s.avatar}" alt="${s.name}" class="scout-avatar" />
                         <div>
                             <strong class="scout-name">${s.name}</strong>
-                            <span class="scout-meta">${s.phone} · ${s.id}</span>
+                            <span class="scout-meta">${maskPhoneNumber(s.phone)} · ${s.id}</span>
                         </div>
                     </div>
                 </td>
