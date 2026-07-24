@@ -2139,6 +2139,45 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function bindMapControlEvents() {
+        // Mobile Back Arrow Button
+        const mobileBackBtn = document.getElementById('map-mobile-back-btn');
+        if (mobileBackBtn) {
+            mobileBackBtn.onclick = () => {
+                const homeNav = document.getElementById('nav-home');
+                if (homeNav) homeNav.click();
+            };
+        }
+
+        // Search Trigger Card & Action -> Opens Search Modal
+        const searchTriggerCard = document.getElementById('map-search-trigger-card');
+        const searchModal = document.getElementById('map-search-modal');
+        const searchModalClose = document.getElementById('map-modal-close-btn');
+        const modalSearchInput = document.getElementById('map-modal-search-input');
+
+        const openSearchModal = () => {
+            if (searchModal) {
+                searchModal.style.display = 'flex';
+                if (modalSearchInput) {
+                    modalSearchInput.value = '';
+                    setTimeout(() => modalSearchInput.focus(), 100);
+                }
+                renderModalSearchResults(NIGERIA_MARKETS_DATA);
+            }
+        };
+
+        const closeSearchModal = () => {
+            if (searchModal) searchModal.style.display = 'none';
+        };
+
+        if (searchTriggerCard) searchTriggerCard.onclick = openSearchModal;
+        if (searchModalClose) searchModalClose.onclick = closeSearchModal;
+
+        if (searchModal) {
+            searchModal.onclick = (e) => {
+                if (e.target === searchModal) closeSearchModal();
+            };
+        }
+
         // Zoom in & out
         const zoomIn = document.getElementById('map-zoom-in-btn');
         const zoomOut = document.getElementById('map-zoom-out-btn');
@@ -2172,44 +2211,37 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // Category Pills Filter
-        document.querySelectorAll('.map-category-pills-row .map-pill-btn').forEach(btn => {
+        // Category Pills Filter inside Modal
+        document.querySelectorAll('.map-modal-pills .map-pill-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.map-category-pills-row .map-pill-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.map-modal-pills .map-pill-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
                 const cat = btn.dataset.category || 'all';
-                if (cat === 'all') {
-                    renderLeafletMarketMarkers(NIGERIA_MARKETS_DATA);
-                } else {
-                    const filtered = NIGERIA_MARKETS_DATA.filter(m => m.category === cat || cat === 'all');
-                    renderLeafletMarketMarkers(filtered);
-                }
+                const filtered = cat === 'all'
+                    ? NIGERIA_MARKETS_DATA
+                    : NIGERIA_MARKETS_DATA.filter(m => m.category === cat || cat === 'all');
+
+                renderLeafletMarketMarkers(filtered);
+                renderModalSearchResults(filtered);
             });
         });
 
-        // Search Input Filtering & Recenter
-        const searchInput = document.getElementById('map-live-search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
+        // Search Modal Input Filtering
+        if (modalSearchInput) {
+            modalSearchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
-                if (!query) {
-                    renderLeafletMarketMarkers(NIGERIA_MARKETS_DATA);
-                    return;
-                }
-
-                const matches = NIGERIA_MARKETS_DATA.filter(m =>
-                    m.name.toLowerCase().includes(query) ||
-                    m.city.toLowerCase().includes(query) ||
-                    m.item.toLowerCase().includes(query) ||
-                    m.state.toLowerCase().includes(query)
-                );
+                const matches = !query
+                    ? NIGERIA_MARKETS_DATA
+                    : NIGERIA_MARKETS_DATA.filter(m =>
+                        m.name.toLowerCase().includes(query) ||
+                        m.city.toLowerCase().includes(query) ||
+                        m.item.toLowerCase().includes(query) ||
+                        m.state.toLowerCase().includes(query)
+                    );
 
                 renderLeafletMarketMarkers(matches);
-
-                if (matches.length > 0) {
-                    selectLeafletMarket(matches[0]);
-                }
+                renderModalSearchResults(matches);
             });
         }
 
@@ -2235,6 +2267,41 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     }
+
+    function renderModalSearchResults(list) {
+        const container = document.getElementById('map-modal-results-container');
+        if (!container) return;
+
+        if (list.length === 0) {
+            container.innerHTML = `<div style="padding: 14px; text-align: center; color: #94a3b8; font-size: 0.85rem;">No markets or commodities found</div>`;
+            return;
+        }
+
+        container.innerHTML = list.map(m => `
+            <div class="msm-result-item" onclick="selectMarketFromModal('${m.id}')">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2rem;">${m.icon}</span>
+                    <div>
+                        <strong style="font-size: 0.82rem; color: #0f172a; display: block;">${m.name}</strong>
+                        <span style="font-size: 0.72rem; color: #64748b;">${m.address}</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <strong style="font-size: 0.85rem; color: #16a34a; font-weight: 800; display: block;">${m.price}</strong>
+                    <small style="font-size: 0.68rem; color: #94a3b8;">${m.item}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.selectMarketFromModal = function(id) {
+        const mkt = NIGERIA_MARKETS_DATA.find(m => m.id === id);
+        if (mkt) {
+            selectLeafletMarket(mkt);
+            const searchModal = document.getElementById('map-search-modal');
+            if (searchModal) searchModal.style.display = 'none';
+        }
+    };
 
     // Initialize Map when navigating to #page-map route
     const observer = new MutationObserver(() => {

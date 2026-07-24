@@ -420,6 +420,9 @@
                 <div class="view-container map-page-container">
                     <div class="map-redesign-layer">
                         <div class="map-redesign-header">
+                            <!-- Mobile Back Arrow Button -->
+                            <button class="map-mobile-back-btn" id="map-mobile-back-btn" title="Back to Home"><i class="fa-solid fa-arrow-left"></i></button>
+
                             <div class="map-brand-lockup">
                                 <span class="map-brand-mark"><i class="fa-solid fa-location-dot"></i></span>
                                 <div>
@@ -433,26 +436,48 @@
                             </div>
                         </div>
 
+                        <!-- Clean Floating Search Bar (Triggers Search Modal) -->
                         <div class="map-search-stack map-redesign-search-stack">
-                            <div class="map-search-card">
+                            <div class="map-search-card" id="map-search-trigger-card" style="cursor: pointer;">
                                 <div class="map-search-route" aria-hidden="true">
                                     <span class="map-route-node pickup"></span>
                                     <span class="map-route-stem"></span>
                                     <span class="map-route-node destination"></span>
                                 </div>
                                 <div class="map-search-input-wrapper">
-                                    <input type="text" id="map-live-search-input" placeholder="Search commodity, market or city (e.g. Rice, Mile 12, Kano)..." autocomplete="off" />
+                                    <input type="text" id="map-live-search-input" placeholder="Search commodity, market or city (e.g. Rice, Mile 12, Kano)..." readonly />
                                 </div>
-                                <button class="map-search-action" id="map-redesign-search-action" title="Search markets"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <button class="map-search-action" id="map-redesign-search-action" title="Open search & filters"><i class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
+                        </div>
 
-                            <div class="map-category-pills-row map-redesign-pills" aria-label="Market categories">
-                                <button class="map-pill-btn active" data-category="all"><i class="fa-solid fa-layer-group"></i> All Markets</button>
-                                <button class="map-pill-btn" data-category="grain"><i class="fa-solid fa-wheat-awn"></i> Grains</button>
-                                <button class="map-pill-btn" data-category="produce"><i class="fa-solid fa-carrot"></i> Produce</button>
-                                <button class="map-pill-btn" data-category="building"><i class="fa-solid fa-trowel-bricks"></i> Building</button>
-                                <button class="map-pill-btn" data-category="energy"><i class="fa-solid fa-gas-pump"></i> Fuel & Power</button>
-                                <button class="map-pill-btn" data-category="tech"><i class="fa-solid fa-laptop"></i> Tech & Accessories</button>
+                        <!-- Search & Filter Modal Overlay (Shows Pills & Search when Clicked) -->
+                        <div class="map-search-modal-overlay" id="map-search-modal" style="display: none;">
+                            <div class="map-search-modal-card">
+                                <div class="msm-header">
+                                    <div class="msm-input-box">
+                                        <i class="fa-solid fa-magnifying-glass msm-search-icon"></i>
+                                        <input type="text" id="map-modal-search-input" placeholder="Type commodity, market or city name..." autofocus />
+                                    </div>
+                                    <button class="msm-close-btn" id="map-modal-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+
+                                <div class="msm-body">
+                                    <span class="msm-section-label">FILTER BY CATEGORY</span>
+                                    <div class="map-category-pills-row map-modal-pills" aria-label="Market categories">
+                                        <button class="map-pill-btn active" data-category="all"><i class="fa-solid fa-layer-group"></i> All Markets</button>
+                                        <button class="map-pill-btn" data-category="grain"><i class="fa-solid fa-wheat-awn"></i> Grains</button>
+                                        <button class="map-pill-btn" data-category="produce"><i class="fa-solid fa-carrot"></i> Produce</button>
+                                        <button class="map-pill-btn" data-category="building"><i class="fa-solid fa-trowel-bricks"></i> Building</button>
+                                        <button class="map-pill-btn" data-category="energy"><i class="fa-solid fa-gas-pump"></i> Fuel & Power</button>
+                                        <button class="map-pill-btn" data-category="tech"><i class="fa-solid fa-laptop"></i> Tech & Accessories</button>
+                                    </div>
+
+                                    <span class="msm-section-label" style="margin-top: 14px;">POPULAR REGIONAL MARKETS</span>
+                                    <div class="msm-quick-results" id="map-modal-results-container">
+                                        <!-- Populated dynamically by app.js -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
