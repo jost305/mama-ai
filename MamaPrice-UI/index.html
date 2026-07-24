@@ -420,27 +420,27 @@
                 <div class="view-container map-page-container">
                     <div class="map-redesign-layer">
                         <div class="map-redesign-header">
-                            <!-- Mobile Back Arrow Button -->
-                            <button class="map-mobile-back-btn" id="map-mobile-back-btn" title="Back to Home"><i class="fa-solid fa-arrow-left"></i></button>
+                            <div class="map-header-left">
+                                <!-- Mobile Back Arrow Button -->
+                                <button class="map-mobile-back-btn" id="map-mobile-back-btn" title="Back to Home"><i class="fa-solid fa-arrow-left"></i></button>
+                                <div class="map-header-location-tag">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Kano State, NG</span>
+                                </div>
+                            </div>
+
+                            <!-- Desktop Central Search Trigger Bar -->
+                            <div class="map-header-search-bar" id="map-search-trigger-card" style="cursor: pointer;">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <span>Search commodity, market or city (e.g. Rice, Mile 12, Kano)...</span>
+                                <span class="search-kbd">⌘K</span>
+                            </div>
 
                             <div class="map-top-actions">
+                                <!-- Mobile Search Icon Button -->
+                                <button class="map-round-btn map-mobile-search-btn" id="map-mobile-search-trigger-btn" title="Search Markets"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 <button class="map-round-btn" id="map-redesign-notification-btn" title="Market alerts"><i class="fa-regular fa-bell"></i><span class="map-alert-dot"></span></button>
                                 <button class="map-profile-btn" id="map-redesign-profile-btn" title="Open profile"><span>AY</span></button>
-                            </div>
-                        </div>
-
-                        <!-- Clean Floating Search Bar (Triggers Search Modal) -->
-                        <div class="map-search-stack map-redesign-search-stack">
-                            <div class="map-search-card" id="map-search-trigger-card" style="cursor: pointer;">
-                                <div class="map-search-route" aria-hidden="true">
-                                    <span class="map-route-node pickup"></span>
-                                    <span class="map-route-stem"></span>
-                                    <span class="map-route-node destination"></span>
-                                </div>
-                                <div class="map-search-input-wrapper">
-                                    <input type="text" id="map-live-search-input" placeholder="Search commodity, market or city (e.g. Rice, Mile 12, Kano)..." readonly />
-                                </div>
-                                <button class="map-search-action" id="map-redesign-search-action" title="Open search & filters"><i class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </div>
 

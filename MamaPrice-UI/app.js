@@ -2150,6 +2150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Search Trigger Card & Action -> Opens Search Modal
         const searchTriggerCard = document.getElementById('map-search-trigger-card');
+        const mobileSearchTriggerBtn = document.getElementById('map-mobile-search-trigger-btn');
         const searchModal = document.getElementById('map-search-modal');
         const searchModalClose = document.getElementById('map-modal-close-btn');
         const modalSearchInput = document.getElementById('map-modal-search-input');
@@ -2170,6 +2171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (searchTriggerCard) searchTriggerCard.onclick = openSearchModal;
+        if (mobileSearchTriggerBtn) mobileSearchTriggerBtn.onclick = openSearchModal;
         if (searchModalClose) searchModalClose.onclick = closeSearchModal;
 
         if (searchModal) {
