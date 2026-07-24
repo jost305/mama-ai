@@ -6,8 +6,10 @@
     <title>MamaPrice — Know prices. Shop smart.</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
     <div class="app-layout">
@@ -413,156 +415,87 @@
                 </div>
             </div>
 
-            <!-- Page 3: Live Interactive Market Map Page (Redesigned matching Ref Images 1 & 2) -->
+            <!-- Page 3: Live Interactive Market Map Page -->
             <div class="page-view" id="page-map">
                 <div class="view-container map-page-container">
-                    
-                    <!-- Top Floating Header Bar (Ref Image 1 & 2) -->
-                    <div class="map-top-header-bar">
-                        <div class="mth-left">
-                            <div class="mth-location-box">
-                                <i class="fa-solid fa-location-dot mth-loc-icon"></i>
+                    <div class="map-redesign-layer">
+                        <div class="map-redesign-header">
+                            <div class="map-brand-lockup">
+                                <span class="map-brand-mark"><i class="fa-solid fa-location-dot"></i></span>
                                 <div>
-                                    <span class="mth-lbl">Location</span>
-                                    <strong class="mth-val">Kano State, Nigeria <i class="fa-solid fa-chevron-down"></i></strong>
+                                    <span class="map-brand-kicker">MAMAPRICE</span>
+                                    <strong>Live Market Map</strong>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mth-center-search">
-                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                            <input type="text" placeholder="Start your search for commodity or market..." id="map-search-input" />
-                            <button class="mth-filter-btn" title="Filter Markets"><i class="fa-solid fa-sliders"></i></button>
-                        </div>
-
-                        <div class="mth-right-actions">
-                            <button class="mth-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
-                            <div class="mth-user-avatar">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Agent" />
+                            <div class="map-top-actions">
+                                <button class="map-round-btn" id="map-redesign-notification-btn" title="Market alerts"><i class="fa-regular fa-bell"></i><span class="map-alert-dot"></span></button>
+                                <button class="map-profile-btn" id="map-redesign-profile-btn" title="Open profile"><span>AY</span></button>
                             </div>
+                        </div>
+
+                        <div class="map-search-stack map-redesign-search-stack">
+                            <div class="map-search-card">
+                                <div class="map-search-route" aria-hidden="true">
+                                    <span class="map-route-node pickup"></span>
+                                    <span class="map-route-stem"></span>
+                                    <span class="map-route-node destination"></span>
+                                </div>
+                                <div class="map-search-input-wrapper">
+                                    <input type="text" id="map-live-search-input" placeholder="Search commodity, market or city (e.g. Rice, Mile 12, Kano)..." autocomplete="off" />
+                                </div>
+                                <button class="map-search-action" id="map-redesign-search-action" title="Search markets"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+
+                            <div class="map-category-pills-row map-redesign-pills" aria-label="Market categories">
+                                <button class="map-pill-btn active" data-category="all"><i class="fa-solid fa-layer-group"></i> All Markets</button>
+                                <button class="map-pill-btn" data-category="grain"><i class="fa-solid fa-wheat-awn"></i> Grains</button>
+                                <button class="map-pill-btn" data-category="produce"><i class="fa-solid fa-carrot"></i> Produce</button>
+                                <button class="map-pill-btn" data-category="building"><i class="fa-solid fa-trowel-bricks"></i> Building</button>
+                                <button class="map-pill-btn" data-category="energy"><i class="fa-solid fa-gas-pump"></i> Fuel & Power</button>
+                                <button class="map-pill-btn" data-category="tech"><i class="fa-solid fa-laptop"></i> Tech & Accessories</button>
+                            </div>
+                        </div>
+
+                        <div class="map-redesign-canvas">
+                            <div id="leaflet-map-canvas" class="leaflet-map-wrapper"></div>
+
+                            <div class="map-live-badge"><span class="map-live-pulse"></span><strong>LIVE FEEDS</strong><span id="map-tracked-count">10 markets tracked</span></div>
+                            <div class="map-floating-controls map-redesign-controls" aria-label="Map controls">
+                                <button class="mfc-btn" id="map-layer-toggle-btn" title="Toggle Map Layer (Street / Satellite / Dark)"><i class="fa-solid fa-layer-group"></i></button>
+                                <button class="mfc-btn" id="map-recenter-btn" title="Recenter Location"><i class="fa-solid fa-location-crosshairs"></i></button>
+                                <div class="map-zoom-group">
+                                    <button class="mfc-btn" id="map-zoom-in-btn" title="Zoom in"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="mfc-btn" id="map-zoom-out-btn" title="Zoom out"><i class="fa-solid fa-minus"></i></button>
+                                </div>
+                            </div>
+
+                            <section class="map-bottom-sheet" id="map-redesign-card" aria-label="Selected market details">
+                                <button class="sheet-drag-handle" id="map-redesign-handle" aria-label="Expand market details"><span></span></button>
+                                <div class="map-sheet-grabber-copy"><span>Selected market</span><button class="map-sheet-collapse-btn" id="map-redesign-collapse-btn" title="Collapse details"><i class="fa-solid fa-chevron-down"></i></button></div>
+                                <div class="map-sheet-main">
+                                    <div class="map-sheet-title-block">
+                                        <div class="map-status-row"><span class="map-status-dot"></span><span id="map-redesign-status">Open now · Verified Hub</span><span class="map-updated" id="map-redesign-updated">Updated 2 min ago</span></div>
+                                        <h2 id="map-redesign-title">Dawanau Wholesale Market</h2>
+                                        <p id="map-redesign-address"><i class="fa-solid fa-location-dot"></i> Katsina Road · Dawakin Tofa LGA, Kano State</p>
+                                    </div>
+                                    <button class="map-favorite-btn" id="map-redesign-favorite-btn" title="Save market"><i class="fa-regular fa-heart"></i></button>
+                                </div>
+                                <div class="map-sheet-metrics">
+                                    <div><span>Best price today</span><strong id="map-redesign-price">₦72,000</strong><small id="map-redesign-price-sub">Rice · 50kg bag</small></div>
+                                    <div><span>Distance</span><strong id="map-redesign-distance">12.4 km</strong><small>From your location</small></div>
+                                    <div><span>Market rating</span><strong><i class="fa-solid fa-star"></i> <span id="map-redesign-rating">4.9</span></strong><small id="map-redesign-reviews">128 verified reports</small></div>
+                                </div>
+                                <div class="map-sheet-actions">
+                                    <button class="mfc-btn-primary" id="map-directions-btn"><i class="fa-solid fa-route"></i> Get directions</button>
+                                    <button class="mfc-btn-outline" id="map-ask-mama-btn"><i class="fa-solid fa-robot"></i> Ask Mama AI</button>
+                                </div>
+                                <div class="map-nearby-header"><strong>Nearby verified markets</strong><button id="map-redesign-view-list-btn">View all <i class="fa-solid fa-arrow-right"></i></button></div>
+                                <div class="map-nearby-list" id="map-nearby-list-container">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </section>
                         </div>
                     </div>
-
-                    <!-- Horizontal Category Filter Pills (Ref Image 1 & 2) -->
-                    <div class="map-category-pills-row">
-                        <button class="map-pill-btn active"><i class="fa-solid fa-shop"></i> All Markets</button>
-                        <button class="map-pill-btn"><i class="fa-solid fa-wheat-awn"></i> Grain Wholesalers</button>
-                        <button class="map-pill-btn"><i class="fa-solid fa-carrot"></i> Fresh Produce</button>
-                        <button class="map-pill-btn"><i class="fa-solid fa-trowel-bricks"></i> Building Materials</button>
-                        <button class="map-pill-btn"><i class="fa-solid fa-gas-pump"></i> Energy & Fuel</button>
-                    </div>
-
-                    <!-- Map Canvas Area with Controls & Sheet Overlay -->
-                    <div class="map-canvas-wrapper">
-                        <!-- Custom Map Canvas Background -->
-                        <div class="map-vector-canvas" id="map-vector-canvas">
-                            <div class="map-grid-pattern"></div>
-
-                            <!-- Interactive Market Pins on Map (Ref Image 1 & 2) -->
-                            <div class="map-pin-item active" style="top: 32%; left: 45%;" onclick="selectMapMarket('dawanau')">
-                                <div class="pin-badge-box">
-                                    <span class="pin-icon">🌾</span>
-                                    <div class="pin-txt-group">
-                                        <strong>Dawanau Market</strong>
-                                        <small class="green">₦72,000 / bag</small>
-                                    </div>
-                                </div>
-                                <div class="pin-pulse-dot"></div>
-                            </div>
-
-                            <div class="map-pin-item" style="top: 68%; left: 28%;" onclick="selectMapMarket('mile12')">
-                                <div class="pin-badge-box">
-                                    <span class="pin-icon">🍅</span>
-                                    <div class="pin-txt-group">
-                                        <strong>Mile 12 Market</strong>
-                                        <small class="green">₦41,650 / basket</small>
-                                    </div>
-                                </div>
-                                <div class="pin-pulse-dot"></div>
-                            </div>
-
-                            <div class="map-pin-item" style="top: 38%; left: 42%;" onclick="selectMapMarket('sabongari')">
-                                <div class="pin-badge-box">
-                                    <span class="pin-icon">🏗️</span>
-                                    <div class="pin-txt-group">
-                                        <strong>Sabon Gari Market</strong>
-                                        <small class="green">₦8,500 / bag</small>
-                                    </div>
-                                </div>
-                                <div class="pin-pulse-dot"></div>
-                            </div>
-
-                            <div class="map-pin-item" style="top: 58%; left: 35%;" onclick="selectMapMarket('bodija')">
-                                <div class="pin-badge-box">
-                                    <span class="pin-icon">🌴</span>
-                                    <div class="pin-txt-group">
-                                        <strong>Bodija Market</strong>
-                                        <small class="green">₦54,000 / 25L</small>
-                                    </div>
-                                </div>
-                                <div class="pin-pulse-dot"></div>
-                            </div>
-
-                            <div class="map-pin-item" style="top: 65%; left: 52%;" onclick="selectMapMarket('onitsha')">
-                                <div class="pin-badge-box">
-                                    <span class="pin-icon">🍞</span>
-                                    <div class="pin-txt-group">
-                                        <strong>Onitsha Main Market</strong>
-                                        <small class="green">₦64,800 / bag</small>
-                                    </div>
-                                </div>
-                                <div class="pin-pulse-dot"></div>
-                            </div>
-                        </div>
-
-                        <!-- Floating Map Action Controls (Ref Image 1 & 2 Right Controls) -->
-                        <div class="map-floating-controls">
-                            <button class="mfc-btn" title="Map Layers"><i class="fa-solid fa-layer-group"></i></button>
-                            <button class="mfc-btn" title="Recenter Location"><i class="fa-solid fa-crosshairs"></i></button>
-                            <button class="mfc-btn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
-                            <button class="mfc-btn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
-                        </div>
-
-                        <!-- Floating Featured Market Card / Place Sheet Overlay (Ref Image 1 & 2 Card) -->
-                        <div class="map-featured-sheet-card" id="map-featured-card">
-                            <div class="sheet-drag-handle"></div>
-                            
-                            <div class="mfc-cover-wrapper">
-                                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80" alt="Dawanau Market" class="mfc-cover-img" id="sheet-market-img" />
-                                <span class="mfc-status-tag open" id="sheet-status-tag"><span class="dot-green"></span> Open for trading</span>
-                                <button class="mfc-fav-btn" title="Save Market"><i class="fa-regular fa-heart"></i></button>
-                            </div>
-
-                            <div class="mfc-body">
-                                <div class="mfc-title-row">
-                                    <div>
-                                        <h3 id="sheet-market-title">Dawanau Wholesale Market</h3>
-                                        <p class="mfc-sub" id="sheet-market-address">📍 Katsina Road, Dawakin Tofa LGA, Kano State</p>
-                                    </div>
-                                    <div class="mfc-price-box">
-                                        <strong id="sheet-market-price">₦72,000</strong>
-                                        <small>Lowest Rice 50kg</small>
-                                    </div>
-                                </div>
-
-                                <div class="mfc-meta-row">
-                                    <span><i class="fa-solid fa-wheat-awn"></i> 500+ Commodities</span>
-                                    <span><i class="fa-solid fa-users"></i> 142 Agents</span>
-                                    <span><i class="fa-solid fa-location-arrow"></i> 12.4 km away</span>
-                                    <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.9 (128 reviews)</span>
-                                </div>
-
-                                <!-- Action Buttons Row -->
-                                <div class="mfc-actions-grid">
-                                    <button class="mfc-btn-primary" onclick="askMamaAboutMarket('Dawanau Market', 'Kano')"><i class="fa-solid fa-compass"></i> Get Directions</button>
-                                    <button class="mfc-btn-outline" onclick="askMamaAboutMarket('Dawanau Market', 'Kano')"><i class="fa-solid fa-robot"></i> Ask Mama AI</button>
-                                    <a href="#prices" class="mfc-btn-outline"><i class="fa-solid fa-tag"></i> View Live Prices</a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
             </div>
 

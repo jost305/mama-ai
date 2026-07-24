@@ -1,0 +1,10 @@
+[OjaGraph v2] Commerce Graph loaded. Nodes: 12 documents across 6 categories.
+STEP 1 - getLlama()
+✓ STEP 1 COMPLETE
+STEP 2 - loadModel()
+✓ STEP 2 COMPLETE — OjaLM loaded on CPU.
+
+✅ MamaPrice Commerce Intelligence API
+   Powered by OjaLM + OjaGraph v2 Hybrid RAG
+   Listening on http://localhost:3001
+

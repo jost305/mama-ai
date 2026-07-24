@@ -147,6 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mobileNav) mobileNav.classList.add('active');
 
         targetPage.classList.add('active');
+        document.body.classList.toggle('map-page-active', targetPage.id === 'page-map');
+
+        if (targetPage.id === 'page-map' && typeof window.refreshMamaMap === 'function') {
+            setTimeout(() => window.refreshMamaMap(), 150);
+        }
 
         // Update URL hash without scroll jump
         const hashKey = (pageKey === 'agent') ? 'agents' : (pageKey === 'library' ? 'watchlist' : pageKey);
@@ -1192,6 +1197,270 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(tick, 3500);
 })();
 
+// -----------------------------------------------------------------------------
+// Interactive Leaflet Market Map Engine
+// -----------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    const mapContainer = document.getElementById('leaflet-map-canvas');
+    const mapSheet = document.getElementById('map-redesign-card');
+    if (!mapContainer || !mapSheet) return;
+
+    const marketData = {
+        dawanau: { key: 'dawanau', title: 'Dawanau Wholesale Market', lat: 12.0833, lon: 8.4415, category: 'grain', emoji: '🌾', price: '₦72,000', priceSub: 'Rice · 50kg bag', address: 'Katsina Road · Dawakin Tofa LGA, Kano State', distance: '12.4 km', rating: '4.9', reviews: '128 verified reports', status: 'Open now · Major Grain Hub' },
+        sabongari: { key: 'sabongari', title: 'Sabon Gari Building Market', lat: 12.0003, lon: 8.5367, category: 'building', emoji: '🏗️', price: '₦8,500', priceSub: 'Dangote Cement · 50kg bag', address: 'France Road · Fagge LGA, Kano State', distance: '6.8 km', rating: '4.7', reviews: '94 verified reports', status: 'Open now · Materials Hub' },
+        mile12: { key: 'mile12', title: 'Mile 12 Perishable Market', lat: 6.6139, lon: 3.3917, category: 'produce', emoji: '🍅', price: '₦41,650', priceSub: 'Tomatoes · Full Basket', address: 'Ikorodu Road · Kosofe LGA, Lagos State', distance: '4.2 km', rating: '4.8', reviews: '215 verified reports', status: 'Busy · Peak Trading Hours' },
+        computervillage: { key: 'computervillage', title: 'Computer Village Market', lat: 6.5931, lon: 3.3422, category: 'tech', emoji: '💻', price: '₦18,200', priceSub: 'Solar Accessories / Electronics', address: 'Otigba Street · Ikeja, Lagos State', distance: '9.6 km', rating: '4.5', reviews: '310 verified reports', status: 'Open now · Tech Center' },
+        oyingbo: { key: 'oyingbo', title: 'Oyingbo Food Market', lat: 6.4789, lon: 3.3852, category: 'produce', emoji: '🐟', price: '₦18,500', priceSub: 'Fresh Seafood & Tubers', address: 'Ebute Metta · Lagos Mainland, Lagos State', distance: '11.1 km', rating: '4.7', reviews: '88 verified reports', status: 'Open now · Fresh Supply' },
+        bodija: { key: 'bodija', title: 'Bodija International Market', lat: 7.4211, lon: 3.8967, category: 'produce', emoji: '🌴', price: '₦54,000', priceSub: 'Palm Oil · 25L Jerrican', address: 'Bodija-Secretariat Road · Ibadan North, Oyo State', distance: '18.1 km', rating: '4.6', reviews: '162 verified reports', status: 'Open now · Wholesale' },
+        onitsha: { key: 'onitsha', title: 'Onitsha Main Wholesale Market', lat: 6.1478, lon: 6.7828, category: 'grain', emoji: '🍞', price: '₦64,800', priceSub: 'Golden Penny Flour · 50kg', address: 'Commercial Avenue · Onitsha, Anambra State', distance: '24.5 km', rating: '4.9', reviews: '204 verified reports', status: 'Open now · Commercial Hub' },
+        wuse: { key: 'wuse', title: 'Wuse Main Market', lat: 9.0645, lon: 7.4682, category: 'grain', emoji: '🥩', price: '₦82,000', priceSub: 'Imported Rice & Provisions', address: 'Herbert Macaulay Way · Wuse Zone 5, Abuja', distance: '15.3 km', rating: '4.8', reviews: '175 verified reports', status: 'Open now · Federal Hub' },
+        oilmill: { key: 'oilmill', title: 'Oil Mill Market', lat: 4.8456, lon: 7.0421, category: 'energy', emoji: '🦐', price: '₦95,000', priceSub: 'Crayfish & Seafood Bag', address: 'Eleme Flyover · Port Harcourt, Rivers State', distance: '28.0 km', rating: '4.7', reviews: '119 verified reports', status: 'Active Trading Day' },
+        ariaria: { key: 'ariaria', title: 'Ariaria International Market', lat: 5.1124, lon: 7.3458, category: 'building', emoji: '👞', price: '₦9,700', priceSub: 'Cement & Hardware Goods', address: 'Faulks Road · Aba South, Abia State', distance: '32.1 km', rating: '4.6', reviews: '143 verified reports', status: 'Open now · Industrial' },
+        jos: { key: 'jos', title: 'Jos Main Terminal Market', lat: 9.9231, lon: 8.8912, category: 'produce', emoji: '🥔', price: '₦28,000', priceSub: 'Irish Potatoes · 50kg', address: 'Ahmadu Bello Way · Jos North, Plateau State', distance: '45.0 km', rating: '4.8', reviews: '97 verified reports', status: 'Open now · Cold Climate Hub' },
+        ogbete: { key: 'ogbete', title: 'Ogbete Main Market', lat: 6.4358, lon: 7.4942, category: 'grain', emoji: '🍠', price: '₦34,000', priceSub: 'Yellow Garri & Yam', address: 'Market Road · Enugu North, Enugu State', distance: '38.2 km', rating: '4.7', reviews: '110 verified reports', status: 'Open now · South East Hub' }
+    };
+
+    let map = null;
+    let markersMap = {};
+    let activeKey = 'dawanau';
+    let currentPolyline = null;
+    let activeLayerIndex = 0;
+
+    const tileProviders = [
+        { name: 'Voyager', url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution: '&copy; OpenStreetMap &copy; CARTO' },
+        { name: 'Dark', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: '&copy; OpenStreetMap &copy; CARTO' },
+        { name: 'Satellite', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Source: Esri, Maxar' }
+    ];
+
+    let currentTileLayer = null;
+
+    if (typeof L !== 'undefined') {
+        map = L.map('leaflet-map-canvas', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([ marketData.dawanau.lat, marketData.dawanau.lon ], 12);
+
+        currentTileLayer = L.tileLayer(tileProviders[0].url, {
+            maxZoom: 19,
+            attribution: tileProviders[0].attribution
+        }).addTo(map);
+
+        // Add user location pulse marker (Kano central mock user)
+        const userIcon = L.divIcon({
+            className: 'user-location-div-icon',
+            html: `<div class="map-user-location" style="position:relative; width:36px; height:36px;"><span class="map-user-pulse"></span><span class="map-user-arrow"><i class="fa-solid fa-location-arrow"></i></span></div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+        });
+        L.marker([11.9964, 8.5167], { icon: userIcon, zIndexOffset: 2000 }).addTo(map).bindTooltip("Your Location (Kano)", { permanent: false });
+
+        // Add market markers
+        Object.values(marketData).forEach(m => {
+            const pinIcon = L.divIcon({
+                className: 'custom-pin-wrapper',
+                html: `<div class="custom-market-pin-badge ${m.key === activeKey ? 'active-pin' : ''}" id="pin-badge-${m.key}"><span class="pin-emoji-icon">${m.emoji}</span><div class="pin-text-block"><strong>${m.title}</strong><span>${m.price}</span></div></div>`,
+                iconSize: [160, 42],
+                iconAnchor: [80, 21]
+            });
+
+            const marker = L.marker([m.lat, m.lon], { icon: pinIcon }).addTo(map);
+            marker.on('click', () => selectMarket(m.key));
+            markersMap[m.key] = marker;
+        });
+
+        window.mamaPriceMap = map;
+        window.refreshMamaMap = () => {
+            if (map) map.invalidateSize();
+        };
+    }
+
+    const setText = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    };
+
+    function updateNearbyList(currentKey) {
+        const container = document.getElementById('map-nearby-list-container');
+        if (!container) return;
+
+        const otherMarkets = Object.values(marketData).filter(m => m.key !== currentKey).slice(0, 3);
+        container.innerHTML = otherMarkets.map(m => `
+            <button class="map-nearby-item" data-key="${m.key}">
+                <span class="nearby-icon ${m.category === 'building' ? 'building' : (m.category === 'produce' ? 'produce' : '')}"><i class="fa-solid ${m.category === 'grain' ? 'fa-wheat-awn' : (m.category === 'produce' ? 'fa-carrot' : (m.category === 'building' ? 'fa-trowel-bricks' : 'fa-shop'))}"></i></span>
+                <span><strong>${m.title}</strong><small>${m.address.split('·')[0]} · ${m.distance}</small></span>
+                <b>${m.price}</b>
+            </button>
+        `).join('');
+
+        container.querySelectorAll('.map-nearby-item').forEach(btn => {
+            btn.addEventListener('click', () => selectMarket(btn.dataset.key));
+        });
+    }
+
+    function selectMarket(key) {
+        const data = marketData[key];
+        if (!data) return;
+
+        activeKey = key;
+
+        // Highlight marker icon
+        Object.keys(markersMap).forEach(k => {
+            const badge = document.getElementById(`pin-badge-${k}`);
+            if (badge) badge.classList.toggle('active-pin', k === key);
+        });
+
+        // Update bottom sheet
+        setText('map-redesign-status', data.status);
+        setText('map-redesign-title', data.title);
+        setText('map-redesign-address', data.address);
+        setText('map-redesign-price', data.price);
+        setText('map-redesign-price-sub', data.priceSub);
+        setText('map-redesign-distance', data.distance);
+        setText('map-redesign-rating', data.rating);
+        setText('map-redesign-reviews', data.reviews);
+
+        updateNearbyList(key);
+
+        mapSheet.classList.remove('is-collapsed');
+
+        // Smooth flyTo map location
+        if (map) {
+            map.flyTo([data.lat, data.lon], 13, { duration: 1.2, animate: true });
+
+            // Draw connecting route polyline from user position
+            if (currentPolyline) map.removeLayer(currentPolyline);
+            currentPolyline = L.polyline([[11.9964, 8.5167], [data.lat, data.lon]], {
+                color: '#f59e0b',
+                weight: 4,
+                dashArray: '8, 8',
+                opacity: 0.85
+            }).addTo(map);
+        }
+    }
+
+    window.selectMapMarket = selectMarket;
+    selectMarket('dawanau');
+
+    // Filter pills handler
+    document.querySelectorAll('#page-map .map-pill-btn').forEach(pill => {
+        pill.addEventListener('click', () => {
+            const category = pill.dataset.category || 'all';
+            document.querySelectorAll('#page-map .map-pill-btn').forEach(item => item.classList.toggle('active', item === pill));
+
+            let count = 0;
+            Object.values(marketData).forEach(m => {
+                const marker = markersMap[m.key];
+                const show = (category === 'all' || m.category === category);
+                if (marker && map) {
+                    if (show) {
+                        marker.addTo(map);
+                        count++;
+                    } else {
+                        map.removeLayer(marker);
+                    }
+                }
+            });
+            setText('map-tracked-count', `${count} markets tracked`);
+        });
+    });
+
+    // Live search input
+    const searchInput = document.getElementById('map-live-search-input');
+    const searchBtn = document.getElementById('map-redesign-search-action');
+
+    function performSearch() {
+        if (!searchInput) return;
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q) return;
+
+        const match = Object.values(marketData).find(m => 
+            m.title.toLowerCase().includes(q) || 
+            m.address.toLowerCase().includes(q) || 
+            m.priceSub.toLowerCase().includes(q)
+        );
+
+        if (match) {
+            selectMarket(match.key);
+        } else {
+            alert(`No markets found matching "${q}". Try searching for Rice, Kano, Lagos, or Tomatoes.`);
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    }
+    if (searchBtn) searchBtn.addEventListener('click', performSearch);
+
+    // Map control buttons
+    document.getElementById('map-zoom-in-btn')?.addEventListener('click', () => map && map.zoomIn());
+    document.getElementById('map-zoom-out-btn')?.addEventListener('click', () => map && map.zoomOut());
+    document.getElementById('map-recenter-btn')?.addEventListener('click', () => {
+        if (map) {
+            map.flyTo([9.0820, 8.6753], 6, { duration: 1.2 });
+        }
+    });
+
+    // Layer toggle
+    document.getElementById('map-layer-toggle-btn')?.addEventListener('click', () => {
+        if (!map) return;
+        activeLayerIndex = (activeLayerIndex + 1) % tileProviders.length;
+        const prov = tileProviders[activeLayerIndex];
+        if (currentTileLayer) map.removeLayer(currentTileLayer);
+        currentTileLayer = L.tileLayer(prov.url, { maxZoom: 19, attribution: prov.attribution }).addTo(map);
+
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'price',
+                text: `<strong>Map Layer Switch:</strong> Map view changed to <strong>${prov.name} Layer</strong>`,
+                tag: prov.name
+            });
+        }
+    });
+
+    // Sheet toggle
+    const toggleSheet = () => mapSheet.classList.toggle('is-collapsed');
+    document.getElementById('map-redesign-handle')?.addEventListener('click', toggleSheet);
+    document.getElementById('map-redesign-collapse-btn')?.addEventListener('click', toggleSheet);
+    document.getElementById('map-redesign-view-list-btn')?.addEventListener('click', () => mapSheet.classList.remove('is-collapsed'));
+
+    document.getElementById('map-redesign-favorite-btn')?.addEventListener('click', event => {
+        const button = event.currentTarget;
+        button.classList.toggle('active');
+        const icon = button.querySelector('i');
+        if (icon) icon.className = button.classList.contains('active') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    });
+
+    document.getElementById('map-redesign-profile-btn')?.addEventListener('click', () => document.getElementById('nav-profile')?.click());
+    document.getElementById('map-redesign-notification-btn')?.addEventListener('click', () => document.getElementById('notif-btn')?.click());
+
+    // Directions and Ask Mama buttons
+    document.getElementById('map-directions-btn')?.addEventListener('click', () => {
+        const m = marketData[activeKey];
+        if (!m) return;
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'price',
+                text: `<strong>Route Calculated:</strong> Fastest route to <strong>${m.title}</strong> (${m.distance}). Estimated arrival: ~22 mins`,
+                tag: 'Directions',
+                actionQuery: `Directions to ${m.title}`
+            });
+        }
+    });
+
+    document.getElementById('map-ask-mama-btn')?.addEventListener('click', () => {
+        const m = marketData[activeKey];
+        if (!m) return;
+        document.getElementById('nav-home')?.click();
+        if (typeof window.sendSuggestion === 'function') {
+            window.sendSuggestion(`Where can I buy the cheapest commodities at ${m.title}?`);
+        }
+    });
+});
+
+
+
 // ─── Live Weather & Clock Capsule Engine ─────────────────────────────
 (function initLiveWeatherAndClock() {
     const WMO_CONDITIONS = {
@@ -1572,95 +1841,416 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderNotifications();
 
-    // ── Interactive Map Market Sheet Selector (Ref Images 1 & 2) ──
-    const mapMarketsDataset = {
-        dawanau: {
-            title: 'Dawanau Wholesale Market',
-            address: '📍 Katsina Road, Dawakin Tofa LGA, Kano State',
+    // ── Ultra-Premium Leaflet.js Real Interactive Map Engine ──
+    let leafletMapInstance = null;
+    let mapTileLayer = null;
+    let mapMarkersGroup = [];
+    let currentMapTileStyle = 'street';
+
+    const MAP_TILES = {
+        street: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+    };
+
+    const NIGERIA_MARKETS_DATA = [
+        {
+            id: 'dawanau',
+            name: 'Dawanau Wholesale Market',
+            city: 'Kano',
+            state: 'Kano State',
+            lat: 12.0833,
+            lng: 8.4667,
+            category: 'grain',
             price: '₦72,000',
-            priceSub: 'Lowest Rice 50kg',
-            status: '🟢 Open for trading',
-            img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-            commodities: '500+ Commodities',
-            agents: '142 Agents',
-            distance: '12.4 km away',
-            rating: '4.9 (128 reviews)'
+            item: 'Rice 50kg (Mama Gold)',
+            address: 'Katsina Road · Dawakin Tofa LGA, Kano State',
+            icon: '🌾',
+            distance: '12.4 km',
+            rating: '4.9',
+            reviews: '142 reports',
+            status: 'Open now · Major Grain Hub'
         },
-        mile12: {
-            title: 'Mile 12 Perishable Market',
-            address: '📍 Ikorodu Road, Ketu-Mile 12, Lagos State',
+        {
+            id: 'mile12',
+            name: 'Mile 12 Perishable Market',
+            city: 'Lagos',
+            state: 'Lagos State',
+            lat: 6.6083,
+            lng: 3.3917,
+            category: 'produce',
             price: '₦41,650',
-            priceSub: 'Lowest Tomatoes Basket',
-            status: '🟢 Open for trading',
-            img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
-            commodities: '350+ Perishables',
-            agents: '210 Agents',
-            distance: '4.2 km away',
-            rating: '4.8 (210 reviews)'
+            item: 'Fresh Tomatoes (Basket)',
+            address: 'Ikorodu Road · Ketu-Mile 12, Lagos State',
+            icon: '🍅',
+            distance: '4.2 km',
+            rating: '4.8',
+            reviews: '210 reports',
+            status: 'Open now · Direct Perishable Hub'
         },
-        sabongari: {
-            title: 'Sabon Gari Building Hub',
-            address: '📍 France Road, Fagge LGA, Kano State',
+        {
+            id: 'sabongari',
+            name: 'Sabon Gari Building Market',
+            city: 'Kano',
+            state: 'Kano State',
+            lat: 12.0000,
+            lng: 8.5167,
+            category: 'building',
             price: '₦8,500',
-            priceSub: 'Dangote Cement 50kg',
-            status: '🟢 Open for trading',
-            img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
-            commodities: '180+ Hardware Items',
-            agents: '94 Agents',
-            distance: '6.8 km away',
-            rating: '4.7 (94 reviews)'
+            item: 'Dangote Cement 50kg',
+            address: 'France Road · Fagge LGA, Kano State',
+            icon: '🏗️',
+            distance: '6.8 km',
+            rating: '4.7',
+            reviews: '94 reports',
+            status: 'Open now · Building Materials'
         },
-        bodija: {
-            title: 'Bodija International Market',
-            address: '📍 Bodija-Secretariat Road, Ibadan, Oyo State',
+        {
+            id: 'bodija',
+            name: 'Bodija International Market',
+            city: 'Ibadan',
+            state: 'Oyo State',
+            lat: 7.4333,
+            lng: 3.9000,
+            category: 'produce',
             price: '₦54,000',
-            priceSub: 'Refined Palm Oil 25L',
-            status: '🟢 Open for trading',
-            img: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=600&auto=format&fit=crop&q=80',
-            commodities: '420+ Commodities',
-            agents: '115 Agents',
-            distance: '18.1 km away',
-            rating: '4.6 (115 reviews)'
+            item: 'Refined Palm Oil 25L',
+            address: 'Bodija-Secretariat Road · Ibadan, Oyo State',
+            icon: '🌴',
+            distance: '18.1 km',
+            rating: '4.6',
+            reviews: '115 reports',
+            status: 'Open now · Food Processing Hub'
         },
-        onitsha: {
-            title: 'Onitsha Main Wholesale Market',
-            address: '📍 Commercial Avenue, Onitsha, Anambra State',
+        {
+            id: 'onitsha',
+            name: 'Onitsha Main Wholesale Market',
+            city: 'Onitsha',
+            state: 'Anambra State',
+            lat: 6.1500,
+            lng: 6.7833,
+            category: 'grain',
             price: '₦64,800',
-            priceSub: 'Golden Penny Flour 50kg',
-            status: '🟢 Open for trading',
-            img: 'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=600&auto=format&fit=crop&q=80',
-            commodities: '600+ General Items',
-            agents: '165 Agents',
-            distance: '24.5 km away',
-            rating: '4.9 (185 reviews)'
+            item: 'Golden Penny Flour 50kg',
+            address: 'Commercial Avenue · Onitsha, Anambra State',
+            icon: '🍞',
+            distance: '24.5 km',
+            rating: '4.9',
+            reviews: '185 reports',
+            status: 'Open now · Regional Distribution'
+        },
+        {
+            id: 'jos',
+            name: 'Jos Grain & Vegetable Market',
+            city: 'Jos',
+            state: 'Plateau State',
+            lat: 9.9167,
+            lng: 8.9000,
+            category: 'produce',
+            price: '₦18,500',
+            item: 'Irish Potatoes (Big Bag)',
+            address: 'Terminus Market Road · Jos, Plateau State',
+            icon: '🥔',
+            distance: '35.0 km',
+            rating: '4.8',
+            reviews: '88 reports',
+            status: 'Open now · Cold Climate Hub'
+        },
+        {
+            id: 'wuse',
+            name: 'Wuse Ultra-Modern Market',
+            city: 'Abuja',
+            state: 'FCT Abuja',
+            lat: 9.0667,
+            lng: 7.4667,
+            category: 'all',
+            price: '₦35,000',
+            item: 'Benue Yam 10 Tubers',
+            address: 'Wuse Zone 5 · Abuja, FCT',
+            icon: '🍠',
+            distance: '15.2 km',
+            rating: '4.7',
+            reviews: '160 reports',
+            status: 'Open now · Central Capital Hub'
+        },
+        {
+            id: 'ph_oil',
+            name: 'Oil Mill Market Port Harcourt',
+            city: 'Port Harcourt',
+            state: 'Rivers State',
+            lat: 4.8333,
+            lng: 7.0333,
+            category: 'energy',
+            price: '₦650',
+            item: 'PMS Petrol (Litre)',
+            address: 'Eleme Junction · Port Harcourt, Rivers State',
+            icon: '⛽',
+            distance: '8.4 km',
+            rating: '4.5',
+            reviews: '130 reports',
+            status: 'Open now · Coastal Energy Hub'
+        },
+        {
+            id: 'alaba',
+            name: 'Alaba International Tech Market',
+            city: 'Lagos',
+            state: 'Lagos State',
+            lat: 6.4667,
+            lng: 3.1833,
+            category: 'tech',
+            price: '₦245,000',
+            item: 'Solar Generator 3.5kVA',
+            address: 'Ojo Alaba Highway · Ojo LGA, Lagos State',
+            icon: '💻',
+            distance: '14.0 km',
+            rating: '4.9',
+            reviews: '310 reports',
+            status: 'Open now · Electronics & Solar'
         }
+    ];
+
+    function initLeafletMapEngine() {
+        const container = document.getElementById('leaflet-map-canvas');
+        if (!container || typeof L === 'undefined') return;
+
+        // Prevent duplicate initialization
+        if (leafletMapInstance) {
+            setTimeout(() => leafletMapInstance.invalidateSize(), 300);
+            return;
+        }
+
+        // Create Leaflet Map instance centered over Nigeria
+        leafletMapInstance = L.map('leaflet-map-canvas', {
+            center: [9.0820, 8.6753],
+            zoom: 6,
+            zoomControl: false
+        });
+
+        // Add CartoDB Voyager tiles
+        mapTileLayer = L.tileLayer(MAP_TILES.street, {
+            attribution: '© OpenStreetMap contributors, CartoDB',
+            maxZoom: 18,
+            subdomains: 'abcd'
+        }).addTo(leafletMapInstance);
+
+        // Render all market markers on the map
+        renderLeafletMarketMarkers(NIGERIA_MARKETS_DATA);
+
+        // Wire Up Controls & Event Handlers
+        bindMapControlEvents();
+    }
+
+    function renderLeafletMarketMarkers(marketsList) {
+        if (!leafletMapInstance) return;
+
+        // Clear existing markers
+        mapMarkersGroup.forEach(m => leafletMapInstance.removeLayer(m));
+        mapMarkersGroup = [];
+
+        marketsList.forEach(mkt => {
+            const customHtml = `
+                <div class="leaflet-custom-marker" data-id="${mkt.id}">
+                    <span class="l-marker-icon">${mkt.icon}</span>
+                    <div class="l-marker-pill">
+                        <strong>${mkt.name.split(' ')[0]}</strong>
+                        <span class="l-marker-price">${mkt.price}</span>
+                    </div>
+                </div>
+            `;
+
+            const customIcon = L.divIcon({
+                html: customHtml,
+                className: 'leaflet-marker-parent',
+                iconSize: [120, 40],
+                iconAnchor: [60, 40]
+            });
+
+            const marker = L.marker([mkt.lat, mkt.lng], { icon: customIcon }).addTo(leafletMapInstance);
+            
+            marker.on('click', () => {
+                selectLeafletMarket(mkt);
+            });
+
+            mapMarkersGroup.push(marker);
+        });
+
+        const countEl = document.getElementById('map-tracked-count');
+        if (countEl) countEl.textContent = `${marketsList.length} markets tracked`;
+    }
+
+    function selectLeafletMarket(mkt) {
+        if (!mkt || !leafletMapInstance) return;
+
+        // Pan map smoothly to selected market
+        leafletMapInstance.flyTo([mkt.lat, mkt.lng], 12, {
+            duration: 1.2
+        });
+
+        // Update Sheet UI Elements
+        const titleEl = document.getElementById('map-redesign-title');
+        const addrEl = document.getElementById('map-redesign-address');
+        const priceEl = document.getElementById('map-redesign-price');
+        const priceSubEl = document.getElementById('map-redesign-price-sub');
+        const distEl = document.getElementById('map-redesign-distance');
+        const ratingEl = document.getElementById('map-redesign-rating');
+        const reviewsEl = document.getElementById('map-redesign-reviews');
+        const statusEl = document.getElementById('map-redesign-status');
+
+        if (titleEl) titleEl.textContent = mkt.name;
+        if (addrEl) addrEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${mkt.address}`;
+        if (priceEl) priceEl.textContent = mkt.price;
+        if (priceSubEl) priceSubEl.textContent = mkt.item;
+        if (distEl) distEl.textContent = mkt.distance;
+        if (ratingEl) ratingEl.textContent = mkt.rating;
+        if (reviewsEl) reviewsEl.textContent = mkt.reviews;
+        if (statusEl) statusEl.textContent = mkt.status;
+
+        // Expand sheet card
+        const cardEl = document.getElementById('map-redesign-card');
+        if (cardEl) cardEl.classList.add('open');
+
+        // Render nearby markets list
+        renderNearbyMarketsList(mkt.id);
+    }
+
+    function renderNearbyMarketsList(currentId) {
+        const listContainer = document.getElementById('map-nearby-list-container');
+        if (!listContainer) return;
+
+        const others = NIGERIA_MARKETS_DATA.filter(m => m.id !== currentId).slice(0, 3);
+        listContainer.innerHTML = others.map(m => `
+            <div class="nearby-market-item" onclick="selectMapMarketById('${m.id}')">
+                <span class="nmi-icon">${m.icon}</span>
+                <div class="nmi-info">
+                    <strong>${m.name}</strong>
+                    <span>${m.address}</span>
+                </div>
+                <div class="nmi-price">
+                    <strong>${m.price}</strong>
+                    <small>${m.distance}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.selectMapMarketById = function(id) {
+        const mkt = NIGERIA_MARKETS_DATA.find(m => m.id === id);
+        if (mkt) selectLeafletMarket(mkt);
     };
 
-    window.selectMapMarket = function(marketKey) {
-        const data = mapMarketsDataset[marketKey];
-        if (!data) return;
+    function bindMapControlEvents() {
+        // Zoom in & out
+        const zoomIn = document.getElementById('map-zoom-in-btn');
+        const zoomOut = document.getElementById('map-zoom-out-btn');
+        if (zoomIn) zoomIn.onclick = () => leafletMapInstance && leafletMapInstance.zoomIn();
+        if (zoomOut) zoomOut.onclick = () => leafletMapInstance && leafletMapInstance.zoomOut();
 
-        // Update active pin UI state
-        document.querySelectorAll('.map-pin-item').forEach(pin => pin.classList.remove('active'));
-        if (window.event && window.event.currentTarget) {
-            window.event.currentTarget.classList.add('active');
+        // Recenter on Nigeria
+        const recenterBtn = document.getElementById('map-recenter-btn');
+        if (recenterBtn) {
+            recenterBtn.onclick = () => {
+                if (leafletMapInstance) leafletMapInstance.flyTo([9.0820, 8.6753], 6);
+            };
         }
 
-        // Update sheet elements
-        const titleEl = document.getElementById('sheet-market-title');
-        const addrEl = document.getElementById('sheet-market-address');
-        const priceEl = document.getElementById('sheet-market-price');
-        const imgEl = document.getElementById('sheet-market-img');
-        const cardEl = document.getElementById('map-featured-card');
+        // Layer Toggle (Street ➔ Satellite ➔ Dark)
+        const layerBtn = document.getElementById('map-layer-toggle-btn');
+        if (layerBtn) {
+            layerBtn.onclick = () => {
+                if (!mapTileLayer || !leafletMapInstance) return;
 
-        if (titleEl) titleEl.textContent = data.title;
-        if (addrEl) addrEl.textContent = data.address;
-        if (priceEl) priceEl.textContent = data.price;
-        if (imgEl) imgEl.src = data.img;
-
-        if (cardEl) {
-            cardEl.style.transform = 'translateY(0)';
-            cardEl.style.opacity = '1';
+                if (currentMapTileStyle === 'street') {
+                    currentMapTileStyle = 'satellite';
+                    mapTileLayer.setUrl(MAP_TILES.satellite);
+                } else if (currentMapTileStyle === 'satellite') {
+                    currentMapTileStyle = 'dark';
+                    mapTileLayer.setUrl(MAP_TILES.dark);
+                } else {
+                    currentMapTileStyle = 'street';
+                    mapTileLayer.setUrl(MAP_TILES.street);
+                }
+            };
         }
-    };
-})();
+
+        // Category Pills Filter
+        document.querySelectorAll('.map-category-pills-row .map-pill-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.map-category-pills-row .map-pill-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const cat = btn.dataset.category || 'all';
+                if (cat === 'all') {
+                    renderLeafletMarketMarkers(NIGERIA_MARKETS_DATA);
+                } else {
+                    const filtered = NIGERIA_MARKETS_DATA.filter(m => m.category === cat || cat === 'all');
+                    renderLeafletMarketMarkers(filtered);
+                }
+            });
+        });
+
+        // Search Input Filtering & Recenter
+        const searchInput = document.getElementById('map-live-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                if (!query) {
+                    renderLeafletMarketMarkers(NIGERIA_MARKETS_DATA);
+                    return;
+                }
+
+                const matches = NIGERIA_MARKETS_DATA.filter(m =>
+                    m.name.toLowerCase().includes(query) ||
+                    m.city.toLowerCase().includes(query) ||
+                    m.item.toLowerCase().includes(query) ||
+                    m.state.toLowerCase().includes(query)
+                );
+
+                renderLeafletMarketMarkers(matches);
+
+                if (matches.length > 0) {
+                    selectLeafletMarket(matches[0]);
+                }
+            });
+        }
+
+        // Directions Button Action
+        const directionsBtn = document.getElementById('map-directions-btn');
+        if (directionsBtn) {
+            directionsBtn.onclick = () => {
+                if (typeof window.askMamaAboutMarket === 'function') {
+                    const currentTitle = document.getElementById('map-redesign-title').textContent;
+                    window.askMamaAboutMarket(currentTitle, 'Directions & Route ETA');
+                }
+            };
+        }
+
+        // Ask Mama AI Button Action
+        const askMamaBtn = document.getElementById('map-ask-mama-btn');
+        if (askMamaBtn) {
+            askMamaBtn.onclick = () => {
+                if (typeof window.askMamaAboutMarket === 'function') {
+                    const currentTitle = document.getElementById('map-redesign-title').textContent;
+                    window.askMamaAboutMarket(currentTitle, 'Price Analysis');
+                }
+            };
+        }
+    }
+
+    // Initialize Map when navigating to #page-map route
+    const observer = new MutationObserver(() => {
+        const pageMap = document.getElementById('page-map');
+        if (pageMap && pageMap.classList.contains('active')) {
+            initLeafletMapEngine();
+        }
+    });
+
+    const pageMapEl = document.getElementById('page-map');
+    if (pageMapEl) {
+        observer.observe(pageMapEl, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Trigger initial check
+    if (pageMapEl && pageMapEl.classList.contains('active')) {
+        initLeafletMapEngine();
+    }
+});
