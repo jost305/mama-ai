@@ -2178,6 +2178,18 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
+        // Close / Dismiss Selected Market Sheet Card
+        const collapseBtn = document.getElementById('map-redesign-collapse-btn');
+        const dragHandle = document.getElementById('map-redesign-handle');
+        const sheetCard = document.getElementById('map-redesign-card');
+
+        const closeSheetCard = () => {
+            if (sheetCard) sheetCard.classList.remove('open');
+        };
+
+        if (collapseBtn) collapseBtn.onclick = closeSheetCard;
+        if (dragHandle) dragHandle.onclick = closeSheetCard;
+
         // Zoom in & out
         const zoomIn = document.getElementById('map-zoom-in-btn');
         const zoomOut = document.getElementById('map-zoom-out-btn');

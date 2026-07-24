@@ -6134,6 +6134,18 @@ body.map-page-active .chat-main {
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 18px 46px rgba(54, 50, 54, 0.19);
     scrollbar-width: none;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.map-bottom-sheet.open {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 .map-bottom-sheet::-webkit-scrollbar { display: none; }
