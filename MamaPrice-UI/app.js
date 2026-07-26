@@ -2638,4 +2638,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pageMapEl && pageMapEl.classList.contains('active')) {
         initLeafletMapEngine();
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Interactive Payout / Cashout Action (Withdrawing & Success States)
+    // ─────────────────────────────────────────────────────────────────────────
+    function handleCashoutAction(btnElement) {
+        if (!btnElement || btnElement.disabled) return;
+
+        const originalHtml = btnElement.innerHTML;
+        btnElement.disabled = true;
+
+        // 1. Withdrawing / Transferring State (Loading Spinner)
+        btnElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Transferring ₦148,500...`;
+
+        setTimeout(() => {
+            // 2. Success State
+            btnElement.innerHTML = `<i class="fa-solid fa-circle-check"></i> ₦148,500 Sent to OPay!`;
+            btnElement.style.background = '#15803d';
+
+            // Update Wallet Balance to ₦0
+            const walletValEl = document.getElementById('prof-wallet-val');
+            if (walletValEl) walletValEl.textContent = '₦0';
+
+            // Push Instant Notification
+            if (typeof window.pushAlertGraphNotification === 'function') {
+                window.pushAlertGraphNotification({
+                    type: 'inbox',
+                    text: '⚡ <strong>Instant Cashout Successful!</strong><br>₦148,500 credited to OPay Digital Bank (Account: 703****892)',
+                    tag: 'Payout OK',
+                    actionQuery: ''
+                });
+            }
+
+            // Reset state after 4 seconds
+            setTimeout(() => {
+                btnElement.disabled = false;
+                btnElement.style.background = '';
+                btnElement.innerHTML = originalHtml;
+            }, 4000);
+        }, 1800);
+    }
+
+    const cashoutBtn = document.getElementById('cashout-now-btn');
+    if (cashoutBtn) {
+        cashoutBtn.addEventListener('click', () => handleCashoutAction(cashoutBtn));
+    }
+
+    const profPayoutHeroBtn = document.getElementById('prof-payout-btn');
+    if (profPayoutHeroBtn) {
+        profPayoutHeroBtn.addEventListener('click', () => {
+            const payoutTabBtn = document.querySelector('.prof-tab-btn[data-prof-tab="payouts"]');
+            if (payoutTabBtn) payoutTabBtn.click();
+            handleCashoutAction(profPayoutHeroBtn);
+        });
+    }
 });

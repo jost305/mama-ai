@@ -4757,6 +4757,32 @@ body.sidebar-docked .top-dock-btn {
     border-radius: 20px;
 }
 
+.cashout-now-btn {
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 20px;
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cashout-now-btn:hover {
+    background: #15803d;
+}
+
+.cashout-now-btn:disabled {
+    opacity: 0.85;
+    cursor: not-allowed;
+}
+
 /* Mobile Responsiveness (Ref Images 2 & 3) */
 @media (max-width: 768px) {
     .profile-page-container {
