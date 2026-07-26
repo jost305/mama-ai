@@ -5030,17 +5030,17 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
 
-    /* Ultra-Tight Segmented iOS Tab Bar (Ref Image 2) */
+    /* Ultra-Compact Segmented Mobile Tab Bar */
     .prof-tab-bar {
         background: #f1f5f9;
-        border-radius: 12px;
-        padding: 3px;
+        border-radius: 10px;
+        padding: 2px;
         display: flex;
-        gap: 3px;
+        gap: 2px;
         overflow-x: auto;
         scrollbar-width: none;
-        border: none;
-        margin-bottom: 12px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 8px;
     }
 
     .prof-tab-bar::-webkit-scrollbar {
@@ -5048,28 +5048,65 @@ body.sidebar-docked .top-dock-btn {
     }
 
     .prof-tab-btn {
-        padding: 6px 10px;
-        font-size: 0.75rem;
-        border-radius: 9px;
+        padding: 5px 8px;
+        font-size: 0.71rem;
+        border-radius: 7px;
         white-space: nowrap;
         font-weight: 600;
         border: none;
         background: transparent;
         color: #64748b;
+        gap: 4px;
+    }
+
+    .prof-tab-btn i {
+        font-size: 0.68rem;
     }
 
     .prof-tab-btn.active {
         background: #2563eb;
         color: #ffffff;
-        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.22);
+        box-shadow: 0 1px 4px rgba(37, 99, 235, 0.2);
     }
 
-    /* Tight Cards */
+    /* Ultra-Compact Profile Tables & Cards */
     .prof-settings-card, .prof-pane-card, .prof-table-card {
-        border-radius: 16px;
+        border-radius: 12px;
         border: 1px solid #e2e8f0;
-        padding: 14px;
-        margin-bottom: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .prof-settings-card h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .prof-settings-card p {
+        font-size: 0.75rem;
+    }
+
+    /* Mobile Table Cells Hyper-Compact */
+    .prof-table-card table th,
+    .prof-table-card table td,
+    .ag-history-table th,
+    .ag-history-table td {
+        padding: 6px 4px !important;
+        font-size: 0.72rem !important;
+        white-space: nowrap;
+    }
+
+    .savings-tag-badge {
+        padding: 2px 5px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .tbl-ask-mama-btn {
+        padding: 3px 6px !important;
+        font-size: 0.66rem !important;
+        border-radius: 5px !important;
     }
 
     .settings-section {
