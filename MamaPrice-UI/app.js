@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         targetPage.classList.add('active');
         document.body.classList.toggle('map-page-active', targetPage.id === 'page-map');
+        document.body.classList.toggle('not-home-page', targetPage.id !== 'page-home');
 
         if (targetPage.id === 'page-map' && typeof window.refreshMamaMap === 'function') {
             setTimeout(() => window.refreshMamaMap(), 150);
@@ -163,7 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleHashRouting() {
         const hash = window.location.hash.replace('#', '').toLowerCase();
-        if (!hash) return;
+        if (!hash || hash === 'home') {
+            document.body.classList.remove('not-home-page');
+            return;
+        }
         let pageKey = hash;
         if (hash === 'agents') pageKey = 'agent';
         if (hash === 'watchlist') pageKey = 'library';

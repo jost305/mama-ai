@@ -2260,6 +2260,11 @@ body.sidebar-docked .top-dock-btn {
     gap: 8px;
 }
 
+/* Weather location capsule: hide on non-home pages */
+body.not-home-page .weather-pill-container {
+    display: none !important;
+}
+
 .weather-location-pill {
     display: flex;
     align-items: center;
