@@ -4485,6 +4485,28 @@ body.sidebar-docked .top-dock-btn {
     border-color: #94a3b8;
 }
 
+.btn-prof-icon-only {
+    width: 36px;
+    height: 36px;
+    background: #ffffff;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-prof-icon-only:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fca5a5;
+}
+
 /* 4 Ultra-Compact Pill Stats Row (Ref Images 2 & 3) */
 .prof-stats-row {
     display: grid;
