@@ -5119,6 +5119,31 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
 
+    /* Ultra-Compact Mobile Agents Page Header */
+    .scout-header-row {
+        margin-bottom: 6px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .scout-title-group h2 {
+        font-size: 0.9rem !important;
+        margin: 0 !important;
+    }
+
+    .scout-title-group p,
+    .scout-star-badge {
+        display: none !important;
+    }
+
+    #invite-scouts-btn {
+        padding: 4px 10px !important;
+        font-size: 0.72rem !important;
+        border-radius: 8px !important;
+    }
+
     /* Ultra-Tight 5-Column Agents KPI Stat Capsule Strip */
     .scout-kpi-row {
         display: grid !important;
