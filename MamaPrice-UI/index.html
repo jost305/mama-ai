@@ -1474,6 +1474,53 @@
         </div>
     </div>
 
+    <!-- Modal 4: Tight Agent Onboarding Modal -->
+    <div class="modal-overlay" id="agent-onboarding-modal" style="display: none;">
+        <div class="modal-card agent-onboard-card" style="max-width: 440px; border-radius: 18px; padding: 0; overflow: hidden; background: #ffffff; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+            <div class="agent-onboard-header" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%); padding: 20px 22px; color: #ffffff; position: relative;">
+                <button class="modal-close" id="close-agent-modal" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: #ffffff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                    <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #ffffff;"><i class="fa-solid fa-user-shield"></i></div>
+                    <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 20px;">MamaPrice Field Scout</span>
+                </div>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #ffffff;">Become a Market Scout 💚</h3>
+                <p style="margin: 4px 0 0; font-size: 0.78rem; color: #dcfce7;">Report price activities at your local market & earn instant rewards.</p>
+            </div>
+
+            <div class="agent-onboard-body" style="padding: 20px 22px;">
+                <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.2rem; background: #f0fdf4; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">💰</span>
+                        <div>
+                            <strong style="font-size: 0.88rem; color: #0f172a; display: block;">Earn Real Payouts & MarketPoints</strong>
+                            <span style="font-size: 0.78rem; color: #64748b;">Get paid for every verified market price update you submit to MamaPrice.</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.2rem; background: #eff6ff; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">📊</span>
+                        <div>
+                            <strong style="font-size: 0.88rem; color: #0f172a; display: block;">Empower Household Savers</strong>
+                            <span style="font-size: 0.78rem; color: #64748b;">Your reports help thousands of shoppers find lower prices across regional markets.</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.2rem; background: #fef3c7; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">⚡</span>
+                        <div>
+                            <strong style="font-size: 0.88rem; color: #0f172a; display: block;">Instant AI Registration</strong>
+                            <span style="font-size: 0.78rem; color: #64748b;">Reporting any price update automatically registers you as an active Scout Agent!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-prof-primary" id="modal-start-report-btn" style="width: 100%; padding: 12px; font-size: 0.9rem; font-weight: 700; background: #15803d; color: #ffffff; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);">
+                    <i class="fa-solid fa-comments"></i> Chat & Report Market Prices Now
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="orb.js"></script>
     <script src="app.js"></script>
 </body>

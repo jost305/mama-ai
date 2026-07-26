@@ -931,6 +931,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = messageInput.value.trim();
             if (!message) return;
 
+            // Auto-detect market price reporting & recognize user as Agent Scout
+            if (/report|price update|selling for|market price|market report|scout|i bought/i.test(message)) {
+                if (typeof window.activateUserAgentStatus === 'function') {
+                    window.activateUserAgentStatus();
+                }
+            }
+
             // Hide welcome screen on first message
             if (welcomeScreen && welcomeScreen.parentNode) {
                 welcomeScreen.style.display = 'none';
@@ -2765,37 +2772,81 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // User ➔ Agent Mode Activation Switch
+    // ─────────────────────────────────────────────────────────────────────────
+    // Real Agent Registration & Persistent State Engine
+    // ─────────────────────────────────────────────────────────────────────────
+    window.activateUserAgentStatus = function() {
+        try {
+            localStorage.setItem('mama_user_is_agent', 'true');
+        } catch (e) {}
+
+        const statusBadge = document.getElementById('prof-status-badge');
+        const levelBadge = document.getElementById('prof-hero-level');
+        const payoutBtn = document.getElementById('prof-payout-btn');
+        const agentSub = document.getElementById('prof-agent-sub');
+        const walletVal = document.getElementById('prof-wallet-val');
+        const agentToggleBtn = document.getElementById('prof-agent-toggle-btn');
+
+        if (statusBadge) {
+            statusBadge.innerHTML = `<span class="live-dot"></span> Active Scout Agent`;
+            statusBadge.style.background = '#f0fdf4';
+            statusBadge.style.color = '#166534';
+            statusBadge.style.borderColor = '#bbf7d0';
+        }
+
+        if (levelBadge) levelBadge.textContent = 'Level 1 Field Scout Agent';
+        if (payoutBtn) payoutBtn.style.display = 'inline-flex';
+        if (agentSub) agentSub.textContent = 'Available Balance';
+        if (walletVal) walletVal.style.color = '#15803d';
+        if (agentToggleBtn) agentToggleBtn.style.display = 'none';
+
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: '🎉 <strong>Agent Scout Activated!</strong><br>You are now a recognized Field Agent. Every price report you submit earns instant cash & points.',
+                tag: 'Agent Scout',
+                actionQuery: ''
+            });
+        }
+    };
+
+    // Check saved Agent state on load
+    try {
+        if (localStorage.getItem('mama_user_is_agent') === 'true') {
+            window.activateUserAgentStatus();
+        }
+    } catch (e) {}
+
+    // Modal Triggers & Controls
+    const agentOnboardModal = document.getElementById('agent-onboarding-modal');
+    const closeAgentModalBtn = document.getElementById('close-agent-modal');
+    const modalStartReportBtn = document.getElementById('modal-start-report-btn');
     const agentToggleBtn = document.getElementById('prof-agent-toggle-btn');
+
     if (agentToggleBtn) {
         agentToggleBtn.addEventListener('click', () => {
-            const statusBadge = document.getElementById('prof-status-badge');
-            const levelBadge = document.getElementById('prof-hero-level');
-            const payoutBtn = document.getElementById('prof-payout-btn');
-            const agentSub = document.getElementById('prof-agent-sub');
-            const walletVal = document.getElementById('prof-wallet-val');
+            if (agentOnboardModal) agentOnboardModal.style.display = 'flex';
+        });
+    }
 
-            if (statusBadge) {
-                statusBadge.innerHTML = `<span class="live-dot"></span> Active Scout Agent`;
-                statusBadge.style.background = '#f0fdf4';
-                statusBadge.style.color = '#166534';
-                statusBadge.style.borderColor = '#bbf7d0';
-            }
+    if (closeAgentModalBtn) {
+        closeAgentModalBtn.addEventListener('click', () => {
+            if (agentOnboardModal) agentOnboardModal.style.display = 'none';
+        });
+    }
 
-            if (levelBadge) levelBadge.textContent = 'Level 4 Senior Agent';
-            if (payoutBtn) payoutBtn.style.display = 'inline-flex';
-            if (agentSub) agentSub.textContent = 'Available Cashout';
-            if (walletVal) walletVal.style.color = '#15803d';
+    if (agentOnboardModal) {
+        agentOnboardModal.addEventListener('click', (e) => {
+            if (e.target === agentOnboardModal) agentOnboardModal.style.display = 'none';
+        });
+    }
 
-            agentToggleBtn.style.display = 'none';
-
-            if (typeof window.pushAlertGraphNotification === 'function') {
-                window.pushAlertGraphNotification({
-                    type: 'inbox',
-                    text: '🎉 <strong>Agent Scout Status Activated!</strong><br>You are now a Verified Field Agent. Report market prices to earn points & instant payouts.',
-                    tag: 'Agent Scout',
-                    actionQuery: ''
-                });
+    if (modalStartReportBtn) {
+        modalStartReportBtn.addEventListener('click', () => {
+            window.activateUserAgentStatus();
+            if (agentOnboardModal) agentOnboardModal.style.display = 'none';
+            if (typeof window.sendSuggestion === 'function') {
+                window.sendSuggestion('I want to submit a market price report for my local market.');
             }
         });
     }
