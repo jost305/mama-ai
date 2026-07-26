@@ -2818,33 +2818,49 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
 
     // Modal Triggers & Controls
+    window.openAgentModal = function() {
+        const modal = document.getElementById('agent-onboarding-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    };
+
+    window.closeAgentModal = function() {
+        const modal = document.getElementById('agent-onboarding-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
     const agentOnboardModal = document.getElementById('agent-onboarding-modal');
     const closeAgentModalBtn = document.getElementById('close-agent-modal');
     const modalStartReportBtn = document.getElementById('modal-start-report-btn');
     const agentToggleBtn = document.getElementById('prof-agent-toggle-btn');
 
     if (agentToggleBtn) {
-        agentToggleBtn.addEventListener('click', () => {
-            if (agentOnboardModal) agentOnboardModal.style.display = 'flex';
+        agentToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.openAgentModal();
         });
     }
 
     if (closeAgentModalBtn) {
-        closeAgentModalBtn.addEventListener('click', () => {
-            if (agentOnboardModal) agentOnboardModal.style.display = 'none';
+        closeAgentModalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.closeAgentModal();
         });
     }
 
     if (agentOnboardModal) {
         agentOnboardModal.addEventListener('click', (e) => {
-            if (e.target === agentOnboardModal) agentOnboardModal.style.display = 'none';
+            if (e.target === agentOnboardModal) window.closeAgentModal();
         });
     }
 
     if (modalStartReportBtn) {
         modalStartReportBtn.addEventListener('click', () => {
             window.activateUserAgentStatus();
-            if (agentOnboardModal) agentOnboardModal.style.display = 'none';
+            window.closeAgentModal();
             if (typeof window.sendSuggestion === 'function') {
                 window.sendSuggestion('I want to submit a market price report for my local market.');
             }
