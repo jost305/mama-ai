@@ -5015,42 +5015,51 @@ body.sidebar-docked .top-dock-btn {
     /* Ultra-Tight 4-Column Stat Capsule Strip (Ref Images 1 & 2) */
     .prof-stats-row {
         grid-template-columns: repeat(4, 1fr) !important;
-        gap: 2px !important;
+        gap: 0 !important;
         background: #f8fafc !important;
         border: 1px solid #e2e8f0 !important;
-        border-radius: 16px !important;
-        padding: 10px 4px !important;
-        margin-bottom: 12px !important;
+        border-radius: 12px !important;
+        padding: 6px 2px !important;
+        margin-bottom: 8px !important;
         box-shadow: none !important;
     }
 
     .prof-pill-card {
         background: transparent !important;
         border: none !important;
+        border-right: 1px solid #e2e8f0 !important;
         box-shadow: none !important;
-        padding: 2px 0 !important;
+        padding: 2px 2px !important;
         text-align: center !important;
+        border-radius: 0 !important;
+    }
+
+    .prof-pill-card:last-child {
+        border-right: none !important;
     }
 
     .p-card-header {
         justify-content: center !important;
+        margin: 0 !important;
     }
 
     .p-card-lbl {
-        font-size: 0.58rem !important;
+        font-size: 0.54rem !important;
         color: #64748b !important;
         font-weight: 700 !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 0.3px !important;
         white-space: nowrap !important;
-        margin-top: 0 !important;
+        margin: 0 !important;
         text-transform: uppercase !important;
+        line-height: 1 !important;
     }
 
     .p-card-val {
-        font-size: 0.95rem !important;
+        font-size: 0.85rem !important;
         font-weight: 800 !important;
         display: block !important;
-        margin-top: 1px !important;
+        margin-top: 2px !important;
+        line-height: 1.1 !important;
     }
 
     .p-card-sub, .p-card-header i {
