@@ -5217,6 +5217,11 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
 
+    /* Hide markets page verbose header on mobile */
+    .markets-page-header {
+        display: none !important;
+    }
+
     #invite-scouts-btn {
         padding: 4px 10px !important;
         font-size: 0.72rem !important;
