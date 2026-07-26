@@ -5119,6 +5119,62 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
 
+    /* Ultra-Tight 5-Column Agents KPI Stat Capsule Strip */
+    .scout-kpi-row {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 0 !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 6px 2px !important;
+        margin-bottom: 8px !important;
+        box-shadow: none !important;
+    }
+
+    .scout-kpi-card {
+        background: transparent !important;
+        border: none !important;
+        border-right: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        padding: 2px 2px !important;
+        text-align: center !important;
+        border-radius: 0 !important;
+    }
+
+    .scout-kpi-card:last-child {
+        border-right: none !important;
+    }
+
+    .scout-kpi-card .kpi-meta {
+        justify-content: center !important;
+        margin: 0 !important;
+    }
+
+    .scout-kpi-card .kpi-lbl {
+        font-size: 0.52rem !important;
+        color: #64748b !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.2px !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+        text-transform: uppercase !important;
+        line-height: 1 !important;
+    }
+
+    .scout-kpi-card .kpi-val {
+        font-size: 0.82rem !important;
+        font-weight: 800 !important;
+        display: block !important;
+        margin-top: 2px !important;
+        line-height: 1.1 !important;
+    }
+
+    .scout-kpi-card .kpi-sub,
+    .scout-kpi-card .kpi-icon-circle {
+        display: none !important;
+    }
+
     /* Ultra-Compact Segmented Mobile Tab Bar */
     .prof-tab-bar {
         background: #f1f5f9;
