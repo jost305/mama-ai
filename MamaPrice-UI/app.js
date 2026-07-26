@@ -476,11 +476,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return currentWaSession;
     }
 
-    if (waAuthBtn && waAuthModal) {
+    if (waAuthBtn) {
         waAuthBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            generateWaLoginSession();
-            waAuthModal.classList.add('open');
+            const token = localStorage.getItem('mamaprice_jwt_token');
+            if (token) {
+                const pageProfile = document.getElementById('page-profile');
+                const navProfile = document.getElementById('nav-profile');
+                if (pageProfile && typeof switchView === 'function') {
+                    switchView(navProfile, pageProfile);
+                }
+            } else if (waAuthModal) {
+                generateWaLoginSession();
+                waAuthModal.classList.add('open');
+            }
         });
     }
 
@@ -787,12 +796,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (token && userJson) {
             const user = JSON.parse(userJson);
+            const avatarUrl = user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
             if (waAuthBtn) {
-                waAuthBtn.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> <span>${user.name || 'Sign in'}</span>`;
-                waAuthBtn.style.background = '#ffffff';
-                waAuthBtn.style.color = '#0f172a';
-                waAuthBtn.style.border = '1px solid #cbd5e1';
-                waAuthBtn.title = `Logged in (${user.phone})`;
+                waAuthBtn.innerHTML = `<img src="${avatarUrl}" alt="${user.name || 'User Profile'}" class="header-user-avatar-img" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #16a34a; display: block; box-shadow: 0 1px 3px rgba(0,0,0,0.15);" />`;
+                waAuthBtn.style.background = 'transparent';
+                waAuthBtn.style.padding = '0';
+                waAuthBtn.style.border = 'none';
+                waAuthBtn.title = `${user.name || 'User Profile'} (${user.phone || ''})`;
             }
             if (navProfile) navProfile.style.display = 'flex';
             if (mNavProfile) mNavProfile.style.display = 'flex';
@@ -803,6 +813,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 waAuthBtn.style.background = '#ffffff';
                 waAuthBtn.style.color = '#0f172a';
                 waAuthBtn.style.border = '1px solid #cbd5e1';
+                waAuthBtn.style.padding = '6px 14px';
+                waAuthBtn.style.borderRadius = '20px';
                 waAuthBtn.title = `Sign in via WhatsApp Reverse Authentication`;
             }
             if (navProfile) navProfile.style.display = 'none';
