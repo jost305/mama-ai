@@ -1174,15 +1174,19 @@ body.sidebar-docked .top-dock-btn {
     }
 
     .mobile-close-btn {
-        display: block;
+        display: block !important;
+    }
+
+    .dock-toggle-btn {
+        display: none !important;
     }
 
     .menu-toggle-btn {
-        display: block;
+        display: block !important;
     }
 
     .top-dock-btn {
-        display: none;
+        display: none !important;
     }
 
     .plan-badge {
