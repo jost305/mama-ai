@@ -5501,17 +5501,18 @@ body.map-page-active .chat-main {
 
 /* Desktop Central Floating Search Bar */
 .map-header-search-bar {
-    flex: 0 1 440px;
+    flex: 0 1 240px;
+    max-width: 250px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 6px 14px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 99px;
     box-shadow: none;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: #64748b;
     transition: border-color 0.15s ease;
 }
