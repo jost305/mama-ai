@@ -1110,82 +1110,17 @@
 
                     <!-- Sleek Tab Bar -->
                     <div class="prof-tab-bar">
-                        <button class="prof-tab-btn active" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
-                        <button class="prof-tab-btn" data-prof-tab="savings"><i class="fa-solid fa-piggy-bank"></i> Market Savings</button>
+                        <button class="prof-tab-btn active" data-prof-tab="savings"><i class="fa-solid fa-piggy-bank"></i> Market Savings</button>
                         <button class="prof-tab-btn" data-prof-tab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</button>
+                        <button class="prof-tab-btn" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
                         <button class="prof-tab-btn" data-prof-tab="alertgraph"><i class="fa-solid fa-sliders"></i> Alert Preferences</button>
                         <button class="prof-tab-btn" data-prof-tab="payouts"><i class="fa-solid fa-building-columns"></i> Bank & Payouts</button>
                     </div>
 
                     <!-- Profile Panes -->
                     <div class="prof-panes-wrapper">
-                        <!-- Pane 1: My Details -->
-                        <div class="prof-pane active" id="prof-pane-details">
-                            <div class="prof-settings-card">
-                                <div class="settings-section">
-                                    <div class="settings-left">
-                                        <h4>Public Profile</h4>
-                                        <p>Update your public agent information and market hub location.</p>
-                                    </div>
-                                    <div class="settings-right">
-                                        <div class="form-row-grid">
-                                            <div class="form-field">
-                                                <label>Agent Full Name</label>
-                                                <input type="text" value="Amina Yusuf" id="input-prof-name" />
-                                            </div>
-                                            <div class="form-field">
-                                                <label>Primary Phone Number</label>
-                                                <input type="text" value="+234 801 234 5678" id="input-prof-phone" />
-                                            </div>
-                                        </div>
-                                        <div class="form-field margin-top">
-                                            <label>Assigned Markets & Region</label>
-                                            <input type="text" value="Dawanau & Sabon Gari Markets, Kano" id="input-prof-markets" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="settings-divider"></div>
-
-                                <div class="settings-section">
-                                    <div class="settings-left">
-                                        <h4>Profile Picture</h4>
-                                        <p>Upload a clear face photo for agent badge verification.</p>
-                                    </div>
-                                    <div class="settings-right">
-                                        <div class="avatar-upload-dropzone">
-                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-                                            <strong>Click to upload or drag and drop</strong>
-                                            <span>SVG, PNG, JPG, GIF (Max 800×800px)</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="settings-divider"></div>
-
-                                <div class="settings-section">
-                                    <div class="settings-left">
-                                        <h4>Default Settlement Bank</h4>
-                                        <p>Bank account linked for automatic reward cashouts.</p>
-                                    </div>
-                                    <div class="settings-right">
-                                        <div class="bank-pill-card">
-                                            <div class="bank-pill-left">
-                                                <i class="fa-solid fa-building-columns bank-badge-icon"></i>
-                                                <div>
-                                                    <strong>OPay Digital Bank</strong>
-                                                    <p>Account: 703****892 · Amina Yusuf</p>
-                                                </div>
-                                            </div>
-                                            <span class="bank-tag-verified">Verified</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pane 2: Market Savings Intelligence Breakdown Table -->
-                        <div class="prof-pane" id="prof-pane-savings" style="display: none;">
+                        <!-- Pane 1: Market Savings Intelligence Breakdown Table (Active First) -->
+                        <div class="prof-pane active" id="prof-pane-savings">
                             <div class="prof-settings-card" style="padding: 20px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
                                     <div>
@@ -1311,6 +1246,71 @@
                                             <span>Mile 12 Audit Batch · Earned +50 MarketPoints</span>
                                         </div>
                                         <span class="act-time">3 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pane 3: My Details -->
+                        <div class="prof-pane" id="prof-pane-details" style="display: none;">
+                            <div class="prof-settings-card">
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Public Profile</h4>
+                                        <p>Update your public agent information and market hub location.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="form-row-grid">
+                                            <div class="form-field">
+                                                <label>Agent Full Name</label>
+                                                <input type="text" value="Amina Yusuf" id="input-prof-name" />
+                                            </div>
+                                            <div class="form-field">
+                                                <label>Primary Phone Number</label>
+                                                <input type="text" value="+234 801 234 5678" id="input-prof-phone" />
+                                            </div>
+                                        </div>
+                                        <div class="form-field margin-top">
+                                            <label>Assigned Markets & Region</label>
+                                            <input type="text" value="Dawanau & Sabon Gari Markets, Kano" id="input-prof-markets" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Profile Picture</h4>
+                                        <p>Upload a clear face photo for agent badge verification.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="avatar-upload-dropzone">
+                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                            <strong>Click to upload or drag and drop</strong>
+                                            <span>SVG, PNG, JPG, GIF (Max 800×800px)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+
+                                <div class="settings-section">
+                                    <div class="settings-left">
+                                        <h4>Default Settlement Bank</h4>
+                                        <p>Bank account linked for automatic reward cashouts.</p>
+                                    </div>
+                                    <div class="settings-right">
+                                        <div class="bank-pill-card">
+                                            <div class="bank-pill-left">
+                                                <i class="fa-solid fa-building-columns bank-badge-icon"></i>
+                                                <div>
+                                                    <strong>OPay Digital Bank</strong>
+                                                    <p>Account: 703****892 · Amina Yusuf</p>
+                                                </div>
+                                            </div>
+                                            <span class="bank-tag-verified">Verified</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
