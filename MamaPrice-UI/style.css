@@ -4908,70 +4908,167 @@ body.sidebar-docked .top-dock-btn {
     transform: translateX(20px);
 }
 
-/* Mobile Responsiveness (Ref Images 2 & 3) */
+/* Mobile Responsiveness (Ref Images 1 & 2) */
 @media (max-width: 768px) {
     .profile-page-container {
-        padding: 16px 12px 60px;
+        padding: 12px 10px 60px;
     }
 
-    .prof-gradient-cover {
-        height: 100px;
+    .prof-redesign-hero {
+        padding: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+    }
+
+    .prof-cover-banner {
+        display: block !important;
+        height: 76px;
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #e0f2fe 100%);
+        width: 100%;
+        border-bottom: 1px solid #bae6fd;
     }
 
     .prof-hero-body {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 0 16px 20px;
-        margin-top: -45px;
+        padding: 0 14px 16px;
+        margin-top: -38px;
+    }
+
+    .prof-avatar-wrapper {
+        width: 74px;
+        height: 74px;
+    }
+
+    .prof-avatar-img {
+        border: 3px solid #ffffff;
+        box-shadow: 0 3px 10px rgba(14, 165, 233, 0.15);
+    }
+
+    .prof-user-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .prof-name-row {
         justify-content: center;
+        margin-top: 6px;
+        gap: 6px;
     }
 
     .prof-name-row h1 {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
     }
 
     .prof-user-sub {
-        font-size: 0.78rem;
+        font-size: 0.76rem;
+        margin-top: 3px;
     }
 
     .prof-hero-actions {
         width: 100%;
         margin-top: 12px;
+        justify-content: center;
     }
 
     .btn-prof-primary, .btn-prof-outline {
         flex: 1;
         justify-content: center;
-        padding: 10px 12px;
-        font-size: 0.8rem;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        border-radius: 10px;
     }
 
+    /* Ultra-Tight 4-Column Stat Capsule Strip (Ref Images 1 & 2) */
     .prof-stats-row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 2px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 16px !important;
+        padding: 10px 4px !important;
+        margin-bottom: 12px !important;
+        box-shadow: none !important;
     }
 
     .prof-pill-card {
-        padding: 12px;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 2px 0 !important;
+        text-align: center !important;
+    }
+
+    .p-card-header {
+        justify-content: center !important;
+    }
+
+    .p-card-lbl {
+        font-size: 0.62rem !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.2px;
+        white-space: nowrap;
+        margin-top: 2px;
     }
 
     .p-card-val {
-        font-size: 1.25rem;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        display: block !important;
+        margin-top: 2px !important;
     }
 
+    .p-card-sub, .p-card-header i {
+        display: none !important;
+    }
+
+    /* Ultra-Tight Segmented iOS Tab Bar (Ref Image 2) */
     .prof-tab-bar {
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 3px;
+        display: flex;
+        gap: 3px;
         overflow-x: auto;
-        white-space: nowrap;
-        padding-bottom: 6px;
+        scrollbar-width: none;
+        border: none;
+        margin-bottom: 12px;
+    }
+
+    .prof-tab-bar::-webkit-scrollbar {
+        display: none;
     }
 
     .prof-tab-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        border-radius: 9px;
+        white-space: nowrap;
+        font-weight: 600;
+        border: none;
+        background: transparent;
+        color: #64748b;
+    }
+
+    .prof-tab-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.22);
+    }
+
+    /* Tight Cards */
+    .prof-settings-card, .prof-pane-card, .prof-table-card {
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 14px;
+        margin-bottom: 10px;
     }
 
     .settings-section {
