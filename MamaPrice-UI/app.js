@@ -889,6 +889,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatForm) chatForm.dispatchEvent(new Event('submit'));
     };
 
+    window.askMamaAboutMarket = function(commodity, location) {
+        let query = '';
+        if (commodity && location) {
+            query = `What is the current best price and market breakdown for ${commodity} at ${location}?`;
+        } else if (commodity) {
+            query = `What is the current price trend and supplier availability for ${commodity}?`;
+        } else {
+            query = `Show me live market price insights and recommendations today.`;
+        }
+
+        if (typeof window.sendSuggestion === 'function') {
+            window.sendSuggestion(query);
+        }
+    };
+
     // New Chat handler
     if (newChatBtn) {
         newChatBtn.addEventListener('click', () => {
