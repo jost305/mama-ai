@@ -611,36 +611,51 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        scoutsTableBody.innerHTML = list.map(s => `
+        scoutsTableBody.innerHTML = list.map(s => {
+            const lvlClass = getLevelBadgeClass(s.level);
+            const lvlIcon = {
+                'lvl-captain': '<i class="fa-solid fa-star"></i>',
+                'lvl-senior':  '<i class="fa-solid fa-shield-halved"></i>',
+                'lvl-scout':   '<i class="fa-solid fa-user-shield"></i>',
+                'lvl-explorer':'<i class="fa-solid fa-compass"></i>'
+            }[lvlClass] || '<i class="fa-solid fa-compass"></i>';
+            const lvlTitle = s.level;
+            const statusDot = s.status === 'Active'
+                ? `<span class="scout-status-dot dot-active" title="Active"></span>`
+                : `<span class="scout-status-dot dot-inactive" title="Inactive"></span>`;
+            const pts = (s.points || (s.reports * 25)).toLocaleString();
+            return `
             <tr>
                 <td>
                     <div class="scout-user-cell">
-                        <img src="${s.avatar}" alt="${s.name}" class="scout-avatar" />
+                        <div class="scout-avatar-wrap">
+                            <img src="${s.avatar}" alt="${s.name}" class="scout-avatar" />
+                            <span class="scout-lvl-dot ${lvlClass}" title="${lvlTitle}">${lvlIcon}</span>
+                            ${statusDot}
+                        </div>
                         <div>
                             <strong class="scout-name">${s.name}</strong>
                             <span class="scout-meta">${maskPhoneNumber(s.phone)} · ${s.id}</span>
                         </div>
                     </div>
                 </td>
-                <td><span class="scout-lvl-badge ${getLevelBadgeClass(s.level)}">${s.level}</span></td>
+                <td><strong class="scout-earning-val">₦${s.earnings.toLocaleString()}</strong></td>
                 <td><span class="scout-markets-text">${s.markets.join(', ')}</span></td>
                 <td><strong class="scout-stat-num">${s.reports.toLocaleString()}</strong></td>
-                <td><strong style="color: #d97706; font-size: 0.82rem;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>${(s.points || (s.reports * 25)).toLocaleString()} pts</strong></td>
+                <td><strong class="scout-stat-num">${pts} pts</strong></td>
                 <td>
                     <div class="trust-score-pill ${getTrustScoreClass(s.trustScore)}">
                         <i class="fa-solid fa-shield"></i> <strong>${s.trustScore}%</strong> <small>${s.trustLabel}</small>
                     </div>
                 </td>
-                <td><strong class="scout-earning-val">₦${s.earnings.toLocaleString()}</strong></td>
-                <td><span class="scout-status-badge ${s.status === 'Active' ? 'status-active' : 'status-inactive'}">${s.status}</span></td>
                 <td style="text-align: right;">
                     <div class="table-action-btns">
                         <button class="tbl-act-btn" onclick="viewScoutDetails('${s.id}')" title="View Agent Profile"><i class="fa-regular fa-eye"></i></button>
                         <button class="tbl-act-btn" onclick="triggerScoutActions('${s.id}')" title="Agent Actions"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                     </div>
                 </td>
-            </tr>
-        `).join('');
+            </tr>`;
+        }).join('');
     }
 
     function updateScoutsDashboard() {
