@@ -4783,6 +4783,37 @@ body.sidebar-docked .top-dock-btn {
     cursor: not-allowed;
 }
 
+.tbl-ask-mama-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.tbl-ask-mama-btn:hover {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+.tbl-ask-mama-btn i {
+    color: #2563eb;
+    font-size: 0.75rem;
+}
+
+.tbl-ask-mama-btn:hover i {
+    color: #60a5fa;
+}
+
 /* Mobile Responsiveness (Ref Images 2 & 3) */
 @media (max-width: 768px) {
     .profile-page-container {
