@@ -889,14 +889,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatForm) chatForm.dispatchEvent(new Event('submit'));
     };
 
-    window.askMamaAboutMarket = function(commodity, location) {
+    window.askMamaAboutMarket = function(commodity, location, benchmark, discovered, saved) {
         let query = '';
-        if (commodity && location) {
-            query = `What is the current best price and market breakdown for ${commodity} at ${location}?`;
+        if (saved && benchmark && discovered) {
+            query = `How did MamaPrice intelligence discover ₦${saved} savings on ${commodity} at ${location} (₦${discovered} vs ₦${benchmark} benchmark)?`;
+        } else if (commodity && location) {
+            query = `How much can I save on ${commodity} at ${location} today, and what is the market price breakdown?`;
         } else if (commodity) {
-            query = `What is the current price trend and supplier availability for ${commodity}?`;
+            query = `What is the current price trend and supplier savings for ${commodity}?`;
         } else {
-            query = `Show me live market price insights and recommendations today.`;
+            query = `Show me live market price savings and recommendations today.`;
         }
 
         if (typeof window.sendSuggestion === 'function') {
