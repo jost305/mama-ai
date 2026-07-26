@@ -1320,28 +1320,43 @@
                         <!-- Pane 3: AlertGraph Settings -->
                         <div class="prof-pane" id="prof-pane-alertgraph" style="display: none;">
                             <div class="prof-settings-card">
-                                <h3><i class="fa-solid fa-sliders"></i> Alert Preferences</h3>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <div>
+                                        <h3 style="margin: 0;"><i class="fa-solid fa-sliders"></i> Alert Preferences</h3>
+                                        <p style="font-size: 0.78rem; color: #64748b; margin: 3px 0 0;">Manage live push notification rules & price shift triggers across categories.</p>
+                                    </div>
+                                    <span class="bank-tag-verified" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">⚡ Live Engine Active</span>
+                                </div>
                                 <div class="alertgraph-settings-list">
                                     <div class="ag-setting-row">
                                         <div>
                                             <strong>Food & Agriculture Alerts</strong>
                                             <p>Receive immediate alerts when Rice, Tomatoes, or Flour prices shift >5%</p>
                                         </div>
-                                        <input type="checkbox" checked class="ag-toggle-switch">
+                                        <label class="ag-switch">
+                                            <input type="checkbox" checked id="pref-toggle-food" data-category="food">
+                                            <span class="ag-slider"></span>
+                                        </label>
                                     </div>
                                     <div class="ag-setting-row">
                                         <div>
                                             <strong>Building Materials & Steel</strong>
                                             <p>Alerts for Cement, 12mm Rebar, and Roofing Sheets</p>
                                         </div>
-                                        <input type="checkbox" checked class="ag-toggle-switch">
+                                        <label class="ag-switch">
+                                            <input type="checkbox" checked id="pref-toggle-building" data-category="building">
+                                            <span class="ag-slider"></span>
+                                        </label>
                                     </div>
                                     <div class="ag-setting-row">
                                         <div>
                                             <strong>Fuel & Energy Intelligence</strong>
                                             <p>PMS/AGO scarcity warnings and station pricing</p>
                                         </div>
-                                        <input type="checkbox" checked class="ag-toggle-switch">
+                                        <label class="ag-switch">
+                                            <input type="checkbox" checked id="pref-toggle-energy" data-category="energy">
+                                            <span class="ag-slider"></span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>

@@ -1692,7 +1692,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    // Real Alert Preferences State Engine
+    let alertPreferences = {
+        food: true,
+        building: true,
+        energy: true
+    };
+
+    try {
+        const saved = localStorage.getItem('mama_alert_prefs');
+        if (saved) alertPreferences = { ...alertPreferences, ...JSON.parse(saved) };
+    } catch (e) {}
+
     window.pushAlertGraphNotification = function(notifObj) {
+        if (notifObj && notifObj.category) {
+            if (alertPreferences[notifObj.category] === false) return;
+        }
+
         const newNotif = {
             id: `notif_${Date.now()}`,
             time: 'Just now',
@@ -1702,6 +1718,44 @@ document.addEventListener('DOMContentLoaded', () => {
         systemNotifications.unshift(newNotif);
         renderNotifications();
     };
+
+    function initAlertPreferencesEngine() {
+        ['food', 'building', 'energy'].forEach(cat => {
+            const toggleEl = document.getElementById(`pref-toggle-${cat}`);
+            if (toggleEl) {
+                toggleEl.checked = alertPreferences[cat] !== false;
+
+                toggleEl.addEventListener('change', (e) => {
+                    const isEnabled = e.target.checked;
+                    alertPreferences[cat] = isEnabled;
+                    try {
+                        localStorage.setItem('mama_alert_prefs', JSON.stringify(alertPreferences));
+                    } catch (err) {}
+
+                    const catNames = {
+                        food: 'Food & Agriculture',
+                        building: 'Building Materials & Steel',
+                        energy: 'Fuel & Energy'
+                    };
+
+                    const label = catNames[cat] || cat;
+                    const statusText = isEnabled ? 'Activated (Real-Time)' : 'Muted';
+                    const icon = isEnabled ? '🔔' : '🔕';
+
+                    const newNotif = {
+                        id: `notif_pref_${Date.now()}`,
+                        type: 'inbox',
+                        text: `${icon} <strong>Alert Preference Saved:</strong><br>${label} price shift notifications are now <strong>${statusText}</strong>.`,
+                        tag: isEnabled ? 'Active' : 'Muted',
+                        time: 'Just now',
+                        read: false
+                    };
+                    systemNotifications.unshift(newNotif);
+                    renderNotifications();
+                });
+            }
+        });
+    }
 
     let currentNotifFilter = 'all';
 
@@ -1857,6 +1911,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 30000);
 
     renderNotifications();
+    initAlertPreferencesEngine();
 
     // ── Ultra-Premium Leaflet.js Real Interactive Map Engine ──
     let leafletMapInstance = null;
