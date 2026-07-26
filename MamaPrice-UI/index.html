@@ -477,6 +477,28 @@
                         <div class="map-redesign-canvas">
                             <div id="leaflet-map-canvas" class="leaflet-map-wrapper"></div>
 
+                            <!-- Left Market Intelligence Sidebar Panel (Ref GIF Spec) -->
+                            <aside class="map-left-sidebar" id="map-left-sidebar">
+                                <div class="mls-header">
+                                    <div class="mls-title-row">
+                                        <div>
+                                            <span class="mls-kicker"><span class="mls-live-pulse"></span> LIVE PRICE FEEDS</span>
+                                            <h3>Market Intelligence</h3>
+                                        </div>
+                                        <span class="mls-count-badge" id="mls-count-badge">9 Hubs</span>
+                                    </div>
+                                    <div class="mls-filter-mini-pills">
+                                        <button class="mls-pill active" data-cat="all">All</button>
+                                        <button class="mls-pill" data-cat="grain">Grains</button>
+                                        <button class="mls-pill" data-cat="produce">Produce</button>
+                                        <button class="mls-pill" data-cat="building">Building</button>
+                                    </div>
+                                </div>
+                                <div class="mls-body" id="mls-list-container">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </aside>
+
                             <div class="map-live-badge"><span class="map-live-pulse"></span><strong>LIVE FEEDS</strong><span id="map-tracked-count">9 markets tracked</span></div>
                             <div class="map-floating-controls map-redesign-controls" aria-label="Map controls">
                                 <button class="mfc-btn" id="map-layer-toggle-btn" title="Toggle Map Layer (Street / Satellite / Dark)"><i class="fa-solid fa-layer-group"></i></button>

@@ -2074,6 +2074,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Wire Up Controls & Event Handlers
         bindMapControlEvents();
+
+        // Start Live Pulsing Price Ticker Engine
+        startLivePriceTicker();
     }
 
     function renderLeafletMarketMarkers(marketsList) {
@@ -2124,6 +2127,92 @@ document.addEventListener('DOMContentLoaded', () => {
         if (countEl) countEl.textContent = `${marketsList.length} markets tracked`;
 
         renderBottomCardsCarousel(marketsList);
+        renderMapLeftSidebar(marketsList);
+    }
+
+    function renderMapLeftSidebar(marketsList) {
+        const container = document.getElementById('mls-list-container');
+        const countBadge = document.getElementById('mls-count-badge');
+        if (countBadge) countBadge.textContent = `${marketsList.length} Hubs`;
+        if (!container) return;
+
+        container.innerHTML = marketsList.map(mkt => `
+            <div class="mls-item" id="mls-item-${mkt.id}" onclick="selectMapMarketById('${mkt.id}')">
+                <div class="mls-item-left">
+                    <span class="mls-item-icon">${mkt.icon}</span>
+                    <div class="mls-item-info">
+                        <strong>${mkt.name}</strong>
+                        <span>${mkt.city} · ${mkt.item.split('(')[0].trim()}</span>
+                    </div>
+                </div>
+                <div class="mls-item-right">
+                    <strong class="mls-item-price" id="mls-price-${mkt.id}">${mkt.price}</strong>
+                    <span class="mls-item-trend ${mkt.trendDir || 'up'}">
+                        <i class="fa-solid ${mkt.trendDir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                        <span>${mkt.trendVal || 'Live'}</span>
+                    </span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    let priceTickerInterval = null;
+
+    function startLivePriceTicker() {
+        if (priceTickerInterval) clearInterval(priceTickerInterval);
+
+        priceTickerInterval = setInterval(() => {
+            if (!NIGERIA_MARKETS_DATA || NIGERIA_MARKETS_DATA.length === 0) return;
+
+            const randomIndex = Math.floor(Math.random() * NIGERIA_MARKETS_DATA.length);
+            const mkt = NIGERIA_MARKETS_DATA[randomIndex];
+            if (!mkt) return;
+
+            const rawNum = parseInt(mkt.price.replace(/[^0-9]/g, ''), 10);
+            if (isNaN(rawNum) || rawNum < 100) return;
+
+            const delta = (Math.floor(Math.random() * 7) - 3) * 500;
+            if (delta === 0) return;
+
+            const newNum = rawNum + delta;
+            const formattedPrice = `₦${newNum.toLocaleString()}`;
+            const isUp = delta > 0;
+
+            mkt.price = formattedPrice;
+            mkt.trendDir = isUp ? 'up' : 'down';
+            mkt.trendVal = `${isUp ? '+' : ''}₦${Math.abs(delta).toLocaleString()}`;
+
+            const priceEl = document.getElementById(`mls-price-${mkt.id}`);
+            const itemEl = document.getElementById(`mls-item-${mkt.id}`);
+
+            if (priceEl) priceEl.textContent = formattedPrice;
+
+            if (itemEl) {
+                const animClass = isUp ? 'price-pulse-up' : 'price-pulse-down';
+                itemEl.classList.add(animClass);
+                setTimeout(() => itemEl.classList.remove('price-pulse-up', 'price-pulse-down'), 1200);
+            }
+
+            const targetMarkerObj = mapMarkersGroup.find(item => item.id === mkt.id);
+            if (targetMarkerObj && targetMarkerObj.marker) {
+                const markerEl = targetMarkerObj.marker.getElement();
+                if (markerEl) {
+                    const priceSpan = markerEl.querySelector('.l-marker-price');
+                    if (priceSpan) priceSpan.textContent = formattedPrice;
+                    markerEl.classList.add(isUp ? 'price-pulse-up' : 'price-pulse-down');
+                    setTimeout(() => markerEl.classList.remove('price-pulse-up', 'price-pulse-down'), 1200);
+                }
+            }
+
+            if (typeof window.pushAlertGraphNotification === 'function' && Math.random() > 0.6) {
+                window.pushAlertGraphNotification({
+                    type: 'price',
+                    text: `⚡ <strong>Live Price Discovery: ${mkt.name}</strong><br>${mkt.item}: Now <strong>${formattedPrice}</strong> (${mkt.trendVal})`,
+                    tag: mkt.city,
+                    actionQuery: `${mkt.name} live prices`
+                });
+            }
+        }, 7000);
     }
 
     function renderBottomCardsCarousel(marketsList) {
@@ -2257,6 +2346,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (leafletMapInstance) leafletMapInstance.flyTo([9.0820, 8.6753], 6);
             };
         }
+
+        // Left Sidebar Mini Category Filter Pills
+        document.querySelectorAll('.mls-filter-mini-pills .mls-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mls-filter-mini-pills .mls-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const cat = btn.dataset.cat || 'all';
+                const filtered = cat === 'all'
+                    ? NIGERIA_MARKETS_DATA
+                    : NIGERIA_MARKETS_DATA.filter(m => m.category === cat);
+
+                renderMapLeftSidebar(filtered);
+                renderLeafletMarketMarkers(filtered);
+            });
+        });
 
         // Layer Toggle (Street ➔ Satellite ➔ Dark)
         const layerBtn = document.getElementById('map-layer-toggle-btn');

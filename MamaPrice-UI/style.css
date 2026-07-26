@@ -6544,3 +6544,204 @@ body.map-page-active .chat-main {
 @media (min-width: 769px) {
     .map-bottom-sheet.is-collapsed { max-height: 112px; }
 }
+
+/* ── Left Market Intelligence Sidebar Panel (Ref GIF Spec) ── */
+.map-left-sidebar {
+    position: absolute;
+    top: 72px;
+    left: 24px;
+    bottom: 95px;
+    width: 320px;
+    z-index: 60;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mls-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.mls-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.mls-kicker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #16a34a;
+    letter-spacing: 0.05em;
+}
+
+.mls-live-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    animation: liveDotPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes liveDotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.mls-title-row h3 {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 2px 0 0;
+}
+
+.mls-count-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 3px 9px;
+    border-radius: 99px;
+}
+
+.mls-filter-mini-pills {
+    display: flex;
+    gap: 6px;
+}
+
+.mls-pill {
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.mls-pill.active, .mls-pill:hover {
+    background: #0f172a;
+    border-color: #0f172a;
+    color: #ffffff;
+}
+
+.mls-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scrollbar-width: none;
+}
+
+.mls-body::-webkit-scrollbar {
+    display: none;
+}
+
+.mls-item {
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.mls-item:hover, .mls-item.active {
+    transform: translateX(2px);
+    border-color: #16a34a;
+    background: #f8fafc;
+}
+
+.mls-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mls-item-icon {
+    font-size: 1.2rem;
+}
+
+.mls-item-info strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.15;
+}
+
+.mls-item-info span {
+    display: block;
+    font-size: 0.68rem;
+    color: #64748b;
+}
+
+.mls-item-right {
+    text-align: right;
+}
+
+.mls-item-price {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #16a34a;
+    transition: color 0.3s ease;
+}
+
+.mls-item-trend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.mls-item-trend.up { color: #16a34a; }
+.mls-item-trend.down { color: #dc2626; }
+
+/* ── Live Flash Pulse Animation on Price Change ── */
+.price-pulse-up {
+    animation: pulseFlashGreen 1.2s ease-out;
+}
+
+.price-pulse-down {
+    animation: pulseFlashRed 1.2s ease-out;
+}
+
+@keyframes pulseFlashGreen {
+    0% { background: #dcfce7; border-color: #16a34a; transform: scale(1.03); }
+    50% { background: #bbf7d0; }
+    100% { background: #ffffff; transform: scale(1); }
+}
+
+@keyframes pulseFlashRed {
+    0% { background: #fee2e2; border-color: #dc2626; transform: scale(1.03); }
+    50% { background: #fca5a5; }
+    100% { background: #ffffff; transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .map-left-sidebar {
+        display: none !important;
+    }
+}
