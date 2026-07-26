@@ -549,6 +549,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const profCopyRefBtn = document.getElementById('prof-copy-ref-btn');
+    const profRefLinkInput = document.getElementById('prof-ref-link-input');
+    if (profCopyRefBtn && profRefLinkInput) {
+        profCopyRefBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(profRefLinkInput.value);
+            profCopyRefBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+            setTimeout(() => {
+                profCopyRefBtn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy Link`;
+            }, 2000);
+        });
+    }
+
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
     const scoutsData = [
         { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80' },

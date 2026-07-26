@@ -1132,6 +1132,7 @@
                         <button class="prof-tab-btn" data-prof-tab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</button>
                         <button class="prof-tab-btn" data-prof-tab="details"><i class="fa-regular fa-user"></i> My Details</button>
                         <button class="prof-tab-btn" data-prof-tab="alertgraph"><i class="fa-solid fa-sliders"></i> Alert Preferences</button>
+                        <button class="prof-tab-btn" data-prof-tab="referrals"><i class="fa-solid fa-user-plus"></i> Referrals</button>
                         <button class="prof-tab-btn" data-prof-tab="payouts"><i class="fa-solid fa-building-columns"></i> Bank & Payouts</button>
                     </div>
 
@@ -1375,6 +1376,113 @@
                                             <span class="ag-slider"></span>
                                         </label>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pane 5: Referrals & Agent Invite Network -->
+                        <div class="prof-pane" id="prof-pane-referrals" style="display: none;">
+                            <div class="prof-settings-card" style="padding: 20px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-user-plus" style="color: #15803d;"></i> Agent Referral Network
+                                        </h3>
+                                        <p style="font-size: 0.78rem; color: #64748b; margin: 3px 0 0;">Empower local market scouts, expand MamaPrice data network & earn referral rewards.</p>
+                                    </div>
+                                    <div class="savings-total-pill" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                                        <small style="color: #166534; font-weight: 600;">Total Bonus Earned:</small>
+                                        <strong style="color: #15803d; font-size: 1.1rem; margin-left: 6px;">₦3,000</strong>
+                                    </div>
+                                </div>
+
+                                <!-- Bonus Perk Card -->
+                                <div style="background: linear-gradient(135deg, #15803d 0%, #166534 100%); color: #ffffff; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <span style="font-size: 1.8rem; background: rgba(255,255,255,0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🎁</span>
+                                        <div>
+                                            <strong style="font-size: 0.95rem; display: block;">Earn ₦1,000 Bonus per Active Agent</strong>
+                                            <span style="font-size: 0.78rem; color: #dcfce7;">Paid directly to your earnings balance when your invited agent completes their first 5 verified price reports.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Referral Link Box -->
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">YOUR UNIQUE REFERRAL LINK</label>
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <input type="text" id="prof-ref-link-input" value="https://mamaprice.ng/invite?ref=AMINA92X" readonly style="flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; font-size: 0.84rem; background: #ffffff; color: #0f172a;" />
+                                        <button type="button" id="prof-copy-ref-btn" style="padding: 10px 16px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="fa-regular fa-copy"></i> Copy Link</button>
+                                        <a href="https://wa.me/?text=Join%20me%20as%20a%20verified%20Market%20Agent%20on%20MamaPrice!%20Earn%20cash%20reporting%20local%20prices:%20https://mamaprice.ng/invite?ref=AMINA92X" target="_blank" style="padding: 10px 16px; background: #25d366; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 6px;"><i class="fa-brands fa-whatsapp"></i> Share on WhatsApp</a>
+                                    </div>
+                                </div>
+
+                                <!-- Referred Agents Table -->
+                                <h4 style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Invited Agents & Progress</h4>
+                                <div style="overflow-x: auto;">
+                                    <table class="scout-data-table" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>AGENT NAME</th>
+                                                <th>DATE JOINED</th>
+                                                <th>REPORTS COMPLETED</th>
+                                                <th>BONUS STATUS</th>
+                                                <th>REWARD</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #0f172a; font-size: 0.82rem;">Maryam Abubakar</strong>
+                                                    <span style="font-size: 0.72rem; color: #64748b; display: block;">SC-0001 · Dawanau Market</span>
+                                                </td>
+                                                <td style="font-size: 0.78rem; color: #475569;">12 Jul 2026</td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">5 / 5 Reports</strong></td>
+                                                <td><span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">Completed</span></td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">+₦1,000</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #0f172a; font-size: 0.82rem;">Chinedu Okafor</strong>
+                                                    <span style="font-size: 0.72rem; color: #64748b; display: block;">SC-0002 · Onitsha Main</span>
+                                                </td>
+                                                <td style="font-size: 0.78rem; color: #475569;">15 Jul 2026</td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">5 / 5 Reports</strong></td>
+                                                <td><span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">Completed</span></td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">+₦1,000</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #0f172a; font-size: 0.82rem;">Aisha Bello</strong>
+                                                    <span style="font-size: 0.72rem; color: #64748b; display: block;">SC-0003 · Computer Village</span>
+                                                </td>
+                                                <td style="font-size: 0.78rem; color: #475569;">18 Jul 2026</td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">5 / 5 Reports</strong></td>
+                                                <td><span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">Completed</span></td>
+                                                <td><strong style="color: #15803d; font-size: 0.82rem;">+₦1,000</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #0f172a; font-size: 0.82rem;">Emeka Nwosu</strong>
+                                                    <span style="font-size: 0.72rem; color: #64748b; display: block;">SC-0004 · Mile 12 Market</span>
+                                                </td>
+                                                <td style="font-size: 0.78rem; color: #475569;">22 Jul 2026</td>
+                                                <td><strong style="color: #2563eb; font-size: 0.82rem;">3 / 5 Reports</strong></td>
+                                                <td><span style="background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">In Progress</span></td>
+                                                <td><span style="color: #94a3b8; font-size: 0.78rem;">Pending (2 left)</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #0f172a; font-size: 0.82rem;">Grace Adeyemi</strong>
+                                                    <span style="font-size: 0.72rem; color: #64748b; display: block;">SC-0005 · Bodija Market</span>
+                                                </td>
+                                                <td style="font-size: 0.78rem; color: #475569;">24 Jul 2026</td>
+                                                <td><strong style="color: #2563eb; font-size: 0.82rem;">1 / 5 Reports</strong></td>
+                                                <td><span style="background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">In Progress</span></td>
+                                                <td><span style="color: #94a3b8; font-size: 0.78rem;">Pending (4 left)</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
