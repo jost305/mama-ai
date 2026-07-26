@@ -1052,18 +1052,19 @@
                         <div class="prof-hero-body">
                             <div class="prof-avatar-wrapper">
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Amina Yusuf" class="prof-avatar-img" />
-                                <span class="prof-verified-badge" title="Verified Market Agent"><i class="fa-solid fa-check"></i></span>
+                                <span class="prof-verified-badge" title="Verified User" id="prof-badge-icon"><i class="fa-solid fa-check"></i></span>
                             </div>
                             <div class="prof-user-info">
                                 <div class="prof-name-row">
                                     <h1 id="prof-hero-name">Amina Yusuf</h1>
-                                    <span class="prof-status-pill"><span class="live-dot"></span> Active Agent</span>
-                                    <span class="prof-badge-pill" id="prof-hero-level">Level 4 Senior Agent</span>
+                                    <span class="prof-status-pill" id="prof-status-badge"><span class="live-dot"></span> Smart Saver</span>
+                                    <span class="prof-badge-pill" id="prof-hero-level">Verified Shopper</span>
                                 </div>
                                 <p class="prof-user-sub"><i class="fa-solid fa-phone"></i> +234 801 *** 5678 · <i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets, Kano</p>
                             </div>
                             <div class="prof-hero-actions">
-                                <button type="button" class="btn-prof-primary" id="prof-payout-btn"><i class="fa-solid fa-wallet"></i> Withdraw Funds</button>
+                                <button type="button" class="btn-prof-primary" id="prof-agent-toggle-btn"><i class="fa-solid fa-user-shield"></i> Become Market Agent</button>
+                                <button type="button" class="btn-prof-outline" id="prof-payout-btn" style="display: none;"><i class="fa-solid fa-wallet"></i> Withdraw Funds</button>
                                 <button type="button" class="btn-prof-outline" id="prof-logout-btn" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
                             </div>
                         </div>
@@ -1073,11 +1074,20 @@
                     <div class="prof-stats-row">
                         <div class="prof-pill-card highlight-green">
                             <div class="p-card-header">
-                                <span class="p-card-lbl">AGENT EARNINGS</span>
-                                <i class="fa-solid fa-wallet p-icon green"></i>
+                                <span class="p-card-lbl">TOTAL SAVINGS</span>
+                                <i class="fa-solid fa-piggy-bank p-icon green"></i>
                             </div>
-                            <strong class="p-card-val green" id="prof-wallet-val">₦148,500</strong>
-                            <span class="p-card-sub">Available Balance</span>
+                            <strong class="p-card-val green" id="prof-savings-val">₦128,500</strong>
+                            <span class="p-card-sub">Discovered This Month</span>
+                        </div>
+
+                        <div class="prof-pill-card">
+                            <div class="p-card-header">
+                                <span class="p-card-lbl">AGENT EARNINGS</span>
+                                <i class="fa-solid fa-wallet p-icon blue"></i>
+                            </div>
+                            <strong class="p-card-val" id="prof-wallet-val">₦148,500</strong>
+                            <span class="p-card-sub" id="prof-agent-sub">Unlocked on Activity</span>
                         </div>
 
                         <div class="prof-pill-card highlight-amber">
@@ -1091,20 +1101,11 @@
 
                         <div class="prof-pill-card">
                             <div class="p-card-header">
-                                <span class="p-card-lbl">REPORTS LOGGED</span>
-                                <i class="fa-regular fa-file-lines p-icon blue"></i>
-                            </div>
-                            <strong class="p-card-val" id="prof-reports-val">142</strong>
-                            <span class="p-card-sub">+12 this week</span>
-                        </div>
-
-                        <div class="prof-pill-card">
-                            <div class="p-card-header">
                                 <span class="p-card-lbl">ACCURACY & TRUST</span>
                                 <i class="fa-solid fa-shield-halved p-icon teal"></i>
                             </div>
                             <strong class="p-card-val" id="prof-trust-val">98.4%</strong>
-                            <span class="p-card-sub">Top 5% in Kano</span>
+                            <span class="p-card-sub">142 Reports Logged</span>
                         </div>
                     </div>
 

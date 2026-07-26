@@ -2709,4 +2709,39 @@ document.addEventListener('DOMContentLoaded', () => {
             handleCashoutAction(profPayoutHeroBtn);
         });
     }
+
+    // User ➔ Agent Mode Activation Switch
+    const agentToggleBtn = document.getElementById('prof-agent-toggle-btn');
+    if (agentToggleBtn) {
+        agentToggleBtn.addEventListener('click', () => {
+            const statusBadge = document.getElementById('prof-status-badge');
+            const levelBadge = document.getElementById('prof-hero-level');
+            const payoutBtn = document.getElementById('prof-payout-btn');
+            const agentSub = document.getElementById('prof-agent-sub');
+            const walletVal = document.getElementById('prof-wallet-val');
+
+            if (statusBadge) {
+                statusBadge.innerHTML = `<span class="live-dot"></span> Active Scout Agent`;
+                statusBadge.style.background = '#f0fdf4';
+                statusBadge.style.color = '#166534';
+                statusBadge.style.borderColor = '#bbf7d0';
+            }
+
+            if (levelBadge) levelBadge.textContent = 'Level 4 Senior Agent';
+            if (payoutBtn) payoutBtn.style.display = 'inline-flex';
+            if (agentSub) agentSub.textContent = 'Available Cashout';
+            if (walletVal) walletVal.style.color = '#15803d';
+
+            agentToggleBtn.style.display = 'none';
+
+            if (typeof window.pushAlertGraphNotification === 'function') {
+                window.pushAlertGraphNotification({
+                    type: 'inbox',
+                    text: '🎉 <strong>Agent Scout Status Activated!</strong><br>You are now a Verified Field Agent. Report market prices to earn points & instant payouts.',
+                    tag: 'Agent Scout',
+                    actionQuery: ''
+                });
+            }
+        });
+    }
 });
