@@ -892,13 +892,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.askMamaAboutMarket = function(commodity, location, benchmark, discovered, saved) {
         let query = '';
         if (saved && benchmark && discovered) {
-            query = `How did MamaPrice intelligence discover ₦${saved} savings on ${commodity} at ${location} (₦${discovered} vs ₦${benchmark} benchmark)?`;
+            query = `How much did I save buying ${commodity} at ${location}, and how was my ₦${saved} savings calculated?`;
         } else if (commodity && location) {
-            query = `How much can I save on ${commodity} at ${location} today, and what is the market price breakdown?`;
+            query = `How much did I save on ${commodity} at ${location}?`;
         } else if (commodity) {
-            query = `What is the current price trend and supplier savings for ${commodity}?`;
+            query = `How much can I save on ${commodity} across regional markets today?`;
         } else {
-            query = `Show me live market price savings and recommendations today.`;
+            query = `How much have I saved on my market purchases this month?`;
         }
 
         if (typeof window.sendSuggestion === 'function') {
