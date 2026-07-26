@@ -5010,19 +5010,20 @@ body.sidebar-docked .top-dock-btn {
     }
 
     .p-card-lbl {
-        font-size: 0.62rem !important;
+        font-size: 0.58rem !important;
         color: #64748b !important;
-        font-weight: 600 !important;
-        letter-spacing: -0.2px;
-        white-space: nowrap;
-        margin-top: 2px;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        white-space: nowrap !important;
+        margin-top: 0 !important;
+        text-transform: uppercase !important;
     }
 
     .p-card-val {
-        font-size: 0.9rem !important;
-        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        font-weight: 800 !important;
         display: block !important;
-        margin-top: 2px !important;
+        margin-top: 1px !important;
     }
 
     .p-card-sub, .p-card-header i {
