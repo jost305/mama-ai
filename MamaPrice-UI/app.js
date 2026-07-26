@@ -2242,20 +2242,22 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    function selectLeafletMarket(mkt) {
-        if (!mkt || !leafletMapInstance) return;
+    function selectLeafletMarket(mkt, zoomMap = false) {
+        if (!mkt) return;
 
-        // Pan map smoothly to selected market
-        leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, {
-            duration: 1.2
-        });
+        // Only zoom/pan map if explicitly requested (by default false to keep map zoom level unchanged)
+        if (zoomMap && leafletMapInstance) {
+            leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, {
+                duration: 1.2
+            });
+        }
 
         // Open anchored marker popup on Leaflet map (Ref Image Spec)
         const targetObj = mapMarkersGroup.find(item => item.id === mkt.id);
         if (targetObj && targetObj.marker) {
             setTimeout(() => {
                 targetObj.marker.openPopup();
-            }, 300);
+            }, 100);
         }
 
         // Render Market Details directly inside the Right Sidebar Panel!
