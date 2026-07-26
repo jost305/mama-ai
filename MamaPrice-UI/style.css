@@ -3842,7 +3842,28 @@ body.sidebar-docked .top-dock-btn {
     border-radius: 10px;
     padding: 10px 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    border-left: 3px solid #cbd5e1;
 }
+
+/* Per-card accent colours — Total Agents */
+.scout-kpi-card:nth-child(1) { border-left-color: #6366f1; }
+.scout-kpi-card:nth-child(1) .kpi-val { color: #4f46e5; }
+
+/* Active */
+.scout-kpi-card:nth-child(2) { border-left-color: #16a34a; }
+.scout-kpi-card:nth-child(2) .kpi-val { color: #15803d; }
+
+/* Reports */
+.scout-kpi-card:nth-child(3) { border-left-color: #2563eb; }
+.scout-kpi-card:nth-child(3) .kpi-val { color: #1d4ed8; }
+
+/* MarketPoints */
+.scout-kpi-card:nth-child(4) { border-left-color: #d97706; }
+.scout-kpi-card:nth-child(4) .kpi-val { color: #b45309; }
+
+/* Avg. Trust Score */
+.scout-kpi-card:nth-child(5) { border-left-color: #0d9488; }
+.scout-kpi-card:nth-child(5) .kpi-val { color: #0f766e; }
 
 .kpi-meta {
     display: flex;
@@ -3869,10 +3890,12 @@ body.sidebar-docked .top-dock-btn {
     justify-content: center;
 }
 
-.kpi-icon-circle.green-bg { background: #dcfce7; color: #15803d; }
-.kpi-icon-circle.blue-bg { background: #dbeafe; color: #1d4ed8; }
-.kpi-icon-circle.red-bg { background: #ffe4e6; color: #e11d48; }
-.kpi-icon-circle.teal-bg { background: #ccfbf1; color: #0d9488; }
+.kpi-icon-circle.green-bg  { background: #dcfce7; color: #15803d; }
+.kpi-icon-circle.blue-bg   { background: #dbeafe; color: #1d4ed8; }
+.kpi-icon-circle.red-bg    { background: #ffe4e6; color: #e11d48; }
+.kpi-icon-circle.teal-bg   { background: #ccfbf1; color: #0d9488; }
+.kpi-icon-circle.yellow-bg { background: #fef9c3; color: #b45309; }
+.kpi-icon-circle.indigo-bg { background: #e0e7ff; color: #4338ca; }
 
 .kpi-val {
     font-size: 1.15rem;
