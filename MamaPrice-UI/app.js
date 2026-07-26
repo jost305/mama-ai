@@ -1866,6 +1866,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Rice 50kg (Mama Gold)',
             address: 'Katsina Road · Dawakin Tofa LGA, Kano State',
             icon: '🌾',
+            img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
             distance: '12.4 km',
             rating: '4.9',
             reviews: '142 reports',
@@ -1883,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Fresh Tomatoes (Basket)',
             address: 'Ikorodu Road · Ketu-Mile 12, Lagos State',
             icon: '🍅',
+            img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
             distance: '4.2 km',
             rating: '4.8',
             reviews: '210 reports',
@@ -1900,6 +1902,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Dangote Cement 50kg',
             address: 'France Road · Fagge LGA, Kano State',
             icon: '🏗️',
+            img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
             distance: '6.8 km',
             rating: '4.7',
             reviews: '94 reports',
@@ -1917,6 +1920,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Refined Palm Oil 25L',
             address: 'Bodija-Secretariat Road · Ibadan, Oyo State',
             icon: '🌴',
+            img: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=600&auto=format&fit=crop&q=80',
             distance: '18.1 km',
             rating: '4.6',
             reviews: '115 reports',
@@ -1934,6 +1938,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Golden Penny Flour 50kg',
             address: 'Commercial Avenue · Onitsha, Anambra State',
             icon: '🍞',
+            img: 'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?w=600&auto=format&fit=crop&q=80',
             distance: '24.5 km',
             rating: '4.9',
             reviews: '185 reports',
@@ -1951,6 +1956,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Irish Potatoes (Big Bag)',
             address: 'Terminus Market Road · Jos, Plateau State',
             icon: '🥔',
+            img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
             distance: '35.0 km',
             rating: '4.8',
             reviews: '88 reports',
@@ -1968,6 +1974,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Benue Yam 10 Tubers',
             address: 'Wuse Zone 5 · Abuja, FCT',
             icon: '🍠',
+            img: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&auto=format&fit=crop&q=80',
             distance: '15.2 km',
             rating: '4.7',
             reviews: '160 reports',
@@ -1985,6 +1992,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'PMS Petrol (Litre)',
             address: 'Eleme Junction · Port Harcourt, Rivers State',
             icon: '⛽',
+            img: 'https://images.unsplash.com/photo-1527018601619-a508a2be00d6?w=600&auto=format&fit=crop&q=80',
             distance: '8.4 km',
             rating: '4.5',
             reviews: '130 reports',
@@ -2002,12 +2010,40 @@ document.addEventListener('DOMContentLoaded', () => {
             item: 'Solar Generator 3.5kVA',
             address: 'Ojo Alaba Highway · Ojo LGA, Lagos State',
             icon: '💻',
+            img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
             distance: '14.0 km',
             rating: '4.9',
             reviews: '310 reports',
             status: 'Open now · Electronics & Solar'
         }
     ];
+
+    function createMarketLeafletPopupHtml(mkt) {
+        return `
+            <div class="map-popup-card">
+                <div class="mpc-cover-box">
+                    <img src="${mkt.img}" alt="${mkt.name}" class="mpc-cover-img" />
+                    <span class="mpc-badge">🟢 Open for trading</span>
+                </div>
+                <div class="mpc-content">
+                    <div class="mpc-price-row">
+                        <strong class="mpc-price">${mkt.price}</strong>
+                        <span class="mpc-item">${mkt.item}</span>
+                    </div>
+                    <h4 class="mpc-title">${mkt.name}</h4>
+                    <p class="mpc-address">📍 ${mkt.address}</p>
+                    <div class="mpc-meta">
+                        <span><i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${mkt.rating} (${mkt.reviews})</span>
+                        <span><i class="fa-solid fa-location-arrow"></i> ${mkt.distance}</span>
+                    </div>
+                    <div class="mpc-actions">
+                        <button onclick="window.askMamaAboutMarket('${mkt.name}', '${mkt.city}')" class="mpc-btn-primary"><i class="fa-solid fa-compass"></i> Directions</button>
+                        <button onclick="window.askMamaAboutMarket('${mkt.name}', '${mkt.city}')" class="mpc-btn-outline"><i class="fa-solid fa-robot"></i> Ask Mama AI</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
     function initLeafletMapEngine() {
         const container = document.getElementById('leaflet-map-canvas');
@@ -2044,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!leafletMapInstance) return;
 
         // Clear existing markers
-        mapMarkersGroup.forEach(m => leafletMapInstance.removeLayer(m));
+        mapMarkersGroup.forEach(m => leafletMapInstance.removeLayer(m.marker));
         mapMarkersGroup = [];
 
         marketsList.forEach(mkt => {
@@ -2066,51 +2102,67 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const marker = L.marker([mkt.lat, mkt.lng], { icon: customIcon }).addTo(leafletMapInstance);
-            
+
+            const popupContent = createMarketLeafletPopupHtml(mkt);
+            marker.bindPopup(popupContent, {
+                className: 'custom-leaflet-popup-wrapper',
+                maxWidth: 290,
+                minWidth: 260,
+                closeButton: true,
+                autoPan: true,
+                offset: [0, -25]
+            });
+
             marker.on('click', () => {
                 selectLeafletMarket(mkt);
             });
 
-            mapMarkersGroup.push(marker);
+            mapMarkersGroup.push({ id: mkt.id, marker: marker, data: mkt });
         });
 
         const countEl = document.getElementById('map-tracked-count');
         if (countEl) countEl.textContent = `${marketsList.length} markets tracked`;
+
+        renderBottomCardsCarousel(marketsList);
+    }
+
+    function renderBottomCardsCarousel(marketsList) {
+        const container = document.getElementById('map-cards-carousel');
+        if (!container) return;
+
+        container.innerHTML = marketsList.map(mkt => `
+            <div class="mcc-card" onclick="selectMapMarketById('${mkt.id}')">
+                <div class="mcc-img-box">
+                    <img src="${mkt.img}" alt="${mkt.name}" />
+                    <span class="mcc-badge">${mkt.icon}</span>
+                </div>
+                <div class="mcc-info">
+                    <div class="mcc-price-row">
+                        <strong>${mkt.price}</strong>
+                        <span>${mkt.item.split('(')[0].trim()}</span>
+                    </div>
+                    <h4>${mkt.name}</h4>
+                    <p>📍 ${mkt.city}, ${mkt.state.split(' ')[0]}</p>
+                </div>
+            </div>
+        `).join('');
     }
 
     function selectLeafletMarket(mkt) {
         if (!mkt || !leafletMapInstance) return;
 
         // Pan map smoothly to selected market
-        leafletMapInstance.flyTo([mkt.lat, mkt.lng], 12, {
+        leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, {
             duration: 1.2
         });
 
-        // Update Sheet UI Elements
-        const titleEl = document.getElementById('map-redesign-title');
-        const addrEl = document.getElementById('map-redesign-address');
-        const priceEl = document.getElementById('map-redesign-price');
-        const priceSubEl = document.getElementById('map-redesign-price-sub');
-        const distEl = document.getElementById('map-redesign-distance');
-        const ratingEl = document.getElementById('map-redesign-rating');
-        const reviewsEl = document.getElementById('map-redesign-reviews');
-        const statusEl = document.getElementById('map-redesign-status');
-
-        if (titleEl) titleEl.textContent = mkt.name;
-        if (addrEl) addrEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${mkt.address}`;
-        if (priceEl) priceEl.textContent = mkt.price;
-        if (priceSubEl) priceSubEl.textContent = mkt.item;
-        if (distEl) distEl.textContent = mkt.distance;
-        if (ratingEl) ratingEl.textContent = mkt.rating;
-        if (reviewsEl) reviewsEl.textContent = mkt.reviews;
-        if (statusEl) statusEl.textContent = mkt.status;
-
-        // Expand sheet card
-        const cardEl = document.getElementById('map-redesign-card');
-        if (cardEl) cardEl.classList.add('open');
-
-        // Render nearby markets list
-        renderNearbyMarketsList(mkt.id);
+        // Open anchored marker popup on Leaflet map (Ref Image Spec)
+        const targetObj = mapMarkersGroup.find(item => item.id === mkt.id);
+        if (targetObj && targetObj.marker) {
+            setTimeout(() => {
+                targetObj.marker.openPopup();
+            }, 300);
+        }
     }
 
     function renderNearbyMarketsList(currentId) {
