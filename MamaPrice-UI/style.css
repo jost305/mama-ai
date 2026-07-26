@@ -4925,7 +4925,7 @@ body.sidebar-docked .top-dock-btn {
 
     .prof-cover-banner {
         display: block !important;
-        height: 76px;
+        height: 48px;
         background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #e0f2fe 100%);
         width: 100%;
         border-bottom: 1px solid #bae6fd;
@@ -4935,13 +4935,13 @@ body.sidebar-docked .top-dock-btn {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 0 14px 16px;
-        margin-top: -38px;
+        padding: 0 12px 12px;
+        margin-top: -32px;
     }
 
     .prof-avatar-wrapper {
-        width: 74px;
-        height: 74px;
+        width: 64px;
+        height: 64px;
     }
 
     .prof-avatar-img {
