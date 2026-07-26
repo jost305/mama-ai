@@ -4073,6 +4073,33 @@ body.sidebar-docked .top-dock-btn {
 .scout-lvl-dot.lvl-scout    { background: #15803d; color: #fff; }
 .scout-lvl-dot.lvl-explorer { background: #c2410c; color: #fff; }
 
+/* Status presence dot — top-left of avatar */
+.scout-status-dot {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+.scout-status-dot.dot-active {
+    background: #22c55e;
+    animation: pulse-green 2s infinite;
+}
+
+.scout-status-dot.dot-inactive {
+    background: #94a3b8;
+}
+
+@keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50%       { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+}
+
 .scout-name {
     font-size: 0.8rem;
     font-weight: 700;
