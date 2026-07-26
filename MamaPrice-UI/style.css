@@ -6545,13 +6545,13 @@ body.map-page-active .chat-main {
     .map-bottom-sheet.is-collapsed { max-height: 112px; }
 }
 
-/* ── Left Market Intelligence Sidebar Panel (Ref GIF Spec) ── */
-.map-left-sidebar {
+/* ── Right Market Intelligence Sidebar Panel (Ref Spec) ── */
+.map-right-sidebar {
     position: absolute;
     top: 72px;
-    left: 24px;
+    right: 24px;
     bottom: 95px;
-    width: 320px;
+    width: 330px;
     z-index: 60;
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid #cbd5e1;
@@ -6561,6 +6561,19 @@ body.map-page-active .chat-main {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+@media (min-width: 769px) {
+    .map-live-badge {
+        left: 24px !important;
+        right: auto !important;
+    }
+
+    .map-redesign-controls {
+        left: 24px !important;
+        right: auto !important;
+        top: 72px !important;
+    }
 }
 
 .mls-header {
@@ -6666,7 +6679,7 @@ body.map-page-active .chat-main {
 }
 
 .mls-item:hover, .mls-item.active {
-    transform: translateX(2px);
+    transform: translateX(-2px);
     border-color: #16a34a;
     background: #f8fafc;
 }
@@ -6741,7 +6754,7 @@ body.map-page-active .chat-main {
 }
 
 @media (max-width: 768px) {
-    .map-left-sidebar {
+    .map-right-sidebar {
         display: none !important;
     }
 }
