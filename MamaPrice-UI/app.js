@@ -109,7 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
     const topDockBtn = document.getElementById('top-dock-btn');
 
-    if (sidebar) sidebar.classList.add('open');
+    // Only auto-open sidebar on desktop — never force-open on mobile
+    if (sidebar && window.innerWidth > 768) sidebar.classList.add('open');
 
     function toggleSidebarDock() {
         if (!sidebar) return;
