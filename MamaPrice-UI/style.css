@@ -5177,18 +5177,22 @@ body.sidebar-docked .top-dock-btn {
     }
 
     .scout-kpi-card .kpi-lbl {
-        font-size: 0.52rem !important;
+        font-size: 0.42rem !important;
         color: #64748b !important;
         font-weight: 700 !important;
-        letter-spacing: 0.2px !important;
+        letter-spacing: 0px !important;
         white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
         margin: 0 !important;
         text-transform: uppercase !important;
         line-height: 1 !important;
+        display: block !important;
     }
 
     .scout-kpi-card .kpi-val {
-        font-size: 0.82rem !important;
+        font-size: 0.78rem !important;
         font-weight: 800 !important;
         display: block !important;
         margin-top: 2px !important;
