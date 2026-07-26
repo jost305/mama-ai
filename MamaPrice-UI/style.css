@@ -225,6 +225,33 @@ body.sidebar-docked .top-dock-btn {
     width: 18px;
 }
 
+/* Sidebar Model Intelligence Card */
+.sidebar-model-card {
+    padding: 8px 12px;
+    margin: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.sidebar-model-card .model-picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #15803d;
+    cursor: default;
+}
+
+.sidebar-model-card .model-picker-dot {
+    width: 7px;
+    height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
 .history-section {
     flex: 1;
     overflow-y: auto;
