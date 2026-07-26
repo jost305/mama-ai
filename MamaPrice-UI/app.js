@@ -2821,14 +2821,16 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openAgentModal = function() {
         const modal = document.getElementById('agent-onboarding-modal');
         if (modal) {
-            modal.style.setProperty('display', 'flex', 'important');
+            modal.classList.add('open');
+            modal.style.display = 'flex';
         }
     };
 
     window.closeAgentModal = function() {
         const modal = document.getElementById('agent-onboarding-modal');
         if (modal) {
-            modal.style.setProperty('display', 'none', 'important');
+            modal.classList.remove('open');
+            modal.style.display = 'none';
         }
     };
 
