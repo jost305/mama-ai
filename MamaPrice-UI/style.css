@@ -4021,6 +4021,35 @@ body.sidebar-docked .top-dock-btn {
     flex-shrink: 0;
 }
 
+/* Level badge on avatar corner — like a Twitter verification badge */
+.scout-avatar-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.scout-lvl-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.45rem;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    z-index: 1;
+    cursor: default;
+}
+
+.scout-lvl-dot.lvl-captain  { background: #7e22ce; color: #fff; }
+.scout-lvl-dot.lvl-senior   { background: #1d4ed8; color: #fff; }
+.scout-lvl-dot.lvl-scout    { background: #15803d; color: #fff; }
+.scout-lvl-dot.lvl-explorer { background: #c2410c; color: #fff; }
+
 .scout-name {
     font-size: 0.8rem;
     font-weight: 700;
