@@ -2245,15 +2245,39 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectLeafletMarket(mkt, zoomMap = false) {
         if (!mkt) return;
 
-        // Render Market Details directly inside the Right Sidebar Panel!
+        // 1. Pop out Market Details Sheet / Modal Card (#map-redesign-card)
+        const titleEl = document.getElementById('map-redesign-title');
+        const addrEl = document.getElementById('map-redesign-address');
+        const priceEl = document.getElementById('map-redesign-price');
+        const priceSubEl = document.getElementById('map-redesign-price-sub');
+        const distEl = document.getElementById('map-redesign-distance');
+        const ratingEl = document.getElementById('map-redesign-rating');
+        const reviewsEl = document.getElementById('map-redesign-reviews');
+        const statusEl = document.getElementById('map-redesign-status');
+
+        if (titleEl) titleEl.textContent = mkt.name;
+        if (addrEl) addrEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${mkt.address}`;
+        if (priceEl) priceEl.textContent = mkt.price;
+        if (priceSubEl) priceSubEl.textContent = mkt.item;
+        if (distEl) distEl.textContent = mkt.distance;
+        if (ratingEl) ratingEl.textContent = mkt.rating;
+        if (reviewsEl) reviewsEl.textContent = mkt.reviews;
+        if (statusEl) statusEl.textContent = mkt.status;
+
+        const cardEl = document.getElementById('map-redesign-card');
+        if (cardEl) cardEl.classList.add('open');
+
+        renderNearbyMarketsList(mkt.id);
+
+        // 2. Render Market Details directly inside the Right Sidebar Panel!
         renderSidebarMarketDetail(mkt);
 
-        // Highlight active item in sidebar list if present
+        // 3. Highlight active item in sidebar list if present
         document.querySelectorAll('.mls-item').forEach(el => el.classList.remove('active'));
         const activeItem = document.getElementById(`mls-item-${mkt.id}`);
         if (activeItem) activeItem.classList.add('active');
 
-        // Only zoom/pan map camera if explicitly requested
+        // 4. Only zoom/pan map camera if explicitly requested (default false keeps map zoom 100% stable!)
         if (zoomMap && leafletMapInstance) {
             leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, { duration: 1.2 });
             const targetObj = mapMarkersGroup.find(item => item.id === mkt.id);
