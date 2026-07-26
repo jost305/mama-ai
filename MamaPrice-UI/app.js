@@ -2077,6 +2077,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Start Live Pulsing Price Ticker Engine
         startLivePriceTicker();
+
+        // Invalidate size to fit 2-column structural layout
+        setTimeout(() => {
+            if (leafletMapInstance) leafletMapInstance.invalidateSize();
+        }, 300);
     }
 
     function renderLeafletMarketMarkers(marketsList) {
