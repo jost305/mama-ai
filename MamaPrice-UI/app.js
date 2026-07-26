@@ -2117,12 +2117,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 maxWidth: 290,
                 minWidth: 260,
                 closeButton: true,
-                autoPan: true,
+                autoPan: false,
                 offset: [0, -25]
             });
 
             marker.on('click', () => {
-                selectLeafletMarket(mkt);
+                selectLeafletMarket(mkt, false);
             });
 
             mapMarkersGroup.push({ id: mkt.id, marker: marker, data: mkt });
@@ -2245,23 +2245,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectLeafletMarket(mkt, zoomMap = false) {
         if (!mkt) return;
 
-        // Only zoom/pan map if explicitly requested (by default false to keep map zoom level unchanged)
-        if (zoomMap && leafletMapInstance) {
-            leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, {
-                duration: 1.2
-            });
-        }
-
-        // Open anchored marker popup on Leaflet map (Ref Image Spec)
-        const targetObj = mapMarkersGroup.find(item => item.id === mkt.id);
-        if (targetObj && targetObj.marker) {
-            setTimeout(() => {
-                targetObj.marker.openPopup();
-            }, 100);
-        }
-
         // Render Market Details directly inside the Right Sidebar Panel!
         renderSidebarMarketDetail(mkt);
+
+        // Highlight active item in sidebar list if present
+        document.querySelectorAll('.mls-item').forEach(el => el.classList.remove('active'));
+        const activeItem = document.getElementById(`mls-item-${mkt.id}`);
+        if (activeItem) activeItem.classList.add('active');
+
+        // Only zoom/pan map camera if explicitly requested
+        if (zoomMap && leafletMapInstance) {
+            leafletMapInstance.flyTo([mkt.lat, mkt.lng], 13, { duration: 1.2 });
+            const targetObj = mapMarkersGroup.find(item => item.id === mkt.id);
+            if (targetObj && targetObj.marker) {
+                targetObj.marker.openPopup();
+            }
+        }
     }
 
     function renderSidebarMarketDetail(mkt) {
