@@ -6774,3 +6774,214 @@ body.map-page-active .chat-main {
         display: none !important;
     }
 }
+
+/* ── Sidebar Market Detail Inspector View ── */
+.mls-detail-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+}
+
+.mls-back-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s ease;
+}
+
+.mls-back-btn:hover {
+    background: #e2e8f0;
+}
+
+.mls-detail-body {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.mls-detail-body::-webkit-scrollbar {
+    display: none;
+}
+
+.mls-cover-box {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.mls-cover-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mls-status-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 99px;
+}
+
+.mls-detail-content {
+    padding: 16px;
+}
+
+.mls-detail-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+
+.mls-detail-addr {
+    font-size: 0.76rem;
+    color: #64748b;
+    margin-bottom: 14px;
+}
+
+.mls-price-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+
+.mls-pc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mls-pc-label {
+    font-size: 0.68rem;
+    color: #64748b;
+    font-weight: 600;
+    display: block;
+}
+
+.mls-pc-price {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #16a34a;
+    margin: 2px 0 0;
+}
+
+.mls-pc-sub {
+    font-size: 0.72rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.mls-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.mls-stat-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 12px;
+}
+
+.mls-stat-box span {
+    display: block;
+    font-size: 0.65rem;
+    color: #64748b;
+}
+
+.mls-stat-box strong {
+    font-size: 0.88rem;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.mls-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.mls-btn-primary, .mls-btn-outline {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+}
+
+.mls-btn-primary {
+    background: #0f172a;
+    color: #ffffff;
+}
+
+.mls-btn-primary:hover {
+    background: #1e293b;
+}
+
+.mls-btn-outline {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+
+.mls-nearby-section h4 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 8px;
+}
+
+.mls-nearby-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mls-nearby-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.mls-nearby-item:hover {
+    border-color: #16a34a;
+}
+
+.mni-icon { font-size: 1.1rem; margin-right: 8px; }
+.mni-info strong { display: block; font-size: 0.76rem; color: #0f172a; }
+.mni-info span { display: block; font-size: 0.66rem; color: #64748b; }
+.mni-price { font-size: 0.8rem; color: #16a34a; font-weight: 800; }

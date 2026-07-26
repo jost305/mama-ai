@@ -2257,7 +2257,124 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetObj.marker.openPopup();
             }, 300);
         }
+
+        // Render Market Details directly inside the Right Sidebar Panel!
+        renderSidebarMarketDetail(mkt);
     }
+
+    function renderSidebarMarketDetail(mkt) {
+        const sidebar = document.getElementById('map-right-sidebar');
+        if (!sidebar) return;
+
+        const others = NIGERIA_MARKETS_DATA.filter(m => m.id !== mkt.id).slice(0, 3);
+        const nearbyHtml = others.map(m => `
+            <div class="mls-nearby-item" onclick="selectMapMarketById('${m.id}')">
+                <span class="mni-icon">${m.icon}</span>
+                <div class="mni-info">
+                    <strong>${m.name}</strong>
+                    <span>${m.city} · ${m.distance}</span>
+                </div>
+                <strong class="mni-price">${m.price}</strong>
+            </div>
+        `).join('');
+
+        sidebar.innerHTML = `
+            <div class="mls-detail-header">
+                <button class="mls-back-btn" onclick="window.resetSidebarToMarketList()"><i class="fa-solid fa-arrow-left"></i> Back to Hubs</button>
+                <span class="mls-count-badge">Active Hub</span>
+            </div>
+            <div class="mls-detail-body">
+                <div class="mls-cover-box">
+                    <img src="${mkt.img}" alt="${mkt.name}" />
+                    <span class="mls-status-tag">🟢 ${mkt.status || 'Open now'}</span>
+                </div>
+                <div class="mls-detail-content">
+                    <h3 class="mls-detail-title">${mkt.name}</h3>
+                    <p class="mls-detail-addr"><i class="fa-solid fa-location-dot"></i> ${mkt.address}</p>
+
+                    <div class="mls-price-card">
+                        <div class="mls-pc-row">
+                            <div>
+                                <span class="mls-pc-label">Best Price Today</span>
+                                <h2 class="mls-pc-price">${mkt.price}</h2>
+                                <span class="mls-pc-sub">${mkt.item}</span>
+                            </div>
+                            <div class="mls-pc-trend ${mkt.trendDir || 'up'}">
+                                <i class="fa-solid ${mkt.trendDir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                                <span>${mkt.trendVal || 'Verified'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mls-stats-grid">
+                        <div class="mls-stat-box">
+                            <span>Distance</span>
+                            <strong>${mkt.distance}</strong>
+                        </div>
+                        <div class="mls-stat-box">
+                            <span>Rating</span>
+                            <strong>⭐ ${mkt.rating}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mls-action-buttons">
+                        <button onclick="window.askMamaAboutMarket('${mkt.name}', '${mkt.city}')" class="mls-btn-primary"><i class="fa-solid fa-compass"></i> Directions</button>
+                        <button onclick="window.askMamaAboutMarket('${mkt.name}', '${mkt.city}')" class="mls-btn-outline"><i class="fa-solid fa-robot"></i> Ask Mama AI</button>
+                    </div>
+
+                    <div class="mls-nearby-section">
+                        <h4>Nearby Hubs</h4>
+                        <div class="mls-nearby-list">
+                            ${nearbyHtml}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    window.resetSidebarToMarketList = function() {
+        const sidebar = document.getElementById('map-right-sidebar');
+        if (!sidebar) return;
+
+        sidebar.innerHTML = `
+            <div class="mls-header" id="mls-header-section">
+                <div class="mls-title-row">
+                    <div>
+                        <span class="mls-kicker"><span class="mls-live-pulse"></span> LIVE PRICE FEEDS</span>
+                        <h3>Market Intelligence</h3>
+                    </div>
+                    <span class="mls-count-badge" id="mls-count-badge">${NIGERIA_MARKETS_DATA.length} Hubs</span>
+                </div>
+                <div class="mls-filter-mini-pills">
+                    <button class="mls-pill active" data-cat="all">All</button>
+                    <button class="mls-pill" data-cat="grain">Grains</button>
+                    <button class="mls-pill" data-cat="produce">Produce</button>
+                    <button class="mls-pill" data-cat="building">Building</button>
+                </div>
+            </div>
+            <div class="mls-body" id="mls-list-container">
+            </div>
+        `;
+
+        renderMapLeftSidebar(NIGERIA_MARKETS_DATA);
+
+        // Rebind mini filter pills
+        document.querySelectorAll('.mls-filter-mini-pills .mls-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mls-filter-mini-pills .mls-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const cat = btn.dataset.cat || 'all';
+                const filtered = cat === 'all'
+                    ? NIGERIA_MARKETS_DATA
+                    : NIGERIA_MARKETS_DATA.filter(m => m.category === cat);
+
+                renderMapLeftSidebar(filtered);
+                renderLeafletMarketMarkers(filtered);
+            });
+        });
+    };
 
     function renderNearbyMarketsList(currentId) {
         const listContainer = document.getElementById('map-nearby-list-container');
