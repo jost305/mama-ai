@@ -5229,6 +5229,36 @@ body.sidebar-docked .top-dock-btn {
         display: none !important;
     }
 
+    /* 2-column vendor grid on mobile */
+    .vendors-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .vendor-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 10px !important;
+        gap: 6px !important;
+    }
+
+    .v-img-placeholder {
+        font-size: 1.6rem !important;
+    }
+
+    .v-details h3 {
+        font-size: 0.78rem !important;
+        margin: 2px 0 2px 0 !important;
+    }
+
+    .v-location {
+        font-size: 0.68rem !important;
+    }
+
+    .v-rating {
+        font-size: 0.66rem !important;
+    }
+
     #invite-scouts-btn {
         padding: 4px 10px !important;
         font-size: 0.72rem !important;
