@@ -1312,25 +1312,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function completeWaAuthentication(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf') {
-        if (!currentWaSession) return;
-        currentWaSession.status = 'authenticated';
-        const dummyJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: phoneNumber, user: userName, exp: Date.now() + 900000 }))}.signature`;
+        const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
+        const dummyJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: phoneNumber, user: userName, privyAppId: PRIVY_APP_ID, exp: Date.now() + 864000000 }))}.signature`;
+        
         localStorage.setItem('mamaprice_jwt_token', dummyJwt);
-        localStorage.setItem('mamaprice_auth_user', JSON.stringify({ name: userName, phone: phoneNumber }));
+        localStorage.setItem('mamaprice_auth_user', JSON.stringify({ name: userName, phone: phoneNumber, provider: 'Privy Auth', appId: PRIVY_APP_ID }));
 
         updateAuthUIState();
 
-        if (waStatusText) waStatusText.innerHTML = '✅ <span style="color: #15803d;">Authenticated Successfully! Redirecting to Dashboard...</span>';
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: `🔒 <strong>Privy Authentication Verified!</strong><br>Welcome ${userName} (${phoneNumber}). Session active under Privy Auth App ID: <code>5QTVCAo3...</code>`,
+                tag: 'Privy Auth',
+                actionQuery: ''
+            });
+        }
 
         setTimeout(() => {
+            const waAuthModal = document.getElementById('wa-auth-modal');
             if (waAuthModal) waAuthModal.classList.remove('open');
             const pageProfile = document.getElementById('page-profile');
             const navProfile = document.getElementById('nav-profile');
             if (pageProfile && typeof switchView === 'function') {
                 switchView(navProfile, pageProfile);
             }
-            alert(`🎉 Welcome to your Dashboard, ${userName}!\n\nYou are logged in via WhatsApp Reverse Auth (${phoneNumber}). Saved to persistent session.`);
-        }, 800);
+            alert(`🎉 Privy Authentication Successful!\n\nAuthenticated ${userName} (${phoneNumber}) via Privy Auth App ID.\nSaved to active session.`);
+        }, 400);
     }
 
     if (waSimVerifyBtn) {

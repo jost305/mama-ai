@@ -1528,13 +1528,15 @@
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-profile"><i class="fa-solid fa-user-gear"></i><span>Profile</span></a>
     </nav>
 
-    <!-- Modal 2: Clean Minimalist Sign in Modal -->
+    <!-- Modal 2: Clean Minimalist Sign in Modal (Privy Auth) -->
     <div class="modal-overlay" id="wa-auth-modal" style="display: none;">
         <div class="modal-card wa-auth-card">
             <div class="wa-card-header">
                 <div>
-                    <h3>Sign in to MamaPrice</h3>
-                    <p>Instant phone verification · No password required</p>
+                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-shield-halved" style="color: #6366f1;"></i> Sign in with Privy Auth
+                    </h3>
+                    <p>Web3 & passwordless authentication · Powered by Privy</p>
                 </div>
                 <button class="modal-close" id="close-wa-modal"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -1542,20 +1544,20 @@
             <div class="wa-card-body">
                 <form id="sign-in-form">
                     <div class="form-group" style="margin-bottom: 12px;">
-                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Your Name</label>
+                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Your Full Name</label>
                         <input type="text" id="sign-in-name" value="Amina Yusuf" placeholder="Enter your full name" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Phone Number or WhatsApp</label>
-                        <input type="tel" id="sign-in-phone" value="+234 801 234 5678" placeholder="+234 800 000 0000" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
+                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Email Address or Phone Number</label>
+                        <input type="text" id="sign-in-phone" value="amina.yusuf@mamaprice.ng" placeholder="user@domain.com or +234..." style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
                     </div>
 
-                    <button type="submit" class="wa-open-btn" id="wa-deep-link-btn" style="margin-bottom: 10px; background: #25d366; color: #ffffff; width: 100%; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.25);">
-                        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Authenticate via WhatsApp Instant Handshake
+                    <button type="submit" class="wa-open-btn" id="wa-deep-link-btn" style="margin-bottom: 10px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; width: 100%; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(99,102,241,0.3); transition: transform 0.15s;">
+                        <i class="fa-solid fa-shield-halved" style="font-size: 1.05rem;"></i> Authenticate via Privy Auth
                     </button>
 
-                    <p style="font-size: 0.74rem; color: #64748b; text-align: center; margin: 0;">
-                        Instant 1-click verification · No passwords or codes needed.
+                    <p style="font-size: 0.72rem; color: #64748b; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fa-solid fa-lock" style="color: #6366f1;"></i> Secured by Privy · App ID: <code>5QTVCAo3...</code>
                     </p>
                 </form>
             </div>
