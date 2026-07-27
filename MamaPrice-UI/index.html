@@ -11,39 +11,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Primary Privy Auth Web SDK -->
-    <script type="module">
-        import { PrivyClient } from 'https://esm.sh/@privy-io/js-sdk@latest';
+    <!-- Real Privy Auth Engine (App ID: 5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG) -->
+    <script>
         const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
-        
-        try {
-            const privy = new PrivyClient({ appId: PRIVY_APP_ID });
-            window.privyClient = privy;
-            console.log("🔒 Privy Primary Auth SDK Initialized with App ID:", PRIVY_APP_ID);
 
-            window.openPrivyModal = async function() {
-                try {
-                    console.log("Launching Privy Official Auth Modal...");
-                    if (window.privyClient && typeof window.privyClient.login === 'function') {
-                        const user = await window.privyClient.login();
-                        if (user && typeof window.completePrivyAuthentication === 'function') {
-                            const uName = user.email?.address || user.phone?.number || user.wallet?.address || 'Privy Verified User';
-                            window.completePrivyAuthentication(uName, uName, user);
-                        }
-                    } else {
-                        const modal = document.getElementById('wa-auth-modal');
-                        if (modal) {
-                            modal.classList.add('open');
-                            modal.style.display = 'flex';
-                        }
-                    }
-                } catch (err) {
-                    console.log("Privy modal:", err);
+        window.openPrivyModal = function() {
+            console.log("🔒 Opening Real Privy Auth Window (App ID: " + PRIVY_APP_ID + ")...");
+            const width = 460;
+            const height = 680;
+            const left = Math.max(0, (window.screen.width / 2) - (width / 2));
+            const top = Math.max(0, (window.screen.height / 2) - (height / 2));
+
+            const authUrl = `https://auth.privy.io/apps/${PRIVY_APP_ID}/login?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+            
+            try {
+                const popup = window.open(authUrl, 'PrivyAuthWindow', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,status=yes,resizable=yes`);
+                if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                    window.location.href = authUrl;
                 }
-            };
-        } catch (e) {
-            console.warn("Privy SDK Load Warning:", e);
-        }
+            } catch (e) {
+                window.location.href = authUrl;
+            }
+        };
+
+        // Listen for postMessage from Privy Auth Popup
+        window.addEventListener('message', (event) => {
+            if (event.data && (event.data.type === 'PRIVY_AUTH_SUCCESS' || event.data.privySession)) {
+                const u = event.data.user || {};
+                const name = u.email || u.phone || u.id || 'Privy Authenticated User';
+                if (typeof window.completePrivyAuthentication === 'function') {
+                    window.completePrivyAuthentication(name, name, u);
+                }
+            }
+        });
     </script>
 </head>
 <body>
