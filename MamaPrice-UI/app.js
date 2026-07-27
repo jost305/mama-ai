@@ -1129,9 +1129,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const agentSub = document.getElementById('prof-agent-sub');
 
         if (user) {
-            if (nameEl) nameEl.textContent = user.name || 'Amina Yusuf';
-            if (subEl) subEl.innerHTML = `<i class="fa-solid fa-phone"></i> ${user.phone || '+234 801 234 5678'} · <i class="fa-solid fa-location-dot"></i> ${user.location || 'Dawanau & Sabon Gari Markets, Kano'}`;
+            if (nameEl) nameEl.textContent = user.name || user.phone || 'Market User';
+            if (subEl) subEl.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;"></i> ${user.phone || user.privyDid || 'Privy Authenticated'} · <i class="fa-solid fa-location-dot"></i> ${user.location || 'Kano, NG Hub'}`;
             if (avatarEl && user.avatar) avatarEl.src = user.avatar;
+        } else {
+            if (nameEl) nameEl.textContent = 'Guest User';
+            if (subEl) subEl.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;"></i> Sign in with Privy Auth to view active session`;
         }
 
         // Check if agent status is active

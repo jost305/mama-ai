@@ -1104,10 +1104,10 @@
                             </div>
                             <div class="prof-user-info">
                                 <div class="prof-name-row">
-                                    <h1 id="prof-hero-name">Amina Yusuf</h1>
+                                    <h1 id="prof-hero-name">Guest User</h1>
                                     <span class="prof-status-pill" id="prof-status-badge"><span class="live-dot"></span> Smart Saver</span>
                                 </div>
-                                <p class="prof-user-sub" id="prof-user-phone-loc"><i class="fa-solid fa-phone"></i> +234 801 *** 5678 · <i class="fa-solid fa-location-dot"></i> Dawanau & Sabon Gari Markets, Kano</p>
+                                <p class="prof-user-sub" id="prof-user-phone-loc"><i class="fa-solid fa-shield-halved"></i> Sign in with Privy Auth to view active session</p>
                             </div>
                             <div class="prof-hero-actions">
                                 <button type="button" class="btn-prof-primary" id="prof-agent-toggle-btn" onclick="openAgentModal()"><i class="fa-solid fa-user-shield"></i> Become Market Agent</button>
@@ -1579,12 +1579,16 @@
 
             <!-- Privy Email / Phone Direct Login -->
             <form id="sign-in-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
-                <div style="position: relative;">
-                    <input type="text" id="sign-in-phone" value="amina.yusuf@mamaprice.ng" placeholder="Email or Phone (+234...)" style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #f8fafc; transition: border-color 0.15s, background 0.15s;" required />
+                <div>
+                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Full Name</label>
+                    <input type="text" id="sign-in-name" value="" placeholder="e.g. Segun Olusola" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
                 </div>
-                <input type="hidden" id="sign-in-name" value="Amina Yusuf" />
-                <button type="submit" id="wa-deep-link-btn" style="width: 100%; padding: 12px; background: #6366f1; color: #ffffff; border: none; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(99,102,241,0.25); transition: background 0.15s;">
-                    Submit & Continue →
+                <div>
+                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Email or Phone Number</label>
+                    <input type="text" id="sign-in-phone" value="" placeholder="e.g. user@domain.com or +234..." style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
+                </div>
+                <button type="submit" id="wa-deep-link-btn" style="width: 100%; padding: 12px; background: #6366f1; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(99,102,241,0.25); margin-top: 4px;">
+                    <i class="fa-solid fa-shield-halved"></i> Sign in with Privy
                 </button>
             </form>
 
