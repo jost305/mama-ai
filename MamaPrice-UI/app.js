@@ -1199,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const notifPopover = document.getElementById('notif-popover');
     const markAllReadBtn = document.getElementById('mark-all-read-btn');
     const notifBadge = document.querySelector('.notif-badge');
-    const waAuthBtn = document.getElementById('wa-auth-btn');
+    // waAuthBtn already declared at top level
 
     // 1. Weather Location Pill Click
     if (weatherPill && weatherPopover) {
