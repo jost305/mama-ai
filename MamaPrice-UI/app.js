@@ -1190,6 +1190,116 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateAuthUIState();
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // HEADER INTERACTIVE BUTTONS ENGINE
+    // ─────────────────────────────────────────────────────────────────────────
+    const weatherPill = document.getElementById('weather-location-pill');
+    const weatherPopover = document.getElementById('weather-popover-card');
+    const notifBtn = document.getElementById('notif-btn');
+    const notifPopover = document.getElementById('notif-popover');
+    const markAllReadBtn = document.getElementById('mark-all-read-btn');
+    const notifBadge = document.querySelector('.notif-badge');
+    const waAuthBtn = document.getElementById('wa-auth-btn');
+
+    // 1. Weather Location Pill Click
+    if (weatherPill && weatherPopover) {
+        weatherPill.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = weatherPopover.classList.contains('open');
+            document.querySelectorAll('.weather-popover-card, .notif-popover-card').forEach(el => el.classList.remove('open'));
+            if (!isOpen) weatherPopover.classList.add('open');
+        });
+    }
+
+    // Weather City Switcher Buttons
+    document.querySelectorAll('.w-city-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.w-city-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const cityName = this.getAttribute('data-city') || 'Kano, NG';
+
+            const cityData = {
+                'Kano, NG': { temp: '29°C', icon: '🌤️', desc: 'Partly Cloudy · Dawanau Hub', humidity: '64%', wind: '12 km/h' },
+                'Lagos, NG': { temp: '31°C', icon: '🌧️', desc: 'Light Rain · Mile 12 Hub', humidity: '82%', wind: '18 km/h' },
+                'Ibadan, NG': { temp: '28°C', icon: '⛅', desc: 'Cloudy · Bodija Hub', humidity: '75%', wind: '10 km/h' },
+                'Abuja, NG': { temp: '30°C', icon: '☀️', desc: 'Sunny · Wuse Market Hub', humidity: '55%', wind: '14 km/h' }
+            };
+
+            const info = cityData[cityName] || cityData['Kano, NG'];
+            
+            const cityEl = document.getElementById('weather-city');
+            const popCityEl = document.getElementById('w-pop-city');
+            const iconEl = document.getElementById('weather-icon');
+            const popIconEl = document.getElementById('w-pop-icon');
+            const tempEl = document.getElementById('weather-temp');
+            const popTempEl = document.getElementById('w-pop-temp');
+            const popDescEl = document.getElementById('w-pop-desc');
+            const popHumEl = document.getElementById('w-pop-humidity');
+            const popWindEl = document.getElementById('w-pop-wind');
+
+            if (cityEl) cityEl.textContent = cityName;
+            if (popCityEl) popCityEl.textContent = cityName;
+            if (iconEl) iconEl.textContent = info.icon;
+            if (popIconEl) popIconEl.textContent = info.icon;
+            if (tempEl) tempEl.textContent = info.temp;
+            if (popTempEl) popTempEl.textContent = info.temp;
+            if (popDescEl) popDescEl.textContent = info.desc;
+            if (popHumEl) popHumEl.textContent = info.humidity;
+            if (popWindEl) popWindEl.textContent = info.wind;
+        });
+    });
+
+    // 2. Notifications Bell Button Click
+    if (notifBtn && notifPopover) {
+        notifBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = notifPopover.classList.contains('open');
+            document.querySelectorAll('.weather-popover-card, .notif-popover-card').forEach(el => el.classList.remove('open'));
+            if (!isOpen) notifPopover.classList.add('open');
+        });
+    }
+
+    if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (notifBadge) {
+                notifBadge.style.display = 'none';
+                notifBadge.textContent = '0';
+            }
+            document.querySelectorAll('.notif-row-item.unread').forEach(item => item.classList.remove('unread'));
+        });
+    }
+
+    // 3. Sign In / User Avatar Header Button Click
+    if (waAuthBtn) {
+        waAuthBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const token = localStorage.getItem('mamaprice_jwt_token');
+            if (token) {
+                const pageProfile = document.getElementById('page-profile');
+                const navProfile = document.getElementById('nav-profile');
+                if (pageProfile && typeof switchView === 'function') {
+                    switchView(navProfile, pageProfile);
+                }
+            } else {
+                const waModal = document.getElementById('wa-auth-modal');
+                if (waModal) {
+                    waModal.classList.add('open');
+                    waModal.style.display = 'flex';
+                }
+            }
+        });
+    }
+
+    // Close header popovers on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.weather-pill-container') && !e.target.closest('.notif-popover-wrapper')) {
+            document.querySelectorAll('.weather-popover-card, .notif-popover-card').forEach(el => el.classList.remove('open'));
+        }
+    });
+
     function completeWaAuthentication(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf') {
         if (!currentWaSession) return;
         currentWaSession.status = 'authenticated';

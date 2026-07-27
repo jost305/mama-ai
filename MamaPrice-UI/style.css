@@ -2441,6 +2441,64 @@ body.not-home-page .weather-pill-container {
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ── Header Popovers & Interactive Cards ── */
+.weather-location-pill {
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.weather-location-pill:hover {
+    background: #f0fdf4 !important;
+    border-color: #bbf7d0 !important;
+}
+
+.weather-popover-card {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 280px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.weather-popover-card.open {
+    display: flex !important;
+}
+
+.notif-popover-card {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 340px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notif-popover-card.open {
+    display: flex !important;
+}
+
+@keyframes popoverFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .w-pop-big-icon {
     font-size: 1.8rem;
 }
