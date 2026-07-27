@@ -1528,38 +1528,62 @@
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-profile"><i class="fa-solid fa-user-gear"></i><span>Profile</span></a>
     </nav>
 
-    <!-- Modal 2: Clean Minimalist Sign in Modal (Privy Auth) -->
+    <!-- Modal 2: Official Privy Pre-built Auth Modal UI Component -->
     <div class="modal-overlay" id="wa-auth-modal" style="display: none;">
-        <div class="modal-card wa-auth-card">
-            <div class="wa-card-header">
-                <div>
-                    <h3 style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-shield-halved" style="color: #6366f1;"></i> Sign in with Privy Auth
-                    </h3>
-                    <p>Web3 & passwordless authentication · Powered by Privy</p>
+        <div class="modal-card privy-auth-card" style="max-width: 400px; width: 100%; border-radius: 20px; padding: 24px; background: #ffffff; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2); border: 1px solid #e2e8f0; position: relative;">
+            <button class="modal-close" id="close-wa-modal" style="position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; color: #64748b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: background 0.15s;"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Privy Modal Header & Logo -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 48px; height: 48px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #6366f1; margin-bottom: 12px;">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <button class="modal-close" id="close-wa-modal"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">Log in or Sign Up</h3>
+                <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0;">Connect to MamaPrice via Privy Authentication</p>
             </div>
 
-            <div class="wa-card-body">
-                <form id="sign-in-form">
-                    <div class="form-group" style="margin-bottom: 12px;">
-                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Your Full Name</label>
-                        <input type="text" id="sign-in-name" value="Amina Yusuf" placeholder="Enter your full name" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
-                    </div>
-                    <div class="form-group" style="margin-bottom: 16px;">
-                        <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">Email Address or Phone Number</label>
-                        <input type="text" id="sign-in-phone" value="amina.yusuf@mamaprice.ng" placeholder="user@domain.com or +234..." style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
-                    </div>
+            <!-- Privy Email / Phone Direct Login -->
+            <form id="sign-in-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                <div style="position: relative;">
+                    <input type="text" id="sign-in-phone" value="amina.yusuf@mamaprice.ng" placeholder="Email or Phone (+234...)" style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 0.9rem; font-weight: 600; color: #0f172a; outline: none; background: #f8fafc; transition: border-color 0.15s, background 0.15s;" required />
+                </div>
+                <input type="hidden" id="sign-in-name" value="Amina Yusuf" />
+                <button type="submit" id="wa-deep-link-btn" style="width: 100%; padding: 12px; background: #6366f1; color: #ffffff; border: none; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(99,102,241,0.25); transition: background 0.15s;">
+                    Submit & Continue →
+                </button>
+            </form>
 
-                    <button type="submit" class="wa-open-btn" id="wa-deep-link-btn" style="margin-bottom: 10px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; width: 100%; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(99,102,241,0.3); transition: transform 0.15s;">
-                        <i class="fa-solid fa-shield-halved" style="font-size: 1.05rem;"></i> Authenticate via Privy Auth
-                    </button>
+            <!-- Privy Methods Divider -->
+            <div style="display: flex; align-items: center; margin: 16px 0; gap: 12px;">
+                <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">OR LOGIN WITH</span>
+                <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+            </div>
 
-                    <p style="font-size: 0.72rem; color: #64748b; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <i class="fa-solid fa-lock" style="color: #6366f1;"></i> Secured by Privy · App ID: <code>5QTVCAo3...</code>
-                    </p>
-                </form>
+            <!-- Privy Supported Methods Buttons Grid (Google, Apple, Twitter, Telegram, Wallet, Passkey) -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
+                <button type="button" class="privy-method-btn" onclick="triggerPrivyMethod('google')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-google" style="color: #ea4335;"></i> Google
+                </button>
+                <button type="button" class="privy-method-btn" onclick="triggerPrivyMethod('apple')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-apple" style="color: #0f172a;"></i> Apple
+                </button>
+                <button type="button" class="privy-method-btn" onclick="triggerPrivyMethod('twitter')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-x-twitter" style="color: #0f172a;"></i> Twitter / X
+                </button>
+                <button type="button" class="privy-method-btn" onclick="triggerPrivyMethod('telegram')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-telegram" style="color: #229ed9;"></i> Telegram
+                </button>
+                <button type="button" class="privy-method-btn" onclick="triggerPrivyMethod('wallet')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; grid-column: span 2;">
+                    <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i> Connect Web3 Wallet
+                </button>
+            </div>
+
+            <!-- Privy Verified Footer -->
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 14px; text-align: center;">
+                <p style="font-size: 0.7rem; color: #94a3b8; margin: 0; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fa-solid fa-lock" style="color: #6366f1;"></i> Protected by <strong>Privy Auth</strong> · App ID: <code style="font-size: 0.65rem; background: #f1f5f9; padding: 2px 5px; border-radius: 4px;">5QTVCAo3...</code>
+                </p>
             </div>
         </div>
     </div>

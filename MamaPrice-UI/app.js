@@ -1341,6 +1341,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     }
 
+    window.triggerPrivyMethod = function(method) {
+        const methodLabels = {
+            'google': { name: 'Google OAuth', user: 'Amina Yusuf (Google)' },
+            'apple': { name: 'Apple ID', user: 'Amina Yusuf (Apple)' },
+            'twitter': { name: 'Twitter / X', user: '@aminayusuf' },
+            'telegram': { name: 'Telegram Auth', user: 'Amina Yusuf (Telegram)' },
+            'wallet': { name: 'Web3 Wallet (EVM)', user: '0x71C...38f9 (Web3 Wallet)' }
+        };
+        const m = methodLabels[method] || { name: 'Privy Method', user: 'Amina Yusuf' };
+        completeWaAuthentication(m.user, m.user);
+    };
+
     if (waSimVerifyBtn) {
         waSimVerifyBtn.addEventListener('click', () => {
             completeWaAuthentication();
