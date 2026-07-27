@@ -748,9 +748,19 @@ document.addEventListener('DOMContentLoaded', () => {
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const phoneInput = document.getElementById('sign-in-phone');
+            const nameInput = document.getElementById('sign-in-name');
             const phone = phoneInput ? phoneInput.value : '+234 801 234 5678';
+            const name = nameInput ? nameInput.value : 'Amina Yusuf';
+
             currentWaSession = { loginCode: 'DIRECT_AUTH', status: 'pending' };
-            completeWaAuthentication(phone, 'Amina Yusuf');
+            completeWaAuthentication(phone, name);
+
+            // Check if there was a pending referral code from URL
+            const pendingRefCode = localStorage.getItem('mama_pending_referral_code');
+            if (pendingRefCode && typeof registerReferral === 'function') {
+                registerReferral(name, phone, pendingRefCode);
+                localStorage.removeItem('mama_pending_referral_code');
+            }
         });
     }
 
@@ -1292,6 +1302,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
 
     // Close header popovers on outside click
     document.addEventListener('click', (e) => {
