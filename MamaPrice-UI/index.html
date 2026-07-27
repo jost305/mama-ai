@@ -11,12 +11,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Dedicated Privy Auth Engine (App ID: 5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG) -->
+    <!-- Official Privy Auth UMD Bundle (App ID: 5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG) -->
+    <script src="https://unpkg.com/@privy-io/js-sdk@latest/dist/privy.umd.js"></script>
     <script>
         const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
 
-        window.openPrivyModal = function() {
-            console.log("🔒 Opening Privy Auth Modal (App ID: " + PRIVY_APP_ID + ")...");
+        try {
+            if (window.Privy) {
+                window.privyClient = new window.Privy({ appId: PRIVY_APP_ID });
+                console.log("🔒 Official Privy UMD SDK Loaded with App ID:", PRIVY_APP_ID);
+            }
+        } catch (e) {
+            console.warn("Privy UMD init:", e);
+        }
+
+        window.openPrivyModal = async function() {
+            console.log("🔒 Opening Official Privy Auth Modal (App ID: " + PRIVY_APP_ID + ")...");
+            if (window.privyClient && typeof window.privyClient.login === 'function') {
+                try {
+                    const user = await window.privyClient.login();
+                    if (user && typeof window.completePrivyAuthentication === 'function') {
+                        const uName = user.email?.address || user.phone?.number || user.wallet?.address || 'Privy User';
+                        window.completePrivyAuthentication(uName, uName, user);
+                        return;
+                    }
+                } catch (err) {
+                    console.log("Privy modal:", err);
+                }
+            }
             const modal = document.getElementById('wa-auth-modal');
             if (modal) {
                 modal.classList.add('open');
