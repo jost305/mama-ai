@@ -1341,7 +1341,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     }
 
-    window.triggerPrivyMethod = function(method) {
+    window.triggerPrivyMethod = async function(method) {
+        if (window.privyClient && typeof window.privyClient.login === 'function') {
+            try {
+                const user = await window.privyClient.login({ loginMethod: method });
+                if (user) {
+                    const uName = user.email ? user.email.address : (user.phone ? user.phone.number : (user.wallet ? user.wallet.address : 'Privy Verified User'));
+                    completeWaAuthentication(uName, uName);
+                    return;
+                }
+            } catch (err) {
+                console.warn("Privy SDK trigger login info:", err);
+            }
+        }
+
         const methodLabels = {
             'google': { name: 'Google OAuth', user: 'Amina Yusuf (Google)' },
             'apple': { name: 'Apple ID', user: 'Amina Yusuf (Apple)' },

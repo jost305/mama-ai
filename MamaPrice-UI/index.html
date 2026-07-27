@@ -10,6 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Official Privy Auth Web SDK -->
+    <script type="module">
+        import { PrivyClient } from 'https://esm.sh/@privy-io/js-sdk@latest';
+        const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
+        try {
+            window.privyClient = new PrivyClient({ appId: PRIVY_APP_ID });
+            console.log("🔒 Privy Official Web SDK Initialized with App ID:", PRIVY_APP_ID);
+        } catch (e) {
+            console.warn("Privy SDK Load Warning:", e);
+        }
+    </script>
 </head>
 <body>
     <div class="app-layout">
