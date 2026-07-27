@@ -1083,6 +1083,73 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render of Scouts Dashboard
     updateScoutsDashboard();
 
+    function updateUserProfileDashboard() {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        const user = userJson ? JSON.parse(userJson) : null;
+        const isAgent = localStorage.getItem('mama_user_is_agent') === 'true';
+
+        const nameEl = document.getElementById('prof-hero-name');
+        const subEl = document.getElementById('prof-user-phone-loc');
+        const avatarEl = document.querySelector('.prof-avatar-img');
+        const statusBadge = document.getElementById('prof-status-badge');
+        const agentToggleBtn = document.getElementById('prof-agent-toggle-btn');
+        const payoutBtn = document.getElementById('prof-payout-btn');
+
+        const savingsVal = document.getElementById('prof-savings-val');
+        const walletVal = document.getElementById('prof-wallet-val');
+        const pointsVal = document.getElementById('prof-points-val');
+        const trustVal = document.getElementById('prof-trust-val');
+        const reportsLoggedSub = document.getElementById('prof-reports-logged-sub');
+        const agentSub = document.getElementById('prof-agent-sub');
+
+        if (user) {
+            if (nameEl) nameEl.textContent = user.name || 'Amina Yusuf';
+            if (subEl) subEl.innerHTML = `<i class="fa-solid fa-phone"></i> ${user.phone || '+234 801 234 5678'} · <i class="fa-solid fa-location-dot"></i> ${user.location || 'Dawanau & Sabon Gari Markets, Kano'}`;
+            if (avatarEl && user.avatar) avatarEl.src = user.avatar;
+        }
+
+        // Check if agent status is active
+        if (isAgent) {
+            if (statusBadge) {
+                statusBadge.innerHTML = `<span class="live-dot"></span> Active Scout Agent`;
+                statusBadge.style.background = '#f0fdf4';
+                statusBadge.style.color = '#166534';
+                statusBadge.style.borderColor = '#bbf7d0';
+            }
+            if (agentToggleBtn) agentToggleBtn.style.display = 'none';
+            if (payoutBtn) payoutBtn.style.display = 'inline-flex';
+            if (agentSub) agentSub.textContent = 'Available Earnings';
+        } else {
+            if (statusBadge) {
+                statusBadge.innerHTML = `<span class="live-dot" style="background:#22c55e;"></span> Smart Saver`;
+                statusBadge.style.background = '#f1f5f9';
+                statusBadge.style.color = '#475569';
+                statusBadge.style.borderColor = '#cbd5e1';
+            }
+            if (agentToggleBtn) agentToggleBtn.style.display = 'inline-flex';
+            if (payoutBtn) payoutBtn.style.display = 'none';
+            if (agentSub) agentSub.textContent = 'Become Agent to Earn';
+        }
+
+        // Calculate MarketPoints
+        let totalPts = user ? (user.referralPoints || 600) : 600;
+        const agentData = user ? scoutsData.find(a => a.name.toLowerCase() === (user.name || '').toLowerCase()) : null;
+
+        if (agentData) {
+            totalPts += (agentData.points || 0);
+            if (walletVal) walletVal.textContent = `₦${(agentData.earnings || 0).toLocaleString()}`;
+            if (trustVal) trustVal.textContent = `${agentData.trustScore || 98}%`;
+            if (reportsLoggedSub) reportsLoggedSub.textContent = `${agentData.reports || 0} Reports Logged`;
+        } else {
+            if (walletVal) walletVal.textContent = isAgent ? `₦148,500` : `₦0`;
+            if (trustVal) trustVal.textContent = isAgent ? `98.4%` : `100%`;
+            if (reportsLoggedSub) reportsLoggedSub.textContent = isAgent ? `142 Reports Logged` : `0 Reports Logged`;
+        }
+
+        if (pointsVal) pointsVal.textContent = totalPts.toLocaleString();
+        if (savingsVal) savingsVal.textContent = `₦128,500`;
+    }
+
     function updateAuthUIState() {
         const token = localStorage.getItem('mamaprice_jwt_token');
         const userJson = localStorage.getItem('mamaprice_auth_user');
@@ -1118,6 +1185,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mNavProfile) mNavProfile.style.display = 'none';
             if (userProfileBtn) userProfileBtn.style.display = 'none';
         }
+
+        updateUserProfileDashboard();
     }
     updateAuthUIState();
 
