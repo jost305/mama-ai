@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // REFERRAL ENGINE — Persistent, Functional, Cross-User
     // ────────────────────────────────────────────────────────────────────────
     const REFERRAL_BONUS_THRESHOLD = 5;   // reports before bonus fires
-    const REFERRAL_BONUS_AMOUNT    = 1000; // ₦ per referral unlock
+    const REFERRAL_BONUS_AMOUNT    = 200; // MarketPoints per referral unlock
 
     function generateRefCode(name) {
         const prefix = (name || 'USER').replace(/\s+/g, '').toUpperCase().slice(0, 5);
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof window.pushAlertGraphNotification === 'function') {
                 window.pushAlertGraphNotification({
                     type: 'inbox',
-                    text: `🎉 <strong>Welcome to MamaPrice!</strong><br>You joined via a referral link. Complete your first 5 price reports to earn bonuses for both you and your referrer.`,
+                    text: `🎉 <strong>Welcome to MamaPrice!</strong><br>You joined via a referral link. Complete your first 5 price reports to earn MarketPoints for both you and your referrer.`,
                     tag: 'Referral Welcome',
                     actionQuery: ''
                 });
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (typeof window.pushAlertGraphNotification === 'function') {
                         window.pushAlertGraphNotification({
                             type: 'inbox',
-                            text: `🏆 <strong>Referral Milestone Unlocked!</strong><br>You've completed 5 verified reports. Your referrer just earned a <strong>₦1,000 bonus</strong> — and you've unlocked Agent status on MamaPrice!`,
+                            text: `🏆 <strong>Referral Milestone Unlocked!</strong><br>You've completed 5 verified reports. Your referrer just earned <strong>200 MarketPoints</strong> — and you've unlocked Agent status on MamaPrice!`,
                             tag: 'Referral Milestone',
                             actionQuery: ''
                         });
@@ -338,18 +338,19 @@ document.addEventListener('DOMContentLoaded', () => {
         renderReferralTable();
     }
 
-    // Credit the current user's earnings + fire notification
+    // Credit the current user's MarketPoints + fire notification
     function awardReferralBonus(agentName) {
         const userJson = localStorage.getItem('mamaprice_auth_user');
         if (userJson) {
             const user = JSON.parse(userJson);
-            user.referralEarnings = (user.referralEarnings || 0) + REFERRAL_BONUS_AMOUNT;
+            user.referralPoints = (user.referralPoints || 600) + REFERRAL_BONUS_AMOUNT;
+            user.marketPoints = (user.marketPoints || 3550) + REFERRAL_BONUS_AMOUNT;
             localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
         }
         if (typeof window.pushAlertGraphNotification === 'function') {
             window.pushAlertGraphNotification({
                 type: 'inbox',
-                text: `💸 <strong>Referral Bonus Credited: +₦1,000!</strong><br>${agentName} just completed their 5th verified price report. Your ₦1,000 referral reward has been added to your earnings balance.`,
+                text: `🎁 <strong>Referral Bonus Credited: +200 MarketPoints!</strong><br>${agentName} completed their 5th verified price report. 200 MarketPoints added to your balance.`,
                 tag: 'Referral Bonus',
                 actionQuery: ''
             });
@@ -367,7 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const userJson = localStorage.getItem('mamaprice_auth_user');
             if (userJson) {
                 const user = JSON.parse(userJson);
-                user.referralEarnings = (user.referralEarnings || 0) + amount;
+                user.referralPoints = (user.referralPoints || 600) + amount;
+                user.marketPoints = (user.marketPoints || 3550) + amount;
                 localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
             }
             delete pending[myRefCode];
@@ -375,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof window.pushAlertGraphNotification === 'function') {
                 window.pushAlertGraphNotification({
                     type: 'inbox',
-                    text: `💰 <strong>Referral Earnings Credited: +₦${amount.toLocaleString()}</strong><br>Your referred agents have completed their milestones while you were away. Rewards added to your balance.`,
+                    text: `🎁 <strong>Referral Points Credited: +${amount} MarketPoints</strong><br>Your referred agents completed their milestones while you were away. Points added to your balance.`,
                     tag: 'Referral Bonus',
                     actionQuery: ''
                 });
@@ -387,13 +389,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateReferralStats() {
         const userJson = localStorage.getItem('mamaprice_auth_user');
         const user = userJson ? JSON.parse(userJson) : {};
-        if (user.referralEarnings === undefined) {
-            user.referralEarnings = 3000;
+        if (user.referralPoints === undefined) {
+            user.referralPoints = 600;
             localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
         }
-        const totalBonus = user.referralEarnings || 3000;
+        const totalPoints = user.referralPoints || 600;
         const bonusEl = document.getElementById('prof-ref-total-bonus');
-        if (bonusEl) bonusEl.textContent = `₦${totalBonus.toLocaleString()}`;
+        if (bonusEl) bonusEl.textContent = `${totalPoints.toLocaleString()} pts`;
     }
 
     function renderReferralTable() {
@@ -422,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `<span style="background:#dcfce7;color:#15803d;padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;">Completed</span>`
                 : `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;">In Progress</span>`;
             const reward = r.bonusPaid
-                ? `<strong style="color:#15803d;font-size:0.82rem;">+₦1,000</strong>`
+                ? `<strong style="color:#15803d;font-size:0.82rem;">+200 pts</strong>`
                 : `<span style="color:#94a3b8;font-size:0.78rem;">Pending (${5 - pct} left)</span>`;
             return `
             <tr>
@@ -829,19 +831,14 @@ document.addEventListener('DOMContentLoaded', () => {
             awardReferralBonus(randomName);
             renderReferralTable();
             
-            // Update profile stats cards
-            const profWalletVal = document.getElementById('prof-wallet-val');
-            if (profWalletVal) {
-                const currentWallet = parseInt(profWalletVal.textContent.replace(/[^0-9]/g, '') || '148500');
-                profWalletVal.textContent = `₦${(currentWallet + 1000).toLocaleString()}`;
-            }
+            // Update profile MarketPoints stat card
             const profPointsVal = document.getElementById('prof-points-val');
             if (profPointsVal) {
                 const currentPts = parseInt(profPointsVal.textContent.replace(/[^0-9]/g, '') || '3550');
-                profPointsVal.textContent = (currentPts + 100).toLocaleString();
+                profPointsVal.textContent = (currentPts + 200).toLocaleString();
             }
             
-            alert(`🎉 Referral Milestone Completed!\n\n${randomName} signed up using your link and logged 5 verified price reports.\n\n✅ +₦1,000 Credited to your Earnings Balance\n✅ +100 MarketPoints Credited\n✅ Notification sent to your Inbox`);
+            alert(`🎉 Referral Milestone Completed!\n\n${randomName} signed up using your link and logged 5 verified price reports.\n\n✅ +200 MarketPoints Credited to your balance\n✅ Real-time Notification sent to your Inbox`);
         });
     }
 
