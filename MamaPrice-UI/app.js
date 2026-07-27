@@ -720,65 +720,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return currentWaSession;
     }
 
+    // ─── Sign In header button: call real Privy login ───────────────────────
     if (waAuthBtn) {
         waAuthBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const token = localStorage.getItem('mamaprice_jwt_token');
-            if (token) {
+            const isAuthed = localStorage.getItem('mamaprice_auth_user');
+            if (isAuthed) {
                 const pageProfile = document.getElementById('page-profile');
                 const navProfile = document.getElementById('nav-profile');
                 if (pageProfile && typeof switchView === 'function') {
                     switchView(navProfile, pageProfile);
                 }
-            } else if (waAuthModal) {
-                generateWaLoginSession();
-                waAuthModal.classList.add('open');
-            }
-        });
-    }
-
-    if (closeWaModal && waAuthModal) {
-        closeWaModal.addEventListener('click', () => {
-            waAuthModal.classList.remove('open');
-        });
-    }
-
-    const signInForm = document.getElementById('sign-in-form');
-    if (signInForm) {
-        signInForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phoneInput = document.getElementById('sign-in-phone');
-            const nameInput = document.getElementById('sign-in-name');
-            const phone = phoneInput ? phoneInput.value.trim() : '';
-            const name = nameInput ? nameInput.value.trim() : 'Market User';
-
-            if (window.supabaseClient && phone.includes('@')) {
-                try {
-                    const { data, error } = await window.supabaseClient.auth.signInWithOtp({
-                        email: phone,
-                        options: { emailRedirectTo: window.location.origin }
-                    });
-                    if (error) {
-                        console.warn("Supabase auth error:", error.message);
-                    } else {
-                        alert(`📩 Real Auth Link Dispatched to ${phone}!\n\nCheck your email to verify login. Session initialized...`);
-                    }
-                } catch (err) {
-                    console.warn("Real auth error:", err);
+            } else {
+                // Trigger the official Privy login modal
+                if (typeof window.openPrivyModal === 'function') {
+                    window.openPrivyModal();
+                } else {
+                    // Privy bridge not yet ready — retry in 500ms
+                    setTimeout(() => { if (typeof window.openPrivyModal === 'function') window.openPrivyModal(); }, 500);
                 }
             }
-
-            currentWaSession = { loginCode: 'REAL_AUTH', status: 'authenticated' };
-            completeWaAuthentication(phone || 'user@mamaprice.ng', name || 'Market User');
-
-            // Check if there was a pending referral code from URL
-            const pendingRefCode = localStorage.getItem('mama_pending_referral_code');
-            if (pendingRefCode && typeof registerReferral === 'function') {
-                registerReferral(name || 'Market User', phone || 'user@mamaprice.ng', pendingRefCode);
-                localStorage.removeItem('mama_pending_referral_code');
-            }
         });
     }
+
 
     if (waCopyCodeBtn) {
         waCopyCodeBtn.addEventListener('click', () => {
@@ -1036,26 +1000,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateUserProfileDashboard() {
         const userJson = localStorage.getItem('mamaprice_auth_user');
-        const userName = userJson ? JSON.parse(userJson).name : 'Amina Yusuf';
-        const userPhone = userJson ? JSON.parse(userJson).phone : '0801 234 5678';
-
-        const agent = scoutsData.find(a => a.name.toLowerCase() === userName.toLowerCase() || a.phone === userPhone);
+        const userData = userJson ? JSON.parse(userJson) : null;
+        const userName = userData?.name || '';
+        const userPhone = userData?.phone || '';
 
         const profHeroName = document.getElementById('prof-hero-name');
+        const profHeroSub  = document.getElementById('prof-user-phone-loc');
         const profHeroLevel = document.getElementById('prof-hero-level');
         const profWalletVal = document.getElementById('prof-wallet-val');
         const profPointsVal = document.getElementById('prof-points-val');
         const profReportsVal = document.getElementById('prof-reports-val');
-        const profTrustVal = document.getElementById('prof-trust-val');
+        const profTrustVal  = document.getElementById('prof-trust-val');
+        const profAgentToggleBtn = document.getElementById('prof-agent-toggle-btn');
+        const profLogoutBtnEl    = document.getElementById('prof-logout-btn');
 
-        if (profHeroName) profHeroName.textContent = userName;
-        
+        if (!userData) {
+            // Unauthenticated: show sign-in prompt
+            if (profHeroName) profHeroName.textContent = 'Guest';
+            if (profHeroSub)  profHeroSub.innerHTML = '<i class="fa-solid fa-shield-halved" style="color:#6366f1;"></i> Sign in with Privy to view your profile';
+            if (profAgentToggleBtn) profAgentToggleBtn.style.display = 'none';
+            if (profLogoutBtnEl)    profLogoutBtnEl.style.display    = 'none';
+            return;
+        }
+
+        if (profHeroName) profHeroName.textContent = userName || 'Market Scout';
+        if (profHeroSub)  profHeroSub.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;"></i> ${userPhone} &nbsp;&middot;&nbsp; <i class="fa-solid fa-lock" style="color:#6366f1;"></i> Privy Authenticated`;
+        if (profAgentToggleBtn) profAgentToggleBtn.style.display = 'inline-flex';
+        if (profLogoutBtnEl)    profLogoutBtnEl.style.display    = 'inline-flex';
+
+        const agent = scoutsData.find(a => a.name.toLowerCase() === userName.toLowerCase() || a.phone === userPhone);
+
         if (agent) {
-            if (profHeroLevel) profHeroLevel.textContent = agent.level;
-            if (profWalletVal) profWalletVal.textContent = `₦${agent.earnings.toLocaleString()}`;
-            if (profPointsVal) profPointsVal.innerHTML = `<i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>${(agent.points || (agent.reports * 25)).toLocaleString()} pts`;
-            if (profReportsVal) profReportsVal.textContent = agent.reports.toLocaleString();
-            if (profTrustVal) profTrustVal.textContent = `${agent.trustScore}%`;
+            if (profHeroLevel)   profHeroLevel.textContent = agent.level;
+            if (profWalletVal)   profWalletVal.textContent = `₦${agent.earnings.toLocaleString()}`;
+            if (profPointsVal)   profPointsVal.innerHTML = `<i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i>${(agent.points || (agent.reports * 25)).toLocaleString()} pts`;
+            if (profReportsVal)  profReportsVal.textContent = agent.reports.toLocaleString();
+            if (profTrustVal)    profTrustVal.textContent = `${agent.trustScore}%`;
         }
     }
 
@@ -1179,39 +1159,84 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savingsVal) savingsVal.textContent = `₦128,500`;
     }
 
+    // ─── Privy Auth Event Handlers (real login / logout / session restore) ───
+    function applyPrivyUser(displayName, identity, privyUser) {
+        const userData = {
+            name: displayName,
+            phone: identity,
+            provider: 'Privy Auth',
+            privyDid: privyUser?.id || '',
+            wallet: privyUser?.wallet?.address || null,
+            google: privyUser?.google || null
+        };
+        localStorage.setItem('mamaprice_auth_user', JSON.stringify(userData));
+        updateAuthUIState();
+
+        // Navigate to profile after login
+        const pageProfile = document.getElementById('page-profile');
+        const navProfile  = document.getElementById('nav-profile');
+        if (pageProfile && typeof switchView === 'function') {
+            switchView(navProfile, pageProfile);
+        }
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: `🔒 <strong>Privy Auth Verified!</strong><br>Welcome back, <strong>${displayName}</strong>. Session active.`,
+                tag: 'Privy Auth', actionQuery: ''
+            });
+        }
+    }
+
+    window.addEventListener('privy:login', (e) => {
+        const { user, identity, displayName } = e.detail;
+        applyPrivyUser(displayName, identity, user);
+    });
+    window.addEventListener('privy:restore', (e) => {
+        const { user, identity, displayName } = e.detail;
+        applyPrivyUser(displayName, identity, user);
+    });
+    window.addEventListener('privy:logout', () => {
+        localStorage.removeItem('mamaprice_auth_user');
+        updateAuthUIState();
+        const pageHome = document.getElementById('page-home');
+        const navHome  = document.getElementById('nav-home');
+        if (pageHome && typeof switchView === 'function') switchView(navHome, pageHome);
+    });
+
+    // ─── updateAuthUIState (reads from Privy session in localStorage) ─────────
     function updateAuthUIState() {
-        const token = localStorage.getItem('mamaprice_jwt_token');
         const userJson = localStorage.getItem('mamaprice_auth_user');
 
-        const navProfile = document.getElementById('nav-profile');
-        const mNavProfile = document.getElementById('m-nav-profile');
+        const navProfile    = document.getElementById('nav-profile');
+        const mNavProfile   = document.getElementById('m-nav-profile');
         const userProfileBtn = document.getElementById('user-profile-btn');
 
-        if (token && userJson) {
+        if (userJson) {
             const user = JSON.parse(userJson);
-            const avatarUrl = user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
+            const initials = (user.name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
             if (waAuthBtn) {
-                waAuthBtn.innerHTML = `<img src="${avatarUrl}" alt="${user.name || 'User Profile'}" class="header-user-avatar-img" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #16a34a; display: block; box-shadow: 0 1px 3px rgba(0,0,0,0.15);" />`;
+                // Show initials avatar
+                waAuthBtn.innerHTML = `<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;font-size:0.78rem;border:2px solid #6366f1;">${initials}</span>`;
                 waAuthBtn.style.background = 'transparent';
-                waAuthBtn.style.padding = '0';
-                waAuthBtn.style.border = 'none';
-                waAuthBtn.title = `${user.name || 'User Profile'} (${user.phone || ''})`;
+                waAuthBtn.style.padding    = '0';
+                waAuthBtn.style.border     = 'none';
+                waAuthBtn.title = `${user.name} — Privy Authenticated`;
             }
-            if (navProfile) navProfile.style.display = 'flex';
-            if (mNavProfile) mNavProfile.style.display = 'flex';
+            if (navProfile)     navProfile.style.display  = 'flex';
+            if (mNavProfile)    mNavProfile.style.display  = 'flex';
             if (userProfileBtn) userProfileBtn.style.display = 'flex';
         } else {
             if (waAuthBtn) {
-                waAuthBtn.innerHTML = `<span>Sign in</span>`;
-                waAuthBtn.style.background = '#ffffff';
-                waAuthBtn.style.color = '#0f172a';
-                waAuthBtn.style.border = '1px solid #cbd5e1';
-                waAuthBtn.style.padding = '6px 14px';
+                waAuthBtn.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;margin-right:5px;"></i><span>Sign in</span>`;
+                waAuthBtn.style.background   = '#ffffff';
+                waAuthBtn.style.color        = '#0f172a';
+                waAuthBtn.style.border       = '1px solid #cbd5e1';
+                waAuthBtn.style.padding      = '6px 14px';
                 waAuthBtn.style.borderRadius = '20px';
-                waAuthBtn.title = `Sign in via WhatsApp Reverse Authentication`;
+                waAuthBtn.title = 'Sign in with Privy Auth';
             }
-            if (navProfile) navProfile.style.display = 'none';
-            if (mNavProfile) mNavProfile.style.display = 'none';
+            if (navProfile)     navProfile.style.display  = 'none';
+            if (mNavProfile)    mNavProfile.style.display  = 'none';
             if (userProfileBtn) userProfileBtn.style.display = 'none';
         }
 
@@ -1334,102 +1359,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    window.completePrivyAuthentication = function(phoneNumber = '', userName = '', privyUser = null) {
-        const finalName = userName || (phoneNumber ? phoneNumber.split('@')[0] : 'Market Scout');
-        const finalPhone = phoneNumber || 'user@mamaprice.ng';
-        const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
-        const privyDid = privyUser?.id || `did:privy:${Math.random().toString(36).substring(2, 10)}`;
-        const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: finalPhone, user: finalName, privyDid: privyDid, appId: PRIVY_APP_ID, exp: Date.now() + 864000000 }))}.signature`;
-        
-        localStorage.setItem('mamaprice_jwt_token', token);
-        localStorage.setItem('mamaprice_auth_user', JSON.stringify({
-            name: finalName,
-            phone: finalPhone,
-            provider: 'Privy Auth',
-            appId: PRIVY_APP_ID,
-            privyDid: privyDid,
-            wallet: privyUser?.wallet?.address || null
-        }));
-
-        updateAuthUIState();
-
-        if (typeof window.pushAlertGraphNotification === 'function') {
-            window.pushAlertGraphNotification({
-                type: 'inbox',
-                text: `🔒 <strong>Privy Auth Verified!</strong><br>Welcome ${finalName} (${finalPhone}). Active DID: <code>${privyDid}</code>`,
-                tag: 'Privy Auth',
-                actionQuery: ''
-            });
-        }
-
-        setTimeout(() => {
-            const waAuthModal = document.getElementById('wa-auth-modal');
-            if (waAuthModal) waAuthModal.classList.remove('open');
-            const pageProfile = document.getElementById('page-profile');
-            const navProfile = document.getElementById('nav-profile');
-            if (pageProfile && typeof switchView === 'function') {
-                switchView(navProfile, pageProfile);
-            }
-            alert(`🎉 Privy Authentication Verified!\n\nAuthenticated User: ${finalName}\nEmail/Identity: ${finalPhone}\nPrivy App ID: 5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG\nDID: ${privyDid}`);
-        }, 400);
-    };
-    window.completeWaAuthentication = window.completePrivyAuthentication;
-
-    window.triggerPrivyMethod = async function(method) {
-        if (window.supabaseClient && ['google', 'apple', 'twitter', 'github'].includes(method)) {
-            try {
-                const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
-                    provider: method,
-                    options: { redirectTo: window.location.origin }
-                });
-                if (!error && data?.url) {
-                    window.location.href = data.url;
-                    return;
-                }
-            } catch (e) {
-                console.warn("OAuth redirect:", e);
-            }
-        }
-
-        if (window.privyClient && typeof window.privyClient.login === 'function') {
-            try {
-                const user = await window.privyClient.login({ loginMethod: method });
-                if (user) {
-                    const uName = user.email?.address || user.phone?.number || user.wallet?.address || 'Privy User';
-                    window.completePrivyAuthentication(uName, uName, user);
-                    return;
-                }
-            } catch (err) {
-                console.warn("Privy SDK login method info:", err);
-            }
-        }
-
-        const emailInput = document.getElementById('sign-in-phone');
-        if (emailInput) {
-            emailInput.focus();
-            emailInput.style.borderColor = '#6366f1';
-        }
-        alert(`🔑 Please enter your real email address or phone number in the form above to authenticate via Privy Auth.`);
+    // ─── completePrivyAuthentication / triggerPrivyMethod: deprecated ─────────
+    // These are no longer the auth path — Privy events handle everything now.
+    // Kept as no-ops to avoid JS errors from any remaining callers.
+    window.completePrivyAuthentication = function() {};
+    window.completeWaAuthentication    = function() {};
+    window.triggerPrivyMethod          = function() {
+        if (typeof window.openPrivyModal === 'function') window.openPrivyModal();
     };
 
-    if (waSimVerifyBtn) {
-        waSimVerifyBtn.addEventListener('click', () => {
-            completeWaAuthentication();
-        });
-    }
-
-    // Logout Handler
+    // ─── Logout handler (calls Privy SDK logout) ─────────────────────────────
     const profLogoutBtn = document.getElementById('prof-logout-btn');
     function handleLogout() {
-        localStorage.removeItem('mamaprice_jwt_token');
-        localStorage.removeItem('mamaprice_auth_user');
-        updateAuthUIState();
-        alert('👋 Logged out successfully. You can log back in anytime using WhatsApp Reverse Authentication.');
-        
-        const pageHome = document.getElementById('page-home');
-        const navHome = document.getElementById('nav-home');
-        if (pageHome && typeof switchView === 'function') {
-            switchView(navHome, pageHome);
+        if (typeof window.privyLogout === 'function') {
+            window.privyLogout();
+        } else {
+            localStorage.removeItem('mamaprice_auth_user');
+            updateAuthUIState();
         }
     }
     if (profLogoutBtn) profLogoutBtn.addEventListener('click', handleLogout);
