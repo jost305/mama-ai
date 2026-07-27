@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Update WhatsApp share link
         document.querySelectorAll('a[href*="mamaprice.ng/invite"]').forEach(a => {
-            a.href = `https://wa.me/?text=${encodeURIComponent(`Join me as a verified Market Agent on MamaPrice! Earn cash reporting local prices: ${refUrl}`)}`;
+            a.href = `https://wa.me/?text=${encodeURIComponent(`Join me on MamaPrice! Track live market prices, compare regional markets & shop smart: ${refUrl}`)}`;
         });
         updateReferralStats();
         renderReferralTable();

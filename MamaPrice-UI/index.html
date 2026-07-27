@@ -1380,15 +1380,15 @@
                             </div>
                         </div>
 
-                        <!-- Pane 5: Referrals & Agent Invite Network -->
+                        <!-- Pane 5: Referrals & Invite Network -->
                         <div class="prof-pane" id="prof-pane-referrals" style="display: none;">
                             <div class="prof-settings-card" style="padding: 20px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                                     <div>
                                         <h3 style="font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                            <i class="fa-solid fa-user-plus" style="color: #15803d;"></i> Agent Referral Network
+                                            <i class="fa-solid fa-user-plus" style="color: #15803d;"></i> Referral & Invite Program
                                         </h3>
-                                        <p style="font-size: 0.78rem; color: #64748b; margin: 3px 0 0;">Empower local market scouts, expand MamaPrice data network & earn referral rewards.</p>
+                                        <p style="font-size: 0.78rem; color: #64748b; margin: 3px 0 0;">Invite friends, family & market scouts to MamaPrice. Earn MarketPoints when they join & use the platform.</p>
                                     </div>
                                     <div class="savings-total-pill" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
                                         <small style="color: #166534; font-weight: 600;">Total Referral Points:</small>
@@ -1401,8 +1401,8 @@
                                     <div style="display: flex; align-items: center; gap: 12px;">
                                         <span style="font-size: 1.8rem; background: rgba(255,255,255,0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🎁</span>
                                         <div>
-                                            <strong style="font-size: 0.95rem; display: block;">Earn 200 MarketPoints per Active Agent</strong>
-                                            <span style="font-size: 0.78rem; color: #dcfce7;">Credited directly to your MarketPoints balance when your invited agent completes their first 5 verified price reports.</span>
+                                            <strong style="font-size: 0.95rem; display: block;">Earn 200 MarketPoints per Active User / Agent</strong>
+                                            <span style="font-size: 0.78rem; color: #dcfce7;">Credited directly to your MarketPoints balance when your invited friend joins MamaPrice & starts price tracking or reporting.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1413,24 +1413,24 @@
                                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                         <input type="text" id="prof-ref-link-input" value="https://mamaprice.ng/invite?ref=AMINA92X" readonly style="flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; font-size: 0.84rem; background: #ffffff; color: #0f172a;" />
                                         <button type="button" id="prof-copy-ref-btn" style="padding: 10px 16px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="fa-regular fa-copy"></i> Copy Link</button>
-                                        <a href="https://wa.me/?text=Join%20me%20as%20a%20verified%20Market%20Agent%20on%20MamaPrice!%20Earn%20points%20reporting%20local%20prices:%20https://mamaprice.ng/invite?ref=AMINA92X" target="_blank" style="padding: 10px 16px; background: #25d366; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 6px;"><i class="fa-brands fa-whatsapp"></i> Share on WhatsApp</a>
+                                        <a href="https://wa.me/?text=Join%20me%20on%20MamaPrice!%20Track%20live%20market%20prices%20%26%20shop%20smart:%20https://mamaprice.ng/invite?ref=AMINA92X" target="_blank" style="padding: 10px 16px; background: #25d366; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 6px;"><i class="fa-brands fa-whatsapp"></i> Share on WhatsApp</a>
                                     </div>
                                 </div>
 
-                                <!-- Referred Agents Table -->
+                                <!-- Referred Users Table -->
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                                    <h4 style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin: 0;">Invited Agents & Progress</h4>
+                                    <h4 style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin: 0;">Invited Users & Activity</h4>
                                     <button type="button" id="sim-invite-btn" style="padding: 6px 14px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(21,128,61,0.2);">
-                                        <i class="fa-solid fa-user-plus"></i> Simulate Invited Agent Joining & 5 Reports
+                                        <i class="fa-solid fa-user-plus"></i> Simulate Friend Joining MamaPrice
                                     </button>
                                 </div>
                                 <div style="overflow-x: auto;">
                                     <table class="scout-data-table" style="width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th>AGENT NAME</th>
+                                                <th>USER / AGENT NAME</th>
                                                 <th>DATE JOINED</th>
-                                                <th>REPORTS COMPLETED</th>
+                                                <th>ACTIVITY STATUS</th>
                                                 <th>BONUS STATUS</th>
                                                 <th>REWARD</th>
                                             </tr>
@@ -1570,8 +1570,8 @@
                 <div class="ref-header-left">
                     <div class="ref-icon-badge"><i class="fa-solid fa-user-plus"></i></div>
                     <div>
-                        <h3>Invite Market Agents</h3>
-                        <p>Empower local agents & earn referral bonuses.</p>
+                        <h3>Invite Friends & Earn Points</h3>
+                        <p>Help friends shop smart & earn 200 MarketPoints per referral.</p>
                     </div>
                 </div>
                 <button class="modal-close" id="close-invite-modal"><i class="fa-solid fa-xmark"></i></button>
@@ -1581,8 +1581,8 @@
                 <div class="ref-perk-banner">
                     <span class="gift-emoji">🎁</span>
                     <div>
-                        <strong>Earn 200 MarketPoints per Agent</strong>
-                        <p>Received when your invited agent completes their first 5 verified price reports.</p>
+                        <strong>Earn 200 MarketPoints per Friend / Agent</strong>
+                        <p>Received when your invited friend joins MamaPrice and starts tracking or reporting market prices.</p>
                     </div>
                 </div>
 
