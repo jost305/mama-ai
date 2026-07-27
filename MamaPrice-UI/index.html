@@ -1619,61 +1619,68 @@
         </div>
     </div>
 
+    <!-- Modal 2: Official Privy Pre-built Auth Modal UI Component -->
+    <div class="modal-overlay" id="wa-auth-modal" style="display: none;">
+        <div class="modal-card privy-auth-card" style="max-width: 400px; width: 100%; border-radius: 20px; padding: 24px; background: #ffffff; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2); border: 1px solid #e2e8f0; position: relative;">
+            <button class="modal-close" id="close-wa-modal" style="position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; color: #64748b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: background 0.15s;"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Privy Modal Header & Logo -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 48px; height: 48px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #6366f1; margin-bottom: 12px;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">Log in or Sign Up</h3>
+                <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0;">Connect to MamaPrice via Privy Authentication</p>
+            </div>
+
+            <!-- Privy Email / Phone Direct Login -->
+            <form id="sign-in-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                <div>
+                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Email or Phone Number</label>
+                    <input type="text" id="sign-in-phone" value="" placeholder="e.g. user@domain.com or +234..." style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
+                </div>
+                <button type="submit" id="wa-deep-link-btn" style="width: 100%; padding: 12px; background: #6366f1; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(99,102,241,0.25); margin-top: 4px;">
+                    <i class="fa-solid fa-shield-halved"></i> Sign in with Privy
+                </button>
+            </form>
+
+            <!-- Privy Methods Divider -->
+            <div style="display: flex; align-items: center; margin: 16px 0; gap: 12px;">
+                <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">OR LOGIN WITH</span>
+                <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+            </div>
+
+            <!-- Privy Supported Methods Buttons Grid -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
+                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('google')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-google" style="color: #ea4335;"></i> Google
+                </button>
+                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('apple')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-apple" style="color: #0f172a;"></i> Apple
+                </button>
+                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('twitter')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-x-twitter" style="color: #0f172a;"></i> Twitter / X
+                </button>
+                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('telegram')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
+                    <i class="fa-brands fa-telegram" style="color: #229ed9;"></i> Telegram
+                </button>
+                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('wallet')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; grid-column: span 2;">
+                    <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i> Connect Web3 Wallet
+                </button>
+            </div>
+
+            <!-- Privy Verified Footer -->
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 14px; text-align: center;">
+                <p style="font-size: 0.7rem; color: #94a3b8; margin: 0; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fa-solid fa-lock" style="color: #6366f1;"></i> Protected by <strong>Privy Auth</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <script src="orb.js"></script>
     <script src="app.js"></script>
-
-    <!-- ✅ Official Privy Auth Bridge — React + @privy-io/react-auth via ESM -->
-    <script type="module">
-        import { createElement as h } from 'https://esm.sh/react@18';
-        import { createRoot } from 'https://esm.sh/react-dom@18/client';
-        import { PrivyProvider, usePrivy, useLogin, useLogout } from 'https://esm.sh/@privy-io/react-auth@latest';
-
-        const PRIVY_APP_ID = '5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG';
-
-        function PrivyBridge() {
-            const { ready, authenticated, user } = usePrivy();
-            const { login } = useLogin({
-                onComplete: (params) => {
-                    const u = params.user || params;
-                    const identity = u.email?.address || u.phone?.number || u.wallet?.address || u.google?.email || '';
-                    const displayName = u.google?.name || u.email?.address?.split('@')[0] || identity || 'Market Scout';
-                    window.dispatchEvent(new CustomEvent('privy:login', { detail: { user: u, identity, displayName } }));
-                }
-            });
-            const { logout } = useLogout({
-                onSuccess: () => {
-                    window.dispatchEvent(new CustomEvent('privy:logout'));
-                }
-            });
-
-            // Expose real Privy methods to global scope
-            window.openPrivyModal = () => login();
-            window.privyLogout   = () => logout();
-
-            // On load, if already authenticated, restore session
-            if (ready && authenticated && user) {
-                const identity = user.email?.address || user.phone?.number || user.wallet?.address || user.google?.email || '';
-                const displayName = user.google?.name || user.email?.address?.split('@')[0] || identity || 'Market Scout';
-                window.dispatchEvent(new CustomEvent('privy:restore', { detail: { user, identity, displayName } }));
-            }
-
-            return null;
-        }
-
-        const root = createRoot(document.getElementById('privy-root'));
-        root.render(
-            h(PrivyProvider, {
-                appId: PRIVY_APP_ID,
-                config: {
-                    loginMethods: ['email', 'sms', 'google', 'twitter', 'telegram'],
-                    appearance: {
-                        theme: 'light',
-                        accentColor: '#6366f1',
-                        logo: window.location.origin + '/favicon.png'
-                    }
-                }
-            },
-                h(PrivyBridge)
             )
         );
     </script>

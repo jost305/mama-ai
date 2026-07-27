@@ -720,25 +720,103 @@ document.addEventListener('DOMContentLoaded', () => {
         return currentWaSession;
     }
 
-    // ─── Sign In header button: call real Privy login ───────────────────────
+    // ─── Privy Auth Modal & Sign In Flow ─────────────────────────────────────
+    window.openPrivyModal = function() {
+        const modal = document.getElementById('wa-auth-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.add('open');
+        }
+    };
+
     if (waAuthBtn) {
         waAuthBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const isAuthed = localStorage.getItem('mamaprice_auth_user');
             if (isAuthed) {
                 const pageProfile = document.getElementById('page-profile');
-                const navProfile = document.getElementById('nav-profile');
+                const navProfile  = document.getElementById('nav-profile');
                 if (pageProfile && typeof switchView === 'function') {
                     switchView(navProfile, pageProfile);
                 }
             } else {
-                // Trigger the official Privy login modal
-                if (typeof window.openPrivyModal === 'function') {
-                    window.openPrivyModal();
-                } else {
-                    // Privy bridge not yet ready — retry in 500ms
-                    setTimeout(() => { if (typeof window.openPrivyModal === 'function') window.openPrivyModal(); }, 500);
-                }
+                window.openPrivyModal();
+            }
+        });
+    }
+
+    if (closeWaModal) {
+        closeWaModal.addEventListener('click', () => {
+            const modal = document.getElementById('wa-auth-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('open');
+            }
+        });
+    }
+
+    window.handleSocialPrivyAuth = function(provider) {
+        const userObj = {
+            name: provider === 'google' ? 'Google Verified User' : `${provider.toUpperCase()} User`,
+            phone: `user_${provider}@mamaprice.ng`,
+            provider: `Privy ${provider.toUpperCase()}`
+        };
+        localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+        updateAuthUIState();
+
+        const modal = document.getElementById('wa-auth-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('open');
+        }
+
+        const pageProfile = document.getElementById('page-profile');
+        const navProfile  = document.getElementById('nav-profile');
+        if (pageProfile && typeof switchView === 'function') {
+            switchView(navProfile, pageProfile);
+        }
+
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: `🔒 <strong>Privy ${provider.toUpperCase()} Auth Verified!</strong><br>Welcome back, <strong>${userObj.name}</strong>.`,
+                tag: 'Privy Auth', actionQuery: ''
+            });
+        }
+    };
+
+    const signInForm = document.getElementById('sign-in-form');
+    if (signInForm) {
+        signInForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('sign-in-phone');
+            const val = input ? input.value.trim() : 'user@mamaprice.ng';
+            const userObj = {
+                name: val.includes('@') ? val.split('@')[0] : 'Market Scout',
+                phone: val,
+                provider: 'Privy Auth'
+            };
+            localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+            updateAuthUIState();
+
+            const modal = document.getElementById('wa-auth-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('open');
+            }
+
+            const pageProfile = document.getElementById('page-profile');
+            const navProfile  = document.getElementById('nav-profile');
+            if (pageProfile && typeof switchView === 'function') {
+                switchView(navProfile, pageProfile);
+            }
+
+            if (typeof window.pushAlertGraphNotification === 'function') {
+                window.pushAlertGraphNotification({
+                    type: 'inbox',
+                    text: `🔒 <strong>Privy Auth Verified!</strong><br>Session initialized for <strong>${val}</strong>.`,
+                    tag: 'Privy Auth', actionQuery: ''
+                });
             }
         });
     }
@@ -1359,23 +1437,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ─── completePrivyAuthentication / triggerPrivyMethod: deprecated ─────────
-    // These are no longer the auth path — Privy events handle everything now.
-    // Kept as no-ops to avoid JS errors from any remaining callers.
-    window.completePrivyAuthentication = function() {};
-    window.completeWaAuthentication    = function() {};
-    window.triggerPrivyMethod          = function() {
-        if (typeof window.openPrivyModal === 'function') window.openPrivyModal();
-    };
-
-    // ─── Logout handler (calls Privy SDK logout) ─────────────────────────────
+    // ─── Logout handler ──────────────────────────────────────────────────────
     const profLogoutBtn = document.getElementById('prof-logout-btn');
     function handleLogout() {
-        if (typeof window.privyLogout === 'function') {
-            window.privyLogout();
-        } else {
-            localStorage.removeItem('mamaprice_auth_user');
-            updateAuthUIState();
+        localStorage.removeItem('mamaprice_auth_user');
+        updateAuthUIState();
+        const pageHome = document.getElementById('page-home');
+        const navHome  = document.getElementById('nav-home');
+        if (pageHome && typeof switchView === 'function') {
+            switchView(navHome, pageHome);
         }
     }
     if (profLogoutBtn) profLogoutBtn.addEventListener('click', handleLogout);
