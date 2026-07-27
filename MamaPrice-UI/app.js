@@ -1294,10 +1294,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     switchView(navProfile, pageProfile);
                 }
             } else {
-                const waModal = document.getElementById('wa-auth-modal');
-                if (waModal) {
-                    waModal.classList.add('open');
-                    waModal.style.display = 'flex';
+                if (typeof window.openPrivyModal === 'function') {
+                    window.openPrivyModal();
+                } else {
+                    const waModal = document.getElementById('wa-auth-modal');
+                    if (waModal) {
+                        waModal.classList.add('open');
+                        waModal.style.display = 'flex';
+                    }
                 }
             }
         });
