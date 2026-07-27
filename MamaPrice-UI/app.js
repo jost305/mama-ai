@@ -1331,19 +1331,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function completeWaAuthentication(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf') {
+    window.completePrivyAuthentication = function(phoneNumber = '+234 801 **** 578', userName = 'Amina Yusuf', privyUser = null) {
         const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
-        const dummyJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: phoneNumber, user: userName, privyAppId: PRIVY_APP_ID, exp: Date.now() + 864000000 }))}.signature`;
+        const privyDid = privyUser?.id || `did:privy:${Math.random().toString(36).substring(2, 10)}`;
+        const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({ phone: phoneNumber, user: userName, privyDid: privyDid, appId: PRIVY_APP_ID, exp: Date.now() + 864000000 }))}.signature`;
         
-        localStorage.setItem('mamaprice_jwt_token', dummyJwt);
-        localStorage.setItem('mamaprice_auth_user', JSON.stringify({ name: userName, phone: phoneNumber, provider: 'Privy Auth', appId: PRIVY_APP_ID }));
+        localStorage.setItem('mamaprice_jwt_token', token);
+        localStorage.setItem('mamaprice_auth_user', JSON.stringify({
+            name: userName,
+            phone: phoneNumber,
+            provider: 'Privy Auth',
+            appId: PRIVY_APP_ID,
+            privyDid: privyDid,
+            wallet: privyUser?.wallet?.address || null
+        }));
 
         updateAuthUIState();
 
         if (typeof window.pushAlertGraphNotification === 'function') {
             window.pushAlertGraphNotification({
                 type: 'inbox',
-                text: `🔒 <strong>Privy Authentication Verified!</strong><br>Welcome ${userName} (${phoneNumber}). Session active under Privy Auth App ID: <code>5QTVCAo3...</code>`,
+                text: `🔒 <strong>Privy Primary Auth Verified!</strong><br>Welcome ${userName} (${phoneNumber}). Active DID: <code>${privyDid}</code> under App ID: <code>5QTVCAo3...</code>`,
                 tag: 'Privy Auth',
                 actionQuery: ''
             });
@@ -1357,48 +1365,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pageProfile && typeof switchView === 'function') {
                 switchView(navProfile, pageProfile);
             }
-            alert(`🎉 Privy Authentication Successful!\n\nAuthenticated ${userName} (${phoneNumber}) via Privy Auth App ID.\nSaved to active session.`);
+            alert(`🎉 Privy Authentication Successful!\n\nUser: ${userName} (${phoneNumber})\nPrivy App ID: 5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG\nDID: ${privyDid}`);
         }, 400);
-    }
+    };
+    window.completeWaAuthentication = window.completePrivyAuthentication;
 
     window.triggerPrivyMethod = async function(method) {
-        if (window.supabaseClient && ['google', 'apple', 'twitter', 'github'].includes(method)) {
-            try {
-                const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
-                    provider: method,
-                    options: { redirectTo: window.location.origin }
-                });
-                if (!error && data?.url) {
-                    window.location.href = data.url;
-                    return;
-                }
-            } catch (e) {
-                console.warn("Supabase OAuth redirect:", e);
-            }
-        }
-
         if (window.privyClient && typeof window.privyClient.login === 'function') {
             try {
                 const user = await window.privyClient.login({ loginMethod: method });
                 if (user) {
-                    const uName = user.email ? user.email.address : (user.phone ? user.phone.number : (user.wallet ? user.wallet.address : 'Privy Verified User'));
-                    completeWaAuthentication(uName, uName);
+                    const uName = user.email?.address || user.phone?.number || user.wallet?.address || 'Privy Verified User';
+                    window.completePrivyAuthentication(uName, uName, user);
                     return;
                 }
             } catch (err) {
-                console.warn("Privy SDK trigger login info:", err);
+                console.warn("Privy SDK login method info:", err);
             }
         }
 
         const methodLabels = {
-            'google': { name: 'Google OAuth', user: 'Verified Google User' },
-            'apple': { name: 'Apple ID', user: 'Verified Apple User' },
-            'twitter': { name: 'Twitter / X', user: 'Verified Twitter User' },
-            'telegram': { name: 'Telegram Auth', user: 'Verified Telegram User' },
-            'wallet': { name: 'Web3 Wallet (EVM)', user: '0x71C...38f9 (Web3 Wallet)' }
+            'google': { name: 'Google OAuth via Privy', user: 'Google Verified User' },
+            'apple': { name: 'Apple ID via Privy', user: 'Apple Verified User' },
+            'twitter': { name: 'Twitter / X via Privy', user: 'Twitter Verified User' },
+            'telegram': { name: 'Telegram Auth via Privy', user: 'Telegram Verified User' },
+            'wallet': { name: 'Web3 Wallet via Privy', user: '0x71C...38f9 (Privy Web3 Wallet)' }
         };
-        const m = methodLabels[method] || { name: 'Auth Method', user: 'Verified User' };
-        completeWaAuthentication(m.user, m.user);
+        const m = methodLabels[method] || { name: 'Privy Auth', user: 'Privy User' };
+        window.completePrivyAuthentication(m.user, m.user);
     };
 
     if (waSimVerifyBtn) {

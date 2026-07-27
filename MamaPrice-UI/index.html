@@ -11,45 +11,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Real Supabase & Privy Auth Engine -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://alvubidtosxweifohhpb.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdnViaWR0b3N4d2VpZm9oaHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMDc5NjcsImV4cCI6MjA5OTY4Mzk2N30.ZhewBHRPNyHuft-fLIACqVCCWWWcnevCl4O3MuBqNn8";
-        const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
-
-        try {
-            window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log("⚡ Real Supabase Auth Client initialized successfully!");
-        } catch (e) {
-            console.warn("Supabase init info:", e);
-        }
-    </script>
+    <!-- Primary Privy Auth Web SDK -->
     <script type="module">
         import { PrivyClient } from 'https://esm.sh/@privy-io/js-sdk@latest';
+        const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
+        
         try {
             const privy = new PrivyClient({ appId: PRIVY_APP_ID });
             window.privyClient = privy;
-            console.log("🔒 Privy Official Web SDK Initialized with App ID:", PRIVY_APP_ID);
+            console.log("🔒 Privy Primary Auth SDK Initialized with App ID:", PRIVY_APP_ID);
 
             window.openPrivyModal = async function() {
                 try {
-                    console.log("Launching Official Privy Default Modal...");
+                    console.log("Launching Privy Official Auth Modal...");
                     if (window.privyClient && typeof window.privyClient.login === 'function') {
                         const user = await window.privyClient.login();
-                        if (user && typeof window.completeWaAuthentication === 'function') {
+                        if (user && typeof window.completePrivyAuthentication === 'function') {
                             const uName = user.email?.address || user.phone?.number || user.wallet?.address || 'Privy Verified User';
-                            window.completeWaAuthentication(uName, uName);
+                            window.completePrivyAuthentication(uName, uName, user);
                         }
                     } else {
-                        const waModal = document.getElementById('wa-auth-modal');
-                        if (waModal) {
-                            waModal.classList.add('open');
-                            waModal.style.display = 'flex';
+                        const modal = document.getElementById('wa-auth-modal');
+                        if (modal) {
+                            modal.classList.add('open');
+                            modal.style.display = 'flex';
                         }
                     }
                 } catch (err) {
-                    console.log("Privy modal dismiss:", err);
+                    console.log("Privy modal:", err);
                 }
             };
         } catch (e) {
