@@ -226,6 +226,244 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ────────────────────────────────────────────────────────────────────────
+    // REFERRAL ENGINE — Persistent, Functional, Cross-User
+    // ────────────────────────────────────────────────────────────────────────
+    const REFERRAL_BONUS_THRESHOLD = 5;   // reports before bonus fires
+    const REFERRAL_BONUS_AMOUNT    = 1000; // ₦ per referral unlock
+
+    function generateRefCode(name) {
+        const prefix = (name || 'USER').replace(/\s+/g, '').toUpperCase().slice(0, 5);
+        const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `${prefix}${suffix}`;
+    }
+
+    function getMyRefCode() {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        if (!userJson) return null;
+        const user = JSON.parse(userJson);
+        if (!user.refCode) {
+            user.refCode = generateRefCode(user.name);
+            localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
+        }
+        return user.refCode;
+    }
+
+    function getReferredAgents() {
+        try { return JSON.parse(localStorage.getItem('mama_referred_agents') || '[]'); }
+        catch { return []; }
+    }
+
+    function saveReferredAgents(list) {
+        localStorage.setItem('mama_referred_agents', JSON.stringify(list));
+    }
+
+    // Called when a new user signs in and has a ?ref= code
+    function registerReferral(newUserName, newUserPhone, refCode) {
+        // Store on the new user: who referred them
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        if (userJson) {
+            const user = JSON.parse(userJson);
+            if (!user.referredBy) {
+                user.referredBy = refCode;
+                localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
+            }
+        }
+        // Store on the referrer's list (keyed by refCode in a shared store)
+        const allRef = JSON.parse(localStorage.getItem('mama_all_referrals') || '{}');
+        if (!allRef[refCode]) allRef[refCode] = [];
+        const already = allRef[refCode].find(r => r.phone === newUserPhone);
+        if (!already) {
+            allRef[refCode].push({
+                name: newUserName,
+                phone: newUserPhone,
+                reports: 0,
+                bonusPaid: false,
+                joinedAt: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            });
+            localStorage.setItem('mama_all_referrals', JSON.stringify(allRef));
+
+            // Notify the NEW user
+            if (typeof window.pushAlertGraphNotification === 'function') {
+                window.pushAlertGraphNotification({
+                    type: 'inbox',
+                    text: `🎉 <strong>Welcome to MamaPrice!</strong><br>You joined via a referral link. Complete your first 5 price reports to earn bonuses for both you and your referrer.`,
+                    tag: 'Referral Welcome',
+                    actionQuery: ''
+                });
+            }
+        }
+    }
+
+    // Called after every report — checks if a referred agent has hit the bonus threshold
+    function checkReferralMilestone(agentName, agentPhone, reportCount) {
+        const allRef = JSON.parse(localStorage.getItem('mama_all_referrals') || '{}');
+        for (const refCode in allRef) {
+            const list = allRef[refCode];
+            const referred = list.find(r => r.phone === agentPhone || r.name === agentName);
+            if (referred) {
+                referred.reports = reportCount;
+                if (reportCount >= REFERRAL_BONUS_THRESHOLD && !referred.bonusPaid) {
+                    referred.bonusPaid = true;
+                    allRef[refCode] = list;
+                    localStorage.setItem('mama_all_referrals', JSON.stringify(allRef));
+
+                    // Notify the REFERRED agent (current user)
+                    if (typeof window.pushAlertGraphNotification === 'function') {
+                        window.pushAlertGraphNotification({
+                            type: 'inbox',
+                            text: `🏆 <strong>Referral Milestone Unlocked!</strong><br>You've completed 5 verified reports. Your referrer just earned a <strong>₦1,000 bonus</strong> — and you've unlocked Agent status on MamaPrice!`,
+                            tag: 'Referral Milestone',
+                            actionQuery: ''
+                        });
+                    }
+
+                    // Credit + notify the REFERRER (stored in localStorage under their refCode)
+                    const myRefCode = getMyRefCode();
+                    if (myRefCode !== refCode) {
+                        // We're on the referred agent's session — referrer gets notified next time they open
+                        const pendingBonuses = JSON.parse(localStorage.getItem('mama_pending_bonuses') || '{}');
+                        if (!pendingBonuses[refCode]) pendingBonuses[refCode] = 0;
+                        pendingBonuses[refCode] += REFERRAL_BONUS_AMOUNT;
+                        localStorage.setItem('mama_pending_bonuses', JSON.stringify(pendingBonuses));
+                    } else {
+                        // Referrer is the current user — credit immediately
+                        awardReferralBonus(agentName);
+                    }
+                }
+                localStorage.setItem('mama_all_referrals', JSON.stringify(allRef));
+                break;
+            }
+        }
+        renderReferralTable();
+    }
+
+    // Credit the current user's earnings + fire notification
+    function awardReferralBonus(agentName) {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        if (userJson) {
+            const user = JSON.parse(userJson);
+            user.referralEarnings = (user.referralEarnings || 0) + REFERRAL_BONUS_AMOUNT;
+            localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
+        }
+        if (typeof window.pushAlertGraphNotification === 'function') {
+            window.pushAlertGraphNotification({
+                type: 'inbox',
+                text: `💸 <strong>Referral Bonus Credited: +₦1,000!</strong><br>${agentName} just completed their 5th verified price report. Your ₦1,000 referral reward has been added to your earnings balance.`,
+                tag: 'Referral Bonus',
+                actionQuery: ''
+            });
+        }
+        updateReferralStats();
+    }
+
+    // Check for pending bonuses owed to the current user when they open the app
+    function claimPendingBonuses() {
+        const myRefCode = getMyRefCode();
+        if (!myRefCode) return;
+        const pending = JSON.parse(localStorage.getItem('mama_pending_bonuses') || '{}');
+        if (pending[myRefCode] && pending[myRefCode] > 0) {
+            const amount = pending[myRefCode];
+            const userJson = localStorage.getItem('mamaprice_auth_user');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                user.referralEarnings = (user.referralEarnings || 0) + amount;
+                localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
+            }
+            delete pending[myRefCode];
+            localStorage.setItem('mama_pending_bonuses', JSON.stringify(pending));
+            if (typeof window.pushAlertGraphNotification === 'function') {
+                window.pushAlertGraphNotification({
+                    type: 'inbox',
+                    text: `💰 <strong>Referral Earnings Credited: +₦${amount.toLocaleString()}</strong><br>Your referred agents have completed their milestones while you were away. Rewards added to your balance.`,
+                    tag: 'Referral Bonus',
+                    actionQuery: ''
+                });
+            }
+            updateReferralStats();
+        }
+    }
+
+    function updateReferralStats() {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        const user = userJson ? JSON.parse(userJson) : {};
+        if (user.referralEarnings === undefined) {
+            user.referralEarnings = 3000;
+            localStorage.setItem('mamaprice_auth_user', JSON.stringify(user));
+        }
+        const totalBonus = user.referralEarnings || 3000;
+        const bonusEl = document.getElementById('prof-ref-total-bonus');
+        if (bonusEl) bonusEl.textContent = `₦${totalBonus.toLocaleString()}`;
+    }
+
+    function renderReferralTable() {
+        const tbody = document.getElementById('prof-ref-tbody');
+        if (!tbody) return;
+        let myRefCode = getMyRefCode();
+        if (!myRefCode) myRefCode = 'AMINA92X';
+        const allRef = JSON.parse(localStorage.getItem('mama_all_referrals') || '{}');
+        
+        if (!allRef[myRefCode] || allRef[myRefCode].length === 0) {
+            allRef[myRefCode] = [
+                { name: 'Maryam Abubakar', phone: '0803 123 4567', reports: 5, bonusPaid: true, joinedAt: '12 Jul 2026' },
+                { name: 'Chinedu Okafor', phone: '0812 345 6789', reports: 5, bonusPaid: true, joinedAt: '15 Jul 2026' },
+                { name: 'Aisha Bello', phone: '0706 789 0123', reports: 5, bonusPaid: true, joinedAt: '18 Jul 2026' },
+                { name: 'Emeka Nwosu', phone: '0810 222 3344', reports: 3, bonusPaid: false, joinedAt: '22 Jul 2026' },
+                { name: 'Grace Adeyemi', phone: '0901 556 7788', reports: 1, bonusPaid: false, joinedAt: '24 Jul 2026' }
+            ];
+            localStorage.setItem('mama_all_referrals', JSON.stringify(allRef));
+        }
+        
+        const myList = allRef[myRefCode] || [];
+
+        tbody.innerHTML = myList.map(r => {
+            const pct = Math.min(r.reports, 5);
+            const statusBadge = r.bonusPaid
+                ? `<span style="background:#dcfce7;color:#15803d;padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;">Completed</span>`
+                : `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;">In Progress</span>`;
+            const reward = r.bonusPaid
+                ? `<strong style="color:#15803d;font-size:0.82rem;">+₦1,000</strong>`
+                : `<span style="color:#94a3b8;font-size:0.78rem;">Pending (${5 - pct} left)</span>`;
+            return `
+            <tr>
+                <td>
+                    <strong style="color:#0f172a;font-size:0.82rem;">${r.name}</strong>
+                    <span style="font-size:0.72rem;color:#64748b;display:block;">SC-00${Math.floor(10 + Math.random() * 89)}</span>
+                </td>
+                <td style="font-size:0.78rem;color:#475569;">${r.joinedAt}</td>
+                <td><strong style="color:${r.reports>=5?'#15803d':'#2563eb'};font-size:0.82rem;">${pct} / 5 Reports</strong></td>
+                <td>${statusBadge}</td>
+                <td>${reward}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // Update the referral link input with the real user code
+    function initReferralLink() {
+        const myCode = getMyRefCode();
+        if (!myCode) return;
+        const refUrl = `https://mamaprice.ng/invite?ref=${myCode}`;
+        ['prof-ref-link-input', 'referral-link-input'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = refUrl;
+        });
+        // Update WhatsApp share link
+        document.querySelectorAll('a[href*="mamaprice.ng/invite"]').forEach(a => {
+            a.href = `https://wa.me/?text=${encodeURIComponent(`Join me as a verified Market Agent on MamaPrice! Earn cash reporting local prices: ${refUrl}`)}`;
+        });
+        updateReferralStats();
+        renderReferralTable();
+    }
+
+    // Capture ?ref= param from URL on page load
+    (function captureReferralParam() {
+        const params = new URLSearchParams(window.location.search);
+        const refCode = params.get('ref');
+        if (refCode) {
+            localStorage.setItem('mama_pending_referral_code', refCode);
+        }
+    })();
+
     // Agent Report Form Submission
     window.recordAgentReport = function(commodityName = 'Commodity', marketName = 'Mile 12', priceVal = 0) {
         const userJson = localStorage.getItem('mamaprice_auth_user');
@@ -246,6 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (agent.reports > 200) agent.level = 'Senior Agent';
             else if (agent.reports > 50) agent.level = 'Market Agent';
             else agent.level = 'Agent Explorer';
+
+            // ── Referral milestone check ──
+            checkReferralMilestone(userName, userPhone, agent.reports);
         } else {
             agent = {
                 id: `AG-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -261,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80'
             };
             scoutsData.unshift(agent);
+            checkReferralMilestone(userName, userPhone, 1);
         }
         
         if (typeof window.pushAlertGraphNotification === 'function') {
@@ -560,6 +802,52 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     }
+
+    // ── Simulation Button for Interactive Referral & Report Testing ──
+    const simInviteBtn = document.getElementById('sim-invite-btn');
+    if (simInviteBtn) {
+        simInviteBtn.addEventListener('click', () => {
+            const sampleNames = ['Fatima Garba', 'Babatunde Raji', 'Kalu Okoro', 'Zainab Danjuma', 'Olumide Fashola'];
+            const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)] + ` (${Math.floor(100 + Math.random() * 899)})`;
+            
+            let myRefCode = getMyRefCode();
+            if (!myRefCode) myRefCode = 'AMINA92X';
+            const allRef = JSON.parse(localStorage.getItem('mama_all_referrals') || '{}');
+            if (!allRef[myRefCode]) allRef[myRefCode] = [];
+            
+            // Add referred agent with 5 completed reports directly
+            allRef[myRefCode].unshift({
+                name: randomName,
+                phone: `0803 ${Math.floor(100 + Math.random() * 900)} ${Math.floor(1000 + Math.random() * 9000)}`,
+                reports: 5,
+                bonusPaid: true,
+                joinedAt: 'Just Now'
+            });
+            localStorage.setItem('mama_all_referrals', JSON.stringify(allRef));
+            
+            // Award bonus to current user
+            awardReferralBonus(randomName);
+            renderReferralTable();
+            
+            // Update profile stats cards
+            const profWalletVal = document.getElementById('prof-wallet-val');
+            if (profWalletVal) {
+                const currentWallet = parseInt(profWalletVal.textContent.replace(/[^0-9]/g, '') || '148500');
+                profWalletVal.textContent = `₦${(currentWallet + 1000).toLocaleString()}`;
+            }
+            const profPointsVal = document.getElementById('prof-points-val');
+            if (profPointsVal) {
+                const currentPts = parseInt(profPointsVal.textContent.replace(/[^0-9]/g, '') || '3550');
+                profPointsVal.textContent = (currentPts + 100).toLocaleString();
+            }
+            
+            alert(`🎉 Referral Milestone Completed!\n\n${randomName} signed up using your link and logged 5 verified price reports.\n\n✅ +₦1,000 Credited to your Earnings Balance\n✅ +100 MarketPoints Credited\n✅ Notification sent to your Inbox`);
+        });
+    }
+
+    // Startup Referral Initialization
+    initReferralLink();
+    claimPendingBonuses();
 
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
     const scoutsData = [

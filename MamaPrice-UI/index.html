@@ -1392,7 +1392,7 @@
                                     </div>
                                     <div class="savings-total-pill" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
                                         <small style="color: #166534; font-weight: 600;">Total Bonus Earned:</small>
-                                        <strong style="color: #15803d; font-size: 1.1rem; margin-left: 6px;">₦3,000</strong>
+                                        <strong style="color: #15803d; font-size: 1.1rem; margin-left: 6px;" id="prof-ref-total-bonus">₦3,000</strong>
                                     </div>
                                 </div>
 
@@ -1418,7 +1418,12 @@
                                 </div>
 
                                 <!-- Referred Agents Table -->
-                                <h4 style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Invited Agents & Progress</h4>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h4 style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin: 0;">Invited Agents & Progress</h4>
+                                    <button type="button" id="sim-invite-btn" style="padding: 6px 14px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(21,128,61,0.2);">
+                                        <i class="fa-solid fa-user-plus"></i> Simulate Invited Agent Joining & 5 Reports
+                                    </button>
+                                </div>
                                 <div style="overflow-x: auto;">
                                     <table class="scout-data-table" style="width: 100%;">
                                         <thead>
@@ -1430,7 +1435,7 @@
                                                 <th>REWARD</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="prof-ref-tbody">
                                             <tr>
                                                 <td>
                                                     <strong style="color: #0f172a; font-size: 0.82rem;">Maryam Abubakar</strong>
