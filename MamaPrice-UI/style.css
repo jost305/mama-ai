@@ -256,26 +256,6 @@ body.sidebar-docked .top-dock-btn {
     box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
 }
 
-@keyframes badgeIncrementFlash {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 2px 8px rgba(147, 51, 234, 0.35);
-    }
-    50% {
-        transform: scale(1.15);
-        background: linear-gradient(135deg, #16a34a, #15803d);
-        box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.6);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 2px 8px rgba(147, 51, 234, 0.35);
-    }
-}
-
-.badge-pulse-glow {
-    animation: badgeIncrementFlash 0.8s ease-out;
-}
-
 .nav-item:hover, .nav-item.active {
     background: var(--accent-light-green);
     color: var(--accent-green);
@@ -8106,7 +8086,7 @@ table tbody tr:hover {
 /* ── 2. Top Grid: Hero Card & Recent Reports ── */
 .prices-top-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 310px;
     gap: 12px;
 }
 
@@ -8351,64 +8331,10 @@ table tbody tr:hover {
 
 .pr-item {
     display: flex;
-    flex-direction: column;
-    padding: 6px 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
     border-bottom: 1px solid #f1f5f9;
-}
-
-.pr-main-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.pr-agent-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 3px;
-    padding-top: 3px;
-    border-top: 1px dashed #f1f5f9;
-    font-size: 0.65rem;
-    color: #64748b;
-}
-
-.pr-agent-by {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.pr-mini-avatar {
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    background: #15803d;
-    color: #ffffff;
-    font-size: 0.52rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pr-mini-avatar.alt1 { background: #0284c7; }
-.pr-mini-avatar.alt2 { background: #d97706; }
-.pr-mini-avatar.alt3 { background: #7c3aed; }
-.pr-mini-avatar.alt4 { background: #059669; }
-
-.pr-agent-by strong {
-    color: #0f172a;
-    font-weight: 700;
-}
-
-.pr-date-lbl {
-    font-size: 0.62rem;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    gap: 3px;
 }
 
 .pr-item:last-child {
@@ -8439,18 +8365,16 @@ table tbody tr:hover {
 .pr-avatar.alt3 { background: #7c3aed; }
 .pr-avatar.alt4 { background: #059669; }
 
-.pr-info-line {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    flex-wrap: nowrap;
+.pr-avatar-col strong {
+    display: block;
+    font-size: 0.72rem;
+    color: #0f172a;
 }
 
-.pr-market-name {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #0f172a;
+.pr-avatar-col span {
+    display: block;
+    font-size: 0.62rem;
+    color: #64748b;
 }
 
 .pr-val {
@@ -8467,215 +8391,59 @@ table tbody tr:hover {
     border-radius: 8px;
     font-size: 0.72rem;
     font-weight: 700;
+    color: #475569;
     cursor: pointer;
     margin-top: 6px;
 }
 
-.pr-prod-tag {
-    display: inline-block;
-    font-size: 0.62rem;
+/* ── 3. 4-KPI Metrics Summary Row ── */
+.prices-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.pk-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pk-lbl {
+    font-size: 0.65rem;
     font-weight: 700;
-    color: #15803d;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    padding: 1px 6px;
-    border-radius: 6px;
-    margin-right: 5px;
-    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
-.pr-time-inline {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.68rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-left: 6px;
-    vertical-align: middle;
-}
+.pk-lbl.green { color: #15803d; }
+.pk-lbl.red { color: #dc2626; }
+.pk-lbl.purple { color: #7c3aed; }
+.pk-lbl.blue { color: #0284c7; }
 
-/* ── Live Alert Pulse Animation for Recent Reports ── */
-@keyframes slideInReport {
-    0% {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.97);
-        background: rgba(34, 197, 94, 0.22);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.pr-item-latest {
-    background: rgba(34, 197, 94, 0.05);
-    border-radius: 8px;
-    padding: 6px 8px !important;
-    margin-left: -4px;
-    margin-right: -4px;
-    border-left: 3px solid #22c55e !important;
-    animation: slideInReport 0.5s ease-out, alertRowPulse 2.2s infinite ease-in-out;
-}
-
-@keyframes alertRowPulse {
-    0%, 100% {
-        background: rgba(34, 197, 94, 0.05);
-        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.2);
-    }
-    50% {
-        background: rgba(34, 197, 94, 0.14);
-        box-shadow: 0 0 10px 2px rgba(34, 197, 94, 0.25);
-    }
-}
-
-.pr-avatar-wrap {
-    position: relative;
-    display: inline-block;
-}
-
-.avatar-pulse-dot {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 9px;
-    height: 9px;
-    background-color: #22c55e;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    animation: avatarDotPulse 1.5s infinite ease-out;
-}
-
-@keyframes avatarDotPulse {
-    0% {
-        transform: scale(0.9);
-        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.9);
-    }
-    70% {
-        transform: scale(1.1);
-        box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
-    }
-    100% {
-        transform: scale(0.9);
-        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-    }
-}
-
-.pulse-beacon {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background-color: #22c55e;
-    border-radius: 50%;
-    margin-right: 4px;
-    vertical-align: middle;
-    animation: beaconFlash 1.2s infinite alternate ease-in-out;
-}
-
-@keyframes beaconFlash {
-    from { opacity: 0.3; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1.25); box-shadow: 0 0 6px #22c55e; }
-}
-
-.pr-badge-new {
-    font-size: 0.58rem;
+.pk-val {
+    font-size: 1.25rem;
     font-weight: 800;
-    color: #15803d;
-    background: #dcfce7;
-    border: 1px solid #86efac;
-    padding: 1px 5px;
-    border-radius: 99px;
-    letter-spacing: 0.05em;
-    animation: badgePulse 2s infinite ease-in-out;
+    margin: 2px 0 1px;
 }
 
-@keyframes badgePulse {
-    0%, 100% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.08); background: #bbf7d0; opacity: 1; }
+.pk-val.green { color: #15803d; }
+.pk-val.red { color: #dc2626; }
+.pk-val.purple { color: #7c3aed; }
+.pk-val.blue { color: #0284c7; }
+
+.pk-sub {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #475569;
 }
 
-/* ── 3. 4-KPI Metrics Summary Row & Agent KPI Pill Bar (Matching Reference UI) ── */
-.prices-kpi-row,
-.scout-kpi-row {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 9999px !important;
-    padding: 10px 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    gap: 0 !important;
-    margin-bottom: 14px !important;
-}
-
-.prices-kpi-row::-webkit-scrollbar,
-.scout-kpi-row::-webkit-scrollbar {
-    display: none !important;
-}
-
-.pk-card,
-.scout-kpi-card {
-    flex: 1 1 0% !important;
-    min-width: 90px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    padding: 2px 12px !important;
-    background: transparent !important;
-    border: none !important;
-    border-right: 1px solid #e2e8f0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-}
-
-.pk-card:last-child,
-.scout-kpi-card:last-child {
-    border-right: none !important;
-}
-
-.pk-lbl,
-.kpi-lbl {
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    color: #64748b !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.04em !important;
-    margin-bottom: 3px !important;
-    white-space: nowrap !important;
-    display: block !important;
-}
-
-.pk-val,
-.kpi-val {
-    font-size: 1.25rem !important;
-    font-weight: 800 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    white-space: nowrap !important;
-    line-height: 1.1 !important;
-    margin: 0 !important;
-    display: block !important;
-}
-
-.pk-val.emerald, .kpi-val.emerald { color: #6366f1 !important; }
-.pk-val.green, .kpi-val.green { color: #16a34a !important; }
-.pk-val.blue, .kpi-val.blue { color: #2563eb !important; }
-.pk-val.purple, .kpi-val.purple { color: #d97706 !important; }
-.pk-val.red, .kpi-val.red { color: #dc2626 !important; }
-.pk-val.teal, .kpi-val.teal { color: #0d9488 !important; }
-
-.kpi-icon-circle,
-.kpi-sub,
-.pk-sub,
 .pk-time {
-    display: none !important;
-}
+    font-size: 0.62rem;
+    color: #94a3b8;
     margin-top: 1px;
 }
 
@@ -8694,16 +8462,14 @@ table tbody tr:hover {
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
 }
 
-.pcc-header {
+.pcc-header, .pmc-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 6px;
 }
 
-.pcc-header h3 {
+.pcc-header h3, .pmc-header h3 {
     font-size: 0.88rem;
     font-weight: 800;
     color: #0f172a;
@@ -8716,12 +8482,10 @@ table tbody tr:hover {
     background: #f1f5f9;
     padding: 2px;
     border-radius: 6px;
-    overflow-x: auto;
-    max-width: 100%;
 }
 
 .pcc-pill {
-    padding: 4px 9px;
+    padding: 3px 8px;
     font-size: 0.68rem;
     font-weight: 700;
     border: none;
@@ -8729,44 +8493,31 @@ table tbody tr:hover {
     color: #64748b;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.pcc-pill:hover {
-    color: #0f172a;
 }
 
 .pcc-pill.active {
     background: #ffffff;
-    color: #15803d;
-    font-weight: 800;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #0f172a;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 
 .pcc-graph-area {
     position: relative;
     margin-bottom: 8px;
-    touch-action: pan-y;
-    overflow: visible;
 }
 
 .pcc-tooltip-box {
     position: absolute;
     top: 6px;
     left: 32%;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(4px);
+    background: #ffffff;
     border: 1px solid #cbd5e1;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
     border-radius: 8px;
     padding: 6px 10px;
     font-size: 0.68rem;
-    z-index: 10;
+    z-index: 5;
     pointer-events: none;
-    transition: left 0.15s ease-out, opacity 0.2s ease;
-    transform: translateX(-50%);
-    white-space: nowrap;
 }
 
 .pcc-tooltip-header {
@@ -8789,19 +8540,7 @@ table tbody tr:hover {
 
 .pcc-svg {
     width: 100%;
-    height: auto;
-    min-height: 140px;
-    max-height: 200px;
-    display: block;
-}
-
-.pcc-svg path {
-    transition: d 0.4s ease, stroke 0.3s ease;
-    vector-effect: non-scaling-stroke;
-}
-
-.pcc-svg line, .pcc-svg circle {
-    transition: cx 0.15s ease-out, cy 0.15s ease-out;
+    height: 140px;
 }
 
 .svg-axis-lbl {
@@ -8815,18 +8554,8 @@ table tbody tr:hover {
     justify-content: space-between;
     font-size: 0.68rem;
     color: #64748b;
-    padding: 0 20px 0 35px;
-    margin-top: 4px;
-    gap: 4px;
-}
-
-.pcc-x-labels span {
-    cursor: pointer;
-    transition: color 0.15s;
-}
-
-.pcc-x-labels span:hover {
-    color: #0f172a;
+    padding: 0 30px;
+    margin-top: 2px;
 }
 
 .pcc-x-labels .active {
@@ -9481,37 +9210,11 @@ table tbody tr:hover {
 
     .prices-top-grid,
     .prices-chart-map-grid,
+    .prices-kpi-row,
     .wtb-grid,
     .prices-intelligence-row,
     .prices-bottom-grid {
         grid-template-columns: 1fr;
-    }
-
-    .prices-kpi-row {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-
-    .pk-card {
-        padding: 8px 10px !important;
-    }
-
-    .pk-lbl {
-        font-size: 0.6rem !important;
-    }
-
-    .pk-val {
-        font-size: 1.05rem !important;
-        margin: 1px 0 !important;
-    }
-
-    .pk-sub {
-        font-size: 0.65rem !important;
-        line-height: 1.2 !important;
-    }
-
-    .pk-time {
-        font-size: 0.58rem !important;
     }
 
     .prices-hero-card {
@@ -9621,13 +9324,13 @@ table tbody tr:hover {
 
     #page-prices .prices-top-grid,
     #page-prices .prices-chart-map-grid,
+    #page-prices .prices-kpi-row,
     #page-prices .wtb-grid,
     #page-prices .prices-intelligence-row,
     #page-prices .prices-bottom-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
     }
-
 
     #page-prices .prices-hero-card,
     #page-prices .prices-reports-card,
