@@ -8593,56 +8593,89 @@ table tbody tr:hover {
     50% { transform: scale(1.08); background: #bbf7d0; opacity: 1; }
 }
 
-/* ── 3. 4-KPI Metrics Summary Row ── */
-.prices-kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+/* ── 3. 4-KPI Metrics Summary Row & Agent KPI Pill Bar (Matching Reference UI) ── */
+.prices-kpi-row,
+.scout-kpi-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 9999px !important;
+    padding: 10px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 0 !important;
+    margin-bottom: 14px !important;
 }
 
-.pk-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
+.prices-kpi-row::-webkit-scrollbar,
+.scout-kpi-row::-webkit-scrollbar {
+    display: none !important;
 }
 
-.pk-lbl {
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+.pk-card,
+.scout-kpi-card {
+    flex: 1 1 0% !important;
+    min-width: 90px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 2px 12px !important;
+    background: transparent !important;
+    border: none !important;
+    border-right: 1px solid #e2e8f0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
 }
 
-.pk-lbl.emerald { color: #059669; }
-.pk-lbl.green { color: #15803d; }
-.pk-lbl.red { color: #dc2626; }
-.pk-lbl.purple { color: #7c3aed; }
-.pk-lbl.blue { color: #0284c7; }
-
-.pk-val {
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 2px 0 1px;
+.pk-card:last-child,
+.scout-kpi-card:last-child {
+    border-right: none !important;
 }
 
-.pk-val.emerald { color: #059669; }
-.pk-val.green { color: #15803d; }
-.pk-val.red { color: #dc2626; }
-.pk-val.purple { color: #7c3aed; }
-.pk-val.blue { color: #0284c7; }
-
-.pk-sub {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #475569;
+.pk-lbl,
+.kpi-lbl {
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 3px !important;
+    white-space: nowrap !important;
+    display: block !important;
 }
 
+.pk-val,
+.kpi-val {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    white-space: nowrap !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+    display: block !important;
+}
+
+.pk-val.emerald, .kpi-val.emerald { color: #6366f1 !important; }
+.pk-val.green, .kpi-val.green { color: #16a34a !important; }
+.pk-val.blue, .kpi-val.blue { color: #2563eb !important; }
+.pk-val.purple, .kpi-val.purple { color: #d97706 !important; }
+.pk-val.red, .kpi-val.red { color: #dc2626 !important; }
+.pk-val.teal, .kpi-val.teal { color: #0d9488 !important; }
+
+.kpi-icon-circle,
+.kpi-sub,
+.pk-sub,
 .pk-time {
-    font-size: 0.62rem;
-    color: #94a3b8;
+    display: none !important;
+}
     margin-top: 1px;
 }
 
@@ -9595,11 +9628,6 @@ table tbody tr:hover {
         grid-template-columns: 1fr !important;
     }
 
-    #page-prices .prices-kpi-row {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
 
     #page-prices .prices-hero-card,
     #page-prices .prices-reports-card,
