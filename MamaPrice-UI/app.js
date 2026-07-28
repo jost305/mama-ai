@@ -2122,6 +2122,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    // ── Supabase Live Database Sync for Agents & Reports ──
+    async function syncScoutsDataWithSupabase() {
+        if (!supabaseClient) return;
+        try {
+            const { data, error } = await supabaseClient.from('scouts').select('*');
+            if (!error && data && data.length > 0) {
+                data.forEach(dbItem => {
+                    const idx = scoutsData.findIndex(s => s.id === dbItem.id || s.phone === dbItem.phone);
+                    if (idx !== -1) {
+                        scoutsData[idx] = { ...scoutsData[idx], ...dbItem };
+                    } else {
+                        scoutsData.push({
+                            id: dbItem.id || `AG-00${scoutsData.length + 1}`,
+                            name: dbItem.name || 'Market Scout',
+                            phone: dbItem.phone || '0800 000 0000',
+                            level: dbItem.level || 'Agent Explorer',
+                            markets: dbItem.markets || ['General Market'],
+                            reports: dbItem.reports || 1,
+                            points: dbItem.points || 25,
+                            trustScore: dbItem.trust_score || dbItem.trustScore || 90,
+                            trustLabel: dbItem.trust_label || dbItem.trustLabel || 'Great',
+                            earnings: dbItem.earnings || 250,
+                            status: dbItem.status || 'Active',
+                            paymentStatus: dbItem.payment_status || dbItem.paymentStatus || 'Released',
+                            avatar: dbItem.avatar || null
+                        });
+                    }
+                });
+                updateScoutsDashboard();
+            }
+        } catch (err) {
+            console.log('Supabase DB sync notice: using current persistent state', err);
+        }
+    }
+    syncScoutsDataWithSupabase();
+
     function updateScoutsDashboard() {
         const query = scoutSearchInput ? scoutSearchInput.value.toLowerCase().trim() : '';
         const statusVal = scoutStatusFilter ? scoutStatusFilter.value : 'all';
