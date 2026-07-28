@@ -34,12 +34,12 @@
                 <a href="javascript:void(0)" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i><span>Home</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-prices"><i class="fa-solid fa-tag"></i><span>Prices & Trends</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-markets"><i class="fa-solid fa-shop"></i><span>Markets & Vendors</span></a>
-                <a href="javascript:void(0)" class="nav-item" id="nav-map"><i class="fa-solid fa-map-location-dot"></i><span>Live Map</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-agent">
                     <i class="fa-solid fa-user-shield"></i>
                     <span>Agents</span>
                     <span class="nav-earned-badge" title="Scout Earnings So Far">₦148.5k</span>
                 </a>
+                <a href="javascript:void(0)" class="nav-item" id="nav-map"><i class="fa-solid fa-map-location-dot"></i><span>Live Map</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-profile"><i class="fa-solid fa-user-gear"></i><span>Profile Dashboard</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-library"><i class="fa-regular fa-bookmark"></i><span>Watchlist</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-history"><i class="fa-regular fa-clock"></i><span>History</span></a>
@@ -199,7 +199,7 @@
                         </div>
                         <!-- Popular Searches -->
                         <div class="search-chips-row">
-                            <span class="chips-label">Popular Searches:</span>
+                            <span class="chips-label">Recent Searches:</span>
                             <div class="chips-container">
                                 <button class="chip-btn" onclick="sendSuggestion('Rice price today in Lagos')">🍚 Rice price today</button>
                                 <button class="chip-btn" onclick="sendSuggestion('Tomatoes in Mile 12 market price')">🍅 Tomatoes in Mile 12</button>
@@ -211,8 +211,7 @@
                         <!-- Market Cards (Lagos & Kano) — Live -->
                         <div class="snapshot-section">
                             <div class="snapshot-header">
-                                <h3>Market <span class="snap-location">Lagos & Kano</span></h3>
-                                <span class="snap-live-badge"><span class="snap-live-dot"></span> Live · <span id="snap-last-updated">just now</span></span>
+                                <h3>Market Updates <span id="snap-location" class="snap-location">Lagos...</span></h3>
                             </div>
                             <div class="snapshot-grid" id="snapshot-grid">
                                 <div class="snap-card" data-commodity="rice" onclick="sendSuggestion('Rice 50kg bag price today Lagos Kano')">
@@ -313,106 +312,466 @@
                 </div>
             </div>
 
-            <!-- Page 2: Prices & Trends Page (Ref Image 1 & 3 - Commodity Detail) -->
+            <!-- Page 2: Prices & Trends Page (Redesigned matching reference UI) -->
             <div class="page-view" id="page-prices">
-                <div class="view-container">
-                    <div class="commodity-detail-layout">
-                        <!-- Left Column: Trend & Insights -->
-                        <div class="detail-main-col">
-                            <div class="commodity-header-card">
-                                <div class="c-title-row">
-                                    <div class="c-icon">🌶️</div>
-                                    <div>
-                                        <h2>Pepper (Bag 100kg)</h2>
-                                        <span class="c-sub">Average Price Across 5 Major Nigerian Markets</span>
+                <div class="view-container prices-redesign-container">
+
+                    <!-- 2. Main Top Grid: Hero Card (Left) & Recent Verified Reports (Right) -->
+                    <div class="prices-top-grid">
+                        
+                        <!-- Hero Commodity Detail Card -->
+                        <div class="prices-hero-card">
+                            <div class="prices-hero-left">
+                                <div class="ph-title-row">
+                                    <div class="ph-icon-box">🌶️</div>
+                                    <div class="ph-title-info">
+                                        <div class="ph-name-wrap">
+                                            <h2>Pepper (100kg Bag)</h2>
+                                            <span class="verified-pill"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                                        </div>
+                                        <p class="ph-sub">Average price across 20 major markets</p>
                                     </div>
-                                    <button class="watchlist-btn"><i class="fa-regular fa-heart"></i> Watchlist</button>
-                                </div>
-                                <div class="c-price-box">
-                                    <div class="price-range">₦13,200 – ₦15,000</div>
-                                    <div class="price-badge green"><i class="fa-solid fa-arrow-down"></i> 4% vs yesterday</div>
+                                    <div class="ph-actions">
+                                        <button class="ph-btn-outline" title="Add to Watchlist"><i class="fa-regular fa-heart"></i> Watchlist</button>
+                                        <button class="ph-btn-circle" title="Share"><i class="fa-solid fa-share-nodes"></i></button>
+                                    </div>
                                 </div>
 
-                                <!-- 7-Day Trend Chart SVG -->
-                                <div class="chart-container">
-                                    <h4>Price Trend (7 days)</h4>
-                                    <div class="chart-mock-svg">
-                                        <svg viewBox="0 0 500 120" class="svg-graph">
-                                            <path d="M0,40 Q70,20 140,50 T280,30 T420,70 T500,90" fill="none" stroke="#0d5c3a" stroke-width="3" />
-                                            <circle cx="500" cy="90" r="5" fill="#0d5c3a" />
-                                        </svg>
-                                        <div class="chart-labels">
-                                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                                        </div>
+                                <div class="ph-stats-box">
+                                    <span class="ph-stats-lbl">Today's Average</span>
+                                    <div class="ph-price-row">
+                                        <span class="ph-main-price">₦13,850</span>
+                                        <span class="ph-trend-badge green"><i class="fa-solid fa-arrow-down"></i> ₦950 (6.4%) vs yesterday</span>
+                                    </div>
+                                    <div class="ph-meta-row">
+                                        <span><i class="fa-solid fa-shield-halved"></i> Confidence <strong>94%</strong></span>
+                                        <span><i class="fa-regular fa-clock"></i> Updated <strong>2 mins ago</strong></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Market Insights -->
-                            <div class="insights-card">
-                                <h3><i class="fa-solid fa-lightbulb"></i> Market Insights</h3>
-                                <div class="insight-row">
-                                    <span class="i-icon green">🏷️</span>
-                                    <div>
-                                        <strong>Cheapest Market:</strong>
-                                        <span>Minna, Niger State — ₦13,200</span>
-                                    </div>
+                            <!-- Right Side: AI Recommendation Card Banner -->
+                            <div class="prices-ai-recommendation-card">
+                                <div class="ai-rec-header">
+                                    <span class="ai-sparkle-icon">✨</span>
+                                    <span>AI Recommendation</span>
                                 </div>
-                                <div class="insight-row">
-                                    <span class="i-icon red">🏷️</span>
-                                    <div>
-                                        <strong>Most Expensive Market:</strong>
-                                        <span>Maiduguri, Borno State — ₦15,000</span>
-                                    </div>
-                                </div>
-                                <div class="insight-row">
-                                    <span class="i-icon green">📦</span>
-                                    <div>
-                                        <strong>Highest Supply:</strong>
-                                        <span>Kano, Kaduna, Minna (Supply is high)</span>
-                                    </div>
-                                </div>
+                                <h3>BUY NOW</h3>
+                                <p>Prices are falling and expected to drop more in the next 48 hours.</p>
+                                <a href="javascript:void(0)" class="ai-rec-link">Why this recommendation?</a>
+                                <div class="ai-rec-mascot">🤖</div>
                             </div>
                         </div>
 
-                        <!-- Right Column: Recent Reports -->
-                        <div class="detail-side-col">
-                            <div class="reports-box">
-                                <div class="r-header">
-                                    <h3>Recent Reports</h3>
-                                    <a href="#">View all</a>
-                                </div>
-                                <div class="report-item">
-                                    <div>
-                                        <strong>Kano, Dawanau Market</strong>
-                                        <small>2 mins ago</small>
+                        <!-- Recent Verified Reports Column (Top Right) -->
+                        <div class="prices-reports-card">
+                            <div class="pr-header">
+                                <h3>Recent Verified Reports</h3>
+                                <a href="javascript:void(0)" class="pr-view-all">View all</a>
+                            </div>
+                            <div class="pr-list">
+                                <div class="pr-item">
+                                    <div class="pr-avatar-col">
+                                        <div class="pr-avatar">KM</div>
+                                        <div>
+                                            <strong>Kano, Dawanau Market</strong>
+                                            <span>2 mins ago</span>
+                                        </div>
                                     </div>
-                                    <span class="report-val">₦13,800 <span class="dot green"></span></span>
+                                    <strong class="pr-val">₦13,800</strong>
                                 </div>
-                                <div class="report-item">
-                                    <div>
-                                        <strong>Kaduna, Sabon Gari</strong>
-                                        <small>5 mins ago</small>
+                                <div class="pr-item">
+                                    <div class="pr-avatar-col">
+                                        <div class="pr-avatar alt1">KS</div>
+                                        <div>
+                                            <strong>Kaduna, Sabon Gari</strong>
+                                            <span>5 mins ago</span>
+                                        </div>
                                     </div>
-                                    <span class="report-val">₦13,700 <span class="dot green"></span></span>
+                                    <strong class="pr-val">₦13,700</strong>
                                 </div>
-                                <div class="report-item">
-                                    <div>
-                                        <strong>Maiduguri, Monday Market</strong>
-                                        <small>7 mins ago</small>
+                                <div class="pr-item">
+                                    <div class="pr-avatar-col">
+                                        <div class="pr-avatar alt2">MM</div>
+                                        <div>
+                                            <strong>Maiduguri, Monday Market</strong>
+                                            <span>7 mins ago</span>
+                                        </div>
                                     </div>
-                                    <span class="report-val">₦15,000 <span class="dot red"></span></span>
+                                    <strong class="pr-val">₦15,000</strong>
                                 </div>
-                                <div class="report-item">
-                                    <div>
-                                        <strong>Minna, Bosso Market</strong>
-                                        <small>8 mins ago</small>
+                                <div class="pr-item">
+                                    <div class="pr-avatar-col">
+                                        <div class="pr-avatar alt3">MB</div>
+                                        <div>
+                                            <strong>Minna, Bosso Market</strong>
+                                            <span>8 mins ago</span>
+                                        </div>
                                     </div>
-                                    <span class="report-val">₦13,200 <span class="dot green"></span></span>
+                                    <strong class="pr-val">₦13,200</strong>
+                                </div>
+                                <div class="pr-item">
+                                    <div class="pr-avatar-col">
+                                        <div class="pr-avatar alt4">IB</div>
+                                        <div>
+                                            <strong>Ibadan, Bodija Market</strong>
+                                            <span>12 mins ago</span>
+                                        </div>
+                                    </div>
+                                    <strong class="pr-val">₦13,400</strong>
+                                </div>
+                            </div>
+                            <button class="pr-bottom-btn">View all reports</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. 4-KPI Metrics Summary Row -->
+                    <div class="prices-kpi-row">
+                        <div class="pk-card">
+                            <span class="pk-lbl green">Lowest Price</span>
+                            <strong class="pk-val green">₦13,200</strong>
+                            <span class="pk-sub">Mile 12 Market, Lagos</span>
+                            <small class="pk-time">18 mins ago</small>
+                        </div>
+                        <div class="pk-card">
+                            <span class="pk-lbl red">Highest Price</span>
+                            <strong class="pk-val red">₦15,100</strong>
+                            <span class="pk-sub">Maiduguri Market</span>
+                            <small class="pk-time">7 mins ago</small>
+                        </div>
+                        <div class="pk-card">
+                            <span class="pk-lbl purple">Market Spread</span>
+                            <strong class="pk-val purple">₦1,900</strong>
+                            <span class="pk-sub">Difference between highest & lowest</span>
+                        </div>
+                        <div class="pk-card">
+                            <span class="pk-lbl blue">Markets Tracked</span>
+                            <strong class="pk-val blue">20</strong>
+                            <span class="pk-sub">Across 7 states · 38 active agents</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Price Trend Chart & Market Price Map Grid -->
+                    <div class="prices-chart-map-grid">
+                        
+                        <!-- Price Trend Chart Box -->
+                        <div class="prices-chart-card">
+                            <div class="pcc-header">
+                                <h3>Price Trend</h3>
+                                <div class="pcc-time-pills">
+                                    <button class="pcc-pill">24H</button>
+                                    <button class="pcc-pill active">7D</button>
+                                    <button class="pcc-pill">30D</button>
+                                    <button class="pcc-pill">90D</button>
+                                    <button class="pcc-pill">1Y</button>
+                                </div>
+                            </div>
+
+                            <div class="pcc-graph-area">
+                                <!-- Tooltip Box -->
+                                <div class="pcc-tooltip-box">
+                                    <div class="pcc-tooltip-header">19 May, 1:00 PM</div>
+                                    <div class="pcc-tooltip-row"><span>Average:</span> <strong>₦14,650</strong></div>
+                                    <div class="pcc-tooltip-row green"><span>Lowest:</span> <strong>₦13,800</strong></div>
+                                    <div class="pcc-tooltip-row red"><span>Highest:</span> <strong>₦15,600</strong></div>
+                                    <div class="pcc-tooltip-row sub"><span>Reports:</span> <strong>32</strong></div>
+                                </div>
+                                <svg viewBox="0 0 520 180" class="pcc-svg">
+                                    <line x1="40" y1="20" x2="500" y2="20" stroke="#f1f5f9" stroke-dasharray="4,4" />
+                                    <line x1="40" y1="60" x2="500" y2="60" stroke="#f1f5f9" stroke-dasharray="4,4" />
+                                    <line x1="40" y1="100" x2="500" y2="100" stroke="#f1f5f9" stroke-dasharray="4,4" />
+                                    <line x1="40" y1="140" x2="500" y2="140" stroke="#f1f5f9" stroke-dasharray="4,4" />
+
+                                    <text x="5" y="24" class="svg-axis-lbl">N16K</text>
+                                    <text x="5" y="64" class="svg-axis-lbl">N15K</text>
+                                    <text x="5" y="104" class="svg-axis-lbl">N14K</text>
+                                    <text x="5" y="144" class="svg-axis-lbl">N13K</text>
+                                    <text x="5" y="175" class="svg-axis-lbl">N12K</text>
+
+                                    <path d="M40,45 Q115,35 190,40 T340,30 T500,60" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4" />
+                                    <path d="M40,140 Q115,130 190,135 T340,110 T500,140" fill="none" stroke="#86efac" stroke-width="2" stroke-dasharray="4,4" />
+                                    <path d="M40,105 Q115,90 190,95 T340,75 T500,108" fill="none" stroke="#15803d" stroke-width="3" />
+                                    
+                                    <line x1="190" y1="20" x2="190" y2="160" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                                    <circle cx="190" cy="95" r="5" fill="#15803d" stroke="#ffffff" stroke-width="2" />
+                                </svg>
+
+                                <div class="pcc-x-labels">
+                                    <span>17 May</span><span>18 May</span><span class="active">19 May</span><span>20 May</span><span>21 May</span><span>22 May</span><span>23 May</span>
+                                </div>
+                            </div>
+
+                            <div class="pcc-legend">
+                                <span><span class="legend-line solid-green"></span> Average Price</span>
+                                <span><span class="legend-line dotted-green"></span> Lowest Price</span>
+                                <span><span class="legend-line dotted-red"></span> Highest Price</span>
+                            </div>
+                        </div>
+
+                        <!-- Market Price Map Box -->
+                        <div class="prices-map-card">
+                            <div class="pmc-header">
+                                <h3>Market Price Map <i class="fa-regular fa-circle-question" title="Map of verified regional prices"></i></h3>
+                                <select class="pmc-select">
+                                    <option>All States</option>
+                                    <option>Lagos State</option>
+                                    <option>Kano State</option>
+                                    <option>Kaduna State</option>
+                                </select>
+                            </div>
+
+                            <div class="pmc-map-body">
+                                <div class="pmc-map-canvas">
+                                    <div class="map-price-pin" style="top: 20%; left: 55%;">
+                                        <span class="pin-dot"></span>
+                                        <span class="pin-tag">Kano <strong>₦13,800</strong></span>
+                                    </div>
+                                    <div class="map-price-pin" style="top: 32%; left: 45%;">
+                                        <span class="pin-dot"></span>
+                                        <span class="pin-tag">Kaduna <strong>₦13,700</strong></span>
+                                    </div>
+                                    <div class="map-price-pin high" style="top: 28%; left: 80%;">
+                                        <span class="pin-dot red"></span>
+                                        <span class="pin-tag red">Maiduguri <strong>₦15,000</strong></span>
+                                    </div>
+                                    <div class="map-price-pin" style="top: 45%; left: 40%;">
+                                        <span class="pin-dot"></span>
+                                        <span class="pin-tag">Minna <strong>₦13,200</strong></span>
+                                    </div>
+                                    <div class="map-price-pin" style="top: 50%; left: 50%;">
+                                        <span class="pin-dot"></span>
+                                        <span class="pin-tag">Abuja <strong>₦13,600</strong></span>
+                                    </div>
+                                    <div class="map-price-pin" style="top: 72%; left: 22%;">
+                                        <span class="pin-dot"></span>
+                                        <span class="pin-tag">Ibadan <strong>₦13,400</strong></span>
+                                    </div>
+                                    <div class="map-price-pin best" style="top: 80%; left: 26%;">
+                                        <span class="pin-dot green"></span>
+                                        <span class="pin-tag green">Lagos (Mile 12) <strong>₦13,200</strong></span>
+                                    </div>
+                                    <div class="map-price-pin high" style="top: 82%; left: 52%;">
+                                        <span class="pin-dot red"></span>
+                                        <span class="pin-tag red">Port Harcourt <strong>₦14,800</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="pmc-footer">
+                                    <span>Tap a market to see details</span>
+                                    <div class="pmc-gradient-legend">
+                                        <span>Low</span>
+                                        <div class="pmc-bar"></div>
+                                        <span>High</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 5. "Where to Buy Today" Horizontal Cards Section -->
+                    <div class="where-to-buy-section">
+                        <div class="wtb-header">
+                            <div>
+                                <h3>Where to Buy Today</h3>
+                                <p>Top recommended markets for the best deals</p>
+                            </div>
+                        </div>
+
+                        <div class="wtb-grid">
+                            <!-- Card 1: Best Deal -->
+                            <div class="wtb-card">
+                                <div class="wtb-img-wrap">
+                                    <span class="wtb-badge green">🏆 Best Deal</span>
+                                    <div class="wtb-img-bg market1">🌶️</div>
+                                </div>
+                                <div class="wtb-body">
+                                    <h4>Mile 12 Market, Lagos</h4>
+                                    <div class="wtb-price-row">
+                                        <strong>₦13,200</strong>
+                                        <span class="wtb-save-badge">Save ₦1,800</span>
+                                    </div>
+                                    <p class="wtb-meta">18 mins ago · 6 reports</p>
+                                    <p class="wtb-confidence">Confidence <span class="green-text">98% Verified</span></p>
+                                    <button class="wtb-btn"><i class="fa-solid fa-compass"></i> Directions</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Closest Deal -->
+                            <div class="wtb-card">
+                                <div class="wtb-img-wrap">
+                                    <span class="wtb-badge blue">📍 Closest Deal</span>
+                                    <div class="wtb-img-bg market2">🧄</div>
+                                </div>
+                                <div class="wtb-body">
+                                    <h4>Oyingbo Market, Lagos</h4>
+                                    <div class="wtb-price-row">
+                                        <strong>₦13,500</strong>
+                                        <span class="wtb-dist-sub">4.2 km away</span>
+                                    </div>
+                                    <p class="wtb-meta">22 mins ago · 8 reports</p>
+                                    <p class="wtb-confidence">Confidence <span class="green-text">95% Verified</span></p>
+                                    <button class="wtb-btn"><i class="fa-solid fa-compass"></i> Directions</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Most Trusted -->
+                            <div class="wtb-card">
+                                <div class="wtb-img-wrap">
+                                    <span class="wtb-badge yellow">⭐ Most Trusted</span>
+                                    <div class="wtb-img-bg market3">🧅</div>
+                                </div>
+                                <div class="wtb-body">
+                                    <h4>Dawanau Market, Kano</h4>
+                                    <div class="wtb-price-row">
+                                        <strong>₦13,450</strong>
+                                    </div>
+                                    <p class="wtb-meta">98% confidence · 14 verified reports</p>
+                                    <p class="wtb-confidence"><span class="green-text">14 verified reports today</span></p>
+                                    <button class="wtb-btn"><i class="fa-solid fa-compass"></i> Directions</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. 3-Column Intelligence & Prediction Row -->
+                    <div class="prices-intelligence-row">
+                        
+                        <!-- Col 1: AI Price Insights -->
+                        <div class="pi-card">
+                            <div class="pi-header">
+                                <span class="sparkle">✨</span>
+                                <h3>AI Price Insights</h3>
+                            </div>
+                            <p class="pi-body-text">
+                                Pepper prices have fallen <strong>6.8%</strong> this week due to increased supply from Kaduna and Kano markets.
+                            </p>
+                            <div class="pi-callout">
+                                Buying within the next 48 hours is recommended.
+                            </div>
+                            <div class="pi-footer">
+                                <span>Confidence <strong>94%</strong></span>
+                                <span class="pi-pepper-icon">🌶️</span>
+                            </div>
+                        </div>
+
+                        <!-- Col 2: Market Intelligence Table -->
+                        <div class="pi-card">
+                            <div class="pi-header">
+                                <h3>Market Intelligence</h3>
+                            </div>
+                            <div class="mi-list">
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-boxes-stacked"></i> Supply</span>
+                                    <span class="mi-pill green">High</span>
+                                </div>
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-users"></i> Demand</span>
+                                    <span class="mi-pill yellow">Normal</span>
+                                </div>
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-chart-line"></i> Price Trend</span>
+                                    <span class="mi-text green">↓ Falling</span>
+                                </div>
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-circle-check"></i> Availability</span>
+                                    <span class="mi-pill green">Excellent</span>
+                                </div>
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-cloud-sun-rain"></i> Weather Risk</span>
+                                    <span class="mi-pill green">Low</span>
+                                </div>
+                                <div class="mi-item">
+                                    <span><i class="fa-solid fa-truck"></i> Transport</span>
+                                    <span class="mi-pill yellow">Moderate</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col 3: Price Prediction (BETA) -->
+                        <div class="pi-card">
+                            <div class="pi-header">
+                                <h3>Price Prediction <span class="beta-pill">BETA</span></h3>
+                            </div>
+                            <div class="pp-rows">
+                                <div class="pp-row">
+                                    <div>
+                                        <strong>Tomorrow</strong>
+                                    </div>
+                                    <div class="pp-val-box">
+                                        <strong>₦13,100</strong>
+                                        <span class="green-text">↓ 5.4%</span>
+                                        <small>89% confidence</small>
+                                    </div>
+                                </div>
+                                <div class="pp-row">
+                                    <div>
+                                        <strong>Next 7 Days</strong>
+                                    </div>
+                                    <div class="pp-val-box">
+                                        <strong>₦12,700</strong>
+                                        <span class="green-text">↓ 8.2%</span>
+                                        <small>84% confidence</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="pp-alert-btn"><i class="fa-regular fa-bell"></i> Create Custom Alert</button>
+                        </div>
+                    </div>
+
+                    <!-- 7. Bottom Row: Recent Verified Photos & Set Price Alert -->
+                    <div class="prices-bottom-grid">
+                        
+                        <!-- Left Col (2/3): Recent Verified Photos -->
+                        <div class="photos-card">
+                            <div class="photos-header">
+                                <h3>Recent Verified Photos</h3>
+                                <a href="javascript:void(0)">View all</a>
+                            </div>
+                            <div class="photos-grid">
+                                <div class="photo-item photo1">
+                                    <div class="photo-overlay">
+                                        <strong>Mile 12 Market</strong>
+                                        <span>18 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="photo-item photo2">
+                                    <div class="photo-overlay">
+                                        <strong>Oyingbo Market</strong>
+                                        <span>22 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="photo-item photo3">
+                                    <div class="photo-overlay">
+                                        <strong>Bodija Market</strong>
+                                        <span>35 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="photo-item photo4">
+                                    <div class="photo-overlay">
+                                        <strong>Kano Market</strong>
+                                        <span>42 mins ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Col (1/3): Set Price Alert -->
+                        <div class="set-alert-card">
+                            <div class="sac-header">
+                                <h3>Set Price Alert</h3>
+                                <p>We'll notify you when price hits your target</p>
+                            </div>
+                            <div class="sac-pills-grid">
+                                <button class="sac-pill">Below ₦13,000</button>
+                                <button class="sac-pill">Above ₦15,000</button>
+                                <button class="sac-pill">Drop by 5%</button>
+                                <button class="sac-pill">Any new report nearby</button>
+                                <button class="sac-pill">Any big change</button>
+                            </div>
+                            <button class="sac-action-btn"><i class="fa-regular fa-bell"></i> Create Custom Alert</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -551,45 +910,191 @@
             <div class="page-view" id="page-markets">
                 <div class="view-container">
                     <div class="view-header markets-page-header">
-                        <h2><i class="fa-solid fa-shop"></i> Verified Vendors & Market Directory</h2>
-                        <p>Discover trusted suppliers, market locations, and commodity stock across Nigeria.</p>
+                        <h2><i class="fa-solid fa-shop"></i> Markets & Vendors</h2>
+                        <p>Trusted suppliers & market locations across Nigeria.</p>
+                        <div class="market-filter-intro">Filter by category or location</div>
+                        <div class="market-filter-pill-row">
+                            <button class="market-pill-btn active" data-filter="all">All Markets</button>
+                            <button class="market-pill-btn" data-filter="wholesale">Wholesale</button>
+                            <button class="market-pill-btn" data-filter="direct-farm">Direct Farm</button>
+                            <button class="market-pill-btn" data-filter="perishables">Perishables</button>
+                            <button class="market-pill-btn" data-filter="bulk-staples">Bulk Staples</button>
+                            <button class="market-pill-btn" data-filter="vegetables">Vegetables</button>
+                            <button class="market-pill-btn" data-filter="location-kano">Kano</button>
+                            <button class="market-pill-btn" data-filter="location-lagos">Lagos</button>
+                            <button class="market-pill-btn" data-filter="location-abuja">Abuja</button>
+                        </div>
                     </div>
 
                     <div class="vendors-grid">
                         <div class="vendor-card">
-                            <div class="v-img-placeholder">🧅</div>
+                            <div class="v-img-box">🧅</div>
                             <div class="v-details">
                                 <span class="v-badge">Verified Vendor</span>
                                 <h3>Amina Pepper Store</h3>
                                 <p class="v-location">📍 Dawanau Market, Kano</p>
-                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.9 (128 reviews) · Wholesale</div>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.9</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 128</span><span class="v-category">🏬 Wholesale</span></div>
                             </div>
                         </div>
                         <div class="vendor-card">
-                            <div class="v-img-placeholder">🍅</div>
+                            <div class="v-img-box">🍅</div>
                             <div class="v-details">
                                 <span class="v-badge">Verified Vendor</span>
                                 <h3>Musa & Sons Farms</h3>
                                 <p class="v-location">📍 Jos, Plateau</p>
-                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.8 (94 reviews) · Direct Farm</div>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.8</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 94</span><span class="v-category">🌱 Direct Farm</span></div>
                             </div>
                         </div>
                         <div class="vendor-card">
-                            <div class="v-img-placeholder">🌾</div>
+                            <div class="v-img-box">🌾</div>
                             <div class="v-details">
                                 <span class="v-badge">Verified Vendor</span>
                                 <h3>Lagos Green Grocers</h3>
                                 <p class="v-location">📍 Mile 12 Market, Lagos</p>
-                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7 (210 reviews) · Perishables</div>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 210</span><span class="v-category">🥕 Perishables</span></div>
                             </div>
                         </div>
                         <div class="vendor-card">
-                            <div class="v-img-placeholder">🍗</div>
+                            <div class="v-img-box">🍗</div>
                             <div class="v-details">
                                 <span class="v-badge">Verified Vendor</span>
                                 <h3>Kaduna Grain Hub</h3>
                                 <p class="v-location">📍 Sabon Gari, Kaduna</p>
-                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6 (82 reviews) · Grains & Beans</div>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 82</span><span class="v-category">🌾 Grains & Beans</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🛍️</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Onitsha Main Traders</h3>
+                                <p class="v-location">📍 Onitsha Main Market, Anambra</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.8</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 143</span><span class="v-category">📦 Bulk Staples</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🥬</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Bodija Fresh Market</h3>
+                                <p class="v-location">📍 Bodija Market, Ibadan</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 176</span><span class="v-category">🥦 Vegetables</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🧵</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Aba Textile Traders</h3>
+                                <p class="v-location">📍 Ariaria Market, Aba</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 89</span><span class="v-category">🧶 Fabrics & Garments</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🥫</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Enugu Food Exchange</h3>
+                                <p class="v-location">📍 Ogbete Market, Enugu</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.5</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 72</span><span class="v-category">🥫 Processed Foods</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🐔</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Makurdi Farm Direct</h3>
+                                <p class="v-location">📍 Makurdi Market, Benue</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 105</span><span class="v-category">🥚 Poultry & Eggs</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🐟</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Port Harcourt Seafood Hub</h3>
+                                <p class="v-location">📍 Mile 3 Market, Port Harcourt</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 95</span><span class="v-category">🦞 Fresh Seafood</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🌶️</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>FCT Spice Co.</h3>
+                                <p class="v-location">📍 Wuse Market, Abuja</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.8</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 117</span><span class="v-category">🧂 Seasonings</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🍠</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Calabar Root Produce</h3>
+                                <p class="v-location">📍 Marian Market, Calabar</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 88</span><span class="v-category">🍠 Tubers & Roots</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🍌</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Owerri Fruit Mart</h3>
+                                <p class="v-location">📍 Eke-Ukwu Owerri</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 76</span><span class="v-category">🍉 Fresh Fruit</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🥩</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Benin Meat Market</h3>
+                                <p class="v-location">📍 New Benin Market, Edo</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 91</span><span class="v-category">🥩 Butcher Supplies</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🥥</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Akwa Ibom Coastal Foods</h3>
+                                <p class="v-location">📍 Uyo Main Market, Akwa Ibom</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 62</span><span class="v-category">🦐 Seafood & Spices</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🍽️</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Ilorin Market Picks</h3>
+                                <p class="v-location">📍 Oja-Oba Market, Kwara</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.5</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 74</span><span class="v-category">🍽️ Kitchen Staples</span></div>
+                            </div>
+                        </div>
+                        <div class="vendor-card">
+                            <div class="v-img-box">🧂</div>
+                            <div class="v-details">
+                                <span class="v-badge">Verified Vendor</span>
+                                <h3>Uyo Spice Bazaar</h3>
+                                <p class="v-location">📍 Ewet Market, Uyo</p>
+                                <div class="v-rating"><i class="fa-solid fa-star"></i> 4.6</div>
+                                <div class="v-meta"><span class="v-review"><i class="fa-solid fa-heart"></i> 68</span><span class="v-category">🌶️ Seasonings</span></div>
                             </div>
                         </div>
                     </div>
@@ -605,7 +1110,7 @@
                             <div class="scout-star-badge"><i class="fa-solid fa-star"></i></div>
                             <div>
                                 <h2>Market Agents</h2>
-                                <p>Manage and empower our amazing network of Market Agents.</p>
+                                <p>Active scout network & performance.</p>
                             </div>
                         </div>
                         <div class="scout-header-actions">
@@ -704,7 +1209,7 @@
                                     <td>
                                         <div class="scout-user-cell">
                                             <div class="scout-avatar-wrap">
-                                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Maryam Abubakar" class="scout-avatar" />
+                                                <div class="scout-avatar scout-avatar-fallback" style="display:inline-flex;align-items:center;justify-content:center;background:#e2e8f0;color:#475569;font-size:0.9rem;width:36px;height:36px;border-radius:50%;"><i class="fa-solid fa-user"></i></div>
                                                 <span class="scout-lvl-dot lvl-captain" title="Market Captain"><i class="fa-solid fa-star"></i></span>
                                                 <span class="scout-status-dot dot-active" title="Active"></span>
                                             </div>
@@ -1064,7 +1569,7 @@
                         <div class="prof-cover-banner"></div>
                         <div class="prof-hero-body">
                             <div class="prof-avatar-wrapper">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Amina Yusuf" class="prof-avatar-img" />
+                                <div class="prof-avatar-img prof-avatar-fallback" id="prof-avatar-box" style="display:flex;align-items:center;justify-content:center;background:#15803d;color:#ffffff;font-weight:700;font-size:2rem;width:80px;height:80px;border-radius:50%;border:3px solid #ffffff;box-shadow:0 4px 12px rgba(0,0,0,0.1);"><i class="fa-solid fa-user"></i></div>
                                 <span class="prof-verified-badge" title="Verified User" id="prof-badge-icon"><i class="fa-solid fa-check"></i></span>
                             </div>
                             <div class="prof-user-info">
@@ -1513,6 +2018,11 @@
     <!-- Mobile Bottom Navigation Bar (Ref Image 1 & 3 Bottom Navigation) -->
     <nav class="mobile-bottom-nav">
         <a href="javascript:void(0)" class="m-nav-item active" id="m-nav-home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="javascript:void(0)" class="m-nav-item" id="m-nav-agent">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Agents</span>
+            <span class="m-nav-badge purple-badge" id="m-badge-agent">8</span>
+        </a>
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-prices"><i class="fa-solid fa-tag"></i><span>Prices</span></a>
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-markets">
             <i class="fa-solid fa-shop"></i>
@@ -1520,16 +2030,14 @@
             <span class="m-nav-badge green-badge" id="m-badge-markets">12</span>
         </a>
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-map"><i class="fa-solid fa-map-location-dot"></i><span>Map</span></a>
-        <a href="javascript:void(0)" class="m-nav-item" id="m-nav-agent">
-            <i class="fa-solid fa-user-shield"></i>
-            <span>Agents</span>
-            <span class="m-nav-badge purple-badge" id="m-badge-agent">₦148.5k</span>
-        </a>
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-profile"><i class="fa-solid fa-user-gear"></i><span>Profile</span></a>
     </nav>
 
-    <!-- Privy Auth React Bridge Root (hidden mount point - Privy renders its own modal overlay) -->
-    <div id="privy-root" style="display:none;"></div>
+    <!-- Privy Auth React Bridge Root -->
+    <div id="privy-root"></div>
+
+    <!-- Transient notification layer -->
+    <div id="toast-region" class="toast-region" role="region" aria-label="Live notifications" aria-live="polite" aria-atomic="false"></div>
 
 
     <!-- Modal 3: Tight Referral Modal for Invite Agents -->
@@ -1619,70 +2127,62 @@
         </div>
     </div>
 
-    <!-- Modal 2: Official Privy Pre-built Auth Modal UI Component -->
-    <div class="modal-overlay" id="wa-auth-modal" style="display: none;">
-        <div class="modal-card privy-auth-card" style="max-width: 400px; width: 100%; border-radius: 20px; padding: 24px; background: #ffffff; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2); border: 1px solid #e2e8f0; position: relative;">
-            <button class="modal-close" id="close-wa-modal" style="position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; color: #64748b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: background 0.15s;"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Real Supabase Authentication Modal -->
+    <div class="modal-overlay" id="supabase-auth-modal" style="display: none;">
+        <div class="modal-card auth-modal-card" style="max-width: 310px; width: 100%; border-radius: 16px; padding: 14px 16px; background: #ffffff; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.2); border: 1px solid #e2e8f0; position: relative;">
+            <button class="modal-close" id="close-auth-modal" style="position: absolute; top: 10px; right: 10px; background: #f1f5f9; border: none; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: background 0.15s;"><i class="fa-solid fa-xmark"></i></button>
 
-            <!-- Privy Modal Header & Logo -->
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 48px; height: 48px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #6366f1; margin-bottom: 12px;">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">Log in or Sign Up</h3>
-                <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0;">Connect to MamaPrice via Privy Authentication</p>
+            <!-- Compact Header with Platform Logo -->
+            <div style="text-align: center; margin-bottom: 8px;">
+                <img src="logo.png" alt="MamaPrice" style="height: 28px; width: auto; object-fit: contain; border-radius: 4px; margin-bottom: 2px;">
+                <h3 id="auth-modal-title" style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.1;">Sign In</h3>
             </div>
 
-            <!-- Privy Email / Phone Direct Login -->
-            <form id="sign-in-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+            <!-- Compact Tab Switcher -->
+            <div style="display: flex; background: #f1f5f9; padding: 2px; border-radius: 6px; margin-bottom: 8px;">
+                <button type="button" id="auth-tab-signin" class="auth-tab-btn active" style="flex: 1; padding: 4px; font-size: 0.75rem; font-weight: 700; border: none; border-radius: 5px; background: #ffffff; color: #0f172a; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); transition: all 0.2s;">Sign In</button>
+                <button type="button" id="auth-tab-signup" class="auth-tab-btn" style="flex: 1; padding: 4px; font-size: 0.75rem; font-weight: 700; border: none; border-radius: 5px; background: transparent; color: #64748b; cursor: pointer; transition: all 0.2s;">Create Account</button>
+            </div>
+
+            <!-- Real-time Error / Status Alert Box -->
+            <div id="auth-alert-box" style="display: none; padding: 6px 8px; border-radius: 6px; font-size: 0.74rem; font-weight: 600; margin-bottom: 8px; text-align: center;"></div>
+
+            <!-- Form -->
+            <form id="supabase-auth-form" style="display: flex; flex-direction: column; gap: 6px;">
                 <div>
-                    <label style="font-size: 0.76rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Email or Phone Number</label>
-                    <input type="text" id="sign-in-phone" value="" placeholder="e.g. user@domain.com or +234..." style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
+                    <label style="font-size: 0.68rem; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">Email Address</label>
+                    <input type="email" id="auth-email-input" placeholder="user@domain.com" style="width: 100%; padding: 6px 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
                 </div>
-                <button type="submit" id="wa-deep-link-btn" style="width: 100%; padding: 12px; background: #6366f1; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(99,102,241,0.25); margin-top: 4px;">
-                    <i class="fa-solid fa-shield-halved"></i> Sign in with Privy
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <label style="font-size: 0.68rem; font-weight: 700; color: #475569;">Password</label>
+                        <a href="javascript:void(0)" id="auth-magic-link-btn" style="font-size: 0.65rem; color: #15803d; font-weight: 700; text-decoration: none;">Magic Link</a>
+                    </div>
+                    <input type="password" id="auth-password-input" placeholder="••••••••" style="width: 100%; padding: 6px 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #0f172a; outline: none; background: #ffffff;" required />
+                </div>
+
+                <button type="submit" id="auth-submit-btn" style="width: 100%; padding: 8px; background: #15803d; color: #ffffff; border: none; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 6px rgba(21, 128, 61, 0.2); margin-top: 2px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span id="auth-submit-label">Sign In</span>
                 </button>
             </form>
 
-            <!-- Privy Methods Divider -->
-            <div style="display: flex; align-items: center; margin: 16px 0; gap: 12px;">
+            <!-- Social Auth Divider -->
+            <div style="display: flex; align-items: center; margin: 8px 0; gap: 6px;">
                 <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
-                <span style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">OR LOGIN WITH</span>
+                <span style="font-size: 0.6rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">OR</span>
                 <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
             </div>
 
-            <!-- Privy Supported Methods Buttons Grid -->
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
-                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('google')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
-                    <i class="fa-brands fa-google" style="color: #ea4335;"></i> Google
-                </button>
-                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('apple')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
-                    <i class="fa-brands fa-apple" style="color: #0f172a;"></i> Apple
-                </button>
-                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('twitter')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
-                    <i class="fa-brands fa-x-twitter" style="color: #0f172a;"></i> Twitter / X
-                </button>
-                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('telegram')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;">
-                    <i class="fa-brands fa-telegram" style="color: #229ed9;"></i> Telegram
-                </button>
-                <button type="button" class="privy-method-btn" onclick="handleSocialPrivyAuth('wallet')" style="padding: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.78rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; grid-column: span 2;">
-                    <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i> Connect Web3 Wallet
-                </button>
-            </div>
-
-            <!-- Privy Verified Footer -->
-            <div style="border-top: 1px solid #f1f5f9; padding-top: 14px; text-align: center;">
-                <p style="font-size: 0.7rem; color: #94a3b8; margin: 0; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                    <i class="fa-solid fa-lock" style="color: #6366f1;"></i> Protected by <strong>Privy Auth</strong>
-                </p>
-            </div>
+            <!-- Social OAuth Buttons -->
+            <button type="button" id="auth-google-btn" style="width: 100%; padding: 6px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: background 0.15s;">
+                <i class="fa-brands fa-google" style="color: #ea4335;"></i> Sign in with Google
+            </button>
         </div>
     </div>
 
+    <!-- Supabase JS Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="orb.js"></script>
     <script src="app.js"></script>
-            )
-        );
-    </script>
 </body>
 </html>

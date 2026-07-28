@@ -28,6 +28,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageHistory = document.getElementById('page-history');
     const pageProfile = document.getElementById('page-profile');
 
+    const marketFilterButtons = document.querySelectorAll('.market-pill-btn');
+    const marketVendorCards = document.querySelectorAll('#page-markets .vendor-card');
+
+    function applyMarketFilter(filter) {
+        marketVendorCards.forEach(card => {
+            const categoryText = card.querySelector('.v-category')?.textContent.toLowerCase() || '';
+            const locationText = card.querySelector('.v-location')?.textContent.toLowerCase() || '';
+            let showCard = true;
+
+            if (filter === 'all') {
+                showCard = true;
+            } else if (filter.startsWith('location-')) {
+                showCard = locationText.includes(filter.replace('location-', '').replace('-', ' '));
+            } else {
+                showCard = categoryText.includes(filter.replace('-', ' '));
+            }
+
+            card.style.display = showCard ? '' : 'none';
+        });
+    }
+
+    marketFilterButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const selectedFilter = btn.dataset.filter;
+            marketFilterButtons.forEach(item => item.classList.toggle('active', item === btn));
+            applyMarketFilter(selectedFilter);
+        });
+    });
+
     // Dropdown & Modals
     const modelPickerBtn = document.getElementById('model-picker-btn');
     const modelDropdown = document.getElementById('model-dropdown');
@@ -65,16 +95,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dynamic Time-of-day Greeting
     const heroGreetingTitle = document.getElementById('hero-greeting-title');
-    if (heroGreetingTitle) {
+    const heroSubtitle = document.getElementById('hero-subtitle');
+
+    function updateHomeGreeting() {
+        if (!heroGreetingTitle || !heroSubtitle) return;
+
         const hour = new Date().getHours();
-        let greeting = "Good Morning";
+        let period = 'Morning';
         if (hour >= 12 && hour < 17) {
-            greeting = "Good Afternoon";
+            period = 'Afternoon';
         } else if (hour >= 17 || hour < 5) {
-            greeting = "Good Evening";
+            period = 'Evening';
         }
-        heroGreetingTitle.textContent = greeting;
+
+        heroGreetingTitle.textContent = `${period},`;
+
+        let subtitle = 'how can i help you';
+        try {
+            const userJson = localStorage.getItem('mamaprice_auth_user');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                if (user && user.name) {
+                    subtitle = user.name;
+                }
+            }
+        } catch (err) {
+            // keep fallback subtitle
+        }
+
+        heroSubtitle.textContent = subtitle;
     }
+
+    updateHomeGreeting();
 
     // Interactive Pearl Orb Engine States
     const interactiveOrb = document.getElementById('interactive-orb');
@@ -163,19 +215,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleHashRouting() {
-        const hash = window.location.hash.replace('#', '').toLowerCase();
-        if (!hash || hash === 'home') {
+        const rawHash = window.location.hash.replace('#', '').toLowerCase();
+        const hash = rawHash || 'home';
+        let pageKey = hash;
+
+        if (hash === 'agents' || hash === 'agent') pageKey = 'agent';
+        if (hash === 'watchlist' || hash === 'library') pageKey = 'library';
+
+        if (pageKey === 'home') {
             document.body.classList.remove('not-home-page');
+            if (navHome && pageHome) switchView(navHome, pageHome);
             return;
         }
-        let pageKey = hash;
-        if (hash === 'agents') pageKey = 'agent';
-        if (hash === 'watchlist') pageKey = 'library';
-        
-        const targetPage = document.getElementById(`page-${pageKey}`);
-        const desktopNav = document.getElementById(`nav-${pageKey}`);
+
+        const targetPage = document.getElementById(`page-${pageKey}`) || pageAgent || document.getElementById('page-agent');
+        const desktopNav = document.getElementById(`nav-${pageKey}`) || navAgent || document.getElementById('nav-agent');
+        const mobileNav = document.getElementById(`m-nav-${pageKey}`) || document.getElementById('m-nav-agent');
+        const navTarget = desktopNav || mobileNav || navAgent;
+
         if (targetPage) {
-            switchView(desktopNav, targetPage);
+            switchView(navTarget, targetPage);
         }
     }
 
@@ -501,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 trustLabel: 'Great',
                 earnings: 250,
                 status: 'Active',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80'
+                avatar: null
             };
             scoutsData.unshift(agent);
             checkReferralMilestone(userName, userPhone, 1);
@@ -720,18 +779,101 @@ document.addEventListener('DOMContentLoaded', () => {
         return currentWaSession;
     }
 
-    // ─── Privy Auth Modal & Sign In Flow ─────────────────────────────────────
-    window.openPrivyModal = function() {
-        const modal = document.getElementById('wa-auth-modal');
-        if (modal) {
-            modal.style.display = 'flex';
-            modal.classList.add('open');
-        }
-    };
+    // ─── Real Supabase Auth Engine Integration ────────────────────────────────
+    const SUPABASE_URL = "https://alvubidtosxweifohhpb.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdnViaWR0b3N4d2VpZm9oaHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMDc5NjcsImV4cCI6MjA5OTY4Mzk2N30.ZhewBHRPNyHuft-fLIACqVCCWWWcnevCl4O3MuBqNn8";
 
+    let supabaseClient = null;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } else {
+        console.warn('Supabase JS library loading...');
+    }
+
+    const supabaseAuthModal = document.getElementById('supabase-auth-modal');
+    const closeAuthModal = document.getElementById('close-auth-modal');
+    const authTabSignin = document.getElementById('auth-tab-signin');
+    const authTabSignup = document.getElementById('auth-tab-signup');
+    const authModalTitle = document.getElementById('auth-modal-title');
+    const authModalSubtitle = document.getElementById('auth-modal-subtitle');
+    const authForm = document.getElementById('supabase-auth-form');
+    const authEmailInput = document.getElementById('auth-email-input');
+    const authPasswordInput = document.getElementById('auth-password-input');
+    const authSubmitBtn = document.getElementById('auth-submit-btn');
+    const authSubmitLabel = document.getElementById('auth-submit-label');
+    const authAlertBox = document.getElementById('auth-alert-box');
+    const authMagicLinkBtn = document.getElementById('auth-magic-link-btn');
+    const authGoogleBtn = document.getElementById('auth-google-btn');
+
+    let authMode = 'signin'; // 'signin' or 'signup'
+
+    function showAuthAlert(msg, type = 'error') {
+        if (!authAlertBox) return;
+        authAlertBox.style.display = 'block';
+        authAlertBox.style.background = type === 'error' ? '#fef2f2' : (type === 'success' ? '#f0fdf4' : '#eff6ff');
+        authAlertBox.style.color = type === 'error' ? '#991b1b' : (type === 'success' ? '#166534' : '#1e40af');
+        authAlertBox.style.border = `1px solid ${type === 'error' ? '#fecaca' : (type === 'success' ? '#bbf7d0' : '#bfdbfe')}`;
+        authAlertBox.textContent = msg;
+    }
+
+    function hideAuthAlert() {
+        if (authAlertBox) authAlertBox.style.display = 'none';
+    }
+
+    function openSupabaseAuthModal() {
+        hideAuthAlert();
+        if (supabaseAuthModal) {
+            supabaseAuthModal.style.display = 'flex';
+            supabaseAuthModal.classList.add('open');
+        }
+    }
+
+    function closeSupabaseAuthModal() {
+        if (supabaseAuthModal) {
+            supabaseAuthModal.style.display = 'none';
+            supabaseAuthModal.classList.remove('open');
+        }
+        hideAuthAlert();
+    }
+
+    if (closeAuthModal) closeAuthModal.addEventListener('click', closeSupabaseAuthModal);
+
+    // Switch between Sign In and Create Account tabs
+    if (authTabSignin && authTabSignup) {
+        authTabSignin.addEventListener('click', () => {
+            authMode = 'signin';
+            authTabSignin.classList.add('active');
+            authTabSignin.style.background = '#ffffff';
+            authTabSignin.style.color = '#0f172a';
+            authTabSignup.classList.remove('active');
+            authTabSignup.style.background = 'transparent';
+            authTabSignup.style.color = '#64748b';
+
+            if (authModalTitle) authModalTitle.textContent = 'Sign In';
+            if (authSubmitLabel) authSubmitLabel.textContent = 'Sign In';
+            hideAuthAlert();
+        });
+
+        authTabSignup.addEventListener('click', () => {
+            authMode = 'signup';
+            authTabSignup.classList.add('active');
+            authTabSignup.style.background = '#ffffff';
+            authTabSignup.style.color = '#0f172a';
+            authTabSignin.classList.remove('active');
+            authTabSignin.style.background = 'transparent';
+            authTabSignin.style.color = '#64748b';
+
+            if (authModalTitle) authModalTitle.textContent = 'Create Account';
+            if (authSubmitLabel) authSubmitLabel.textContent = 'Create Account';
+            hideAuthAlert();
+        });
+    }
+
+    // Header Sign in Button Click Handler
     if (waAuthBtn) {
         waAuthBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const isAuthed = localStorage.getItem('mamaprice_auth_user');
             if (isAuthed) {
                 const pageProfile = document.getElementById('page-profile');
@@ -740,83 +882,203 @@ document.addEventListener('DOMContentLoaded', () => {
                     switchView(navProfile, pageProfile);
                 }
             } else {
-                window.openPrivyModal();
+                openSupabaseAuthModal();
             }
         });
     }
 
-    if (closeWaModal) {
-        closeWaModal.addEventListener('click', () => {
-            const modal = document.getElementById('wa-auth-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                modal.classList.remove('open');
-            }
-        });
-    }
-
-    window.handleSocialPrivyAuth = function(provider) {
-        const userObj = {
-            name: provider === 'google' ? 'Google Verified User' : `${provider.toUpperCase()} User`,
-            phone: `user_${provider}@mamaprice.ng`,
-            provider: `Privy ${provider.toUpperCase()}`
-        };
-        localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
-        updateAuthUIState();
-
-        const modal = document.getElementById('wa-auth-modal');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.remove('open');
-        }
-
-        const pageProfile = document.getElementById('page-profile');
-        const navProfile  = document.getElementById('nav-profile');
-        if (pageProfile && typeof switchView === 'function') {
-            switchView(navProfile, pageProfile);
-        }
-
-        if (typeof window.pushAlertGraphNotification === 'function') {
-            window.pushAlertGraphNotification({
-                type: 'inbox',
-                text: `🔒 <strong>Privy ${provider.toUpperCase()} Auth Verified!</strong><br>Welcome back, <strong>${userObj.name}</strong>.`,
-                tag: 'Privy Auth', actionQuery: ''
-            });
-        }
-    };
-
-    const signInForm = document.getElementById('sign-in-form');
-    if (signInForm) {
-        signInForm.addEventListener('submit', (e) => {
+    // Real Supabase Form Submission Handler
+    if (authForm) {
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const input = document.getElementById('sign-in-phone');
-            const val = input ? input.value.trim() : 'user@mamaprice.ng';
-            const userObj = {
-                name: val.includes('@') ? val.split('@')[0] : 'Market Scout',
-                phone: val,
-                provider: 'Privy Auth'
-            };
-            localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
-            updateAuthUIState();
+            hideAuthAlert();
 
-            const modal = document.getElementById('wa-auth-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                modal.classList.remove('open');
+            if (!supabaseClient) {
+                showAuthAlert('Supabase client failed to initialize. Please check network.', 'error');
+                return;
             }
 
-            const pageProfile = document.getElementById('page-profile');
-            const navProfile  = document.getElementById('nav-profile');
-            if (pageProfile && typeof switchView === 'function') {
-                switchView(navProfile, pageProfile);
+            const email = authEmailInput ? authEmailInput.value.trim() : '';
+            const password = authPasswordInput ? authPasswordInput.value : '';
+
+            if (!email || !password) {
+                showAuthAlert('Please fill in both email and password.', 'error');
+                return;
             }
 
-            if (typeof window.pushAlertGraphNotification === 'function') {
-                window.pushAlertGraphNotification({
-                    type: 'inbox',
-                    text: `🔒 <strong>Privy Auth Verified!</strong><br>Session initialized for <strong>${val}</strong>.`,
-                    tag: 'Privy Auth', actionQuery: ''
+            // Set loading state
+            if (authSubmitBtn) {
+                authSubmitBtn.disabled = true;
+                authSubmitBtn.style.opacity = '0.7';
+            }
+            if (authSubmitLabel) authSubmitLabel.textContent = authMode === 'signin' ? 'Signing In...' : 'Creating Account...';
+
+            try {
+                if (authMode === 'signin') {
+                    // Real Supabase Password Sign In
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    const user = data.user;
+                    const session = data.session;
+                    const displayName = user.user_metadata?.full_name || email.split('@')[0];
+
+                    const userObj = {
+                        name: displayName,
+                        phone: email,
+                        id: user.id,
+                        provider: 'Supabase Auth'
+                    };
+
+                    localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+                    if (session?.access_token) {
+                        localStorage.setItem('mamaprice_jwt_token', session.access_token);
+                    }
+
+                    if (typeof updateAuthUIState === 'function') updateAuthUIState();
+                    closeSupabaseAuthModal();
+
+                    const pageProfile = document.getElementById('page-profile');
+                    const navProfile  = document.getElementById('nav-profile');
+                    if (pageProfile && typeof switchView === 'function') {
+                        switchView(navProfile, pageProfile);
+                    }
+
+                    if (typeof window.pushAlertGraphNotification === 'function') {
+                        window.pushAlertGraphNotification({
+                            type: 'inbox',
+                            text: `🔒 <strong>Supabase Auth Verified!</strong><br>Welcome back, <strong>${displayName}</strong> (${email}).`,
+                            tag: 'Supabase Auth', actionQuery: ''
+                        });
+                    }
+
+                } else {
+                    // Real Supabase User Sign Up
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    if (data.session) {
+                        // Email auto-confirmed
+                        const user = data.user;
+                        const displayName = email.split('@')[0];
+                        const userObj = {
+                            name: displayName,
+                            phone: email,
+                            id: user.id,
+                            provider: 'Supabase Auth'
+                        };
+                        localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+                        localStorage.setItem('mamaprice_jwt_token', data.session.access_token);
+                        if (typeof updateAuthUIState === 'function') updateAuthUIState();
+                        closeSupabaseAuthModal();
+                        showAuthAlert('Account created successfully!', 'success');
+                    } else {
+                        // Confirmation email sent
+                        showAuthAlert(`Account created! Confirmation link sent to ${email}.`, 'success');
+                    }
+                }
+            } catch (err) {
+                console.error('Supabase Auth Error:', err);
+                showAuthAlert(err.message || 'Authentication failed. Please check credentials.', 'error');
+            } finally {
+                if (authSubmitBtn) {
+                    authSubmitBtn.disabled = false;
+                    authSubmitBtn.style.opacity = '1';
+                }
+                if (authSubmitLabel) authSubmitLabel.textContent = authMode === 'signin' ? 'Sign In' : 'Create Account';
+            }
+        });
+    }
+
+    // Magic Link Handler
+    if (authMagicLinkBtn) {
+        authMagicLinkBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            hideAuthAlert();
+
+            if (!supabaseClient) return;
+
+            const email = authEmailInput ? authEmailInput.value.trim() : '';
+            if (!email) {
+                showAuthAlert('Enter your email address first to receive a magic link.', 'info');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient.auth.signInWithOtp({ email: email });
+                if (error) throw error;
+                showAuthAlert(`✨ Magic sign-in link sent to ${email}! Check your inbox.`, 'success');
+            } catch (err) {
+                showAuthAlert(err.message || 'Failed to send magic link.', 'error');
+            }
+        });
+    }
+
+    // Google OAuth Handler
+    if (authGoogleBtn) {
+        authGoogleBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            hideAuthAlert();
+
+            if (!supabaseClient) return;
+
+            try {
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.href
+                    }
                 });
+                if (error) throw error;
+            } catch (err) {
+                showAuthAlert(err.message || 'Google sign in failed.', 'error');
+            }
+        });
+    }
+
+    // Auto-restore Supabase Session on Page Load
+    if (supabaseClient) {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session && session.user) {
+                const user = session.user;
+                const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Scout Agent';
+                const userObj = {
+                    name: displayName,
+                    phone: user.email || 'user@mamaprice.ng',
+                    id: user.id,
+                    provider: 'Supabase Auth'
+                };
+                localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+                localStorage.setItem('mamaprice_jwt_token', session.access_token);
+                if (typeof updateAuthUIState === 'function') updateAuthUIState();
+            }
+        });
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                const user = session.user;
+                const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Scout Agent';
+                const userObj = {
+                    name: displayName,
+                    phone: user.email || 'user@mamaprice.ng',
+                    id: user.id,
+                    provider: 'Supabase Auth'
+                };
+                localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
+                localStorage.setItem('mamaprice_jwt_token', session.access_token);
+                if (typeof updateAuthUIState === 'function') updateAuthUIState();
+            } else if (event === 'SIGNED_OUT') {
+                localStorage.removeItem('mamaprice_auth_user');
+                localStorage.removeItem('mamaprice_jwt_token');
+                if (typeof updateAuthUIState === 'function') updateAuthUIState();
             }
         });
     }
@@ -916,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
     const scoutsData = [
-        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: null },
         { id: 'AG-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, points: 8900, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
         { id: 'AG-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, points: 7450, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
         { id: 'AG-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, points: 5375, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
@@ -933,12 +1195,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoutMoreFiltersBtn = document.getElementById('scout-more-filters-btn');
     const scoutsTableBody = document.getElementById('scouts-table-body');
     const scoutsCountLabel = document.getElementById('scouts-count-label');
+    const mBadgeAgent = document.getElementById('m-badge-agent');
 
     const kpiTotalEl = document.getElementById('scout-kpi-total');
     const kpiActiveEl = document.getElementById('scout-kpi-active');
     const kpiReportsEl = document.getElementById('scout-kpi-reports');
     const kpiPaidEl = document.getElementById('scout-kpi-paid');
     const kpiTrustEl = document.getElementById('scout-kpi-trust');
+
+    function updateAgentMobileBadge() {
+        if (mBadgeAgent) {
+            mBadgeAgent.textContent = scoutsData.length.toLocaleString();
+        }
+    }
+    updateAgentMobileBadge();
 
     function maskPhoneNumber(phone) {
         if (!phone) return '';
@@ -1303,6 +1573,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navProfile)     navProfile.style.display  = 'flex';
             if (mNavProfile)    mNavProfile.style.display  = 'flex';
             if (userProfileBtn) userProfileBtn.style.display = 'flex';
+            if (newChatBtn)     newChatBtn.style.display  = 'inline-flex';
         } else {
             if (waAuthBtn) {
                 waAuthBtn.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;margin-right:5px;"></i><span>Sign in</span>`;
@@ -1316,6 +1587,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navProfile)     navProfile.style.display  = 'none';
             if (mNavProfile)    mNavProfile.style.display  = 'none';
             if (userProfileBtn) userProfileBtn.style.display = 'none';
+            if (newChatBtn)     newChatBtn.style.display  = 'none';
         }
 
         updateUserProfileDashboard();
@@ -1327,10 +1599,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─────────────────────────────────────────────────────────────────────────
     const weatherPill = document.getElementById('weather-location-pill');
     const weatherPopover = document.getElementById('weather-popover-card');
-    const notifBtn = document.getElementById('notif-btn');
-    const notifPopover = document.getElementById('notif-popover');
-    const markAllReadBtn = document.getElementById('mark-all-read-btn');
-    const notifBadge = document.querySelector('.notif-badge');
     // waAuthBtn already declared at top level
 
     // 1. Weather Location Pill Click
@@ -1382,52 +1650,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Notifications Bell Button Click
-    if (notifBtn && notifPopover) {
-        notifBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = notifPopover.classList.contains('open');
-            document.querySelectorAll('.weather-popover-card, .notif-popover-card').forEach(el => el.classList.remove('open'));
-            if (!isOpen) notifPopover.classList.add('open');
-        });
-    }
+    // 2. Notifications Bell Button Click handled by Alert Engine below
 
-    if (markAllReadBtn) {
-        markAllReadBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (notifBadge) {
-                notifBadge.style.display = 'none';
-                notifBadge.textContent = '0';
-            }
-            document.querySelectorAll('.notif-row-item.unread').forEach(item => item.classList.remove('unread'));
-        });
-    }
-
-    // 3. Sign In / User Avatar Header Button Click
-    if (waAuthBtn) {
-        waAuthBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const token = localStorage.getItem('mamaprice_jwt_token');
-            if (token) {
-                const pageProfile = document.getElementById('page-profile');
-                const navProfile = document.getElementById('nav-profile');
-                if (pageProfile && typeof switchView === 'function') {
-                    switchView(navProfile, pageProfile);
-                }
-            } else {
-                if (typeof window.openPrivyModal === 'function') {
-                    window.openPrivyModal();
-                } else {
-                    const waModal = document.getElementById('wa-auth-modal');
-                    if (waModal) {
-                        waModal.classList.add('open');
-                        waModal.style.display = 'flex';
-                    }
-                }
-            }
-        });
-    }
+    // 3. Sign In / User Avatar Header Button Click handled above in Privy Auth Engine section
 
 
     // Close header popovers on outside click
@@ -1440,7 +1665,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Logout handler ──────────────────────────────────────────────────────
     const profLogoutBtn = document.getElementById('prof-logout-btn');
     function handleLogout() {
+        if (supabaseClient) {
+            supabaseClient.auth.signOut();
+        }
         localStorage.removeItem('mamaprice_auth_user');
+        localStorage.removeItem('mamaprice_jwt_token');
         updateAuthUIState();
         const pageHome = document.getElementById('page-home');
         const navHome  = document.getElementById('nav-home');
@@ -2245,21 +2474,93 @@ document.addEventListener('DOMContentLoaded', () => {
     const snapshotGrid = document.getElementById('snapshot-grid');
     if (snapshotGrid) {
         let isHovered = false;
-        let autoScrollSpeed = 0.6;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartScroll = 0;
+        let lastTimestamp = null;
+        const autoScrollPixelsPerSecond = 80;
+
+        const beginDrag = (clientX) => {
+            isDragging = true;
+            isHovered = true;
+            dragStartX = clientX;
+            dragStartScroll = snapshotGrid.scrollLeft;
+            snapshotGrid.classList.add('dragging');
+        };
+
+        const updateDrag = (clientX) => {
+            if (!isDragging) return;
+            const delta = clientX - dragStartX;
+            snapshotGrid.scrollLeft = dragStartScroll - delta;
+        };
+
+        const endDrag = () => {
+            isDragging = false;
+            isHovered = false;
+            snapshotGrid.classList.remove('dragging');
+        };
 
         snapshotGrid.addEventListener('mouseenter', () => { isHovered = true; });
-        snapshotGrid.addEventListener('mouseleave', () => { isHovered = false; });
-        snapshotGrid.addEventListener('touchstart', () => { isHovered = true; }, { passive: true });
-        snapshotGrid.addEventListener('touchend', () => { isHovered = false; }, { passive: true });
+        snapshotGrid.addEventListener('mouseleave', () => {
+            if (isDragging) endDrag();
+            isHovered = false;
+        });
+        snapshotGrid.addEventListener('mousedown', (e) => {
+            beginDrag(e.clientX);
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateDrag(e.clientX);
+        });
+        document.addEventListener('mouseup', () => {
+            if (isDragging) endDrag();
+        });
+        snapshotGrid.addEventListener('touchstart', (e) => {
+            beginDrag(e.touches[0].clientX);
+        }, { passive: true });
+        snapshotGrid.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            updateDrag(e.touches[0].clientX);
+        }, { passive: true });
+        snapshotGrid.addEventListener('touchend', () => {
+            if (isDragging) endDrag();
+        }, { passive: true });
 
-        setInterval(() => {
-            if (!isHovered && snapshotGrid) {
-                snapshotGrid.scrollLeft += autoScrollSpeed;
-                if (snapshotGrid.scrollLeft >= (snapshotGrid.scrollWidth - snapshotGrid.clientWidth - 2)) {
+        const autoScrollLoop = (timestamp) => {
+            if (lastTimestamp === null) lastTimestamp = timestamp;
+            const elapsed = (timestamp - lastTimestamp) / 1000;
+            lastTimestamp = timestamp;
+
+            if (!isHovered && !isDragging && snapshotGrid.scrollWidth > snapshotGrid.clientWidth) {
+                snapshotGrid.scrollLeft += autoScrollPixelsPerSecond * elapsed;
+                if (snapshotGrid.scrollLeft >= snapshotGrid.scrollWidth - snapshotGrid.clientWidth - 2) {
                     snapshotGrid.scrollLeft = 0;
                 }
             }
-        }, 25);
+
+            requestAnimationFrame(autoScrollLoop);
+        };
+
+        requestAnimationFrame(autoScrollLoop);
+    }
+
+    const snapshotLocationLabel = document.getElementById('snap-location');
+    if (snapshotLocationLabel) {
+        const marketStates = ['Lagos...', 'Abuja...', 'Kano...'];
+        let marketIndex = 0;
+
+        const rotateMarketLocation = () => {
+            snapshotLocationLabel.classList.add('fade-out');
+            setTimeout(() => {
+                snapshotLocationLabel.textContent = marketStates[marketIndex];
+                snapshotLocationLabel.classList.remove('fade-out');
+                marketIndex = (marketIndex + 1) % marketStates.length;
+            }, 160);
+        };
+
+        rotateMarketLocation();
+        setInterval(rotateMarketLocation, 3200);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -2325,19 +2626,102 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saved) alertPreferences = { ...alertPreferences, ...JSON.parse(saved) };
     } catch (e) {}
 
+    // Transient Toast Notification Layer
+    const toastRegion = document.getElementById('toast-region');
+    const TOAST_DURATION_MS = 6500;
+    const TOAST_LIMIT = 4;
+
+    function notificationTextToPlainText(value) {
+        const scratch = document.createElement('div');
+        scratch.innerHTML = value || '';
+        return (scratch.textContent || scratch.innerText || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function getToastType(notifObj) {
+        const type = notifObj && notifObj.type;
+        return ['price', 'inbox', 'success', 'error', 'info'].includes(type) ? type : 'info';
+    }
+
+    function getToastIcon(type) {
+        if (type === 'price') return 'fa-arrow-trend-up';
+        if (type === 'success') return 'fa-circle-check';
+        if (type === 'error') return 'fa-circle-exclamation';
+        return type === 'inbox' ? 'fa-bell' : 'fa-circle-info';
+    }
+
+    function dismissToast(toast, immediate = false) {
+        if (!toast || toast.dataset.dismissed === 'true') return;
+        toast.dataset.dismissed = 'true';
+        if (toast._toastTimer) clearTimeout(toast._toastTimer);
+
+        if (immediate) {
+            toast.remove();
+            return;
+        }
+
+        toast.classList.add('is-leaving');
+        window.setTimeout(() => toast.remove(), 220);
+    }
+
+    function showMamaPriceToast(notifObj) {
+        if (!toastRegion || !notifObj) return;
+
+        while (toastRegion.children.length >= TOAST_LIMIT) {
+            dismissToast(toastRegion.firstElementChild, true);
+        }
+
+        const type = getToastType(notifObj);
+        const plainText = notificationTextToPlainText(notifObj.text) || 'You have a new MamaPrice alert.';
+        const toast = document.createElement('article');
+        toast.className = `toast-notification toast-${type}`;
+        toast.dataset.dismissed = 'false';
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.setAttribute('aria-label', plainText);
+        toast.innerHTML = `
+            <div class="toast-icon" aria-hidden="true"><i class="fa-solid ${getToastIcon(type)}"></i></div>
+            <div class="toast-content">
+                <div class="toast-kicker">${type === 'price' ? 'Price alert' : 'MamaPrice update'}</div>
+                <div class="toast-message"></div>
+            </div>
+            <button type="button" class="toast-dismiss" aria-label="Dismiss notification">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <span class="toast-progress" aria-hidden="true"></span>
+        `;
+
+        // Notification copy is authored by the app and may contain <strong>/<br> formatting.
+        toast.querySelector('.toast-message').innerHTML = notifObj.text || 'You have a new MamaPrice alert.';
+        toast.querySelector('.toast-dismiss').addEventListener('click', () => dismissToast(toast));
+        toast.addEventListener('mouseenter', () => {
+            if (toast._toastTimer) clearTimeout(toast._toastTimer);
+            toast.querySelector('.toast-progress').style.animationPlayState = 'paused';
+        });
+        toast.addEventListener('mouseleave', () => {
+            toast.querySelector('.toast-progress').style.animationPlayState = 'running';
+            toast._toastTimer = window.setTimeout(() => dismissToast(toast), TOAST_DURATION_MS);
+        });
+
+        toastRegion.appendChild(toast);
+        toast._toastTimer = window.setTimeout(() => dismissToast(toast), TOAST_DURATION_MS);
+    }
+
+    window.showMamaPriceToast = showMamaPriceToast;
+
     window.pushAlertGraphNotification = function(notifObj) {
-        if (notifObj && notifObj.category) {
-            if (alertPreferences[notifObj.category] === false) return;
+        const payload = notifObj && typeof notifObj === 'object' ? notifObj : {};
+        if (payload.category && alertPreferences[payload.category] === false) {
+            return;
         }
 
         const newNotif = {
             id: `notif_${Date.now()}`,
             time: 'Just now',
             read: false,
-            ...notifObj
+            ...payload
         };
         systemNotifications.unshift(newNotif);
         renderNotifications();
+        showMamaPriceToast(newNotif);
     };
 
     function initAlertPreferencesEngine() {
@@ -2363,16 +2747,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const statusText = isEnabled ? 'Activated (Real-Time)' : 'Muted';
                     const icon = isEnabled ? '🔔' : '🔕';
 
-                    const newNotif = {
-                        id: `notif_pref_${Date.now()}`,
+                    window.pushAlertGraphNotification({
                         type: 'inbox',
                         text: `${icon} <strong>Alert Preference Saved:</strong><br>${label} price shift notifications are now <strong>${statusText}</strong>.`,
-                        tag: isEnabled ? 'Active' : 'Muted',
-                        time: 'Just now',
-                        read: false
-                    };
-                    systemNotifications.unshift(newNotif);
-                    renderNotifications();
+                        tag: isEnabled ? 'Active' : 'Muted'
+                    });
                 });
             }
         });
@@ -2462,8 +2841,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (notifBtn && notifPopover) {
         notifBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            notifPopover.classList.toggle('open');
-            renderNotifications();
+            const isOpen = notifPopover.classList.contains('open');
+            document.querySelectorAll('.weather-popover-card, .notif-popover-card').forEach(el => el.classList.remove('open'));
+            if (isOpen) {
+                notifPopover.classList.remove('open');
+            } else {
+                renderNotifications();
+                notifPopover.classList.add('open');
+            }
         });
 
         document.addEventListener('click', (e) => {
@@ -2521,14 +2906,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         ];
         const randomEvt = dynamicEvents[Math.floor(Math.random() * dynamicEvents.length)];
-        const newNotif = {
-            id: `notif_${Date.now()}`,
-            ...randomEvt,
-            time: 'Just now',
-            read: false
-        };
-        systemNotifications.unshift(newNotif);
-        renderNotifications();
+        window.pushAlertGraphNotification(randomEvt);
     }, 30000);
 
     renderNotifications();
