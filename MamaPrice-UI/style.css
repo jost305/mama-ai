@@ -5555,12 +5555,16 @@ body.not-home-page .weather-pill-container {
         height: 100vh !important;
         z-index: 9999 !important;
         transform: translateX(-100%) !important;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s !important;
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     }
 
     .sidebar.open, .sidebar.mobile-open {
         transform: translateX(0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 
     .profile-page-container {

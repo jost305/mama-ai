@@ -161,8 +161,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
     const topDockBtn = document.getElementById('top-dock-btn');
 
-    // Only auto-open sidebar on desktop — never force-open on mobile
-    if (sidebar && window.innerWidth > 768) sidebar.classList.add('open');
+    // Sidebar Initialization & Mobile Toggle Handling
+    if (sidebar) {
+        if (window.innerWidth > 768) {
+            sidebar.classList.add('open');
+        } else {
+            sidebar.classList.remove('open', 'mobile-open');
+        }
+    }
+
+    if (menuToggleBtn) {
+        menuToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (sidebar) sidebar.classList.toggle('open');
+        });
+    }
+
+    if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.remove('open', 'mobile-open');
+        });
+    }
+
+    // Auto-close mobile sidebar when selecting any navigation tab on mobile
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 768 && sidebar) {
+                sidebar.classList.remove('open', 'mobile-open');
+            }
+        });
+    });
 
     function toggleSidebarDock() {
         if (!sidebar) return;
