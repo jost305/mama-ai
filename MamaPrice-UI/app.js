@@ -312,30 +312,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const newReportElem = document.createElement('div');
             newReportElem.className = 'pr-item pr-item-latest';
             newReportElem.innerHTML = `
-                <div class="pr-main-row">
-                    <div class="pr-avatar-col">
+                <div class="pr-top-bar">
+                    <div class="pr-left-meta">
                         <div class="pr-avatar-wrap">
                             <div class="pr-avatar ${report.altClass}">${report.avatar}</div>
                             <span class="avatar-pulse-dot" title="Live Report Alert"></span>
                         </div>
-                        <div class="pr-info-line">
-                            <span class="pr-prod-tag">${report.commodity}</span>
-                            <span class="pr-market-name">${report.market}</span>
-                            <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
+                        <div class="pr-details">
+                            <div class="pr-title-row">
+                                <span class="pr-prod-tag">${report.commodity}</span>
+                                <span class="pr-market-name">${report.market}</span>
+                            </div>
+                            <div class="pr-sub-row">
+                                <span class="pr-agent-by">
+                                    <span class="pr-mini-avatar ${report.altClass}">${report.agentInit}</span>
+                                    <span>by <strong>${report.agent}</strong></span>
+                                </span>
+                                <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
+                            </div>
                         </div>
                     </div>
-                    <div>
+                    <div class="pr-price-wrap">
                         <strong class="pr-val">${report.price}</strong>
+                        <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                     </div>
-                </div>
-                <div class="pr-agent-meta">
-                    <div class="pr-agent-by">
-                        <span class="pr-mini-avatar ${report.altClass}">${report.agentInit}</span>
-                        <span>by <strong>${report.agent}</strong></span>
-                    </div>
-                    <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                 </div>
             `;
+
 
             // Insert new live report at top of list
             prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
