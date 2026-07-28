@@ -1857,12 +1857,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inviteScoutsBtn && inviteScoutsModal) {
         inviteScoutsBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            inviteScoutsModal.style.display = 'flex';
             inviteScoutsModal.classList.add('open');
         });
     }
 
     if (closeInviteModal && inviteScoutsModal) {
-        closeInviteModal.addEventListener('click', () => {
+        closeInviteModal.addEventListener('click', (e) => {
+            e.preventDefault();
+            inviteScoutsModal.style.display = 'none';
             inviteScoutsModal.classList.remove('open');
         });
     }
