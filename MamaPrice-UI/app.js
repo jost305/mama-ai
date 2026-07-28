@@ -1952,7 +1952,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mBadgeAgent = document.getElementById('m-badge-agent');
 
     const kpiTotalEl = document.getElementById('scout-kpi-total');
-    const kpiActiveEl = document.getElementById('scout-kpi-active');
+    const kpiEarningsEl = document.getElementById('scout-kpi-earnings');
     const kpiReportsEl = document.getElementById('scout-kpi-reports');
     const kpiPaidEl = document.getElementById('scout-kpi-paid');
     const kpiTrustEl = document.getElementById('scout-kpi-trust');
@@ -2086,7 +2086,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const kpiPointsEl = document.getElementById('scout-kpi-points');
 
         if (kpiTotalEl) kpiTotalEl.textContent = filtered.length.toLocaleString();
-        if (kpiActiveEl) kpiActiveEl.textContent = activeCount.toLocaleString();
+        if (kpiEarningsEl) kpiEarningsEl.textContent = `₦${totalPaid.toLocaleString()}`;
         if (kpiReportsEl) kpiReportsEl.textContent = totalReports.toLocaleString();
         if (kpiPointsEl) kpiPointsEl.textContent = `${totalPoints.toLocaleString()} pts`;
         if (kpiPaidEl) kpiPaidEl.textContent = `₦${totalPaid.toLocaleString()}`;
