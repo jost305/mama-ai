@@ -21,6 +21,11 @@
     --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Hide Live Map from desktop and mobile navigation menus for now */
+#nav-map, #m-nav-map {
+    display: none !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
