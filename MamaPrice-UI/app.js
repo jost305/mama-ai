@@ -912,7 +912,23 @@ document.addEventListener('DOMContentLoaded', () => {
         updateGuideAndTooltip(activePointIndex);
     }
 
-    function updateGuideAndTooltip(idx) {
+    function showChartTooltip() {
+        if (pccTooltip) pccTooltip.classList.add('visible');
+        if (pccGuideLine) pccGuideLine.classList.add('visible');
+        if (pccGuideDot) pccGuideDot.classList.add('visible');
+    }
+
+    function hideChartTooltip() {
+        if (pccTooltip) pccTooltip.classList.remove('visible');
+        if (pccGuideLine) pccGuideLine.classList.remove('visible');
+        if (pccGuideDot) pccGuideDot.classList.remove('visible');
+        if (pccXLabels) {
+            const spans = pccXLabels.querySelectorAll('span');
+            spans.forEach(s => s.classList.remove('active'));
+        }
+    }
+
+    function updateGuideAndTooltip(idx, isUserAction = false) {
         const tf = chartTimeframes[activeTimeframe];
         if (!tf || !tf.points[idx]) return;
         const pt = tf.points[idx];
@@ -945,6 +961,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const spans = pccXLabels.querySelectorAll('span');
             spans.forEach((s, i) => s.classList.toggle('active', i === idx));
         }
+
+        if (isUserAction) {
+            showChartTooltip();
+        }
     }
 
     // Attach pill button event listeners
@@ -952,12 +972,15 @@ document.addEventListener('DOMContentLoaded', () => {
         pill.addEventListener('click', (e) => {
             e.preventDefault();
             renderTrendChart(pill.dataset.tf);
+            hideChartTooltip();
         });
     });
 
     // Touch & Hover Tracking for Graph Area
+    let touchHideTimeout = null;
     if (pccGraphArea) {
         function handleGraphHover(e) {
+            if (touchHideTimeout) { clearTimeout(touchHideTimeout); touchHideTimeout = null; }
             const rect = pccGraphArea.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const mouseX = clientX - rect.left;
@@ -978,12 +1001,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             activePointIndex = closestIdx;
-            updateGuideAndTooltip(closestIdx);
+            updateGuideAndTooltip(closestIdx, true);
         }
 
+        pccGraphArea.addEventListener('mouseenter', handleGraphHover);
         pccGraphArea.addEventListener('mousemove', handleGraphHover);
+        pccGraphArea.addEventListener('click', handleGraphHover);
         pccGraphArea.addEventListener('touchmove', handleGraphHover, { passive: true });
+        pccGraphArea.addEventListener('touchstart', handleGraphHover, { passive: true });
+
+        pccGraphArea.addEventListener('mouseleave', () => {
+            hideChartTooltip();
+        });
+
+        pccGraphArea.addEventListener('touchend', () => {
+            touchHideTimeout = setTimeout(hideChartTooltip, 2500);
+        });
     }
+
 
     // Initialize 7D chart view
     renderTrendChart("7D");

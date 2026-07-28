@@ -8733,10 +8733,29 @@ table tbody tr:hover {
     font-size: 0.68rem;
     z-index: 10;
     pointer-events: none;
-    transition: left 0.15s ease-out, opacity 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+    transition: left 0.15s ease-out, opacity 0.2s ease, visibility 0.2s ease;
     transform: translateX(-50%);
     white-space: nowrap;
 }
+
+.pcc-tooltip-box.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+#pcc-guide-line,
+#pcc-guide-dot {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#pcc-guide-line.visible,
+#pcc-guide-dot.visible {
+    opacity: 1;
+}
+
 
 .pcc-tooltip-header {
     font-weight: 800;
