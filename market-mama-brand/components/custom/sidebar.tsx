@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { usePrivyAuth, getUserDetails } from "./privy-provider";
 
 const mainMenuItems = [
   { icon: Home, label: "Chat", href: "/" },
@@ -38,6 +39,8 @@ const exploreMenuItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { ready, authenticated, user, login, logout } = usePrivyAuth();
+  const { displayName, email, initial } = getUserDetails(user);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
@@ -153,17 +156,34 @@ export function Sidebar() {
 
       {/* User profile */}
       <div className="px-3 pb-4 pt-2 border-t border-gray-100 flex-shrink-0">
-        <div className="flex items-center gap-3 px-2 h-12">
-          <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-sm flex-shrink-0">👩</div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-gray-900 truncate leading-tight">Amina Yusuf</p>
-            <p className="text-[11px] text-gray-400 truncate">amina@marketmama.ai</p>
+        {authenticated ? (
+          <div className="flex items-center gap-3 px-2 h-12">
+            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-sm flex items-center justify-center flex-shrink-0">
+              {initial}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{displayName}</p>
+              <p className="text-[11px] text-gray-400 truncate">{email || "Authenticated"}</p>
+            </div>
+            <button
+              onClick={() => logout()}
+              className="w-7 h-7 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors flex-shrink-0"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4 text-gray-400 hover:text-red-600" />
+            </button>
           </div>
-          <button className="w-7 h-7 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors flex-shrink-0" title="Logout">
-            <LogOut className="w-4 h-4 text-gray-400" />
+        ) : (
+          <button
+            onClick={() => login()}
+            disabled={!ready}
+            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm disabled:opacity-50"
+          >
+            {ready ? "Sign In / Register" : "Loading..."}
           </button>
-        </div>
+        )}
       </div>
     </aside>
   );
 }
+

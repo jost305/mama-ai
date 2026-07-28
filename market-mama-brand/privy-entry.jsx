@@ -4,6 +4,20 @@ import { PrivyProvider, usePrivy, useLogin, useLogout } from '@privy-io/react-au
 
 const PRIVY_APP_ID = "5QTVCAo3hoBRmse1JXmPwghbfeSmcAGcj7pMmwgqhNsnsvVzK1dgPy9B9Gud7f874NzJXTtgrXtLdRoJzG3fwvQG";
 
+let pendingOpenModal = false;
+
+if (typeof window !== 'undefined') {
+    window.openPrivyModal = function() {
+        console.log("🔒 Triggering Official Privy React Modal...");
+        if (typeof window._privyLoginFn === 'function') {
+            window._privyLoginFn();
+        } else {
+            console.log("⏳ Privy SDK initializing, queuing modal open request...");
+            pendingOpenModal = true;
+        }
+    };
+}
+
 function PrivyBridgeComponent() {
     const { ready, authenticated, user } = usePrivy();
     const { login } = useLogin({
@@ -20,13 +34,15 @@ function PrivyBridgeComponent() {
         }
     });
 
-    window.openPrivyModal = () => {
-        console.log("🔒 Opening Official Privy React Modal...");
-        login();
-    };
-    window.privyLogout = () => {
-        logout();
-    };
+    useEffect(() => {
+        window._privyLoginFn = login;
+        window.privyLogout = logout;
+
+        if (pendingOpenModal) {
+            pendingOpenModal = false;
+            login();
+        }
+    }, [login, logout]);
 
     useEffect(() => {
         if (ready && authenticated && user) {

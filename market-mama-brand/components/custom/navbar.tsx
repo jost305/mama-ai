@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeToggle } from "./theme-toggle";
-import { usePrivyAuth } from "./privy-provider";
+import { usePrivyAuth, getUserDetails } from "./privy-provider";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
 export function Navbar() {
   const { ready, authenticated, user, login, logout } = usePrivyAuth();
 
-  const displayName = user?.email ? `${user.email}` : "Account";
+  const { displayName, initial } = getUserDetails(user);
 
   return (
     <div className="bg-background border-b border-border w-full py-2 px-3 justify-between flex flex-row items-center z-10">
@@ -22,11 +22,14 @@ export function Navbar() {
       {authenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="py-1.5 px-2 h-fit font-normal" variant="secondary">
-              {displayName}
+            <Button className="py-1.5 px-3 h-9 font-medium flex items-center gap-2" variant="secondary">
+              <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
+                {initial}
+              </div>
+              <span className="max-w-[140px] truncate">{displayName}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem>
               <ThemeToggle />
             </DropdownMenuItem>
@@ -34,7 +37,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => logout()}
-                className="w-full text-left px-1 py-0.5 text-red-500"
+                className="w-full text-left px-2 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
               >
                 Sign out
               </button>
@@ -43,13 +46,14 @@ export function Navbar() {
         </DropdownMenu>
       ) : (
         <Button
-          className="py-1.5 px-2 h-fit font-normal text-white"
-          onClick={() => login({ loginMethods: ["email"] })}
+          className="py-1.5 px-4 h-9 font-medium text-white bg-emerald-600 hover:bg-emerald-700"
+          onClick={() => login()}
           disabled={!ready}
         >
-          {ready ? "Login" : "Loading..."}
+          {ready ? "Login / Sign Up" : "Loading..."}
         </Button>
       )}
     </div>
   );
 }
+

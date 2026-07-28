@@ -1,65 +1,42 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
-import { toast } from "sonner";
-
-import { AuthForm } from "@/components/custom/auth-form";
-import { SubmitButton } from "@/components/custom/submit-button";
-
-import { login, LoginActionState } from "../actions";
+import { usePrivyAuth } from "@/components/custom/privy-provider";
 
 export default function Page() {
   const router = useRouter();
-
-  const [email, setEmail] = useState("");
-
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    {
-      status: "idle",
-    },
-  );
+  const { ready, authenticated, login } = usePrivyAuth();
 
   useEffect(() => {
-    if (state.status === "failed") {
-      toast.error("Invalid credentials!");
-    } else if (state.status === "invalid_data") {
-      toast.error("Failed validating your submission!");
-    } else if (state.status === "success") {
-      router.refresh();
+    if (authenticated) {
+      router.push("/");
+    } else if (ready) {
+      login();
     }
-  }, [state.status, router]);
-
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get("email") as string);
-    formAction(formData);
-  };
+  }, [ready, authenticated, login, router]);
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Use your email and password to sign in
+    <div className="flex h-screen w-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-6 p-8 border bg-card text-card-foreground shadow-lg text-center">
+        <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+          🌾
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-foreground">Sign In to Market Mama</h3>
+          <p className="text-sm text-muted-foreground mt-2">
+            Use Privy secure auth widget to sign in to your account.
           </p>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton>Sign in</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {" for free."}
-          </p>
-        </AuthForm>
+        <button
+          onClick={() => login()}
+          disabled={!ready}
+          className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-colors shadow-sm disabled:opacity-50 mt-2"
+        >
+          {ready ? "Open Privy Login Widget" : "Initializing Privy..."}
+        </button>
       </div>
     </div>
   );
 }
+

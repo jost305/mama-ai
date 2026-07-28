@@ -1,0 +1,4 @@
+[node-llama-cpp] ggml_backend_cpu_buffer_type_alloc_buffer: failed to allocate buffer of size 526405664
+[node-llama-cpp] ggml_gallocr_reserve_n_impl: failed to allocate CPU buffer of size 526405664
+[node-llama-cpp] graph_reserve: failed to allocate compute buffers
+[node-llama-cpp] llama_init_from_model: failed to initialize the context: failed to allocate compute pp buffers

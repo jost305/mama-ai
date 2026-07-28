@@ -29,7 +29,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
 import { cn } from '@/lib/utils';
-import { usePrivyAuth } from './privy-provider';
+import { usePrivyAuth, getUserDetails } from './privy-provider';
 import { fetcher, getTitleFromChat } from '@/lib/utils';
 import { Chat } from '@/db/schema';
 import {
@@ -66,7 +66,7 @@ const exploreMenuItems = [
 ];
 
 export function SidebarDrawer() {
-  const { authenticated, user, logout } = usePrivyAuth();
+  const { ready, authenticated, user, login, logout } = usePrivyAuth();
   const pathname = usePathname();
   const { id: activeChatId } = useParams();
   const [isExpanded, setIsExpanded] = useState(true);
@@ -375,23 +375,41 @@ export function SidebarDrawer() {
         {/* ── User Profile ── */}
         <div className="px-2 pb-3 pt-2 border-t border-gray-100 flex-shrink-0">
           {(() => {
-            const email = user?.email?.address ?? user?.google?.email ?? '';
-            const displayName = email ? email.split('@')[0] : 'Account';
-            const initial = displayName.charAt(0).toUpperCase();
+            const { displayName, email, initial } = getUserDetails(user);
+            if (!authenticated) {
+              return isExpanded ? (
+                <button
+                  onClick={() => login()}
+                  disabled={!ready}
+                  className="w-full h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                >
+                  {ready ? 'Sign In / Register' : 'Loading...'}
+                </button>
+              ) : (
+                <button
+                  onClick={() => login()}
+                  disabled={!ready}
+                  title="Sign In / Register"
+                  className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold mx-auto"
+                >
+                  ?
+                </button>
+              );
+            }
             return isExpanded ? (
               <div className="flex items-center gap-2 px-1 h-11">
-                <div className="w-7 h-7 rounded-full bg-emerald-200 flex items-center justify-center text-xs font-bold text-emerald-800 flex-shrink-0">{initial}</div>
+                <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">{initial}</div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold text-gray-900 truncate leading-tight">{displayName}</p>
-                  <p className="text-[10px] text-gray-400 truncate">{email || 'mamaprice.ai'}</p>
+                  <p className="text-[10px] text-gray-400 truncate">{email || 'Authenticated'}</p>
                 </div>
                 <button onClick={() => logout()} className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors flex-shrink-0" title="Logout">
-                  <LogOut className="w-3.5 h-3.5 text-gray-400" />
+                  <LogOut className="w-3.5 h-3.5 text-gray-400 hover:text-red-600" />
                 </button>
               </div>
             ) : (
               <div className="flex justify-center pt-1">
-                <div className="w-7 h-7 rounded-full bg-emerald-200 flex items-center justify-center text-xs font-bold text-emerald-800" title={displayName}>{initial}</div>
+                <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white" title={displayName}>{initial}</div>
               </div>
             );
           })()}
