@@ -1286,7 +1286,7 @@
                                     <th>REPORTS</th>
                                     <th>MARKETPOINTS</th>
                                     <th>TRUST SCORE</th>
-                                    <th style="text-align: right;">ACTIONS</th>
+                                    <th style="text-align: right;">PAYMENT STATUS</th>
                                 </tr>
                             </thead>
                             <tbody id="scouts-table-body">
@@ -2305,6 +2305,71 @@
                         <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Tight Agent Details & Payment Status Modal -->
+    <div class="modal-overlay" id="agent-details-modal">
+        <div class="modal-card agent-details-card">
+            <button class="modal-close" id="close-agent-details-modal" onclick="closeAgentDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Agent Header Profile -->
+            <div class="adm-profile-header">
+                <div class="adm-avatar-wrap">
+                    <img id="adm-avatar-img" src="" alt="Agent Avatar" class="adm-avatar" />
+                    <span id="adm-lvl-dot" class="scout-lvl-dot lvl-captain"><i class="fa-solid fa-star"></i></span>
+                </div>
+                <div class="adm-user-info">
+                    <div class="adm-name-row">
+                        <h3 id="adm-name">Maryam Abubakar</h3>
+                        <span id="adm-status-badge" class="adm-status-badge active">Active</span>
+                    </div>
+                    <p id="adm-phone-id">0803 *** 4567 · SC-0001</p>
+                    <span id="adm-level-tag" class="adm-level-tag">Market Captain</span>
+                </div>
+            </div>
+
+            <!-- Agent Key Metrics Grid -->
+            <div class="adm-metrics-grid">
+                <div class="adm-metric-box">
+                    <span>Total Earnings</span>
+                    <strong id="adm-earnings" class="green">₦84,750</strong>
+                </div>
+                <div class="adm-metric-box">
+                    <span>Payment Status</span>
+                    <div id="adm-pay-status-wrap">
+                        <span class="pay-status-badge released"><i class="fa-solid fa-circle-check"></i> Released</span>
+                    </div>
+                </div>
+                <div class="adm-metric-box">
+                    <span>Reports Logged</span>
+                    <strong id="adm-reports">482</strong>
+                </div>
+                <div class="adm-metric-box">
+                    <span>MarketPoints</span>
+                    <strong id="adm-points">24,100 pts</strong>
+                </div>
+            </div>
+
+            <!-- Assigned Markets & Trust Score -->
+            <div class="adm-detail-rows">
+                <div class="adm-info-row">
+                    <label><i class="fa-solid fa-shop"></i> ASSIGNED MARKETS</label>
+                    <p id="adm-markets">Mile 12, Balogun, Oyingbo</p>
+                </div>
+                <div class="adm-info-row">
+                    <label><i class="fa-solid fa-shield-halved"></i> TRUST & VERIFICATION</label>
+                    <p id="adm-trust">98% — Excellent (Verified Field Scout)</p>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="adm-actions">
+                <a id="adm-wa-btn" href="#" target="_blank" class="adm-btn wa">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
+                </a>
+                <button type="button" class="adm-btn secondary" onclick="closeAgentDetailsModal()">Close</button>
             </div>
         </div>
     </div>

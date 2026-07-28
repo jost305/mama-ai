@@ -1945,15 +1945,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
     const scoutsData = [
-        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', avatar: null },
-        { id: 'AG-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, points: 8900, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, points: 7450, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, points: 5375, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Market Agent', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, points: 4600, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Agent Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, points: 1900, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Agent Explorer', markets: ['Computer Village'], reports: 42, points: 1050, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Agent Explorer', markets: ['Mile 12'], reports: 28, points: 700, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
+        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', paymentStatus: 'Released', avatar: null },
+        { id: 'AG-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, points: 8900, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, points: 7450, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, points: 5375, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', paymentStatus: 'Pending', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Market Agent', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, points: 4600, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', paymentStatus: 'Pending', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Agent Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, points: 1900, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Agent Explorer', markets: ['Computer Village'], reports: 42, points: 1050, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', paymentStatus: 'Cancelled', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
+        { id: 'AG-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Agent Explorer', markets: ['Mile 12'], reports: 28, points: 700, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', paymentStatus: 'Cancelled', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
     ];
+
 
     const scoutSearchInput = document.getElementById('scout-search-input');
     const scoutStatusFilter = document.getElementById('scout-status-filter');
@@ -2000,16 +2001,65 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'score-fair';
     }
 
+    function getPaymentStatusBadge(status) {
+        switch (status) {
+            case 'Released':
+                return `<span class="pay-status-badge released"><i class="fa-solid fa-circle-check"></i> Released</span>`;
+            case 'Pending':
+                return `<span class="pay-status-badge pending"><i class="fa-solid fa-clock"></i> Pending</span>`;
+            case 'Cancelled':
+                return `<span class="pay-status-badge cancelled"><i class="fa-solid fa-circle-xmark"></i> Cancelled</span>`;
+            default:
+                return `<span class="pay-status-badge released"><i class="fa-solid fa-circle-check"></i> Released</span>`;
+        }
+    }
+
     window.viewScoutDetails = function(id) {
         const s = scoutsData.find(x => x.id === id);
         if (!s) return;
-        alert(`👤 Agent Details:\n\nName: ${s.name}\nPhone: ${maskPhoneNumber(s.phone)}\nLevel: ${s.level}\nMarkets: ${s.markets.join(', ')}\nReports: ${s.reports}\nMarketPoints: ${(s.points || s.reports * 25).toLocaleString()} pts\nTrust Score: ${s.trustScore}% (${s.trustLabel})\nTotal Earnings: ₦${s.earnings.toLocaleString()}`);
+
+        const modal = document.getElementById('agent-details-modal');
+        if (!modal) return;
+
+        const avatarImg = document.getElementById('adm-avatar-img');
+        const nameEl = document.getElementById('adm-name');
+        const statusBadge = document.getElementById('adm-status-badge');
+        const phoneIdEl = document.getElementById('adm-phone-id');
+        const levelTag = document.getElementById('adm-level-tag');
+        const earningsEl = document.getElementById('adm-earnings');
+        const payStatusWrap = document.getElementById('adm-pay-status-wrap');
+        const reportsEl = document.getElementById('adm-reports');
+        const pointsEl = document.getElementById('adm-points');
+        const marketsEl = document.getElementById('adm-markets');
+        const trustEl = document.getElementById('adm-trust');
+        const waBtn = document.getElementById('adm-wa-btn');
+
+        if (avatarImg) avatarImg.src = s.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';
+        if (nameEl) nameEl.textContent = s.name;
+        if (statusBadge) {
+            statusBadge.textContent = s.status;
+            statusBadge.className = `adm-status-badge ${s.status === 'Active' ? 'active' : 'inactive'}`;
+        }
+        if (phoneIdEl) phoneIdEl.textContent = `${maskPhoneNumber(s.phone)} · ${s.id}`;
+        if (levelTag) levelTag.textContent = s.level;
+        if (earningsEl) earningsEl.textContent = `₦${s.earnings.toLocaleString()}`;
+        if (payStatusWrap) payStatusWrap.innerHTML = getPaymentStatusBadge(s.paymentStatus || 'Released');
+        if (reportsEl) reportsEl.textContent = s.reports.toLocaleString();
+        if (pointsEl) pointsEl.textContent = `${(s.points || s.reports * 25).toLocaleString()} pts`;
+        if (marketsEl) marketsEl.textContent = s.markets.join(', ');
+        if (trustEl) trustEl.textContent = `${s.trustScore}% — ${s.trustLabel} (Verified Field Scout)`;
+        if (waBtn) waBtn.href = `https://wa.me/234${s.phone.replace(/[^0-9]/g, '').slice(-10)}?text=${encodeURIComponent(`Hello ${s.name}, regarding your MamaPrice agent reports:`)}`;
+
+        modal.style.display = 'flex';
+        modal.classList.add('open');
     };
 
-    window.triggerScoutActions = function(id) {
-        const s = scoutsData.find(x => x.id === id);
-        if (!s) return;
-        alert(`⚡ Quick Actions for ${s.name}:\n\n1. Send WhatsApp Message (${maskPhoneNumber(s.phone)})\n2. Assign Market Mission\n3. Toggle Agent Status (Current: ${s.status})`);
+    window.closeAgentDetailsModal = function() {
+        const modal = document.getElementById('agent-details-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('open');
+        }
     };
 
     function renderScoutsTable(list) {
@@ -2040,12 +2090,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `<span class="scout-status-dot dot-active" title="Active"></span>`
                 : `<span class="scout-status-dot dot-inactive" title="Inactive"></span>`;
             const pts = (s.points || (s.reports * 25)).toLocaleString();
+            const avatarSrc = s.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80';
             return `
-            <tr>
+            <tr onclick="viewScoutDetails('${s.id}')" style="cursor: pointer;" title="Click to view ${s.name} details">
                 <td>
                     <div class="scout-user-cell">
                         <div class="scout-avatar-wrap">
-                            <img src="${s.avatar}" alt="${s.name}" class="scout-avatar" />
+                            <img src="${avatarSrc}" alt="${s.name}" class="scout-avatar" />
                             <span class="scout-lvl-dot ${lvlClass}" title="${lvlTitle}">${lvlIcon}</span>
                             ${statusDot}
                         </div>
@@ -2065,10 +2116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </td>
                 <td style="text-align: right;">
-                    <div class="table-action-btns">
-                        <button class="tbl-act-btn" onclick="viewScoutDetails('${s.id}')" title="View Agent Profile"><i class="fa-regular fa-eye"></i></button>
-                        <button class="tbl-act-btn" onclick="triggerScoutActions('${s.id}')" title="Agent Actions"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                    </div>
+                    ${getPaymentStatusBadge(s.paymentStatus || 'Released')}
                 </td>
             </tr>`;
         }).join('');
