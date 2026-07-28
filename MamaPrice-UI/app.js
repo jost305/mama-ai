@@ -1276,6 +1276,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const refCode = params.get('ref');
         if (refCode) {
             localStorage.setItem('mama_pending_referral_code', refCode);
+            setTimeout(() => {
+                if (typeof window.pushAlertGraphNotification === 'function') {
+                    window.pushAlertGraphNotification({
+                        type: 'inbox',
+                        text: `🎁 <strong>You were invited to MamaPrice!</strong><br>Joined via referral code <strong>${refCode}</strong>. Start tracking prices to earn MarketPoints & cash rewards!`,
+                        tag: 'Invited by Friend',
+                        actionQuery: ''
+                    });
+                }
+            }, 800);
         }
     })();
 
