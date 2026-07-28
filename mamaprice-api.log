@@ -12,3 +12,11 @@ STEP 2 - loadModel()
 --- POST /chat ---
 [SESSION: session_1785242075945] [MODEL: MamaPrice 4o] Prompt: "Rice price today in Lagos"
 [SESSION] Creating new context (contextSize: 2048) for ID: "session_1785242075945"
+
+--- POST /chat ---
+[SESSION: default-session] [MODEL: MamaPrice 4o] Prompt: "Hi, what is MamaPrice?"
+[SESSION] Creating new context (contextSize: 2048) for ID: "default-session"
+[RAG] Detected intents: [price] for query: "Hi, what is MamaPrice?"
+[RAG] Retrieved 1 total evidence items (including trend memory).
+[OjaLM] Generating response for session "default-session"...
+[OjaLM] Response complete (939 chars).

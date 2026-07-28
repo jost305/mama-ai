@@ -269,6 +269,722 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userProfileBtn) userProfileBtn.addEventListener('click', () => switchView(navProfile, pageProfile));
     if (brandLogoBtn) brandLogoBtn.addEventListener('click', () => switchView(navHome, pageHome));
 
+    // Recent Verified Reports "View all reports" -> Navigate to Agents Directory Page
+    const prViewAllBtn = document.getElementById('pr-view-all-agents-btn');
+    const prViewAllLink = document.getElementById('pr-view-all-link');
+    if (prViewAllBtn) prViewAllBtn.addEventListener('click', (e) => { e.preventDefault(); if (navAgent && pageAgent) switchView(navAgent, pageAgent); });
+    if (prViewAllLink) prViewAllLink.addEventListener('click', (e) => { e.preventDefault(); if (navAgent && pageAgent) switchView(navAgent, pageAgent); });
+
+    // ────────────────────────────────────────────────────────────────────────
+    // DYNAMIC LIVE REPORT STREAMER — Rotates live pulse as new reports come in
+    // ────────────────────────────────────────────────────────────────────────
+    const prListContainer = document.querySelector('.prices-reports-card .pr-list');
+    if (prListContainer) {
+        const liveReportsPool = [
+            { market: "Lagos, Mile 12 Market", commodity: "🌶️ Pepper (100kg)", price: "₦13,200", avatar: "MM", altClass: "alt4", agent: "@chinedu_scout", agentInit: "CO" },
+            { market: "Onitsha, Main Market", commodity: "🛢️ Palm Oil (25L)", price: "₦14,100", avatar: "OM", altClass: "alt2", agent: "@uchenna_scout", agentInit: "UC" },
+            { market: "Abuja, Wuse Market", commodity: "🍚 Rice (50kg)", price: "₦13,600", avatar: "WM", altClass: "alt3", agent: "@aisha_scout", agentInit: "AI" },
+            { market: "Port Harcourt, Oil Mill", commodity: "🛢️ Palm Oil (25L)", price: "₦14,500", avatar: "OM", altClass: "alt1", agent: "@emeka_scout", agentInit: "EM" },
+            { market: "Kano, Dawanau Market", commodity: "🌶️ Pepper (100kg)", price: "₦13,800", avatar: "KM", altClass: "", agent: "@maryam_scout", agentInit: "MA" },
+            { market: "Kaduna, Sabon Gari", commodity: "🌶️ Pepper (100kg)", price: "₦13,700", avatar: "KS", altClass: "alt1", agent: "@sani_scout", agentInit: "SI" },
+            { market: "Maiduguri, Monday Market", commodity: "🌶️ Pepper (100kg)", price: "₦15,000", avatar: "MM", altClass: "alt2", agent: "@buba_scout", agentInit: "BM" }
+        ];
+
+        let poolIndex = 0;
+
+        function injectNextLiveReport() {
+            const report = liveReportsPool[poolIndex];
+            poolIndex = (poolIndex + 1) % liveReportsPool.length;
+
+            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            // Remove pulse and beacon highlights from existing items
+            const currentLatest = prListContainer.querySelector('.pr-item-latest');
+            if (currentLatest) {
+                currentLatest.classList.remove('pr-item-latest');
+                const oldPulseDot = currentLatest.querySelector('.avatar-pulse-dot');
+                if (oldPulseDot) oldPulseDot.remove();
+                const oldBeacon = currentLatest.querySelector('.pulse-beacon');
+                if (oldBeacon) oldBeacon.remove();
+            }
+
+            // Create new report HTML element
+            const newReportElem = document.createElement('div');
+            newReportElem.className = 'pr-item pr-item-latest';
+            newReportElem.innerHTML = `
+                <div class="pr-main-row">
+                    <div class="pr-avatar-col">
+                        <div class="pr-avatar-wrap">
+                            <div class="pr-avatar ${report.altClass}">${report.avatar}</div>
+                            <span class="avatar-pulse-dot" title="Live Report Alert"></span>
+                        </div>
+                        <div class="pr-info-line">
+                            <span class="pr-prod-tag">${report.commodity}</span>
+                            <span class="pr-market-name">${report.market}</span>
+                            <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong class="pr-val">${report.price}</strong>
+                    </div>
+                </div>
+                <div class="pr-agent-meta">
+                    <div class="pr-agent-by">
+                        <span class="pr-mini-avatar ${report.altClass}">${report.agentInit}</span>
+                        <span>by <strong>${report.agent}</strong></span>
+                    </div>
+                    <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                </div>
+            `;
+
+            // Insert new live report at top of list
+            prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
+
+            // Maintain exactly 3 reports in list
+            while (prListContainer.children.length > 3) {
+                prListContainer.lastElementChild.remove();
+            }
+
+            // Recalculate dynamic KPIs (Lowest, Highest, Market Spread & Total Saved)
+            updateDynamicKpiMetrics();
+
+            // Increment & flash sidebar Agents earned badge
+            if (typeof window.updateAgentEarnedBadge === 'function') {
+                window.updateAgentEarnedBadge();
+            }
+        }
+
+        // Stream new live report every 6.5 seconds
+        setInterval(injectNextLiveReport, 6500);
+
+        // Public Global Hook: Invoked when a user or agent submits a new price observation
+        window.addNewVerifiedReport = function(customReport) {
+            if (!prListContainer) return;
+
+            const report = customReport || {
+                market: "Lagos, Mile 12 Market",
+                commodity: "🌶️ Pepper (100kg)",
+                price: "₦13,800",
+                avatar: "US",
+                altClass: "alt-user",
+                agent: "@you_scout",
+                agentInit: "YOU"
+            };
+
+            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            // Remove pulse and beacon highlights from existing top item
+            const currentLatest = prListContainer.querySelector('.pr-item-latest');
+            if (currentLatest) {
+                currentLatest.classList.remove('pr-item-latest');
+                const oldPulseDot = currentLatest.querySelector('.avatar-pulse-dot');
+                if (oldPulseDot) oldPulseDot.remove();
+                const oldBeacon = currentLatest.querySelector('.pulse-beacon');
+                if (oldBeacon) oldBeacon.remove();
+            }
+
+            // Create new report HTML element
+            const newReportElem = document.createElement('div');
+            newReportElem.className = 'pr-item pr-item-latest';
+            newReportElem.innerHTML = `
+                <div class="pr-main-row">
+                    <div class="pr-avatar-col">
+                        <div class="pr-avatar-wrap">
+                            <div class="pr-avatar ${report.altClass || ''}">${report.avatar || 'US'}</div>
+                            <span class="avatar-pulse-dot" title="Live Report Alert"></span>
+                        </div>
+                        <div class="pr-info-line">
+                            <span class="pr-prod-tag">${report.commodity || '🌶️ Verified Report'}</span>
+                            <span class="pr-market-name">${report.market}</span>
+                            <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong class="pr-val">${report.price}</strong>
+                    </div>
+                </div>
+                <div class="pr-agent-meta">
+                    <div class="pr-agent-by">
+                        <span class="pr-mini-avatar ${report.altClass || ''}">${report.agentInit || 'YOU'}</span>
+                        <span>by <strong>${report.agent || '@you_scout'}</strong></span>
+                    </div>
+                    <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                </div>
+            `;
+
+            // Prepend new report to top of list
+            prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
+
+            // Maintain top 3 reports limit
+            while (prListContainer.children.length > 3) {
+                prListContainer.lastElementChild.remove();
+            }
+
+            // Recalculate dynamic KPIs (Lowest, Highest, Market Spread & Total Saved)
+            if (typeof updateDynamicKpiMetrics === 'function') updateDynamicKpiMetrics();
+
+            // Increment & flash sidebar Agents earned badge
+            if (typeof window.updateAgentEarnedBadge === 'function') {
+                window.updateAgentEarnedBadge(500);
+            }
+
+            if (typeof showToast === 'function') {
+                showToast(`Your price report for ${report.market} was verified & published live! +500 MarketPoints`, "success");
+            }
+        };
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // DYNAMIC PRICES PAGE KPI CALCULATOR — Live Lowest, Highest, Spread & Total Saved
+    // ────────────────────────────────────────────────────────────────────────
+    const kpiTotalSaved    = document.getElementById('kpi-total-saved');
+    const kpiLowestPrice   = document.getElementById('kpi-lowest-price');
+    const kpiLowestMarket  = document.getElementById('kpi-lowest-market');
+    const kpiHighestPrice  = document.getElementById('kpi-highest-price');
+    const kpiHighestMarket = document.getElementById('kpi-highest-market');
+    const kpiMarketSpread  = document.getElementById('kpi-market-spread');
+
+    let runningTotalUserSavings = 18420000; // Base: ₦18.4M cumulative user savings
+
+    function updateDynamicKpiMetrics() {
+        if (!prListContainer) return;
+
+        // Parse all prices currently in the Recent Verified Reports list
+        const items = prListContainer.querySelectorAll('.pr-item');
+        const parsedReports = [];
+
+        items.forEach(item => {
+            const marketElem = item.querySelector('.pr-market-name') || item.querySelector('strong');
+            const priceElem  = item.querySelector('.pr-val');
+
+            if (marketElem && priceElem) {
+                const marketName = marketElem.textContent.trim();
+                const priceNum   = parseInt(priceElem.textContent.replace(/[^0-9]/g, ''), 10);
+                if (!isNaN(priceNum)) {
+                    parsedReports.push({ market: marketName, price: priceNum });
+                }
+            }
+        });
+
+        if (parsedReports.length > 0) {
+            // Find lowest price report
+            const minReport = parsedReports.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), parsedReports[0]);
+            // Find highest price report
+            const maxReport = parsedReports.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), parsedReports[0]);
+
+            const spread = Math.max(0, maxReport.price - minReport.price);
+
+            if (kpiLowestPrice)  kpiLowestPrice.textContent  = `₦${minReport.price.toLocaleString()}`;
+            if (kpiLowestMarket) kpiLowestMarket.textContent = minReport.market;
+
+            if (kpiHighestPrice)  kpiHighestPrice.textContent  = `₦${maxReport.price.toLocaleString()}`;
+            if (kpiHighestMarket) kpiHighestMarket.textContent = maxReport.market;
+
+            if (kpiMarketSpread) kpiMarketSpread.textContent  = `₦${spread.toLocaleString()}`;
+
+            // Increment Total Saved by Users
+            runningTotalUserSavings += Math.floor(Math.random() * 850) + 350;
+            if (kpiTotalSaved) {
+                kpiTotalSaved.textContent = `₦${(runningTotalUserSavings / 1000000).toFixed(2)}M`;
+            }
+
+            // Update "Where to Buy Today", AI Insights & Price Predictions dynamically
+            updateWhereToBuySection();
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // 100% DYNAMIC "WHERE TO BUY TODAY", AI INSIGHTS & PRICE PREDICTIONS ENGINE
+    // ────────────────────────────────────────────────────────────────────────
+    const wtbBestName  = document.getElementById('wtb-best-name');
+    const wtbBestPrice = document.getElementById('wtb-best-price');
+    const wtbBestSave  = document.getElementById('wtb-best-save');
+    const wtbBestMeta  = document.getElementById('wtb-best-meta');
+    const wtbBestConf  = document.getElementById('wtb-best-conf');
+    const wtbBestBtn   = document.getElementById('wtb-best-btn');
+
+    const wtbCloseName  = document.getElementById('wtb-close-name');
+    const wtbClosePrice = document.getElementById('wtb-close-price');
+    const wtbCloseDist  = document.getElementById('wtb-close-dist');
+    const wtbCloseMeta  = document.getElementById('wtb-close-meta');
+    const wtbCloseConf  = document.getElementById('wtb-close-conf');
+    const wtbCloseBtn   = document.getElementById('wtb-close-btn');
+
+    const wtbTrustName  = document.getElementById('wtb-trust-name');
+    const wtbTrustPrice = document.getElementById('wtb-trust-price');
+    const wtbTrustMeta  = document.getElementById('wtb-trust-meta');
+    const wtbTrustConf  = document.getElementById('wtb-trust-conf');
+    const wtbTrustBtn   = document.getElementById('wtb-trust-btn');
+
+    const ppTomorrowVal  = document.getElementById('pp-tomorrow-val');
+    const ppWeekVal      = document.getElementById('pp-week-val');
+
+    function updateWhereToBuySection() {
+        if (!prListContainer) return;
+
+        // Parse reports from current list
+        const items = prListContainer.querySelectorAll('.pr-item');
+        const parsed = [];
+
+        items.forEach(item => {
+            const m = item.querySelector('strong')?.textContent.trim();
+            const p = parseInt(item.querySelector('.pr-val')?.textContent.replace(/[^0-9]/g, ''), 10);
+            if (m && !isNaN(p)) parsed.push({ market: m, price: p });
+        });
+
+        if (parsed.length === 0) return;
+
+        // Calculate Best Deal (Minimum Price)
+        const best = parsed.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), parsed[0]);
+        // Calculate Highest Price to compute savings
+        const highest = parsed.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), parsed[0]);
+        const savings = Math.max(1200, highest.price - best.price);
+
+        if (wtbBestName)  wtbBestName.textContent  = best.market;
+        if (wtbBestPrice) wtbBestPrice.textContent = `₦${best.price.toLocaleString()}`;
+        if (wtbBestSave)  wtbBestSave.textContent  = `Save ₦${savings.toLocaleString()}`;
+        if (wtbBestMeta)  wtbBestMeta.textContent  = `2 mins ago · ${Math.floor(Math.random() * 5) + 4} reports`;
+        if (wtbBestConf)  wtbBestConf.textContent  = `98% Verified`;
+        if (wtbBestBtn)   wtbBestBtn.setAttribute('data-market', best.market);
+
+        // Calculate Closest Deal (e.g., Oyingbo or nearest market in list)
+        const closest = parsed.find(r => r.market !== best.market) || parsed[0];
+        if (wtbCloseName)  wtbCloseName.textContent  = closest.market;
+        if (wtbClosePrice) wtbClosePrice.textContent = `₦${closest.price.toLocaleString()}`;
+        if (wtbCloseDist)  wtbCloseDist.textContent  = `3.8 km away`;
+        if (wtbCloseMeta)  wtbCloseMeta.textContent  = `5 mins ago · 8 reports`;
+        if (wtbCloseConf)  wtbCloseConf.textContent  = `95% Verified`;
+        if (wtbCloseBtn)   wtbCloseBtn.setAttribute('data-market', closest.market);
+
+        // Calculate Most Trusted (Dawanau / High Confidence market)
+        const trusted = parsed.find(r => r.market.includes("Dawanau") || r.market.includes("Kano")) || parsed[Math.floor(parsed.length / 2)];
+        if (wtbTrustName)  wtbTrustName.textContent  = trusted.market;
+        if (wtbTrustPrice) wtbTrustPrice.textContent = `₦${trusted.price.toLocaleString()}`;
+        if (wtbTrustMeta)  wtbTrustMeta.textContent  = `98% confidence · 14 verified reports`;
+        if (wtbTrustConf)  wtbTrustConf.textContent  = `14 verified reports today`;
+        if (wtbTrustBtn)   wtbTrustBtn.setAttribute('data-market', trusted.market);
+
+        // Update AI Insights & Predictions based on dynamic average price
+        const avgPrice = Math.round(parsed.reduce((sum, r) => sum + r.price, 0) / parsed.length);
+        const tomorrowPred = Math.round(avgPrice * 0.954);
+        const weekPred = Math.round(avgPrice * 0.918);
+
+        if (ppTomorrowVal) ppTomorrowVal.textContent = `₦${tomorrowPred.toLocaleString()}`;
+        if (ppWeekVal)     ppWeekVal.textContent     = `₦${weekPred.toLocaleString()}`;
+    }
+
+    // Direct Directions button click to Live Map view centered on target market
+    document.addEventListener('click', (e) => {
+        const dirBtn = e.target.closest('#wtb-card-best .wtb-btn, #wtb-card-close .wtb-btn, #wtb-card-trust .wtb-btn');
+        if (dirBtn) {
+            e.preventDefault();
+            const market = dirBtn.getAttribute('data-market') || "Mile 12 Market";
+            if (navMap && pageMap) {
+                switchView(navMap, pageMap);
+                if (typeof showToast === 'function') {
+                    showToast(`Navigated to Live Map for ${market}`, "info");
+                }
+            }
+        }
+    });
+
+    // ────────────────────────────────────────────────────────────────────────
+    // SET PRICE ALERT INTERACTIVE PILLS & CUSTOM ALERT MODAL
+    // ────────────────────────────────────────────────────────────────────────
+    const customPriceAlertModal   = document.getElementById('custom-price-alert-modal');
+    const closePriceAlertModalBtn = document.getElementById('close-price-alert-modal');
+    const priceAlertForm          = document.getElementById('price-alert-form');
+
+    // Preset Pills Click Handler
+    document.addEventListener('click', (e) => {
+        const pill = e.target.closest('#sac-pills-grid .sac-pill');
+        if (pill) {
+            e.preventDefault();
+            const alertText = pill.getAttribute('data-alert') || pill.textContent.trim();
+
+            // Toggle active pill highlight
+            document.querySelectorAll('#sac-pills-grid .sac-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            // Save user alert to localStorage
+            const userAlerts = JSON.parse(localStorage.getItem('mamaprice_alerts') || '[]');
+            userAlerts.push({ alertText, createdAt: new Date().toISOString() });
+            localStorage.setItem('mamaprice_alerts', JSON.stringify(userAlerts));
+
+            // Trigger feedback toast
+            if (typeof showToast === 'function') {
+                showToast(`Price Alert Active: "${alertText}". We'll notify you on price changes!`, "success");
+            }
+        }
+    });
+
+    // Open Custom Alert Modal buttons
+    document.addEventListener('click', (e) => {
+        const openBtn = e.target.closest('#pp-create-alert-btn, #sac-create-custom-btn');
+        if (openBtn) {
+            e.preventDefault();
+            if (customPriceAlertModal) customPriceAlertModal.style.display = 'flex';
+        }
+    });
+
+    if (closePriceAlertModalBtn) {
+        closePriceAlertModalBtn.addEventListener('click', () => {
+            if (customPriceAlertModal) customPriceAlertModal.style.display = 'none';
+        });
+    }
+
+    if (customPriceAlertModal) {
+        customPriceAlertModal.addEventListener('click', (e) => {
+            if (e.target === customPriceAlertModal) customPriceAlertModal.style.display = 'none';
+        });
+    }
+
+    if (priceAlertForm) {
+        priceAlertForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const comm  = document.getElementById('alert-commodity-select')?.value || 'Pepper';
+            const price = document.getElementById('alert-price-input')?.value || '13000';
+            const cond  = document.getElementById('alert-condition-select')?.value || 'BELOW';
+
+            const userAlerts = JSON.parse(localStorage.getItem('mamaprice_alerts') || '[]');
+            userAlerts.push({ commodity: comm, targetPrice: price, condition: cond, createdAt: new Date().toISOString() });
+            localStorage.setItem('mamaprice_alerts', JSON.stringify(userAlerts));
+
+            if (customPriceAlertModal) customPriceAlertModal.style.display = 'none';
+
+            if (typeof showToast === 'function') {
+                showToast(`Price Alert Created for ${comm} at ₦${parseInt(price, 10).toLocaleString()}!`, "success");
+            }
+        });
+    }
+
+    // Initial KPI calculation run
+    updateDynamicKpiMetrics();
+
+    // ────────────────────────────────────────────────────────────────────────
+    // DYNAMIC LIVE AGENTS EARNED BADGE UPDATER (Sidebar Badge)
+    // ────────────────────────────────────────────────────────────────────────
+    const agentBadgeElem = document.getElementById('nav-agent-earned-badge');
+    let currentAgentEarningsTotal = 148500; // Base: ₦148.5k
+
+    function formatNairaShort(num) {
+        if (num >= 1000000) {
+            return `₦${(num / 1000000).toFixed(2)}M`;
+        } else if (num >= 1000) {
+            return `₦${(num / 1000).toFixed(1)}k`;
+        }
+        return `₦${num.toLocaleString()}`;
+    }
+
+    window.updateAgentEarnedBadge = function(amountToAdd) {
+        if (!agentBadgeElem) return;
+        currentAgentEarningsTotal += (amountToAdd || Math.floor(Math.random() * 300) + 150);
+        agentBadgeElem.textContent = formatNairaShort(currentAgentEarningsTotal);
+
+        // Flash green pulse highlight on badge
+        agentBadgeElem.classList.remove('badge-pulse-glow');
+        void agentBadgeElem.offsetWidth; // Trigger reflow
+        agentBadgeElem.classList.add('badge-pulse-glow');
+    };
+
+    // ────────────────────────────────────────────────────────────────────────
+    // AGENT VERIFIED REPORTS MODAL & INTERACTIVE LISTINGS
+    // ────────────────────────────────────────────────────────────────────────
+    const agentReportsModal = document.getElementById('agent-reports-modal');
+    const closeAgentReportsModalBtn = document.getElementById('close-agent-reports-modal');
+    const armAgentAvatar = document.getElementById('arm-agent-avatar');
+    const armAgentName = document.getElementById('arm-agent-name');
+    const armAgentHandle = document.getElementById('arm-agent-handle');
+    const armAgentBadge = document.getElementById('arm-agent-badge');
+    const armReportCount = document.getElementById('arm-report-count');
+    const armReportsList = document.getElementById('arm-reports-list');
+
+    const agentReportsDatabase = {
+        "Maryam Abubakar": [
+            { commodity: "Pepper (100kg Bag)", market: "Dawanau Market, Kano", price: "₦13,800", date: "28 Jul 2026, 07:55 PM", status: "VERIFIED" },
+            { commodity: "Tomato (50kg Basket)", market: "Mile 12 Market, Lagos", price: "₦28,500", date: "28 Jul 2026, 05:12 PM", status: "VERIFIED" },
+            { commodity: "Onion (100kg Bag)", market: "Balogun Market, Lagos", price: "₦42,000", date: "28 Jul 2026, 02:30 PM", status: "VERIFIED" },
+            { commodity: "Garri (50kg Bag)", market: "Oyingbo Market, Lagos", price: "₦18,200", date: "27 Jul 2026, 04:15 PM", status: "VERIFIED" }
+        ],
+        "Chinedu Okafor": [
+            { commodity: "Palm Oil (25L)", market: "Onitsha Main Market", price: "₦31,000", date: "28 Jul 2026, 06:40 PM", status: "VERIFIED" },
+            { commodity: "Rice (50kg Bag)", market: "Ariaria Market, Aba", price: "₦78,000", date: "28 Jul 2026, 03:20 PM", status: "VERIFIED" },
+            { commodity: "Yam (100 Tubers)", market: "Onitsha Main Market", price: "₦110,000", date: "27 Jul 2026, 11:00 AM", status: "VERIFIED" }
+        ],
+        "Sani Ibrahim": [
+            { commodity: "Pepper (100kg Bag)", market: "Sabon Gari, Kaduna", price: "₦13,700", date: "28 Jul 2026, 07:52 PM", status: "VERIFIED" },
+            { commodity: "Sorghum (100kg Bag)", market: "Sabon Gari, Kaduna", price: "₦34,500", date: "28 Jul 2026, 04:10 PM", status: "VERIFIED" }
+        ]
+    };
+
+    function openAgentReportsModal(agentName, agentHandle, agentBadge, avatarText) {
+        if (!agentReportsModal) return;
+        if (armAgentName) armAgentName.textContent = agentName;
+        if (armAgentHandle) armAgentHandle.textContent = agentHandle || `@${agentName.toLowerCase().replace(/\s+/g, '_')}`;
+        if (armAgentBadge) armAgentBadge.textContent = agentBadge || "Market Agent";
+        if (armAgentAvatar) armAgentAvatar.textContent = avatarText || agentName.split(' ').map(n => n[0]).join('');
+
+        const reports = agentReportsDatabase[agentName] || [
+            { commodity: "Pepper (100kg Bag)", market: "Regional Market", price: "₦13,500", date: "28 Jul 2026, 07:30 PM", status: "VERIFIED" },
+            { commodity: "Maize (100kg Bag)", market: "Central Market", price: "₦32,000", date: "28 Jul 2026, 01:15 PM", status: "VERIFIED" }
+        ];
+
+        if (armReportCount) armReportCount.textContent = `${reports.length} Verified Market Reports`;
+
+        if (armReportsList) {
+            armReportsList.innerHTML = reports.map(r => `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 8px 4px;">
+                        <strong style="color: #0f172a; display: block; font-size: 0.78rem;">${r.commodity}</strong>
+                        <span style="color: #64748b; font-size: 0.68rem;">${r.market}</span>
+                    </td>
+                    <td style="padding: 8px 4px;"><strong style="color: #15803d; font-size: 0.82rem;">${r.price}</strong></td>
+                    <td style="padding: 8px 4px; color: #475569; font-size: 0.7rem;">${r.date}</td>
+                    <td style="padding: 8px 4px; text-align: right;">
+                        <span style="background: #dcfce7; color: #15803d; border: 1px solid #86efac; font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 99px;">${r.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        agentReportsModal.style.display = 'flex';
+    }
+
+    if (closeAgentReportsModalBtn) {
+        closeAgentReportsModalBtn.addEventListener('click', () => {
+            agentReportsModal.style.display = 'none';
+        });
+    }
+
+    if (agentReportsModal) {
+        agentReportsModal.addEventListener('click', (e) => {
+            if (e.target === agentReportsModal) agentReportsModal.style.display = 'none';
+        });
+    }
+
+    // Attach click handlers to all "View" action buttons on agent rows
+    document.addEventListener('click', (e) => {
+        const viewBtn = e.target.closest('#scouts-table-body .tbl-act-btn');
+        if (viewBtn) {
+            const row = viewBtn.closest('tr');
+            if (row) {
+                const nameElem = row.querySelector('.scout-name');
+                const name = nameElem ? nameElem.textContent.trim() : "Market Agent";
+                openAgentReportsModal(name);
+            }
+        }
+    });
+
+    // ────────────────────────────────────────────────────────────────────────
+    // RESPONSIVE INTERACTIVE PRICE TREND CHART ENGINE
+    // ────────────────────────────────────────────────────────────────────────
+    const pccGraphArea  = document.getElementById('pcc-graph-area');
+    const pccSvg        = document.getElementById('pcc-svg');
+    const pccTooltip    = document.getElementById('pcc-tooltip-box');
+    const pccTtHeader   = document.getElementById('pcc-tt-header');
+    const pccTtAvg      = document.getElementById('pcc-tt-avg');
+    const pccTtLow      = document.getElementById('pcc-tt-low');
+    const pccTtHigh     = document.getElementById('pcc-tt-high');
+    const pccTtReports  = document.getElementById('pcc-tt-reports');
+    const pccGuideLine  = document.getElementById('pcc-guide-line');
+    const pccGuideDot   = document.getElementById('pcc-guide-dot');
+    const pccPathAvg    = document.getElementById('pcc-path-average');
+    const pccPathLow    = document.getElementById('pcc-path-lowest');
+    const pccPathHigh   = document.getElementById('pcc-path-highest');
+    const pccXLabels    = document.getElementById('pcc-x-labels');
+    const pccPills      = document.querySelectorAll('#pcc-time-pills .pcc-pill');
+
+    const chartTimeframes = {
+        "24H": {
+            yLabels: ["N16K", "N15K", "N14K", "N13K", "N12K"],
+            xLabels: ["6:00 AM", "9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM", "8:00 PM"],
+            avgPath:  "M40,110 Q115,100 190,105 T340,95 T500,102",
+            lowPath:  "M40,142 Q115,135 190,138 T340,130 T500,135",
+            highPath: "M40,55 Q115,45 190,50 T340,40 T500,48",
+            points: [
+                { x: 40,  cx: 40,  cy: 110, date: "Today, 6:00 AM",  avg: "₦13,750", low: "₦13,100", high: "₦14,800", reports: "14" },
+                { x: 132, cx: 132, cy: 102, date: "Today, 9:00 AM",  avg: "₦13,800", low: "₦13,150", high: "₦14,900", reports: "22" },
+                { x: 224, cx: 224, cy: 105, date: "Today, 12:00 PM", avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "28" },
+                { x: 316, cx: 316, cy: 98,  date: "Today, 3:00 PM",  avg: "₦13,900", low: "₦13,250", high: "₦15,100", reports: "35" },
+                { x: 408, cx: 408, cy: 100, date: "Today, 6:00 PM",  avg: "₦13,880", low: "₦13,220", high: "₦15,050", reports: "41" },
+                { x: 500, cx: 500, cy: 102, date: "Today, 8:00 PM",  avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "48" }
+            ]
+        },
+        "7D": {
+            yLabels: ["N16K", "N15K", "N14K", "N13K", "N12K"],
+            xLabels: ["17 May", "18 May", "19 May", "20 May", "21 May", "22 May", "23 May"],
+            avgPath:  "M40,105 Q115,90 190,95 T340,75 T500,108",
+            lowPath:  "M40,140 Q115,130 190,135 T340,110 T500,140",
+            highPath: "M40,45 Q115,35 190,40 T340,30 T500,60",
+            points: [
+                { x: 40,  cx: 40,  cy: 105, date: "17 May, 2026", avg: "₦14,200", low: "₦13,400", high: "₦15,200", reports: "24" },
+                { x: 116, cx: 116, cy: 92,  date: "18 May, 2026", avg: "₦14,450", low: "₦13,600", high: "₦15,400", reports: "29" },
+                { x: 192, cx: 192, cy: 95,  date: "19 May, 1:00 PM", avg: "₦14,650", low: "₦13,800", high: "₦15,600", reports: "32" },
+                { x: 268, cx: 268, cy: 82,  date: "20 May, 2026", avg: "₦14,800", low: "₦13,900", high: "₦15,800", reports: "38" },
+                { x: 344, cx: 344, cy: 75,  date: "21 May, 2026", avg: "₦15,100", low: "₦14,100", high: "₦16,200", reports: "45" },
+                { x: 422, cx: 422, cy: 90,  date: "22 May, 2026", avg: "₦14,300", low: "₦13,500", high: "₦15,300", reports: "40" },
+                { x: 500, cx: 500, cy: 108, date: "23 May, 2026", avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "52" }
+            ]
+        },
+        "30D": {
+            yLabels: ["N18K", "N16K", "N14K", "N12K", "N10K"],
+            xLabels: ["28 Jun", "05 Jul", "12 Jul", "19 Jul", "26 Jul", "Today"],
+            avgPath:  "M40,120 Q130,70 220,85 T400,60 T500,105",
+            lowPath:  "M40,150 Q130,110 220,125 T400,95 T500,138",
+            highPath: "M40,70 Q130,30 220,45 T400,25 T500,65",
+            points: [
+                { x: 40,  cx: 40,  cy: 120, date: "28 Jun, 2026", avg: "₦13,200", low: "₦11,800", high: "₦14,900", reports: "112" },
+                { x: 132, cx: 132, cy: 75,  date: "05 Jul, 2026", avg: "₦15,400", low: "₦13,600", high: "₦17,100", reports: "145" },
+                { x: 224, cx: 224, cy: 85,  date: "12 Jul, 2026", avg: "₦14,900", low: "₦13,100", high: "₦16,400", reports: "160" },
+                { x: 316, cx: 316, cy: 68,  date: "19 Jul, 2026", avg: "₦15,800", low: "₦13,900", high: "₦17,500", reports: "188" },
+                { x: 408, cx: 408, cy: 60,  date: "26 Jul, 2026", avg: "₦16,200", low: "₦14,200", high: "₦18,000", reports: "210" },
+                { x: 500, cx: 500, cy: 105, date: "Today, 28 Jul", avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "245" }
+            ]
+        },
+        "90D": {
+            yLabels: ["N20K", "N17K", "N11K", "N11K", "N8K"],
+            xLabels: ["May", "Late May", "Jun", "Late Jun", "Jul", "Current"],
+            avgPath:  "M40,140 Q130,80 220,110 T400,50 T500,100",
+            lowPath:  "M40,165 Q130,120 220,145 T400,85 T500,135",
+            highPath: "M40,95 Q130,35 220,65 T400,20 T500,55",
+            points: [
+                { x: 40,  cx: 40,  cy: 140, date: "May 2026",      avg: "₦11,500", low: "₦9,800",  high: "₦13,200", reports: "320" },
+                { x: 132, cx: 132, cy: 85,  date: "Late May 2026", avg: "₦14,800", low: "₦12,500", high: "₦16,900", reports: "410" },
+                { x: 224, cx: 224, cy: 110, date: "Jun 2026",      avg: "₦13,400", low: "₦11,200", high: "₦15,100", reports: "480" },
+                { x: 316, cx: 316, cy: 75,  date: "Late Jun 2026", avg: "₦15,600", low: "₦13,200", high: "₦17,800", reports: "560" },
+                { x: 408, cx: 408, cy: 50,  date: "Jul 2026",      avg: "₦16,900", low: "₦14,500", high: "₦19,200", reports: "620" },
+                { x: 500, cx: 500, cy: 100, date: "Current",       avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "710" }
+            ]
+        },
+        "1Y": {
+            yLabels: ["N22K", "N18K", "N14K", "N10K", "N6K"],
+            xLabels: ["Jan", "Mar", "May", "Jul", "Sep", "Nov"],
+            avgPath:  "M40,150 Q130,120 220,140 T400,60 T500,95",
+            lowPath:  "M40,172 Q130,145 220,165 T400,92 T500,128",
+            highPath: "M40,110 Q130,75 220,95 T400,28 T500,58",
+            points: [
+                { x: 40,  cx: 40,  cy: 150, date: "Jan 2026", avg: "₦9,800",  low: "₦7,500",  high: "₦11,800", reports: "940" },
+                { x: 132, cx: 132, cy: 122, date: "Mar 2026", avg: "₦11,600", low: "₦9,100",  high: "₦13,900", reports: "1,120" },
+                { x: 224, cx: 224, cy: 140, date: "May 2026", avg: "₦10,500", low: "₦8,200",  high: "₦12,600", reports: "1,450" },
+                { x: 316, cx: 316, cy: 80,  date: "Jul 2026", avg: "₦15,200", low: "₦12,800", high: "₦17,900", reports: "1,890" },
+                { x: 408, cx: 408, cy: 60,  date: "Sep 2026", avg: "₦16,500", low: "₦13,900", high: "₦19,400", reports: "2,200" },
+                { x: 500, cx: 500, cy: 95,  date: "Nov 2026", avg: "₦13,850", low: "₦13,200", high: "₦15,000", reports: "2,540" }
+            ]
+        }
+    };
+
+    let activeTimeframe = "7D";
+    let activePointIndex = 2;
+
+    function renderTrendChart(timeframeKey) {
+        const tf = chartTimeframes[timeframeKey];
+        if (!tf) return;
+        activeTimeframe = timeframeKey;
+
+        // Update active timeframe pill
+        pccPills.forEach(pill => pill.classList.toggle('active', pill.dataset.tf === timeframeKey));
+
+        // Smoothly transition SVG paths
+        if (pccPathAvg) pccPathAvg.setAttribute('d', tf.avgPath);
+        if (pccPathLow) pccPathLow.setAttribute('d', tf.lowPath);
+        if (pccPathHigh) pccPathHigh.setAttribute('d', tf.highPath);
+
+        // Update Y-Axis labels
+        if (tf.yLabels.length === 5) {
+            ['pcc-y4', 'pcc-y3', 'pcc-y2', 'pcc-y1', 'pcc-y0'].forEach((id, idx) => {
+                const elem = document.getElementById(id);
+                if (elem) elem.textContent = tf.yLabels[idx];
+            });
+        }
+
+        // Render X-Axis labels
+        if (pccXLabels) {
+            pccXLabels.innerHTML = tf.xLabels.map((lbl, idx) => `
+                <span class="${idx === activePointIndex ? 'active' : ''}">${lbl}</span>
+            `).join('');
+        }
+
+        // Update active point & tooltip
+        activePointIndex = Math.min(activePointIndex, tf.points.length - 1);
+        updateGuideAndTooltip(activePointIndex);
+    }
+
+    function updateGuideAndTooltip(idx) {
+        const tf = chartTimeframes[activeTimeframe];
+        if (!tf || !tf.points[idx]) return;
+        const pt = tf.points[idx];
+
+        // Move vertical guide line & dot marker
+        if (pccGuideLine) {
+            pccGuideLine.setAttribute('x1', pt.cx);
+            pccGuideLine.setAttribute('x2', pt.cx);
+        }
+        if (pccGuideDot) {
+            pccGuideDot.setAttribute('cx', pt.cx);
+            pccGuideDot.setAttribute('cy', pt.cy);
+        }
+
+        // Update Tooltip Box
+        if (pccTtHeader)  pccTtHeader.textContent = pt.date;
+        if (pccTtAvg)     pccTtAvg.textContent = pt.avg;
+        if (pccTtLow)     pccTtLow.textContent = pt.low;
+        if (pccTtHigh)    pccTtHigh.textContent = pt.high;
+        if (pccTtReports) pccTtReports.textContent = pt.reports;
+
+        // Reposition Tooltip Box relative to SVG percentage width
+        if (pccTooltip) {
+            const pct = Math.max(18, Math.min(82, (pt.cx / 520) * 100));
+            pccTooltip.style.left = `${pct}%`;
+        }
+
+        // Highlight active X-axis label
+        if (pccXLabels) {
+            const spans = pccXLabels.querySelectorAll('span');
+            spans.forEach((s, i) => s.classList.toggle('active', i === idx));
+        }
+    }
+
+    // Attach pill button event listeners
+    pccPills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            e.preventDefault();
+            renderTrendChart(pill.dataset.tf);
+        });
+    });
+
+    // Touch & Hover Tracking for Graph Area
+    if (pccGraphArea) {
+        function handleGraphHover(e) {
+            const rect = pccGraphArea.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const mouseX = clientX - rect.left;
+            const svgX = (mouseX / rect.width) * 520;
+
+            const tf = chartTimeframes[activeTimeframe];
+            if (!tf) return;
+
+            // Find closest data point
+            let closestIdx = 0;
+            let minDist = Math.abs(svgX - tf.points[0].cx);
+            for (let i = 1; i < tf.points.length; i++) {
+                const dist = Math.abs(svgX - tf.points[i].cx);
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestIdx = i;
+                }
+            }
+
+            activePointIndex = closestIdx;
+            updateGuideAndTooltip(closestIdx);
+        }
+
+        pccGraphArea.addEventListener('mousemove', handleGraphHover);
+        pccGraphArea.addEventListener('touchmove', handleGraphHover, { passive: true });
+    }
+
+    // Initialize 7D chart view
+    renderTrendChart("7D");
+
     // Global Navigation Click Delegator (Prevents '#' hashtag jump & guarantees view switching)
     document.addEventListener('click', (e) => {
         const navItem = e.target.closest('.nav-item, .m-nav-item');
