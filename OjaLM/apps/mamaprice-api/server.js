@@ -281,6 +281,73 @@ app.get("/webhook/whatsapp", (req, res) => {
     }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// IDENTITY & PERMISSION LAYER SERVICE — Resolves Phone Numbers to Unified Identity
+// ─────────────────────────────────────────────────────────────────────────────
+const userIdentityStore = new Map([
+    ["2348012345678", {
+        userId: "USR-89201",
+        name: "Emmanuel Nwosu",
+        role: "AGENT",
+        agentDetails: {
+            scoutId: "SC-1042",
+            level: 4,
+            levelLabel: "Senior Field Scout",
+            reputationScore: 97,
+            state: "Oyo",
+            lga: "Ibadan North",
+            primaryMarket: "Bodija Market",
+            todayEarnings: 2400,
+            walletBalance: 18900,
+            lifetimeReports: 342,
+            accuracyRating: 96.8
+        },
+        permissions: ["LOG_PRICES", "REQUEST_PAYOUT", "ACCEPT_MISSIONS", "VIEW_ANALYTICS"]
+    }],
+    ["2348123456789", {
+        userId: "USR-44102",
+        name: "Amina Yusuf",
+        role: "AGENT",
+        agentDetails: {
+            scoutId: "SC-0012",
+            level: 3,
+            levelLabel: "Senior Agent",
+            reputationScore: 99,
+            state: "Lagos",
+            lga: "Kosov",
+            primaryMarket: "Mile 12 Market",
+            todayEarnings: 3750,
+            walletBalance: 148500,
+            lifetimeReports: 285,
+            accuracyRating: 98.4
+        },
+        permissions: ["LOG_PRICES", "REQUEST_PAYOUT", "ACCEPT_MISSIONS"]
+    }]
+]);
+
+function lookupIdentityByPhone(phoneNumber) {
+    const cleanPhone = (phoneNumber || "").replace(/[^0-9]/g, "");
+    
+    if (userIdentityStore.has(cleanPhone)) {
+        return userIdentityStore.get(cleanPhone);
+    }
+    
+    for (const [phone, profile] of userIdentityStore.entries()) {
+        if (cleanPhone.endsWith(phone.slice(-10))) {
+            return profile;
+        }
+    }
+
+    return {
+        userId: `USR-${cleanPhone.slice(-5) || 'GUEST'}`,
+        name: null,
+        role: "UNREGISTERED",
+        agentDetails: null,
+        consumerDetails: { watchlist: [] },
+        permissions: ["VIEW_PRICES", "ASK_AI"]
+    };
+}
+
 // Outbound WhatsApp Reply Helper
 async function sendWhatsAppMessage(recipientPhone, messageText, flowPayload = null) {
     console.log(`📱 [WhatsApp Outbound] Message to ${recipientPhone}: "${messageText.slice(0, 60)}..."`);
@@ -316,7 +383,7 @@ async function sendWhatsAppMessage(recipientPhone, messageText, flowPayload = nu
     }
 }
 
-// POST /webhook/whatsapp — Inbound Message Receiver & Hybrid Router
+// POST /webhook/whatsapp — Inbound Message Receiver & Identity-Aware Hybrid Router
 app.post("/webhook/whatsapp", async (req, res) => {
     try {
         const body = req.body;
@@ -345,11 +412,28 @@ app.post("/webhook/whatsapp", async (req, res) => {
             incomingText = `[LOCATION_ATTACHED] Lat: ${messageData.location.latitude}, Long: ${messageData.location.longitude}`;
         }
 
-        console.log(`📩 [WhatsApp Webhook] Inbound from ${from} (${msgType}): "${incomingText}"`);
+        // ── 0. IDENTITY LAYER RESOLUTION ──
+        const identity = lookupIdentityByPhone(from);
+        console.log(`👤 [Identity Resolved] Phone: ${from} ➔ User: ${identity.name || 'Unregistered'} (${identity.role})`);
 
         const lowerText = incomingText.toLowerCase();
 
-        // ── 1. Structured Intent Classifier -> Launch WhatsApp Flow ──
+        // ── 1. PERSONA-AWARE GREETING ENGINE ──
+        if (/^(hi|hello|hey|good morning|good afternoon|good evening|mama|mamaprice)$/i.test(lowerText)) {
+            let greeting = "";
+            if (identity.role === "AGENT" && identity.agentDetails) {
+                const ag = identity.agentDetails;
+                greeting = `👋 *Welcome back, ${identity.name}!*\n\n👑 *Level ${ag.level} ${ag.levelLabel}* (${ag.primaryMarket})\n💰 *Today's Earnings:* ₦${ag.todayEarnings.toLocaleString()}\n👛 *Wallet Balance:* ₦${ag.walletBalance.toLocaleString()}\n⭐ *Trust Reputation:* ${ag.reputationScore}%\n\n🎯 *3 Missions Waiting* in ${ag.lga}!\n\n_Send a price report anytime (e.g. "Rice ₦86,000 Bodija") to earn instant cash!_`;
+            } else if (identity.role === "CONSUMER") {
+                greeting = `👋 *Welcome back, ${identity.name || 'Smart Saver'}!*\n\nHow can I help you find prices today?\n• Ask for commodity prices (e.g. "Rice in Mile 12")\n• Compare regional markets (e.g. "Mile 12 vs Bodija")`;
+            } else {
+                greeting = `👋 *Welcome to MamaPrice on WhatsApp!*\n\nTrack live market prices across Nigeria or earn cash as a Field Agent Scout.\n\n1️⃣ Ask for prices (e.g. "Rice in Mile 12")\n2️⃣ Type *Register* to become a paid Agent Scout!`;
+            }
+            await sendWhatsAppMessage(from, greeting);
+            return res.status(200).send("EVENT_RECEIVED");
+        }
+
+        // ── 2. Structured Intent Classifier -> Launch WhatsApp Flow ──
         if (/register|become agent|signup agent|agent onboarding/i.test(lowerText)) {
             const flowData = {
                 type: "flow",
@@ -370,10 +454,11 @@ app.post("/webhook/whatsapp", async (req, res) => {
         }
 
         if (/withdraw|cashout|payout|wallet balance/i.test(lowerText)) {
+            const walletVal = identity.agentDetails ? identity.agentDetails.walletBalance : 0;
             const flowData = {
                 type: "flow",
                 header: { type: "text", text: "MamaPrice Wallet & Cashout" },
-                body: { text: "Select your bank and enter withdrawal amount:" },
+                body: { text: `Available Balance: ₦${walletVal.toLocaleString()}.\nSelect your bank and enter withdrawal amount:` },
                 action: {
                     name: "flow",
                     parameters: {
@@ -388,21 +473,29 @@ app.post("/webhook/whatsapp", async (req, res) => {
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        // ── 2. Price Report Pattern Recognition -> Direct OjaGraph Ingest ──
+        // ── 3. Price Report Pattern Recognition -> Direct OjaGraph Ingest ──
         if (/report|price update|selling for|market price|i bought|basket|bag/i.test(lowerText)) {
+            if (identity.role === "AGENT" && identity.agentDetails) {
+                identity.agentDetails.todayEarnings += 250;
+                identity.agentDetails.walletBalance += 250;
+                identity.agentDetails.lifetimeReports += 1;
+            }
+
             const newDoc = ojaGraph.addObservation({
-                market: "Local Market",
+                market: identity.agentDetails?.primaryMarket || "Local Market",
                 product: incomingText.slice(0, 30),
                 observed_price: 15000,
-                reported_by: `@wa_${from}`
+                reported_by: identity.agentDetails ? `${identity.name} (${identity.agentDetails.scoutId})` : `@wa_${from}`
             }, "PRICE");
 
-            const replyMsg = `🎯 *Report Verified (+25 MarketPoints)*\nYour price report has been ingested into MamaPrice OjaGraph!\n💰 *+₦250 Credited* to your withdrawal wallet.`;
+            const walletText = identity.agentDetails ? `\n💰 *Wallet Balance:* ₦${identity.agentDetails.walletBalance.toLocaleString()} (+₦250 credited)` : `\n💰 *+₦250 Credited* to your wallet.`;
+
+            const replyMsg = `🎯 *Report Verified (+25 MarketPoints)*\nVerified by ${identity.name || 'Field Agent'} (${identity.agentDetails?.scoutId || 'Scout'}). Ingested into OjaGraph!${walletText}`;
             await sendWhatsAppMessage(from, replyMsg);
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        // ── 3. Natural Language Query -> Route through OjaLM + OjaGraph RAG ──
+        // ── 4. Natural Language Query -> Route through OjaLM + OjaGraph RAG ──
         const detectedIntents = detectQueryIntents(incomingText);
         const searchRes = ojaGraph.searchCommerceIntelligence(incomingText);
         const groundedContext = buildGroundedContext(incomingText, searchRes);
