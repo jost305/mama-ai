@@ -258,6 +258,108 @@ app.post("/observe", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /missions — AgentOS Dynamic Mission & Gap Coverage Engine
+// ─────────────────────────────────────────────────────────────────────────────
+app.get("/missions", (req, res) => {
+    const { state, lga, agentId } = req.query;
+
+    const activeMissions = [
+        {
+            id: "MSN-GUSAU-091",
+            title: "🎯 High Gap Mission: Gusau Central Market",
+            commodity: "🍚 Sorghum & Rice (50kg)",
+            market: "Gusau Central Market",
+            state: "Zamfara",
+            coverageIndex: "3%",
+            urgencyLevel: "CRITICAL_GAP",
+            rewardNgn: 1800,
+            rewardPoints: 250,
+            requiredRank: "Level 2 Market Agent",
+            deadlineHours: 12
+        },
+        {
+            id: "MSN-YOLA-044",
+            title: "🎯 High Gap Mission: Jimeta Market",
+            commodity: "🥜 Groundnut & Maize (100kg)",
+            market: "Jimeta Main Market",
+            state: "Adamawa",
+            coverageIndex: "11%",
+            urgencyLevel: "HIGH_GAP",
+            rewardNgn: 1200,
+            rewardPoints: 150,
+            requiredRank: "Level 1 Junior Scout",
+            deadlineHours: 24
+        },
+        {
+            id: "MSN-LOKOJA-012",
+            title: "🎯 Regional Gap Mission: Lokoja Market",
+            commodity: "🥔 Yam & Dangote Cement",
+            market: "Lokoja Central Market",
+            state: "Kogi",
+            coverageIndex: "24%",
+            urgencyLevel: "MEDIUM_GAP",
+            rewardNgn: 750,
+            rewardPoints: 100,
+            requiredRank: "Level 1 Junior Scout",
+            deadlineHours: 48
+        },
+        {
+            id: "MSN-IBADAN-088",
+            title: "🎯 Market Verification: Sango Market",
+            commodity: "🫘 Brown Beans (100kg)",
+            market: "Sango Market",
+            state: "Oyo",
+            coverageIndex: "82%",
+            urgencyLevel: "STANDARD",
+            rewardNgn: 350,
+            rewardPoints: 50,
+            requiredRank: "Level 1 Junior Scout",
+            deadlineHours: 72
+        },
+        {
+            id: "MSN-LAGOS-102",
+            title: "🎯 Market Verification: Mile 12 Market",
+            commodity: "🌶️ Pepper & Tomatoes (100kg)",
+            market: "Mile 12 Market",
+            state: "Lagos",
+            coverageIndex: "95%",
+            urgencyLevel: "STANDARD",
+            rewardNgn: 250,
+            rewardPoints: 25,
+            requiredRank: "Level 1 Junior Scout",
+            deadlineHours: 72
+        }
+    ];
+
+    res.json({
+        success: true,
+        coverageMetrics: {
+            lagosState: "95% (Optimal)",
+            oyoState: "82% (Optimal)",
+            kogiState: "24% (Medium Gap)",
+            adamawaState: "11% (High Gap)",
+            zamfaraState: "3% (Critical Gap)"
+        },
+        missions: activeMissions
+    });
+});
+
+// POST /missions/claim — Claim an active mission
+app.post("/missions/claim", (req, res) => {
+    const { missionId, agentId } = req.body;
+    if (!missionId || !agentId) {
+        return res.status(400).json({ error: "missionId and agentId are required" });
+    }
+
+    res.json({
+        success: true,
+        missionId,
+        agentId,
+        status: "ACCEPTED",
+        message: `Mission ${missionId} successfully claimed by Agent ${agentId}. Log price report before deadline to receive reward.`
+    });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WHATSAPP BUSINESS API INTEGRATION & HYBRID INTENT ROUTER
