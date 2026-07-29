@@ -1525,9 +1525,111 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ----------------------------------------------------
-    // 3. Search History Filter
-    // ----------------------------------------------------
+    // ────────────────────────────────────────────────────────────────────────
+    // REAL PERSISTENT CHAT HISTORY SYSTEM — Stores Per User in LocalStorage
+    // ────────────────────────────────────────────────────────────────────────
+    function getStoredHistory() {
+        try {
+            const data = localStorage.getItem('mamaprice_chat_history_v2');
+            if (data) return JSON.parse(data);
+        } catch(e) {}
+
+        const defaultHistory = {
+            today: [
+                { title: 'Lagos Cement Price Inquiry', query: 'Where can I buy the cheapest 50kg bag of Dangote Cement in Lagos?', timestamp: Date.now() },
+                { title: 'Flour Prices Mile 12', query: 'Golden Penny Flour price at Mile 12 Market', timestamp: Date.now() - 3600000 }
+            ],
+            sevenDays: [
+                { title: 'Tomato Basket Price Trend', query: 'Fresh Tomatoes price basket Mile 12', timestamp: Date.now() - (3 * 86400000) },
+                { title: 'Bodija Rice Observations', query: 'Mama Gold Rice 50kg bag Bodija Market', timestamp: Date.now() - (6 * 86400000) }
+            ]
+        };
+        localStorage.setItem('mamaprice_chat_history_v2', JSON.stringify(defaultHistory));
+        return defaultHistory;
+    }
+
+    function saveStoredHistory(historyData) {
+        localStorage.setItem('mamaprice_chat_history_v2', JSON.stringify(historyData));
+        renderSidebarHistory();
+        renderFullHistoryPage();
+    }
+
+    window.addMessageToHistory = function(userMessageText) {
+        if (!userMessageText || userMessageText.length < 2) return;
+        const historyData = getStoredHistory();
+        
+        let title = userMessageText.slice(0, 32).trim();
+        if (userMessageText.length > 32) title += '...';
+        
+        const exists = historyData.today.find(h => h.query === userMessageText);
+        if (!exists) {
+            historyData.today.unshift({
+                title: title,
+                query: userMessageText,
+                timestamp: Date.now()
+            });
+            saveStoredHistory(historyData);
+        }
+    };
+
+    function renderSidebarHistory() {
+        const container = document.getElementById('history-section-container');
+        if (!container) return;
+        
+        const history = getStoredHistory();
+
+        let html = `<div class="section-title">Today</div>`;
+        history.today.forEach((item, idx) => {
+            html += `
+                <div class="history-link ${idx === 0 ? 'active' : ''}" onclick="window.loadHistoryQuery('${encodeURIComponent(item.query)}')">
+                    <i class="fa-regular fa-message"></i> ${escapeHTML(item.title)}
+                </div>
+            `;
+        });
+
+        if (history.sevenDays && history.sevenDays.length > 0) {
+            html += `<div class="section-title">7 Days Ago</div>`;
+            history.sevenDays.forEach(item => {
+                html += `
+                    <div class="history-link" onclick="window.loadHistoryQuery('${encodeURIComponent(item.query)}')">
+                        <i class="fa-regular fa-message"></i> ${escapeHTML(item.title)}
+                    </div>
+                `;
+            });
+        }
+
+        container.innerHTML = html;
+    }
+
+    function renderFullHistoryPage() {
+        const fullList = document.getElementById('history-full-list');
+        if (!fullList) return;
+        
+        const history = getStoredHistory();
+        const allItems = [...history.today, ...(history.sevenDays || [])];
+
+        fullList.innerHTML = allItems.map(item => `
+            <div class="library-item" style="cursor: pointer;" onclick="window.loadHistoryQuery('${encodeURIComponent(item.query)}')">
+                <i class="fa-regular fa-message"></i>
+                <div class="item-info">
+                    <strong>${escapeHTML(item.title)}</strong>
+                    <span>${escapeHTML(item.query)}</span>
+                </div>
+                <span class="status-tag">Completed</span>
+            </div>
+        `).join('');
+    }
+
+    window.loadHistoryQuery = function(encodedQuery) {
+        const query = decodeURIComponent(encodedQuery);
+        if (typeof window.sendSuggestion === 'function') {
+            window.sendSuggestion(query);
+        }
+    };
+
+    window.populateFullHistory = renderFullHistoryPage;
+
+    // Search History Filter
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase();
@@ -1543,39 +1645,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // History Item Click Handling
-    document.querySelectorAll('.history-link').forEach(link => {
-        link.addEventListener('click', function() {
-            const queryText = this.getAttribute('data-query');
-            if (queryText) {
-                switchView(navHome, pageHome);
-                sendSuggestion(queryText);
-            }
-        });
-    });
-
-    function populateFullHistory() {
-        const fullList = document.getElementById('history-full-list');
-        if (!fullList) return;
-        fullList.innerHTML = `
-            <div class="library-item" style="cursor: pointer;" onclick="sendSuggestion('Where can I buy the cheapest 50kg bag of Dangote Cement in Lagos?')">
-                <i class="fa-regular fa-message"></i>
-                <div class="item-info">
-                    <strong>Lagos Cement Price Inquiry</strong>
-                    <span>Executed today · Session: ${currentSessionId}</span>
-                </div>
-                <span class="status-tag">Active</span>
-            </div>
-            <div class="library-item" style="cursor: pointer;" onclick="sendSuggestion('Golden Penny Flour price at Mile 12 Market')">
-                <i class="fa-regular fa-message"></i>
-                <div class="item-info">
-                    <strong>Flour Prices Mile 12</strong>
-                    <span>Executed today · Grounded RAG</span>
-                </div>
-                <span class="status-tag">Completed</span>
-            </div>
-        `;
-    }
+    // Initial render of persistent history
+    renderSidebarHistory();
+    renderFullHistoryPage();
 
     let selectedModel = 'MamaPrice 4o';
 
@@ -2772,6 +2844,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 1. Add user message with attached image (if present)
             addUserMessage(message || (attachedImg ? '📷 Market Evidence Attached' : ''), attachedImg);
+            if (message) window.addMessageToHistory(message);
             
             // Reset input
             messageInput.value = '';
