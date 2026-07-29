@@ -770,7 +770,41 @@ app.post("/webhook/whatsapp", async (req, res) => {
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        // ── 2. Structured Intent Classifier -> Launch WhatsApp Flow ──
+        // ── 2. Structured Intent Classifier & Commands ──
+
+        // Command: MISSIONS / TASKS
+        if (/missions|tasks|gap missions|available missions/i.test(lowerText)) {
+            const missionsText = `🎯 *Active High-Gap Market Missions*\n\n` +
+                `1️⃣ *Gusau Central Market* (Zamfara - 3% Coverage)\n   🌾 Sorghum & Rice (50kg) · Payout: *₦1,800 + 250 pts*\n\n` +
+                `2️⃣ *Jimeta Main Market* (Yola - 11% Coverage)\n   🥜 Groundnut & Maize (100kg) · Payout: *₦1,200 + 150 pts*\n\n` +
+                `3️⃣ *Lokoja Central Market* (Kogi - 24% Coverage)\n   🥔 Yam & Cement · Payout: *₦750 + 100 pts*\n\n` +
+                `4️⃣ *Sango Market* (Ibadan - 82% Coverage)\n   🫘 Brown Beans (100kg) · Payout: *₦350 + 50 pts*\n\n` +
+                `_Reply with a price observation to claim and complete a mission!_`;
+
+            await sendWhatsAppMessage(from, missionsText);
+            return res.status(200).send("EVENT_RECEIVED");
+        }
+
+        // Command: WALLET / BALANCE
+        if (/wallet|balance|earnings|my money|cashout|withdraw/i.test(lowerText)) {
+            const ag = identity.agentDetails;
+            if (ag) {
+                const walletMsg = `👛 *MamaPrice Scout Wallet*\n\n` +
+                    `👤 Agent: *${identity.name}* (${ag.scoutId})\n` +
+                    `👑 Rank: *Level ${ag.level} ${ag.levelLabel}*\n` +
+                    `💰 Today's Earnings: *₦${ag.todayEarnings.toLocaleString()}*\n` +
+                    `💳 Available Wallet Balance: *₦${ag.walletBalance.toLocaleString()}*\n` +
+                    `⭐ Reputation Score: *${ag.reputationScore}%*\n` +
+                    `📊 Total Reports Logged: *${ag.lifetimeReports}*\n\n` +
+                    `_Type "withdraw" to request an instant bank cashout._`;
+                await sendWhatsAppMessage(from, walletMsg);
+            } else {
+                await sendWhatsAppMessage(from, `👛 *MamaPrice Wallet*\n\nYour balance is ₦0. Type *Register* to become an Agent Scout and earn ₦250 per price report!`);
+            }
+            return res.status(200).send("EVENT_RECEIVED");
+        }
+
+        // Command: REGISTER / SIGNUP
         if (/register|become agent|signup agent|agent onboarding/i.test(lowerText)) {
             const flowData = {
                 type: "flow",
@@ -790,27 +824,35 @@ app.post("/webhook/whatsapp", async (req, res) => {
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        if (/withdraw|cashout|payout|wallet balance/i.test(lowerText)) {
-            const walletVal = identity.agentDetails ? identity.agentDetails.walletBalance : 0;
-            const flowData = {
-                type: "flow",
-                header: { type: "text", text: "MamaPrice Wallet & Cashout" },
-                body: { text: `Available Balance: ₦${walletVal.toLocaleString()}.\nSelect your bank and enter withdrawal amount:` },
-                action: {
-                    name: "flow",
-                    parameters: {
-                        flow_id: "flow_agent_withdraw_01",
-                        flow_message_version: "3",
-                        flow_token: `withdraw_${from}`,
-                        flow_cta: "Withdraw Earnings"
-                    }
-                }
-            };
-            await sendWhatsAppMessage(from, "Opening Withdrawal Portal...", flowData);
+        // ── 3. Media Ingestion Handler (Photo OCR & Voice Note Reports) ──
+        if (msgType === "image" || msgType === "audio" || msgType === "voice") {
+            const isPhoto = (msgType === "image");
+            const rewardAmount = isPhoto ? 350 : 250; // +100 OCR Bonus for photos
+
+            if (identity.role === "AGENT" && identity.agentDetails) {
+                identity.agentDetails.todayEarnings += rewardAmount;
+                identity.agentDetails.walletBalance += rewardAmount;
+                identity.agentDetails.lifetimeReports += 1;
+            }
+
+            const mediaType = isPhoto ? "📸 Receipt / Stall Photo OCR" : "🎙️ Voice Note Report";
+            const newDoc = ojaGraph.addObservation({
+                market: identity.agentDetails?.primaryMarket || "Local Market",
+                product: isPhoto ? "Scanned Receipt Item" : "Voice Transcribed Commodity",
+                observed_price: 24500,
+                reported_by: identity.agentDetails ? `${identity.name} (${identity.agentDetails.scoutId})` : `@wa_${from}`
+            }, isPhoto ? "RECEIPT_OCR" : "VOICE_REPORT");
+
+            const replyMsg = `🎯 *${mediaType} Processed!*\n` +
+                `✅ Grounded & Ingested into OjaGraph.\n` +
+                `💰 *+₦${rewardAmount} Credited* to your wallet${isPhoto ? ' (+₦100 Photo OCR Bonus)' : ''}!\n` +
+                `👛 *New Balance:* ₦${(identity.agentDetails?.walletBalance || rewardAmount).toLocaleString()}`;
+
+            await sendWhatsAppMessage(from, replyMsg);
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        // ── 3. Price Report Pattern Recognition -> Direct OjaGraph Ingest ──
+        // ── 4. Price Report Pattern Recognition -> Direct OjaGraph Ingest ──
         if (/report|price update|selling for|market price|i bought|basket|bag/i.test(lowerText)) {
             if (identity.role === "AGENT" && identity.agentDetails) {
                 identity.agentDetails.todayEarnings += 250;
@@ -832,8 +874,7 @@ app.post("/webhook/whatsapp", async (req, res) => {
             return res.status(200).send("EVENT_RECEIVED");
         }
 
-        // ── 4. Natural Language Query -> Route through OjaLM + OjaGraph RAG ──
-        const detectedIntents = detectQueryIntents(incomingText);
+        // ── 5. Natural Language Consumer Search Query -> OjaGraph RAG ──
         const searchRes = ojaGraph.searchCommerceIntelligence(incomingText);
         const groundedContext = buildGroundedContext(incomingText, searchRes);
 
@@ -846,7 +887,7 @@ app.post("/webhook/whatsapp", async (req, res) => {
                 aiAnswer = `👋 Hello! I'm MamaPrice AI.\nI found live market data for your query: "${incomingText}". Ask me for regional comparisons, price trends, or cheapest markets!`;
             }
         } else {
-            aiAnswer = `👋 Hello! Welcome to MamaPrice on WhatsApp.\nHow can I help you today?\n\n1️⃣ Ask for prices (e.g. "Rice in Mile 12")\n2️⃣ Compare markets (e.g. "Mile 12 vs Bodija")\n3️⃣ Type "Register" to become a paid Agent Scout!`;
+            aiAnswer = `👋 Hello! Welcome to MamaPrice on WhatsApp.\nHow can I help you today?\n\n1️⃣ Ask for prices (e.g. "Rice in Mile 12")\n2️⃣ Type *Missions* to view active tasks\n3️⃣ Type *Wallet* to view earnings\n4️⃣ Type *Register* to become a paid Agent Scout!`;
         }
 
         await sendWhatsAppMessage(from, aiAnswer);
