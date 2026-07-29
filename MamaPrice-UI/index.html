@@ -354,8 +354,17 @@
                 <!-- Floating Prompt Bar Container -->
                 <div class="prompt-bar-container">
                     <form id="chat-form" class="prompt-box">
+                        <!-- Image Attachment Preview Box -->
+                        <div id="chat-img-preview-container" class="chat-img-preview-container" style="display: none;">
+                            <div class="img-preview-card">
+                                <img id="chat-img-preview-thumb" src="" alt="Attached image preview" />
+                                <button type="button" id="remove-chat-img-btn" title="Remove attachment"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+
                         <div class="prompt-input-row">
                             <textarea id="message-input" placeholder="Ask MamaPrice..." rows="1" autofocus></textarea>
+                            <input type="file" id="chat-file-input" accept="image/*" style="display: none;" />
                         </div>
 
                         <div class="prompt-actions-row">

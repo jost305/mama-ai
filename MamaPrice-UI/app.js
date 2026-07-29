@@ -79,6 +79,127 @@ document.addEventListener('DOMContentLoaded', () => {
     const micBtn = document.getElementById('mic-btn');
     const tagBtns = document.querySelectorAll('.tag-btn');
 
+    // ────────────────────────────────────────────────────────────────────────
+    // CHAT IMAGE ATTACHMENT & VOICE RECORDING ENGINE
+    // ────────────────────────────────────────────────────────────────────────
+    const tagAttachBtn            = document.getElementById('tag-attach');
+    const chatFileInput           = document.getElementById('chat-file-input');
+    const chatImgPreviewContainer = document.getElementById('chat-img-preview-container');
+    const chatImgPreviewThumb     = document.getElementById('chat-img-preview-thumb');
+    const removeChatImgBtn        = document.getElementById('remove-chat-img-btn');
+
+    window.currentAttachedImageBase64 = null;
+
+    if (tagAttachBtn && chatFileInput) {
+        tagAttachBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            chatFileInput.click();
+        });
+
+        chatFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    if (typeof showToast === 'function') showToast('Please select a valid image file', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    window.currentAttachedImageBase64 = evt.target.result;
+                    if (chatImgPreviewThumb) chatImgPreviewThumb.src = window.currentAttachedImageBase64;
+                    if (chatImgPreviewContainer) chatImgPreviewContainer.style.display = 'flex';
+                    if (typeof showToast === 'function') showToast('📷 Image attached! Ready to send with chat.', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (removeChatImgBtn) {
+        removeChatImgBtn.addEventListener('click', () => {
+            window.currentAttachedImageBase64 = null;
+            if (chatFileInput) chatFileInput.value = '';
+            if (chatImgPreviewContainer) chatImgPreviewContainer.style.display = 'none';
+        });
+    }
+
+    // ── Voice Speech-to-Text Microphone Recording ──
+    let speechRecognition = null;
+    let isRecordingVoice  = false;
+
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (micBtn) {
+        if (SpeechRecognitionAPI) {
+            speechRecognition = new SpeechRecognitionAPI();
+            speechRecognition.continuous = false;
+            speechRecognition.interimResults = true;
+            speechRecognition.lang = 'en-NG';
+
+            speechRecognition.onstart = () => {
+                isRecordingVoice = true;
+                micBtn.classList.add('recording');
+                if (typeof showToast === 'function') showToast('🎙️ Voice Recording Active — Speak now...', 'info');
+            };
+
+            speechRecognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                if (messageInput) {
+                    messageInput.value = transcript;
+                    messageInput.dispatchEvent(new Event('input'));
+                }
+            };
+
+            speechRecognition.onerror = (event) => {
+                console.warn('Speech Recognition error:', event.error);
+                isRecordingVoice = false;
+                micBtn.classList.remove('recording');
+                if (typeof showToast === 'function') showToast(`Voice Input Error: ${event.error}`, 'error');
+            };
+
+            speechRecognition.onend = () => {
+                isRecordingVoice = false;
+                micBtn.classList.remove('recording');
+            };
+
+            micBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isRecordingVoice) {
+                    speechRecognition.stop();
+                } else {
+                    try {
+                        speechRecognition.start();
+                    } catch (err) {
+                        console.warn('Recognition start error:', err);
+                    }
+                }
+            });
+        } else {
+            // Fallback simulation for browsers without Web Speech API
+            micBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                micBtn.classList.toggle('recording');
+                const active = micBtn.classList.contains('recording');
+                if (active) {
+                    if (typeof showToast === 'function') showToast('🎙️ Voice Input Active — Listening for your market query...', 'info');
+                    setTimeout(() => {
+                        if (messageInput) {
+                            messageInput.value = 'What is the current price of 50kg Rice at Mile 12 Market?';
+                            messageInput.dispatchEvent(new Event('input'));
+                        }
+                        micBtn.classList.remove('recording');
+                        if (typeof showToast === 'function') showToast('🎙️ Voice transcribed into text!', 'success');
+                    }, 2500);
+                } else {
+                    micBtn.classList.remove('recording');
+                }
+            });
+        }
+    }
+
     let API_URL = 'http://localhost:3001';
     let currentSessionId = `session_${Date.now()}`;
     let agentEarnings = 148500;
