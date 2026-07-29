@@ -685,7 +685,7 @@ function lookupIdentityByPhone(phoneNumber) {
     };
 }
 
-// Outbound WhatsApp Reply Helper
+// Outbound WhatsApp Reply Helper (Text & Flow)
 async function sendWhatsAppMessage(recipientPhone, messageText, flowPayload = null) {
     console.log(`📱 [WhatsApp Outbound] Message to ${recipientPhone}: "${messageText.slice(0, 60)}..."`);
     if (!WHATSAPP_API_TOKEN || WHATSAPP_API_TOKEN.startsWith("EAAG...")) {
@@ -720,6 +720,27 @@ async function sendWhatsAppMessage(recipientPhone, messageText, flowPayload = nu
     }
 }
 
+// Outbound WhatsApp Interactive Quick-Reply Buttons Helper
+async function sendWhatsAppButtons(recipientPhone, bodyText, buttons = []) {
+    console.log(`🔘 [WhatsApp Outbound Buttons] To ${recipientPhone}: "${bodyText.slice(0, 40)}..." [${buttons.map(b => b.title).join(", ")}]`);
+
+    const formattedButtons = buttons.slice(0, 3).map((btn, idx) => ({
+        type: "reply",
+        reply: {
+            id: btn.id || `BTN_${idx}`,
+            title: btn.title
+        }
+    }));
+
+    const interactivePayload = {
+        type: "button",
+        body: { text: bodyText },
+        action: { buttons: formattedButtons }
+    };
+
+    return await sendWhatsAppMessage(recipientPhone, bodyText, interactivePayload);
+}
+
 // POST /webhook/whatsapp — Inbound Message Receiver & Identity-Aware Hybrid Router
 app.post("/webhook/whatsapp", async (req, res) => {
     try {
@@ -741,6 +762,16 @@ app.post("/webhook/whatsapp", async (req, res) => {
 
         if (msgType === "text") {
             incomingText = messageData.text.body.trim();
+        } else if (msgType === "interactive") {
+            const btnReply = messageData.interactive?.button_reply;
+            if (btnReply) {
+                console.log(`🔘 [Button Clicked] ID: ${btnReply.id} Title: "${btnReply.title}"`);
+                if (btnReply.id === "BTN_VIEW_MISSIONS") incomingText = "missions";
+                else if (btnReply.id === "BTN_CHECK_WALLET") incomingText = "wallet";
+                else if (btnReply.id === "BTN_SEARCH_PRICES") incomingText = "search prices";
+                else if (btnReply.id === "BTN_CASHOUT_WALLET") incomingText = "withdraw";
+                else incomingText = btnReply.title;
+            }
         } else if (msgType === "image") {
             incomingText = "[IMAGE_ATTACHMENT] Market evidence receipt or photo attached.";
         } else if (msgType === "audio" || msgType === "voice") {
@@ -758,15 +789,31 @@ app.post("/webhook/whatsapp", async (req, res) => {
         // ── 1. PERSONA-AWARE GREETING ENGINE ──
         if (/^(hi|hello|hey|good morning|good afternoon|good evening|mama|mamaprice)$/i.test(lowerText)) {
             let greeting = "";
+            let buttons = [];
+
             if (identity.role === "AGENT" && identity.agentDetails) {
                 const ag = identity.agentDetails;
-                greeting = `👋 *Welcome back, ${identity.name}!*\n\n👑 *Level ${ag.level} ${ag.levelLabel}* (${ag.primaryMarket})\n💰 *Today's Earnings:* ₦${ag.todayEarnings.toLocaleString()}\n👛 *Wallet Balance:* ₦${ag.walletBalance.toLocaleString()}\n⭐ *Trust Reputation:* ${ag.reputationScore}%\n\n🎯 *3 Missions Waiting* in ${ag.lga}!\n\n_Send a price report anytime (e.g. "Rice ₦86,000 Bodija") to earn instant cash!_`;
+                greeting = `👋 *Welcome back, ${identity.name}!*\n\n👑 *Level ${ag.level} ${ag.levelLabel}* (${ag.primaryMarket})\n💰 *Today's Earnings:* ₦${ag.todayEarnings.toLocaleString()}\n👛 *Wallet Balance:* ₦${ag.walletBalance.toLocaleString()}\n⭐ *Trust Reputation:* ${ag.reputationScore}%\n\n🎯 *3 Missions Waiting* in ${ag.lga}!`;
+                buttons = [
+                    { id: "BTN_VIEW_MISSIONS", title: "🎯 View Missions" },
+                    { id: "BTN_CHECK_WALLET", title: "👛 Check Wallet" },
+                    { id: "BTN_CASHOUT_WALLET", title: "💳 Withdraw Cash" }
+                ];
             } else if (identity.role === "CONSUMER") {
-                greeting = `👋 *Welcome back, ${identity.name || 'Smart Saver'}!*\n\nHow can I help you find prices today?\n• Ask for commodity prices (e.g. "Rice in Mile 12")\n• Compare regional markets (e.g. "Mile 12 vs Bodija")`;
+                greeting = `👋 *Welcome back, ${identity.name || 'Smart Saver'}!*\n\nHow can I help you find prices today?`;
+                buttons = [
+                    { id: "BTN_SEARCH_PRICES", title: "🛒 Search Prices" },
+                    { id: "BTN_VIEW_MISSIONS", title: "🎯 Agent Portal" }
+                ];
             } else {
-                greeting = `👋 *Welcome to MamaPrice on WhatsApp!*\n\nTrack live market prices across Nigeria or earn cash as a Field Agent Scout.\n\n1️⃣ Ask for prices (e.g. "Rice in Mile 12")\n2️⃣ Type *Register* to become a paid Agent Scout!`;
+                greeting = `👋 *Welcome to MamaPrice on WhatsApp!*\n\nTrack live market prices across Nigeria or earn cash as a Field Agent Scout.`;
+                buttons = [
+                    { id: "BTN_SEARCH_PRICES", title: "🛒 Search Prices" },
+                    { id: "BTN_VIEW_MISSIONS", title: "🎯 View Missions" }
+                ];
             }
-            await sendWhatsAppMessage(from, greeting);
+
+            await sendWhatsAppButtons(from, greeting, buttons);
             return res.status(200).send("EVENT_RECEIVED");
         }
 
