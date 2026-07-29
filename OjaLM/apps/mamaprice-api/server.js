@@ -422,6 +422,52 @@ app.post("/verify/consensus", (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /reward/calculate — AgentOS Dynamic Reward Formula Calculator
+// ─────────────────────────────────────────────────────────────────────────────
+app.post("/reward/calculate", (req, res) => {
+    const { agentLevel = 1, coverageIndex = "95%", urgencyLevel = "STANDARD", hasPhotoOcr = false, hasGps = true, streakDays = 1 } = req.body;
+
+    const baseReward = 250;
+    const evidenceBonus = hasPhotoOcr ? 100 : 0;
+    const gpsBonus = hasGps ? 50 : 0;
+    const urgencyBonus = (urgencyLevel === "CRITICAL_GAP" || urgencyLevel === "HIGH_GAP") ? 150 : 0;
+
+    let coverageBonus = 0;
+    const covNum = parseInt((coverageIndex || "100%").replace("%", ""), 10) || 100;
+    if (covNum < 10) coverageBonus = 1200;
+    else if (covNum < 30) coverageBonus = 500;
+    else if (covNum < 60) coverageBonus = 200;
+
+    const streakBonus = streakDays >= 3 ? 100 : 0;
+    const subtotal = baseReward + evidenceBonus + gpsBonus + urgencyBonus + coverageBonus + streakBonus;
+
+    const multipliers = { 1: 1.0, 2: 1.2, 3: 1.5, 4: 2.0, 5: 2.5 };
+    const rankMultiplier = multipliers[agentLevel] || 1.0;
+
+    const finalPayoutNgn = Math.round(subtotal * rankMultiplier);
+    const finalMarketPoints = Math.round((baseReward / 10) * rankMultiplier);
+
+    res.json({
+        success: true,
+        agentLevel,
+        rankMultiplier: `${rankMultiplier}x`,
+        itemizedBreakdown: {
+            baseReward: `₦${baseReward}`,
+            evidenceBonus: `+₦${evidenceBonus}`,
+            gpsBonus: `+₦${gpsBonus}`,
+            urgencyBonus: `+₦${urgencyBonus}`,
+            coverageGapBonus: `+₦${coverageBonus}`,
+            streakBonus: `+₦${streakBonus}`
+        },
+        subtotalNgn: `₦${subtotal}`,
+        finalPayoutNgn: `₦${finalPayoutNgn.toLocaleString()}`,
+        finalMarketPoints: `${finalMarketPoints} MarketPoints`,
+        rawPayoutNgn: finalPayoutNgn,
+        rawMarketPoints: finalMarketPoints
+    });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // WHATSAPP BUSINESS API INTEGRATION & HYBRID INTENT ROUTER
 // ─────────────────────────────────────────────────────────────────────────────
 const WHATSAPP_VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || "mamaprice_whatsapp_secret_token_2026";
