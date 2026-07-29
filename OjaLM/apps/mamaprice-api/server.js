@@ -517,6 +517,86 @@ app.post("/alerts/dispatch", (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// META WHATSAPP FLOWS INTERACTIVITY PROTOCOL & PAYLOAD ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+
+// GET /webhook/whatsapp/flows/data — Serves dynamic Meta Flow JSON payloads
+app.get("/webhook/whatsapp/flows/data", (req, res) => {
+    const { flowType = "FLOW_MISSION_SELECTION", phone } = req.query;
+
+    if (flowType === "FLOW_AGENT_ONBOARDING") {
+        return res.json({
+            version: "3.0",
+            screen: "AGENT_REGISTRATION",
+            data: {
+                states: ["Lagos", "Oyo", "Kogi", "Adamawa", "Zamfara", "Rivers", "Kano", "Abuja FCT"],
+                banks: ["Kuda Bank", "OPay", "Palmpay", "GTBank", "Zenith Bank", "Access Bank", "First Bank"]
+            }
+        });
+    }
+
+    if (flowType === "FLOW_WALLET_CASHOUT") {
+        return res.json({
+            version: "3.0",
+            screen: "CASHOUT_FORM",
+            data: {
+                agentName: "John (Agent #1042)",
+                walletBalanceNgn: 18900,
+                minimumWithdrawalNgn: 1000,
+                savedBanks: ["Kuda Bank (2019482716)", "GTBank (0123984712)"]
+            }
+        });
+    }
+
+    // Default: FLOW_MISSION_SELECTION
+    res.json({
+        version: "3.0",
+        screen: "MISSION_LIST",
+        data: {
+            activeMissions: [
+                { id: "MSN-GUSAU-091", title: "🎯 High Gap Mission: Gusau Central Market", reward: "₦1,800 + 250 pts", urgency: "CRITICAL" },
+                { id: "MSN-YOLA-044", title: "🎯 High Gap Mission: Jimeta Market", reward: "₦1,200 + 150 pts", urgency: "HIGH" },
+                { id: "MSN-LOKOJA-012", title: "🎯 Regional Gap Mission: Lokoja Market", reward: "₦750 + 100 pts", urgency: "MEDIUM" },
+                { id: "MSN-IBADAN-088", title: "🎯 Market Verification: Sango Market", reward: "₦350 + 50 pts", urgency: "STANDARD" }
+            ]
+        }
+    });
+});
+
+// POST /webhook/whatsapp/flows/submit — Handles user interactive submissions from Meta WhatsApp Flows
+app.post("/webhook/whatsapp/flows/submit", (req, res) => {
+    const { action, flowId, responseData, senderPhone } = req.body;
+
+    console.log(`[WhatsApp Flow Action] ${action} submitted by ${senderPhone || 'Anonymous'}`);
+
+    if (action === "SUBMIT_REPORT") {
+        return res.json({
+            success: true,
+            status: "REPORT_INGESTED",
+            message: `Report ingested successfully! Payout of ₦${responseData?.price ? 350 : 250} credited to Agent Wallet.`,
+            agentWalletNgn: 19250
+        });
+    }
+
+    if (action === "CASHOUT_WALLET") {
+        const amount = responseData?.amount || 18900;
+        return res.json({
+            success: true,
+            status: "CASHOUT_SUCCESSFUL",
+            message: `Instant Cashout of ₦${amount.toLocaleString()} sent to ${responseData?.bankName || 'Kuda Bank'} (${responseData?.accountNumber || '2019482716'}).`,
+            transactionRef: `TRX-${Date.now()}`
+        });
+    }
+
+    res.json({
+        success: true,
+        status: "SUCCESS",
+        message: "WhatsApp Flow interaction processed successfully.",
+        flowId
+    });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // WHATSAPP BUSINESS API INTEGRATION & HYBRID INTENT ROUTER
 // ─────────────────────────────────────────────────────────────────────────────
 const WHATSAPP_VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || "mamaprice_whatsapp_secret_token_2026";
