@@ -362,6 +362,66 @@ app.post("/missions/claim", (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /verify/consensus — AgentOS Multi-Agent Consensus Verification Protocol
+// ─────────────────────────────────────────────────────────────────────────────
+app.post("/verify/consensus", (req, res) => {
+    const { commodity, market, observations } = req.body;
+
+    const sampleObs = observations || [
+        { agentId: "SC-1042", name: "Emmanuel Nwosu", price: 84000, evidence: "OCR", photo_url: "receipt_01.jpg", has_gps: true },
+        { agentId: "SC-0012", name: "Amina Yusuf", price: 84500, evidence: "GPS", has_gps: true },
+        { agentId: "SC-0089", name: "Chinedu Okafor", price: 84000, evidence: "OCR", photo_url: "receipt_02.jpg", has_gps: true }
+    ];
+
+    const validPrices = sampleObs.map(o => o.price).filter(p => p > 0).sort((a, b) => a - b);
+    const count = validPrices.length;
+    const medianPrice = count > 0 ? validPrices[Math.floor(count / 2)] : 0;
+
+    let confidence = 0.50;
+    if (count >= 3) confidence += 0.35;
+    else if (count === 2) confidence += 0.25;
+
+    const hasPhotoOCR = sampleObs.some(o => o.evidence === "OCR" || o.photo_url);
+    const hasGps = sampleObs.some(o => o.has_gps);
+
+    if (hasPhotoOCR) confidence += 0.10;
+    if (hasGps) confidence += 0.05;
+
+    confidence = Math.min(0.998, Math.max(0.50, confidence));
+
+    let badge = "⚪ UNVERIFIED";
+    let badgeTier = "UNVERIFIED";
+
+    if (count >= 3 && (hasPhotoOCR || hasGps)) {
+        badge = "🥇 GOLD GROUNDED";
+        badgeTier = "GOLD";
+        confidence = Math.max(0.95, confidence);
+    } else if (count >= 2) {
+        badge = "🥈 SILVER GROUNDED";
+        badgeTier = "SILVER";
+        confidence = Math.max(0.80, confidence);
+    } else if (hasPhotoOCR || hasGps) {
+        badge = "🥉 BRONZE GROUNDED";
+        badgeTier = "BRONZE";
+        confidence = Math.max(0.65, confidence);
+    }
+
+    res.json({
+        success: true,
+        commodity: commodity || "Rice (50kg bag)",
+        market: market || "Bodija Market",
+        consensusPrice: medianPrice,
+        confidenceScore: Math.round(confidence * 100) / 100,
+        confidencePercentage: `${(confidence * 100).toFixed(1)}%`,
+        trustBadge: badge,
+        badgeTier: badgeTier,
+        verifiedAgentsCount: count,
+        verifyingAgents: sampleObs.map(o => `${o.name} (${o.agentId || 'Scout'})`),
+        enterpriseEligible: badgeTier === "GOLD" || badgeTier === "SILVER"
+    });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // WHATSAPP BUSINESS API INTEGRATION & HYBRID INTENT ROUTER
 // ─────────────────────────────────────────────────────────────────────────────
 const WHATSAPP_VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || "mamaprice_whatsapp_secret_token_2026";

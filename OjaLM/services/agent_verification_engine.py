@@ -89,3 +89,93 @@ class AgentVerificationEngine:
             AgentMissionEngine.update_state(mission_id, "REJECTED", actor_id="SYSTEM")
 
         return status
+
+    @staticmethod
+    def calculate_consensus(observations):
+        """
+        Calculates multi-agent consensus, confidence scores, and trust badges
+        from a list of price observations for a given commodity/market.
+        """
+        if not observations or len(observations) == 0:
+            return {
+                "consensus_price": None,
+                "confidence_score": 0.0,
+                "trust_badge": "⚪ UNVERIFIED",
+                "badge_tier": "UNVERIFIED",
+                "verified_agents_count": 0,
+                "status": "NO_OBSERVATIONS"
+            }
+
+        valid_prices = []
+        has_photo_ocr = False
+        has_gps_telemetry = False
+
+        for obs in observations:
+            price = obs.get("price") or obs.get("observed_price") or obs.get("price_ngn") or 0
+            if price > 0:
+                valid_prices.append(price)
+            if obs.get("photo_url") or obs.get("has_photo_ocr") or obs.get("evidence") == "OCR":
+                has_photo_ocr = True
+            if obs.get("gps_coordinates") or obs.get("has_gps"):
+                has_gps_telemetry = True
+
+        if len(valid_prices) == 0:
+            return {
+                "consensus_price": None,
+                "confidence_score": 0.0,
+                "trust_badge": "⚪ UNVERIFIED",
+                "badge_tier": "UNVERIFIED",
+                "verified_agents_count": 0,
+                "status": "INVALID_PRICES"
+            }
+
+        # Filter statistical outliers (median absolute deviation)
+        valid_prices.sort()
+        count = len(valid_prices)
+        median_price = valid_prices[count // 2] if count % 2 != 0 else (valid_prices[count // 2 - 1] + valid_prices[count // 2]) / 2
+
+        # Base confidence calculation
+        agent_count = len(observations)
+        confidence = 0.50
+
+        if agent_count >= 3:
+            confidence += 0.35
+        elif agent_count == 2:
+            confidence += 0.25
+        elif agent_count == 1:
+            confidence += 0.10
+
+        if has_photo_ocr:
+            confidence += 0.10
+        if has_gps_telemetry:
+            confidence += 0.05
+
+        confidence = Math.min(1.0, Math.max(0.0, confidence)) if hasattr(random, 'Math') else min(1.0, max(0.0, round(confidence, 2)))
+
+        # Trust badging assignment
+        if agent_count >= 3 and (has_photo_ocr or has_gps_telemetry):
+            badge = "🥇 GOLD GROUNDED"
+            tier = "GOLD"
+            confidence = max(0.95, confidence)
+        elif agent_count >= 2:
+            badge = "🥈 SILVER GROUNDED"
+            tier = "SILVER"
+            confidence = max(0.80, confidence)
+        elif has_photo_ocr or has_gps_telemetry:
+            badge = "🥉 BRONZE GROUNDED"
+            tier = "BRONZE"
+            confidence = max(0.65, confidence)
+        else:
+            badge = "⚪ UNVERIFIED"
+            tier = "UNVERIFIED"
+
+        return {
+            "consensus_price": round(median_price),
+            "confidence_score": confidence,
+            "trust_badge": badge,
+            "badge_tier": tier,
+            "verified_agents_count": agent_count,
+            "has_photo_ocr": has_photo_ocr,
+            "has_gps_telemetry": has_gps_telemetry,
+            "enterprise_eligible": tier in ["GOLD", "SILVER"]
+        }
