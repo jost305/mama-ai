@@ -468,6 +468,55 @@ app.post("/reward/calculate", (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /alerts/dispatch — AlertGraph Intelligent Push Notification Engine
+// ─────────────────────────────────────────────────────────────────────────────
+app.post("/alerts/dispatch", (req, res) => {
+    const { alertType = "PRICE_DROP", confidenceScore = 0.95, badgeTier = "GOLD", commodity, market, priceNgn, previousPriceNgn, recipientType = "CONSUMER" } = req.body;
+
+    // Confidence Gatekeeper: Block unverified alerts below 0.80 confidence
+    if (confidenceScore < 0.80 && alertType !== "MISSION_DISPATCH" && alertType !== "WALLET_PAYOUT") {
+        return res.status(422).json({
+            success: false,
+            gatekeeperStatus: "BLOCKED",
+            reason: `Alert blocked by AlertGraph Gatekeeper. Confidence score (${(confidenceScore * 100).toFixed(1)}%) is below minimum threshold (80%). Report requires Silver or Gold Grounded badge.`,
+            badgeTier
+        });
+    }
+
+    let notificationTitle = "";
+    let notificationBody = "";
+
+    if (alertType === "PRICE_DROP") {
+        const dropPct = previousPriceNgn ? Math.round(((previousPriceNgn - priceNgn) / previousPriceNgn) * 100) : 6;
+        notificationTitle = `📉 Price Drop Alert: ${commodity || 'Rice (50kg)'}`;
+        notificationBody = `Price dropped ${dropPct}% to ₦${(priceNgn || 84000).toLocaleString()} at ${market || 'Bodija Market'} (${badgeTier} Verified).`;
+    } else if (alertType === "MISSION_DISPATCH") {
+        notificationTitle = `🎯 New High Gap Mission Available!`;
+        notificationBody = `Mission in ${market || 'Gusau Central Market'}: Log prices to earn ₦1,800 + 250 MarketPoints.`;
+    } else if (alertType === "WALLET_PAYOUT") {
+        notificationTitle = `💰 Weekly Wallet Payout Ready`;
+        notificationBody = `Your wallet balance of ₦${(priceNgn || 18900).toLocaleString()} is ready for instant withdrawal.`;
+    } else {
+        notificationTitle = `🔔 MamaPrice Market Alert`;
+        notificationBody = `${commodity || 'Commodity'} observation updated at ${market || 'Market'}.`;
+    }
+
+    res.json({
+        success: true,
+        gatekeeperStatus: "PASSED",
+        badgeTier,
+        confidenceScore: `${(confidenceScore * 100).toFixed(1)}%`,
+        dispatchChannels: ["Web Push Toast", "In-App Notification Center", "WhatsApp Notification API"],
+        recipientType,
+        notification: {
+            title: notificationTitle,
+            body: notificationBody,
+            timestamp: new Date().toISOString()
+        }
+    });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // WHATSAPP BUSINESS API INTEGRATION & HYBRID INTENT ROUTER
 // ─────────────────────────────────────────────────────────────────────────────
 const WHATSAPP_VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || "mamaprice_whatsapp_secret_token_2026";
