@@ -11070,10 +11070,100 @@ table tbody tr:hover {
     transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.task-action-btn:hover {
+/* Redeem Promo Code Card */
+.promo-code-card {
+    background: #ffffff;
+    border: 1px solid #bbf7d0;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 14px rgba(21, 128, 61, 0.05);
+}
+
+.pcc-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.pcc-icon-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.pcc-info h4 {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.pcc-info p {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.pcc-info code {
+    background: #f1f5f9;
+    color: #15803d;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.72rem;
+}
+
+.promo-input-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.promo-input-row input {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.promo-input-row input:focus {
+    border-color: #15803d;
+    background: #ffffff;
+}
+
+.apply-promo-btn {
     background: #15803d;
     color: #ffffff;
-    border-color: #15803d;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.apply-promo-btn:hover {
+    background: #0f5128;
 }
 
 /* My Coupons Section & Light Ticket Cutout Cards */

@@ -525,8 +525,100 @@ class RewardsEngine {
             case "BONUS_EARNINGS": return "💰";
             case "EXTRA_SPIN": return "🎟️";
             case "MULTIPLIER": return "⚡";
-            default: return "🔁";
+    // Redeem Promo or Partner Code
+    applyPromoCode(userId, rawCode) {
+        if (!rawCode) throw new Error("Promo code is required.");
+        const code = rawCode.trim().toUpperCase();
+        const user = this.getUserBalance(userId);
+
+        if (!this.data.promoCodes) {
+            this.data.promoCodes = {
+                "MAMAPLUS": { code: "MAMAPLUS", type: "SPINS", spins: 3, title: "+3 Extra Wheel Spins", active: true },
+                "BODIJA500": {
+                    code: "BODIJA500",
+                    type: "VOUCHER",
+                    voucher: {
+                        id: "rew_bodija_500",
+                        type: "FOOD_VOUCHER",
+                        title: "₦500 Bodija Market Voucher",
+                        description: "Valid for fresh produce and food items at Bodija Market",
+                        value: 500,
+                        currency: "NGN",
+                        partnerName: "Bodija Traders Guild",
+                        location: "Bodija Market, Ibadan"
+                    },
+                    active: true
+                },
+                "WELCOME5K": { code: "WELCOME5K", type: "CASHBACK", amount: 5000, title: "₦5,000 Welcome Cashback", active: true }
+            };
         }
+
+        const promo = this.data.promoCodes[code];
+
+        if (!promo || !promo.active) {
+            throw new Error("Invalid or expired promo code.");
+        }
+
+        const redemptionKey = `${userId}_${code}`;
+        if (!this.data.userPromoRedemptions) this.data.userPromoRedemptions = {};
+        if (this.data.userPromoRedemptions[redemptionKey]) {
+            throw new Error("You have already redeemed this promo code!");
+        }
+
+        let message = "";
+        if (promo.type === "SPINS") {
+            user.availableSpins += promo.spins;
+            user.earnedSources.unshift({
+                source: "PROMO_CODE",
+                label: `Redeemed code ${code} (+${promo.spins} spins)`,
+                spins: promo.spins,
+                date: new Date().toISOString()
+            });
+            message = `🎉 Code Applied! +${promo.spins} Extra Wheel Spins Credited!`;
+        } else if (promo.type === "CASHBACK") {
+            user.earnedSources.unshift({
+                source: "PROMO_CODE",
+                label: `Redeemed code ${code} (₦${promo.amount.toLocaleString()} welcome cashback)`,
+                spins: 1,
+                date: new Date().toISOString()
+            });
+            user.availableSpins += 1;
+            message = `🎉 Code Applied! ₦${promo.amount.toLocaleString()} Welcome Cashback + 1 Spin Credited!`;
+        } else if (promo.type === "VOUCHER") {
+            const voucherTx = {
+                id: `vch_${Date.now()}`,
+                userId,
+                rewardId: promo.voucher.id,
+                title: promo.voucher.title,
+                description: promo.voucher.description,
+                type: promo.voucher.type,
+                value: promo.voucher.value,
+                currency: promo.voucher.currency,
+                partnerName: promo.voucher.partnerName,
+                status: "AVAILABLE",
+                source: "PROMO_CODE",
+                voucherCode: `PRM-${code}-${Math.floor(1000 + Math.random() * 9000)}`,
+                qrData: `MAMAPRICE:VOUCHER:${code}`,
+                location: promo.voucher.location,
+                createdAt: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 3600000 * 24 * 30).toISOString()
+            };
+            this.data.rewardLedger.unshift(voucherTx);
+            user.availableSpins += 1;
+            message = `🎉 Code Applied! ${promo.voucher.title} added to your coupons!`;
+        }
+
+        this.data.userPromoRedemptions[redemptionKey] = new Date().toISOString();
+        this.saveData();
+
+        return {
+            success: true,
+            message,
+            code,
+            type: promo.type,
+            totalSpins: user.availableSpins,
+            summary: this.getUserSummary(userId)
+        };
     }
 
     // Create Partner Campaign (Admin)

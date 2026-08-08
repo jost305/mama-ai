@@ -5558,6 +5558,81 @@ window.restoreDailyTaskStates = function() {
     });
 };
 
+// Interactive Promo & Partner Code Redemption Logic
+window.applyPromoCode = async function() {
+    const inputEl = document.getElementById('promo-code-input');
+    const btnEl = document.getElementById('apply-promo-btn');
+    if (!inputEl) return;
+
+    const rawCode = inputEl.value.trim();
+    if (!rawCode) {
+        alert("⚠️ Please enter a promo code (e.g. MAMAPLUS, BODIJA500, WELCOME5K).");
+        return;
+    }
+
+    if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.innerText = "Applying...";
+    }
+
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/promo/apply", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: window.rewardsState ? window.rewardsState.userId : "usr_demo",
+                code: rawCode
+            })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert(`❌ ${data.error || 'Failed to apply promo code.'}`);
+            if (btnEl) { btnEl.disabled = false; btnEl.innerText = "Apply Code"; }
+            return;
+        }
+
+        // Success!
+        inputEl.value = '';
+        if (btnEl) { btnEl.disabled = false; btnEl.innerText = "Applied ✓"; }
+        
+        if (data.summary && window.rewardsState) {
+            window.rewardsState.summary = data.summary;
+            window.rewardsState.availableSpins = data.totalSpins;
+            window.updateRewardsUI();
+        } else {
+            window.fetchRewardsSummary();
+        }
+
+        alert(`${data.message || '🎉 Promo Code Applied Successfully!'}`);
+
+        setTimeout(() => {
+            if (btnEl) btnEl.innerText = "Apply Code";
+        }, 3000);
+
+    } catch (err) {
+        console.warn("[MamaPrice Rewards] Offline promo code fallback:", err);
+        const codeUpper = rawCode.toUpperCase();
+        if (codeUpper === 'MAMAPLUS') {
+            if (window.rewardsState) {
+                window.rewardsState.availableSpins += 3;
+                window.updateRewardsUI();
+            }
+            alert("🎉 Offline Demo Code Applied! +3 Extra Wheel Spins Credited!");
+        } else if (codeUpper === 'BODIJA500' || codeUpper === 'WELCOME5K') {
+            if (window.rewardsState) {
+                window.rewardsState.availableSpins += 1;
+                window.updateRewardsUI();
+            }
+            alert(`🎉 Code ${codeUpper} Applied! +1 Spin & Reward Added!`);
+        } else {
+            alert("❌ Invalid or expired promo code. Try 'MAMAPLUS', 'BODIJA500', or 'WELCOME5K'.");
+        }
+        if (btnEl) { btnEl.disabled = false; btnEl.innerText = "Apply Code"; }
+    }
+};
+
 // Live Daily Bonus Countdown Timer Ticker
 window.startDailyBonusTimer = function() {
     function updateTimer() {

@@ -348,6 +348,17 @@ app.post("/api/rewards/activity", (req, res) => {
     }
 });
 
+// POST /api/rewards/promo/apply (Redeem promo or partner campaign code)
+app.post("/api/rewards/promo/apply", (req, res) => {
+    const { userId = "usr_demo", code } = req.body;
+    try {
+        const result = rewardsEngine.applyPromoCode(userId, code);
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
 // GET /api/rewards/admin/campaigns
 app.get("/api/rewards/admin/campaigns", (req, res) => {
     try {
