@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { getLlama, LlamaChatSession } from "node-llama-cpp";
 import { ojaGraph } from "./ojagraph.js";
+import { rewardsEngine } from "./rewards-engine.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -153,8 +154,23 @@ async function getOrCreateSession(sessionId) {
         return existing.chatSession;
     }
 
-    console.log(`[SESSION] Creating new context (contextSize: 2048) for ID: "${sessionId}"`);
-    const context = await model.createContext({ contextSize: 2048 });
+    console.log(`[SESSION] Creating new context for ID: "${sessionId}"`);
+    let context;
+    for (const contextSize of [1024, 512, 256, 2048]) {
+        try {
+            console.log(`[SESSION] Trying contextSize: ${contextSize}...`);
+            context = await model.createContext({ contextSize });
+            console.log(`[SESSION] Context created successfully with contextSize: ${contextSize}`);
+            break;
+        } catch (err) {
+            console.warn(`[SESSION] Failed to create context with size ${contextSize}:`, err.message || err);
+        }
+    }
+
+    if (!context) {
+        throw new Error("Unable to allocate LLM context buffer on current system RAM resources.");
+    }
+
     const sequence = context.getSequence();
     const chatSession = new LlamaChatSession({
         contextSequence: sequence,
@@ -247,118 +263,119 @@ app.post("/chat", async (req, res) => {
 // POST /observe — Ingest a new Commerce Observation from an Agent
 // ─────────────────────────────────────────────────────────────────────────────
 app.post("/observe", async (req, res) => {
-    const { reportType = "PRICE", data } = req.body;
+    const { reportType = "PRICE", data, userId = "usr_demo" } = req.body;
     if (!data) return res.status(400).json({ error: "data is required" });
 
     try {
         const newDoc = ojaGraph.addObservation(data, reportType);
         console.log(`[OjaGraph] New ${reportType} observation ingested: ${newDoc.id}`);
-        res.json({ success: true, document: newDoc });
+
+        // Grant reward spin for verified observation
+        const rewardBonus = rewardsEngine.grantSpin(userId, "VERIFIED_PRICE_REPORT", `Verified ${data.commodity || 'Price'} Observation`, 1);
+
+        res.json({ success: true, document: newDoc, rewards: { spinGranted: 1, availableSpins: rewardBonus.availableSpins } });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /missions — AgentOS Dynamic Mission & Gap Coverage Engine
-// ─────────────────────────────────────────────────────────────────────────────
-app.get("/missions", (req, res) => {
-    const { state, lga, agentId } = req.query;
-
-    const activeMissions = [
-        {
-            id: "MSN-GUSAU-091",
-            title: "🎯 High Gap Mission: Gusau Central Market",
-            commodity: "🍚 Sorghum & Rice (50kg)",
-            market: "Gusau Central Market",
-            state: "Zamfara",
-            coverageIndex: "3%",
-            urgencyLevel: "CRITICAL_GAP",
-            rewardNgn: 1800,
-            rewardPoints: 250,
-            requiredRank: "Level 2 Market Agent",
-            deadlineHours: 12
-        },
-        {
-            id: "MSN-YOLA-044",
-            title: "🎯 High Gap Mission: Jimeta Market",
-            commodity: "🥜 Groundnut & Maize (100kg)",
-            market: "Jimeta Main Market",
-            state: "Adamawa",
-            coverageIndex: "11%",
-            urgencyLevel: "HIGH_GAP",
-            rewardNgn: 1200,
-            rewardPoints: 150,
-            requiredRank: "Level 1 Junior Scout",
-            deadlineHours: 24
-        },
-        {
-            id: "MSN-LOKOJA-012",
-            title: "🎯 Regional Gap Mission: Lokoja Market",
-            commodity: "🥔 Yam & Dangote Cement",
-            market: "Lokoja Central Market",
-            state: "Kogi",
-            coverageIndex: "24%",
-            urgencyLevel: "MEDIUM_GAP",
-            rewardNgn: 750,
-            rewardPoints: 100,
-            requiredRank: "Level 1 Junior Scout",
-            deadlineHours: 48
-        },
-        {
-            id: "MSN-IBADAN-088",
-            title: "🎯 Market Verification: Sango Market",
-            commodity: "🫘 Brown Beans (100kg)",
-            market: "Sango Market",
-            state: "Oyo",
-            coverageIndex: "82%",
-            urgencyLevel: "STANDARD",
-            rewardNgn: 350,
-            rewardPoints: 50,
-            requiredRank: "Level 1 Junior Scout",
-            deadlineHours: 72
-        },
-        {
-            id: "MSN-LAGOS-102",
-            title: "🎯 Market Verification: Mile 12 Market",
-            commodity: "🌶️ Pepper & Tomatoes (100kg)",
-            market: "Mile 12 Market",
-            state: "Lagos",
-            coverageIndex: "95%",
-            urgencyLevel: "STANDARD",
-            rewardNgn: 250,
-            rewardPoints: 25,
-            requiredRank: "Level 1 Junior Scout",
-            deadlineHours: 72
-        }
-    ];
-
-    res.json({
-        success: true,
-        coverageMetrics: {
-            lagosState: "95% (Optimal)",
-            oyoState: "82% (Optimal)",
-            kogiState: "24% (Medium Gap)",
-            adamawaState: "11% (High Gap)",
-            zamfaraState: "3% (Critical Gap)"
-        },
-        missions: activeMissions
-    });
-});
 
 // POST /missions/claim — Claim an active mission
 app.post("/missions/claim", (req, res) => {
-    const { missionId, agentId } = req.body;
+    const { missionId, agentId = "usr_agent_001" } = req.body;
     if (!missionId || !agentId) {
         return res.status(400).json({ error: "missionId and agentId are required" });
     }
+
+    // Grant reward spin for completing/claiming mission
+    const rewardBonus = rewardsEngine.grantSpin(agentId, "MISSION_COMPLETED", `Claimed Mission ${missionId}`, 1);
 
     res.json({
         success: true,
         missionId,
         agentId,
         status: "ACCEPTED",
-        message: `Mission ${missionId} successfully claimed by Agent ${agentId}. Log price report before deadline to receive reward.`
+        message: `Mission ${missionId} successfully claimed by Agent ${agentId}. Log price report before deadline to receive reward.`,
+        rewards: { spinGranted: 1, availableSpins: rewardBonus.availableSpins }
     });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🎡 MAMAPRICE REWARDS & SPIN-TO-WIN ENGINE ENDPOINTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+// GET /api/rewards/user-summary
+app.get("/api/rewards/user-summary", (req, res) => {
+    const userId = req.query.userId || "usr_demo";
+    try {
+        const summary = rewardsEngine.getUserSummary(userId);
+        res.json({ success: true, ...summary });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/rewards/spin (Server-Authoritative Spin Engine)
+app.post("/api/rewards/spin", (req, res) => {
+    const { userId = "usr_demo", spinSource = "daily_activity", idempotencyKey, userLocation } = req.body;
+    try {
+        const result = rewardsEngine.processSpin(userId, spinSource, idempotencyKey, userLocation);
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// POST /api/rewards/redeem
+app.post("/api/rewards/redeem", (req, res) => {
+    const { userId = "usr_demo", transactionId } = req.body;
+    if (!transactionId) return res.status(400).json({ error: "transactionId is required" });
+    try {
+        const result = rewardsEngine.redeemVoucher(userId, transactionId);
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// POST /api/rewards/activity (Award spin for completed user activity/task)
+app.post("/api/rewards/activity", (req, res) => {
+    const { userId = "usr_demo", source = "DAILY_TASK", label = "Completed daily bonus task", spins = 1 } = req.body;
+    try {
+        const updatedUser = rewardsEngine.grantSpin(userId, source, label, spins);
+        res.json({ success: true, user: updatedUser, spinsEarned: spins, totalSpins: updatedUser.availableSpins });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+// GET /api/rewards/admin/campaigns
+app.get("/api/rewards/admin/campaigns", (req, res) => {
+    try {
+        const analytics = rewardsEngine.getAnalytics();
+        res.json({ success: true, campaigns: analytics.activeCampaigns, analytics });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/rewards/admin/campaigns
+app.post("/api/rewards/admin/campaigns", (req, res) => {
+    try {
+        const result = rewardsEngine.createCampaign(req.body);
+        res.json({ success: true, ...result });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// GET /api/rewards/admin/analytics
+app.get("/api/rewards/admin/analytics", (req, res) => {
+    try {
+        const analytics = rewardsEngine.getAnalytics();
+        res.json({ success: true, analytics });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

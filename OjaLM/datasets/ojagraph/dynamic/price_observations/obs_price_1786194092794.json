@@ -1,0 +1,15 @@
+{
+  "id": "obs_price_1786194092794",
+  "type": "PriceObservation",
+  "product": "Unknown Product",
+  "brand": "Generic",
+  "market": "Bodija Market",
+  "state": "Oyo",
+  "observed_price": null,
+  "currency": "NGN",
+  "quantity": "unit",
+  "observed_date": "2026-08-08",
+  "confidence": 0.9,
+  "sources_count": 1,
+  "freshness_hours": 0
+}

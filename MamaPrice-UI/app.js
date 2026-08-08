@@ -282,14 +282,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarDockBtn = document.getElementById('sidebar-dock-btn');
     const topDockBtn = document.getElementById('top-dock-btn');
 
-    // Sidebar Initialization & Mobile Toggle Handling
-    if (sidebar) {
-        if (window.innerWidth > 768) {
-            sidebar.classList.add('open');
-        } else {
-            sidebar.classList.remove('open', 'mobile-open');
+    // Sidebar Initialization & Mobile Toggle Handling (Hidden by default on mobile <= 900px)
+    function syncSidebarMobileState() {
+        if (sidebar) {
+            if (window.innerWidth > 900) {
+                sidebar.classList.add('open');
+            } else {
+                sidebar.classList.remove('open', 'mobile-open');
+            }
         }
     }
+    syncSidebarMobileState();
+    window.addEventListener('resize', syncSidebarMobileState);
 
     if (menuToggleBtn) {
         menuToggleBtn.addEventListener('click', (e) => {
@@ -307,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-close mobile sidebar when selecting any navigation tab on mobile
     document.querySelectorAll('.sidebar .nav-item').forEach(item => {
         item.addEventListener('click', () => {
-            if (window.innerWidth <= 768 && sidebar) {
+            if (window.innerWidth <= 900 && sidebar) {
                 sidebar.classList.remove('open', 'mobile-open');
             }
         });
@@ -336,6 +340,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     function switchView(targetNav, targetPage) {
         if (!targetPage) return;
+        
+        // Auto-close sidebar on mobile when switching views
+        if (window.innerWidth <= 900 && sidebar) {
+            sidebar.classList.remove('open', 'mobile-open');
+        }
+
         document.querySelectorAll('.nav-item, .m-nav-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
 
@@ -356,6 +366,10 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => window.refreshMamaMap(), 150);
         }
 
+        if (targetPage.id === 'page-rewards' && typeof window.drawWheelCanvas === 'function') {
+            setTimeout(() => window.drawWheelCanvas(window.rewardsState ? window.rewardsState.currentRotation || 0 : 0), 100);
+        }
+
         // Update URL hash without scroll jump
         const hashKey = (pageKey === 'agent') ? 'agents' : (pageKey === 'library' ? 'watchlist' : pageKey);
         if (window.location.hash !== `#${hashKey}`) {
@@ -370,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (hash === 'agents' || hash === 'agent') pageKey = 'agent';
         if (hash === 'watchlist' || hash === 'library') pageKey = 'library';
+        if (hash === 'rewards' || hash === 'spin') pageKey = 'rewards';
 
         if (pageKey === 'home') {
             document.body.classList.remove('not-home-page');
@@ -401,6 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mNavMarkets = document.getElementById('m-nav-markets');
     const mNavMap = document.getElementById('m-nav-map');
     const mNavAgent = document.getElementById('m-nav-agent');
+    const navRewards = document.getElementById('nav-rewards');
+    const mNavRewards = document.getElementById('m-nav-rewards');
+    const pageRewards = document.getElementById('page-rewards');
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); switchView(navHome, pageHome); });
     if (navPrices) navPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(navPrices, pagePrices); });
@@ -408,6 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navMap) navMap.addEventListener('click', (e) => { e.preventDefault(); switchView(navMap, pageMap); });
     if (navMarkets) navMarkets.addEventListener('click', (e) => { e.preventDefault(); switchView(navMarkets, pageMarkets); });
     if (navAgent) navAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(navAgent, pageAgent); });
+    if (navRewards) navRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(navRewards, pageRewards); });
+    if (mNavRewards) mNavRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavRewards, pageRewards); });
     if (navLibrary) navLibrary.addEventListener('click', (e) => { e.preventDefault(); switchView(navLibrary, pageLibrary); });
     if (navHistory) navHistory.addEventListener('click', (e) => { 
         e.preventDefault(); 
@@ -4934,3 +4954,900 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🎡 MAMAPRICE REWARDS & SPIN-TO-WIN ENGINE — FRONTEND LOGIC
+// ─────────────────────────────────────────────────────────────────────────────
+
+window.rewardsState = {
+    userId: "usr_demo",
+    availableSpins: 3,
+    todayProgress: 60,
+    currentRotation: 0,
+    isSpinning: false,
+    summary: null,
+    selectedVoucher: null,
+    catalogSegments: [
+        { index: 0, title: "₦1,000 Food Voucher", icon: "🍔", type: "FOOD_VOUCHER", color: "#15803d" },
+        { index: 1, title: "₦500 Airtime", icon: "📱", type: "AIRTIME", color: "#0284c7" },
+        { index: 2, title: "Free Jollof Meal", icon: "🥘", type: "FOOD_VOUCHER", color: "#7c3aed" },
+        { index: 3, title: "+100 Points", icon: "⭐", type: "POINTS", color: "#d97706" },
+        { index: 4, title: "+1 Extra Spin", icon: "🎟️", type: "EXTRA_SPIN", color: "#059669" },
+        { index: 5, title: "₦500 Credit", icon: "💚", type: "MAMAPRICE_CREDIT", color: "#16a34a" },
+        { index: 6, title: "20% Discount", icon: "🏷️", type: "DISCOUNT", color: "#2563eb" },
+        { index: 7, title: "Try Again", icon: "🔁", type: "TRY_AGAIN", color: "#475569" }
+    ]
+};
+
+// Global helper to navigate directly to Rewards Hub
+window.navigateToRewards = function() {
+    const navRewards = document.getElementById('nav-rewards');
+    const pageRewards = document.getElementById('page-rewards');
+    if (navRewards && pageRewards && typeof switchView === 'function') {
+        switchView(navRewards, pageRewards);
+    } else {
+        window.location.hash = '#rewards';
+    }
+};
+
+// Fetch User Summary from Backend Server
+window.fetchRewardsSummary = async function() {
+    try {
+        const userJson = localStorage.getItem('mamaprice_auth_user');
+        if (userJson) {
+            const u = JSON.parse(userJson);
+            if (u.id) window.rewardsState.userId = u.id;
+        }
+
+        const res = await fetch(`http://localhost:3001/api/rewards/user-summary?userId=${window.rewardsState.userId}`);
+        if (!res.ok) throw new Error("Failed to fetch rewards summary");
+        const data = await res.json();
+
+        if (data.success) {
+            window.rewardsState.summary = data;
+            window.rewardsState.availableSpins = data.availableSpins;
+            window.rewardsState.todayProgress = data.todayProgress;
+            if (data.catalogSegments && data.catalogSegments.length >= 8) {
+                window.rewardsState.catalogSegments = data.catalogSegments.map((s, idx) => ({
+                    ...s,
+                    color: ["#15803d", "#0284c7", "#7c3aed", "#d97706", "#059669", "#16a34a", "#2563eb", "#475569"][idx % 8]
+                }));
+            }
+            window.updateRewardsUI();
+        }
+    } catch (e) {
+        console.warn("[MamaPrice Rewards] Operating in standalone mode:", e.message);
+        window.updateRewardsUI();
+    }
+};
+
+// Update all UI Spin counters, progress bars, and reward tabs
+window.updateRewardsUI = function() {
+    const spins = window.rewardsState.availableSpins;
+    const spinsText = `${spins} Spin${spins !== 1 ? 's' : ''}`;
+
+    // Header & Badge updates
+    const headerSpinsBadge = document.getElementById('header-spins-count');
+    if (headerSpinsBadge) headerSpinsBadge.innerText = `${spins}`;
+
+    const valEl = document.getElementById('rewards-spins-val');
+    if (valEl) valEl.innerText = spinsText;
+
+    const navBadge = document.getElementById('nav-spins-badge');
+    if (navBadge) navBadge.innerText = `🎟 ${spins}`;
+
+    const mBadge = document.getElementById('m-badge-spins');
+    if (mBadge) mBadge.innerText = `${spins}`;
+
+    const homeSpins = document.getElementById('home-spins-count');
+    if (homeSpins) homeSpins.innerText = spinsText;
+
+    const agentSpins = document.getElementById('agent-spins-count');
+    if (agentSpins) agentSpins.innerText = spinsText;
+
+    // Progress Bar Fill
+    const progress = window.rewardsState.todayProgress || 60;
+    const progressLbl = document.getElementById('rpc-progress-lbl');
+    if (progressLbl) progressLbl.innerText = `${progress}% Complete`;
+
+    const barFill = document.getElementById('rpc-bar-fill');
+    if (barFill) barFill.style.width = `${progress}%`;
+
+    // Render Vouchers & History
+    if (window.rewardsState.summary) {
+        window.renderActiveVouchers(window.rewardsState.summary.rewardWallet || []);
+        window.renderRewardHistory(window.rewardsState.summary.rewardWallet || []);
+    }
+
+    // Render Canvas Wheel
+    window.drawWheelCanvas(window.rewardsState.currentRotation);
+};
+
+// Render HTML5 Canvas Wheel
+window.drawWheelCanvas = function(rotationAngle = 0) {
+    const canvas = document.getElementById('rewards-wheel-canvas');
+    if (!canvas) return;
+
+    // Explicitly set buffer resolution
+    canvas.width = 380;
+    canvas.height = 380;
+
+    const ctx = canvas.getContext('2d');
+    const width = 380;
+    const height = 380;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = 172;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const defaultColors = [
+        "#15803d", // Emerald Green
+        "#0284c7", // Sky Blue
+        "#7c3aed", // Purple
+        "#d97706", // Amber Gold
+        "#e11d48", // Rose Red
+        "#0d9488", // Teal
+        "#4f46e5", // Indigo
+        "#334155"  // Dark Slate
+    ];
+
+    let segments = window.rewardsState.catalogSegments;
+    if (!segments || segments.length === 0) {
+        segments = [
+            { title: "₦1,000 Voucher", icon: "🍔", color: "#15803d" },
+            { title: "₦500 Airtime", icon: "📱", color: "#0284c7" },
+            { title: "Free Meal", icon: "🥘", color: "#7c3aed" },
+            { title: "+100 Points", icon: "⭐", color: "#d97706" },
+            { title: "+1 Extra Spin", icon: "🎟️", color: "#e11d48" },
+            { title: "₦500 Credit", icon: "💚", color: "#0d9488" },
+            { title: "20% Discount", icon: "🏷️", color: "#4f46e5" },
+            { title: "Try Again", icon: "🔁", color: "#334155" }
+        ];
+    }
+
+    const numSegments = segments.length;
+    const arcSize = (2 * Math.PI) / numSegments;
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate((rotationAngle * Math.PI) / 180);
+
+    // 1. Draw Segments Slices
+    for (let i = 0; i < numSegments; i++) {
+        const seg = segments[i];
+        const startAngle = i * arcSize;
+        const endAngle = startAngle + arcSize;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, startAngle, endAngle);
+        ctx.closePath();
+
+        ctx.fillStyle = seg.color || defaultColors[i % defaultColors.length];
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+
+        // 2. Draw Radial Text Label & Icon
+        ctx.save();
+        ctx.rotate(startAngle + arcSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+        ctx.shadowBlur = 4;
+        ctx.font = "bold 13px Plus Jakarta Sans, sans-serif";
+
+        const labelText = `${seg.icon || '🎁'} ${seg.title || 'Reward'}`;
+        ctx.fillText(labelText, radius - 18, 5);
+        ctx.restore();
+    }
+
+    // 3. Draw Outer Glowing Green & Gold Rim
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#15803d";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, radius + 4, 0, 2 * Math.PI);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#f59e0b";
+    ctx.stroke();
+
+    // 4. Draw Center White Circle Ring
+    ctx.beginPath();
+    ctx.arc(0, 0, 44, 0, 2 * Math.PI);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#15803d";
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+// Execute Wheel Spin with Server-Authoritative Calculation
+window.handleSpinClick = async function() {
+    if (window.rewardsState.isSpinning) return;
+    if (window.rewardsState.availableSpins <= 0) {
+        alert("🎟️ You have 0 available spins. Complete a market report, mission, or streak to earn more spins!");
+        return;
+    }
+
+    const spinBtn = document.getElementById('spin-wheel-trigger-btn');
+    window.rewardsState.isSpinning = true;
+    if (spinBtn) {
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = '0.7';
+    }
+
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/spin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: window.rewardsState.userId,
+                spinSource: "daily_activity",
+                idempotencyKey: `spn_${window.rewardsState.userId}_${Date.now()}`
+            })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert(data.error || "Unable to spin. Please try again.");
+            window.rewardsState.isSpinning = false;
+            if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
+            return;
+        }
+
+        // Winning Segment Index from Server
+        const targetSegIndex = data.reward.segmentIndex !== undefined ? data.reward.segmentIndex : 0;
+        const numSegments = window.rewardsState.catalogSegments.length;
+        const degreesPerSegment = 360 / numSegments;
+
+        // Calculate rotation target angle so pointer (top at 270 deg) lands exactly on target segment
+        const fullSpins = 360 * 5; // 5 full revolutions
+        const targetSegmentAngle = (numSegments - targetSegIndex) * degreesPerSegment - (degreesPerSegment / 2) - 90;
+        const totalTargetRotation = window.rewardsState.currentRotation + fullSpins + (targetSegmentAngle % 360);
+
+        // Animate Rotation
+        window.animateWheelToAngle(totalTargetRotation, 4500, () => {
+            window.rewardsState.isSpinning = false;
+            if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
+            window.rewardsState.availableSpins = data.remainingSpins;
+            window.rewardsState.currentRotation = totalTargetRotation % 360;
+
+            // Show Win Modal
+            window.showRewardWinModal(data.reward);
+            window.fetchRewardsSummary();
+
+            // Dispatch alert to notifications layer
+            window.dispatchRewardAlert(data.reward);
+        });
+
+    } catch (e) {
+        console.error("[MamaPrice Rewards] Spin API Error:", e);
+        // Fallback local animation if offline
+        const fallbackTarget = window.rewardsState.currentRotation + 360 * 5 + 45;
+        window.animateWheelToAngle(fallbackTarget, 4000, () => {
+            window.rewardsState.isSpinning = false;
+            if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
+            window.rewardsState.availableSpins = Math.max(0, window.rewardsState.availableSpins - 1);
+            window.showRewardWinModal({
+                title: "₦1,000 Food Voucher",
+                partnerName: "Mama's Kitchen",
+                voucherCode: "MAMA-IBD-82K7P",
+                type: "FOOD_VOUCHER"
+            });
+            window.updateRewardsUI();
+        });
+    }
+};
+
+// Smooth Cubic-Bezier Animation Easing
+window.animateWheelToAngle = function(targetDegree, durationMs, onComplete) {
+    const startDegree = window.rewardsState.currentRotation;
+    const startTime = performance.now();
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / durationMs);
+        const easedProgress = easeOutCubic(progress);
+
+        const currentDegree = startDegree + (targetDegree - startDegree) * easedProgress;
+        window.rewardsState.currentRotation = currentDegree;
+        window.drawWheelCanvas(currentDegree);
+
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            if (typeof onComplete === 'function') onComplete();
+        }
+    }
+
+    requestAnimationFrame(step);
+};
+
+// Display Celebration Win Modal
+window.showRewardWinModal = function(reward) {
+    const modal = document.getElementById('reward-win-modal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('win-reward-title');
+    const descEl = document.getElementById('win-reward-desc');
+    const codeEl = document.getElementById('win-voucher-code');
+    const iconBox = document.getElementById('win-icon-box');
+
+    if (titleEl) titleEl.innerText = reward.title || "Reward Claimed!";
+    if (descEl) descEl.innerText = reward.partnerName ? `from ${reward.partnerName}` : (reward.description || "Added to your wallet");
+    if (codeEl) codeEl.innerText = reward.voucherCode || "MAMA-88219";
+    if (iconBox) iconBox.innerText = reward.type === "TRY_AGAIN" ? "🔁" : "🎉";
+
+    window.rewardsState.selectedVoucher = reward;
+    modal.style.display = 'flex';
+};
+
+window.closeRewardWinModal = function() {
+    const modal = document.getElementById('reward-win-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+// Switch Tabs inside Rewards Hub
+window.switchRewardsTab = function(tabKey) {
+    document.querySelectorAll('.rw-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.rwTab === tabKey);
+    });
+
+    document.querySelectorAll('.rw-tab-content').forEach(content => {
+        content.style.display = content.id === `rw-tab-${tabKey}` ? 'block' : 'none';
+    });
+
+    if (tabKey === 'campaigns') window.fetchPartnerCampaigns();
+    if (tabKey === 'admin') window.fetchAdminAnalytics();
+};
+
+// Global state for coupons tab filter
+window.rewardsState.currentCouponsFilter = "AVAILABLE";
+
+// Filter Coupons Tab (Available, Used, Expired)
+window.filterCouponsTab = function(status) {
+    window.rewardsState.currentCouponsFilter = status;
+    document.querySelectorAll('.c-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.couponsTab === status);
+    });
+
+    if (window.rewardsState.summary && window.rewardsState.summary.rewardWallet) {
+        window.renderTicketVouchers(window.rewardsState.summary.rewardWallet, status);
+    } else {
+        window.renderTicketVouchers([], status);
+    }
+};
+
+// Render Ticket-Style Coupon Cards with Side Notches & Stubs (Ref Images 3, 4, 5)
+window.renderTicketVouchers = function(walletItems = [], filterStatus = "AVAILABLE") {
+    const stage = document.getElementById('coupons-list-stage');
+    const availCountEl = document.getElementById('c-count-available');
+    const usedCountEl = document.getElementById('c-count-used');
+    const expCountEl = document.getElementById('c-count-expired');
+
+    if (!stage) return;
+
+    const availableList = walletItems.filter(i => i.status === "AVAILABLE");
+    const usedList = walletItems.filter(i => i.status === "REDEEMED");
+    const expiredList = walletItems.filter(i => i.status === "EXPIRED" || (i.expiresAt && new Date(i.expiresAt) < new Date() && i.status !== "REDEEMED"));
+
+    if (availCountEl) availCountEl.innerText = availableList.length;
+    if (usedCountEl) usedCountEl.innerText = usedList.length;
+    if (expCountEl) expCountEl.innerText = expiredList.length;
+
+    let targetList = availableList;
+    if (filterStatus === "USED") targetList = usedList;
+    if (filterStatus === "EXPIRED") targetList = expiredList;
+
+    if (targetList.length === 0) {
+        stage.innerHTML = `
+            <div class="empty-coupons-view">
+                <div class="empty-clipboard-icon">📋</div>
+                <h4>No Coupon</h4>
+                <p>You currently don't have a coupon in this category, but you can get it by doing tasks.</p>
+                <button class="get-coupon-btn" onclick="scrollToWheelStage()">Get coupon</button>
+            </div>
+        `;
+        return;
+    }
+
+    stage.innerHTML = targetList.map(item => {
+        const isExpired = filterStatus === "EXPIRED";
+        const isUsed = filterStatus === "USED";
+        const isAvailable = filterStatus === "AVAILABLE";
+
+        const valDisplay = item.currency === "NGN" ? `₦${item.value}` : (item.value ? `${item.value}` : "OFF");
+
+        return `
+            <div class="ticket-coupon-card ${filterStatus.toLowerCase()}" onclick="${isAvailable ? `window.openVoucherDetailModal('${item.id}')` : ''}">
+                <div class="ticket-notch-top"></div>
+                <div class="ticket-notch-bottom"></div>
+                
+                <div class="ticket-left">
+                    <div class="ticket-icon-circle">${item.type === 'AIRTIME' ? '📱' : (item.type === 'DATA' ? '📶' : '🍔')}</div>
+                    <div class="ticket-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.description || `Valid at ${item.location || 'Nationwide'}`}</p>
+                        <span class="valid-date">Valid until ${item.expiresAt ? new Date(item.expiresAt).toLocaleDateString() : 'Aug 31, 2026'}</span>
+                    </div>
+                </div>
+
+                <div class="ticket-right-stub">
+                    <span class="stub-val">${valDisplay}</span>
+                    <button class="stub-btn">${isAvailable ? 'Use' : (isUsed ? 'Used' : 'Expired')}</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+};
+
+// Smooth Scroll Navigation Helpers
+window.scrollToWheelStage = function() {
+    const el = document.getElementById('wheel-stage-anchor');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+};
+
+window.scrollToDailyBonus = function() {
+    const el = document.getElementById('daily-bonus-anchor');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+};
+
+// Cashback Modal Triggers
+window.openCashbackModal = function() {
+    const modal = document.getElementById('cashback-detail-modal');
+    const spinsEl = document.getElementById('cb-spins-val');
+    if (spinsEl) spinsEl.innerText = `${window.rewardsState.availableSpins} Spins`;
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeCashbackModal = function() {
+    const modal = document.getElementById('cashback-detail-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+// Referral Share Drawer Modal Functions (Ref Image 2)
+window.openReferralShareModal = function() {
+    const modal = document.getElementById('referral-share-modal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeReferralShareModal = function() {
+    const modal = document.getElementById('referral-share-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.copyReferralCode = function() {
+    const text = "https://mamaprice.ng/join?ref=MAMA2026";
+    navigator.clipboard.writeText(text).then(() => {
+        alert("📋 Referral link copied to clipboard!");
+    }).catch(() => {
+        alert("Referral Code: MAMA2026");
+    });
+};
+
+window.shareViaSocial = function(platform) {
+    const shareText = encodeURIComponent("Join me on MamaPrice! Track live market prices, compare regional markets & win food vouchers: https://mamaprice.ng/join?ref=MAMA2026");
+    if (platform === 'whatsapp') {
+        window.open(`https://wa.me/?text=${shareText}`, '_blank');
+    } else if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=https://mamaprice.ng/join?ref=MAMA2026`, '_blank');
+    } else if (platform === 'telegram') {
+        window.open(`https://t.me/share/url?url=https://mamaprice.ng/join?ref=MAMA2026&text=${shareText}`, '_blank');
+    } else {
+        alert("Sharing link: https://mamaprice.ng/join?ref=MAMA2026");
+    }
+};
+
+// Interactive Daily Bonus Task Execution & Live Backend Award Sync
+window.executeDailyBonusTask = async function(taskType, taskTitle) {
+    const btn = document.getElementById(`daily-task-btn-${taskType}`);
+    
+    // Check if task was completed today
+    const completedTasks = JSON.parse(localStorage.getItem('mamaprice_completed_daily_tasks') || '{}');
+    const todayKey = new Date().toISOString().split('T')[0];
+    if (completedTasks[`${todayKey}_${taskType}`]) {
+        alert(`✅ You have already completed '${taskTitle}' today! Come back tomorrow for more spins.`);
+        return;
+    }
+
+    // Direct action navigation or modal trigger
+    if (taskType === 'PRICE_REPORT') {
+        const modal = document.getElementById('price-report-modal') || document.getElementById('report-modal');
+        if (modal) modal.style.display = 'flex';
+        else if (typeof window.switchView === 'function') {
+            const nav = document.getElementById('nav-prices');
+            const page = document.getElementById('page-prices');
+            if (nav && page) switchView(nav, page);
+        }
+    } else if (taskType === 'AGENT_MISSION') {
+        if (typeof window.switchView === 'function') {
+            const nav = document.getElementById('nav-agent');
+            const page = document.getElementById('page-agent');
+            if (nav && page) switchView(nav, page);
+        }
+    } else if (taskType === 'PRICE_ALERT') {
+        if (typeof window.openAlertModal === 'function') {
+            window.openAlertModal('Rice', '75000');
+        } else {
+            const alertModal = document.getElementById('create-alert-modal');
+            if (alertModal) alertModal.style.display = 'flex';
+        }
+    }
+
+    // Call Backend API /api/rewards/activity to credit +1 Spin live
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/activity", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: window.rewardsState ? window.rewardsState.userId : "usr_demo",
+                source: taskType,
+                label: `Completed daily bonus: ${taskTitle}`,
+                spins: 1
+            })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            if (window.rewardsState) {
+                window.rewardsState.availableSpins = data.totalSpins;
+                window.updateRewardsUI();
+            }
+
+            completedTasks[`${todayKey}_${taskType}`] = true;
+            localStorage.setItem('mamaprice_completed_daily_tasks', JSON.stringify(completedTasks));
+
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+                btn.style.background = '#dcfce7';
+                btn.style.color = '#15803d';
+                btn.style.borderColor = '#bbf7d0';
+                btn.disabled = true;
+            }
+
+            alert(`🎉 Daily Task Completed!\n\nTask: ${taskTitle}\nReward: +1 Wheel Spin Earned! (Total: ${data.totalSpins} Spins)`);
+        }
+    } catch (err) {
+        console.warn("[MamaPrice Rewards] Activity API offline fallback:", err);
+        if (window.rewardsState) {
+            window.rewardsState.availableSpins += 1;
+            window.updateRewardsUI();
+        }
+        completedTasks[`${todayKey}_${taskType}`] = true;
+        localStorage.setItem('mamaprice_completed_daily_tasks', JSON.stringify(completedTasks));
+
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+            btn.style.background = '#dcfce7';
+            btn.style.color = '#15803d';
+            btn.style.borderColor = '#bbf7d0';
+            btn.disabled = true;
+        }
+        alert(`🎉 Task Completed: ${taskTitle}!\n+1 Spin Earned!`);
+    }
+};
+
+// Auto-restore Daily Bonus Completed Tasks on page load
+window.restoreDailyTaskStates = function() {
+    const completedTasks = JSON.parse(localStorage.getItem('mamaprice_completed_daily_tasks') || '{}');
+    const todayKey = new Date().toISOString().split('T')[0];
+    ['PRICE_REPORT', 'AGENT_MISSION', 'PRICE_ALERT'].forEach(taskType => {
+        if (completedTasks[`${todayKey}_${taskType}`]) {
+            const btn = document.getElementById(`daily-task-btn-${taskType}`);
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+                btn.style.background = '#dcfce7';
+                btn.style.color = '#15803d';
+                btn.style.borderColor = '#bbf7d0';
+                btn.disabled = true;
+            }
+        }
+    });
+};
+
+// Live Daily Bonus Countdown Timer Ticker
+window.startDailyBonusTimer = function() {
+    function updateTimer() {
+        const timerEl = document.getElementById('daily-bonus-timer');
+        if (!timerEl) return;
+        const now = new Date();
+        const midnight = new Date();
+        midnight.setHours(24, 0, 0, 0);
+        const diff = Math.max(0, Math.floor((midnight - now) / 1000));
+
+        const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+        const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+        const s = String(diff % 60).padStart(2, '0');
+
+        timerEl.innerText = `${h} : ${m} : ${s}`;
+    }
+    updateTimer();
+    if (!window._dailyTimerInterval) {
+        window._dailyTimerInterval = setInterval(updateTimer, 1000);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        window.restoreDailyTaskStates();
+        window.startDailyBonusTimer();
+    }, 200);
+});
+
+// Start timer immediately in case script loads post DOMContentLoaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(() => {
+        window.restoreDailyTaskStates();
+        window.startDailyBonusTimer();
+    }, 200);
+}
+
+// Update UI Hook
+const origUpdateUI = window.updateRewardsUI;
+window.updateRewardsUI = function() {
+    if (typeof origUpdateUI === 'function') origUpdateUI();
+
+    const mrhSpins = document.getElementById('mrh-spins-val');
+    if (mrhSpins) mrhSpins.innerHTML = `${window.rewardsState.availableSpins} Spins <i class="fa-solid fa-chevron-right"></i>`;
+
+    if (window.rewardsState.summary && window.rewardsState.summary.rewardWallet) {
+        window.renderTicketVouchers(window.rewardsState.summary.rewardWallet, window.rewardsState.currentCouponsFilter || "AVAILABLE");
+    } else {
+        window.renderTicketVouchers([], window.rewardsState.currentCouponsFilter || "AVAILABLE");
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.startDailyBonusTimer();
+});
+
+
+// Render Reward History Table
+window.renderRewardHistory = function(walletItems) {
+    const tbody = document.getElementById('reward-history-tbody');
+    if (!tbody) return;
+
+    if (!walletItems || walletItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">No reward transactions yet.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = walletItems.map(item => `
+        <tr>
+            <td><strong>${item.title}</strong></td>
+            <td><span class="type-tag">${item.type}</span></td>
+            <td>${item.partnerName || 'MamaPrice'}</td>
+            <td>${new Date(item.createdAt).toLocaleDateString()}</td>
+            <td><span class="status-pill ${item.status.toLowerCase()}">${item.status}</span></td>
+        </tr>
+    `).join('');
+};
+
+// Vector SVG QR Code Renderer
+window.renderSVGQRCode = function(containerId, text) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Generate deterministic 7x7 grid representation for QR code preview
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) hash = (hash << 5) - hash + text.charCodeAt(i);
+
+    let rects = '';
+    const size = 180;
+    const modules = 15;
+    const modSize = size / modules;
+
+    for (let row = 0; row < modules; row++) {
+        for (let col = 0; col < modules; col++) {
+            const isCorner = (row < 4 && col < 4) || (row < 4 && col > modules - 5) || (row > modules - 5 && col < 4);
+            const isCenterPoint = (row === 7 && col === 7);
+            const bit = Math.abs(hash * (row + 1) * (col + 1)) % 2 === 1;
+
+            if (isCorner || isCenterPoint || bit) {
+                rects += `<rect x="${col * modSize}" y="${row * modSize}" width="${modSize - 0.5}" height="${modSize - 0.5}" fill="#0f172a"/>`;
+            }
+        }
+    }
+
+    container.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="background:#fff;padding:10px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">${rects}</svg>`;
+};
+
+// Open Voucher Detail Modal
+window.openVoucherDetailModal = function(transactionId) {
+    const summary = window.rewardsState.summary;
+    let voucher = window.rewardsState.selectedVoucher;
+
+    if (summary && summary.rewardWallet) {
+        const found = summary.rewardWallet.find(w => w.id === transactionId);
+        if (found) voucher = found;
+    }
+
+    if (!voucher) return;
+    window.rewardsState.selectedVoucher = voucher;
+
+    const modal = document.getElementById('voucher-detail-modal');
+    if (!modal) return;
+
+    document.getElementById('vd-type-badge').innerText = voucher.type || "VOUCHER";
+    document.getElementById('vd-title').innerText = voucher.title;
+    document.getElementById('vd-partner').innerText = `Partner: ${voucher.partnerName || 'MamaPrice Partner'}`;
+    document.getElementById('vd-code-text').innerText = voucher.voucherCode || 'MAMA-CODE';
+    document.getElementById('vd-location-text').innerText = `Valid at ${voucher.location || 'Nationwide'}`;
+    document.getElementById('vd-expiry-text').innerText = voucher.expiresAt ? new Date(voucher.expiresAt).toLocaleDateString() : "31 Aug 2026";
+
+    const statusPill = document.getElementById('vd-status-pill');
+    if (statusPill) {
+        statusPill.innerText = voucher.status;
+        statusPill.className = `status-pill ${voucher.status.toLowerCase()}`;
+    }
+
+    const redeemBtn = document.getElementById('vd-redeem-action-btn');
+    if (redeemBtn) {
+        redeemBtn.disabled = voucher.status !== "AVAILABLE";
+        redeemBtn.style.opacity = voucher.status === "AVAILABLE" ? '1' : '0.5';
+    }
+
+    window.renderSVGQRCode('vd-qr-code-svg', voucher.qrData || voucher.voucherCode || "MAMAPRICE-VOUCHER");
+    window.closeRewardWinModal();
+    modal.style.display = 'flex';
+};
+
+window.viewClaimedVoucherDetail = function() {
+    if (window.rewardsState.selectedVoucher) {
+        window.openVoucherDetailModal(window.rewardsState.selectedVoucher.id);
+    }
+};
+
+window.closeVoucherDetailModal = function() {
+    const modal = document.getElementById('voucher-detail-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+// Handle Voucher Redemption Action
+window.handleRedeemVoucherAction = async function() {
+    const voucher = window.rewardsState.selectedVoucher;
+    if (!voucher || !voucher.id) return;
+
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/redeem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: window.rewardsState.userId,
+                transactionId: voucher.id
+            })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            alert("✅ Voucher successfully redeemed!");
+            window.closeVoucherDetailModal();
+            window.fetchRewardsSummary();
+        } else {
+            alert(`Unable to redeem: ${data.error}`);
+        }
+    } catch (e) {
+        console.error("Redeem Error:", e);
+        alert("Voucher redeemed locally.");
+        window.closeVoucherDetailModal();
+    }
+};
+
+// Fetch Partner Campaigns
+window.fetchPartnerCampaigns = async function() {
+    const grid = document.getElementById('partner-campaigns-grid');
+    if (!grid) return;
+
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/admin/campaigns");
+        const data = await res.json();
+
+        if (data.success && data.campaigns) {
+            grid.innerHTML = data.campaigns.map(c => `
+                <div class="campaign-card" style="background:#fff;padding:16px;border-radius:12px;border:1px solid #e2e8f0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="font-size:0.75rem;font-weight:700;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:6px;">ACTIVE CAMPAIGN</span>
+                        <small style="color:#64748b;">${c.partnerName}</small>
+                    </div>
+                    <h4 style="font-size:1rem;color:#0f172a;font-weight:700;">${c.campaignTitle}</h4>
+                    <p style="font-size:0.8rem;color:#64748b;margin:6px 0;">Budget: ₦${c.budgetNgn ? c.budgetNgn.toLocaleString() : '100,000'} · Vouchers: ${c.allocatedVouchers}</p>
+                    <div style="font-size:0.8rem;color:#334155;background:#f8fafc;padding:8px;border-radius:6px;">
+                        Redeemed: <strong>${c.redeemedVouchers}/${c.allocatedVouchers}</strong>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        console.warn("Error fetching campaigns:", e);
+    }
+};
+
+// Fetch Admin Analytics Summary
+window.fetchAdminAnalytics = async function() {
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/admin/analytics");
+        const data = await res.json();
+        if (data.success && data.analytics) {
+            const an = data.analytics;
+            const spinsVal = document.getElementById('an-spins-val');
+            const claimedVal = document.getElementById('an-claimed-val');
+            const redeemedVal = document.getElementById('an-redeemed-val');
+            const rateVal = document.getElementById('an-rate-val');
+
+            if (spinsVal) spinsVal.innerText = an.totalSpins || 148;
+            if (claimedVal) claimedVal.innerText = an.voucherClaims || 43;
+            if (redeemedVal) redeemedVal.innerText = an.voucherRedemptions || 29;
+            if (rateVal) rateVal.innerText = `${an.redemptionRate || 67}%`;
+        }
+    } catch (e) {
+        console.warn("Error fetching analytics:", e);
+    }
+};
+
+// Create Partner Campaign (Admin Submit)
+window.handleCreateCampaignSubmit = async function(event) {
+    event.preventDefault();
+    const payload = {
+        partnerName: document.getElementById('ac-partner-name').value,
+        campaignTitle: document.getElementById('ac-campaign-title').value,
+        rewardType: document.getElementById('ac-reward-type').value,
+        rewardTitle: document.getElementById('ac-reward-title').value,
+        budgetNgn: Number(document.getElementById('ac-budget').value),
+        allocatedVouchers: Number(document.getElementById('ac-vouchers').value),
+        locationTargeting: { city: document.getElementById('ac-location').value }
+    };
+
+    try {
+        const res = await fetch("http://localhost:3001/api/rewards/admin/campaigns", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            alert("🎉 Partner Campaign successfully created!");
+            document.getElementById('create-campaign-form').reset();
+            window.fetchPartnerCampaigns();
+            window.fetchAdminAnalytics();
+        }
+    } catch (e) {
+        console.error("Create Campaign error:", e);
+        alert("Campaign created locally.");
+    }
+};
+
+// Dispatch reward notifications into existing mamaprice_alerts layer
+window.dispatchRewardAlert = function(reward) {
+    try {
+        const userAlerts = JSON.parse(localStorage.getItem('mamaprice_alerts') || '[]');
+        userAlerts.unshift({
+            alertText: `🎉 You won ${reward.title} ${reward.partnerName ? 'from ' + reward.partnerName : ''}!`,
+            createdAt: new Date().toISOString()
+        });
+        localStorage.setItem('mamaprice_alerts', JSON.stringify(userAlerts));
+    } catch (e) {
+        console.warn("Alert dispatch skipped:", e);
+    }
+};
+
+// Auto-initialize Rewards Module on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        window.fetchRewardsSummary();
+    }, 500);
+});
+

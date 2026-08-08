@@ -67,6 +67,11 @@
                     <span class="nav-earned-badge" id="nav-agent-earned-badge"
                         title="Scout Earnings So Far">₦148.5k</span>
                 </a>
+                <a href="javascript:void(0)" class="nav-item" id="nav-rewards">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                    <span>Spin & Win</span>
+                    <span class="nav-earned-badge green-spin-badge" id="nav-spins-badge" title="Available Spins">🎟 3</span>
+                </a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-map" style="display: none !important;"><i
                         class="fa-solid fa-map-location-dot"></i><span>Live Map</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-profile"><i
@@ -127,6 +132,13 @@
                 </div>
 
                 <div class="header-right">
+                    <!-- Compact Header Spin & Win Trigger -->
+                    <button class="header-spin-btn" id="header-spin-btn" onclick="switchView(document.getElementById('nav-rewards'), document.getElementById('page-rewards'))" title="Spin & Win Rewards">
+                        <span class="hsb-icon">🎡</span>
+                        <span class="hsb-text">Spin</span>
+                        <span class="hsb-badge" id="header-spins-count">3</span>
+                    </button>
+
                     <!-- Tight Dynamic Live Weather & Location Capsule -->
                     <div class="weather-pill-container" style="position: relative;">
                         <div class="weather-location-pill" id="weather-location-pill"
@@ -1206,6 +1218,20 @@
                         </div>
                     </div>
 
+                    <!-- Agent Rewards Wheel & Spin Eligibility Card -->
+                    <div class="agent-rewards-banner" id="agent-rewards-widget">
+                        <div class="arc-left">
+                            <div class="arc-badge">🎟️</div>
+                            <div class="arc-info">
+                                <h3>Agent Spin & Win Rewards</h3>
+                                <p id="agent-rewards-sub">Available Spins: <strong id="agent-spins-count">3 Spins</strong> · Next spin: Submit 1 verified price report</p>
+                            </div>
+                        </div>
+                        <button class="btn-compact-primary arc-btn" onclick="navigateToRewards()">
+                            <i class="fa-solid fa-dharmachakra"></i> Spin Rewards Wheel
+                        </button>
+                    </div>
+
                     <!-- 5 KPI Summary Cards Grid -->
                     <div class="scout-kpi-row">
                         <div class="scout-kpi-card">
@@ -2256,6 +2282,198 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Page 9: MamaPrice Mobile & Desktop Redesigned Rewards Hub -->
+            <div class="page-view" id="page-rewards">
+                <div class="view-container rewards-page-container">
+                    
+                    <!-- Section 1: Top Header Balance Row -->
+                    <div class="rewards-balance-header">
+                        <div class="balance-pill-card" onclick="openCashbackModal()" title="View Cashback Details">
+                            <span class="bp-icon">🪙</span>
+                            <div class="bp-info">
+                                <span class="bp-label">Cashback & Credits</span>
+                                <strong class="bp-val">₦18,900.00 <i class="fa-solid fa-chevron-right"></i></strong>
+                            </div>
+                        </div>
+                        <div class="balance-pill-card green" onclick="filterCouponsTab('AVAILABLE')" title="View Active Vouchers">
+                            <span class="bp-icon">🎫</span>
+                            <div class="bp-info">
+                                <span class="bp-label">Vouchers & Spins</span>
+                                <strong class="bp-val" id="mrh-spins-val">3 Spins <i class="fa-solid fa-chevron-right"></i></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Main Desktop & Mobile Layout Container -->
+                    <div class="rewards-main-layout">
+                        
+                        <!-- Left Column: Wheel Stage Card -->
+                        <div class="rewards-left-column">
+                            <div class="wheel-stage-card" id="wheel-stage-anchor">
+                                <div class="wheel-container-wrapper">
+                                    <!-- Pointer Needle -->
+                                    <div class="wheel-pointer"></div>
+                                    <!-- Canvas Wheel -->
+                                    <canvas id="rewards-wheel-canvas" width="380" height="380"></canvas>
+                                    <!-- Center Spin Trigger -->
+                                    <button class="wheel-center-btn" id="spin-wheel-trigger-btn" onclick="handleSpinClick()">
+                                        <span>SPIN</span>
+                                    </button>
+                                </div>
+
+                                <div class="wheel-prizes-preview">
+                                    <h4>Current Wheel Rewards Catalog</h4>
+                                    <div class="prizes-grid" id="prizes-catalog-grid">
+                                        <div class="prize-pill">🍔 ₦1,000 Voucher</div>
+                                        <div class="prize-pill">📱 ₦500 Airtime</div>
+                                        <div class="prize-pill">🥘 Free Meal</div>
+                                        <div class="prize-pill">⭐ +100 Points</div>
+                                        <div class="prize-pill">🎟️ +1 Extra Spin</div>
+                                        <div class="prize-pill">💚 ₦500 Credit</div>
+                                        <div class="prize-pill">🏷️ 20% Discount</div>
+                                        <div class="prize-pill">🔁 Try Again</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Quick Actions, Refer & Earn, Daily Bonus -->
+                        <div class="rewards-right-column">
+                            
+                            <!-- Quick Action Icon Grid (4 Cards) -->
+                            <div class="quick-actions-row">
+                                <div class="qa-item" onclick="scrollToWheelStage()">
+                                    <div class="qa-icon-box green-tint">🎡</div>
+                                    <span>Spin & Win</span>
+                                </div>
+                                <div class="qa-item" onclick="openReferralShareModal()">
+                                    <div class="qa-icon-box pink-tint">👥</div>
+                                    <span>Refer Friends</span>
+                                </div>
+                                <div class="qa-item" onclick="scrollToDailyBonus()">
+                                    <div class="qa-icon-box yellow-tint">⭐</div>
+                                    <span>Daily Bonus</span>
+                                </div>
+                                <div class="qa-item" onclick="filterCouponsTab('AVAILABLE')">
+                                    <div class="qa-icon-box teal-tint">🎟️</div>
+                                    <span>My Vouchers</span>
+                                </div>
+                            </div>
+
+                            <!-- Refer & Earn Milestone Card (Vertical Stack Layout) -->
+                            <div class="refer-earn-card" id="refer-earn-anchor">
+                                <div class="rec-header">
+                                    <div>
+                                        <h3>Refer & Earn</h3>
+                                        <p>Invite friends to join MamaPrice & earn cash + spins</p>
+                                    </div>
+                                    <button class="rec-more-btn" onclick="openReferralShareModal()">More <i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                                
+                                <div class="rec-body">
+                                    <div class="rec-cash-badge">
+                                        <strong class="rec-cash-val">₦1,594.00</strong>
+                                        <span class="rec-cash-lbl">Earned Cash Balance</span>
+                                    </div>
+
+                                    <div class="rec-milestones-track">
+                                        <div class="rec-progress-line">
+                                            <div class="rec-fill-line" style="width: 45%;"></div>
+                                        </div>
+                                        <div class="milestone-step reached">
+                                            <span class="m-reward-tag">₦1,600</span>
+                                            <div class="m-node"><i class="fa-solid fa-money-bill-wave"></i></div>
+                                            <span class="m-label">1 User</span>
+                                        </div>
+                                        <div class="milestone-step">
+                                            <span class="m-reward-tag">₦4,500</span>
+                                            <div class="m-node"><i class="fa-solid fa-money-bill-wave"></i></div>
+                                            <span class="m-label">3 Users</span>
+                                        </div>
+                                        <div class="milestone-step">
+                                            <span class="m-reward-tag">₦10,000</span>
+                                            <div class="m-node"><i class="fa-solid fa-money-bill-wave"></i></div>
+                                            <span class="m-label">5 Users</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="rec-invite-btn" onclick="openReferralShareModal()">
+                                    <i class="fa-solid fa-share-nodes"></i> Invite to Earn
+                                </button>
+                            </div>
+
+                            <!-- Daily Bonus Task List Card -->
+                            <div class="daily-bonus-card" id="daily-bonus-anchor">
+                                <div class="dbc-header">
+                                    <h3>Daily Bonus</h3>
+                                    <div class="dbc-timer-capsule">
+                                        <i class="fa-regular fa-clock"></i>
+                                        <span id="daily-bonus-timer">09 : 35 : 17</span>
+                                    </div>
+                                </div>
+
+                                <div class="task-list-rows">
+                                    <div class="task-row">
+                                        <div class="task-icon-box purple"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                                        <div class="task-info">
+                                            <h4>Report Market Price</h4>
+                                            <p>Submit 1 verified price report (0/1 per day)</p>
+                                        </div>
+                                        <button class="task-action-btn" id="daily-task-btn-PRICE_REPORT" onclick="executeDailyBonusTask('PRICE_REPORT', 'Report Market Price')">Go</button>
+                                    </div>
+                                    <div class="task-row">
+                                        <div class="task-icon-box blue"><i class="fa-solid fa-user-check"></i></div>
+                                        <div class="task-info">
+                                            <h4>Complete Agent Mission</h4>
+                                            <p>Claim high-gap market coverage (Once per day)</p>
+                                        </div>
+                                        <button class="task-action-btn" id="daily-task-btn-AGENT_MISSION" onclick="executeDailyBonusTask('AGENT_MISSION', 'Complete Agent Mission')">Go</button>
+                                    </div>
+                                    <div class="task-row">
+                                        <div class="task-icon-box green"><i class="fa-solid fa-mobile-screen"></i></div>
+                                        <div class="task-info">
+                                            <h4>Data & Commodity Alert</h4>
+                                            <p>Set 1 price alert on any commodity</p>
+                                        </div>
+                                        <button class="task-action-btn" id="daily-task-btn-PRICE_ALERT" onclick="executeDailyBonusTask('PRICE_ALERT', 'Data & Commodity Alert')">Go</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Section 3: Full-Width Bottom Section: My Coupons -->
+                    <div class="my-coupons-container" id="my-coupons-anchor">
+                        <div class="mc-header-row">
+                            <h3>My Coupons</h3>
+                            <i class="fa-regular fa-circle-question mc-help-icon" onclick="alert('Coupons Guidelines:\n- Redeemable at participating partner markets\n- Show QR code or alphanumeric code at checkout')" title="Coupon Guidelines"></i>
+                        </div>
+
+                        <!-- 3-Tab Filter Bar -->
+                        <div class="coupons-tabs-bar">
+                            <button class="c-tab-btn active" data-coupons-tab="AVAILABLE" onclick="filterCouponsTab('AVAILABLE')">
+                                Available (<span id="c-count-available">2</span>)
+                            </button>
+                            <button class="c-tab-btn" data-coupons-tab="USED" onclick="filterCouponsTab('USED')">
+                                Used (<span id="c-count-used">1</span>)
+                            </button>
+                            <button class="c-tab-btn" data-coupons-tab="EXPIRED" onclick="filterCouponsTab('EXPIRED')">
+                                Expired (<span id="c-count-expired">0</span>)
+                            </button>
+                        </div>
+
+                        <!-- Ticket Coupons List Stage / Empty State -->
+                        <div class="coupons-list-stage" id="coupons-list-stage">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </main>
     </div>
 
@@ -2267,6 +2485,11 @@
             <i class="fa-solid fa-user-shield"></i>
             <span>Agents</span>
             <span class="m-nav-badge purple-badge" id="m-badge-agent">8</span>
+        </a>
+        <a href="javascript:void(0)" class="m-nav-item" id="m-nav-rewards">
+            <i class="fa-solid fa-dharmachakra"></i>
+            <span>Rewards</span>
+            <span class="m-nav-badge gold-badge" id="m-badge-spins">3</span>
         </a>
         <a href="javascript:void(0)" class="m-nav-item" id="m-nav-prices"><i
                 class="fa-solid fa-tag"></i><span>Prices</span></a>
@@ -2642,7 +2865,132 @@
                     style="width: 100%; padding: 9px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(21,128,61,0.25); margin-top: 4px;">
                     <i class="fa-solid fa-bell"></i> Set Price Alert
                 </button>
-            </form>
+    <!-- Celebration Win Modal -->
+    <div class="custom-modal-overlay" id="reward-win-modal" style="display: none;">
+        <div class="modal-card celebration-card">
+            <button class="modal-close-btn" onclick="closeRewardWinModal()">&times;</button>
+            <div class="win-icon-wrapper" id="win-icon-box">🎉</div>
+            <span class="win-tag">CONGRATULATIONS!</span>
+            <h2 id="win-reward-title">₦1,000 Food Voucher</h2>
+            <p id="win-reward-desc">from Mama's Kitchen</p>
+
+            <div class="win-code-box" id="win-code-box">
+                <span class="code-lbl">VOUCHER CODE</span>
+                <strong class="code-val" id="win-voucher-code">MAMA-IBD-82K7P</strong>
+            </div>
+
+            <div class="modal-actions-row">
+                <button class="btn-primary-green" onclick="viewClaimedVoucherDetail()">
+                    <i class="fa-solid fa-qrcode"></i> View Voucher & QR
+                </button>
+                <button class="btn-secondary" onclick="closeRewardWinModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voucher Detail Modal -->
+    <div class="custom-modal-overlay" id="voucher-detail-modal" style="display: none;">
+        <div class="modal-card voucher-modal-card">
+            <button class="modal-close-btn" onclick="closeVoucherDetailModal()">&times;</button>
+            <div class="voucher-detail-header">
+                <span class="vd-type-badge" id="vd-type-badge">FOOD VOUCHER</span>
+                <h2 id="vd-title">₦1,000 Food Voucher</h2>
+                <p id="vd-partner">Partner: Mama's Kitchen</p>
+            </div>
+
+            <div class="vd-qr-stage">
+                <div id="vd-qr-code-svg" class="qr-svg-box"></div>
+                <div class="vd-code-display" id="vd-code-text">MAMA-IBD-82K7P</div>
+                <span class="vd-location" id="vd-location-text">Valid at Bodija Market, Ibadan North</span>
+            </div>
+
+            <div class="vd-instructions">
+                <h4>How to Redeem:</h4>
+                <ol>
+                    <li>Visit the participating merchant location.</li>
+                    <li>Show this voucher code or QR code to the cashier.</li>
+                    <li>Cashier scans or confirms code to apply discount.</li>
+                </ol>
+            </div>
+
+            <div class="vd-status-bar">
+                <span>Valid until: <strong id="vd-expiry-text">31 Aug 2026</strong></span>
+                <span id="vd-status-pill" class="status-pill green">AVAILABLE</span>
+            </div>
+
+            <div class="modal-actions-row" style="margin-top: 15px;">
+                <button class="btn-primary-green" id="vd-redeem-action-btn" onclick="handleRedeemVoucherAction()">
+                    <i class="fa-solid fa-circle-check"></i> Redeem Now
+                </button>
+                <button class="btn-secondary" onclick="closeVoucherDetailModal()">Close</button>
+            </div>
+        </div>
+    <!-- Referral Share Social Modal (Ref Image 2) -->
+    <div class="custom-modal-overlay" id="referral-share-modal" style="display: none;">
+        <div class="modal-card share-sheet-card">
+            <button class="modal-close-btn" onclick="closeReferralShareModal()">&times;</button>
+            
+            <div class="share-invite-box">
+                <div class="share-app-icon">💚</div>
+                <p>Join MamaPrice and get <strong>₦5,500 Welcome Bonus & Free Spins!</strong> Use code <code id="share-code-text">MAMA2026</code> or link:</p>
+                <div class="copy-link-row">
+                    <span class="share-url-text">https://mamaprice.ng/join?ref=MAMA2026</span>
+                    <button class="copy-btn" onclick="copyReferralCode()"><i class="fa-regular fa-copy"></i></button>
+                </div>
+            </div>
+
+            <div class="share-divider"><span>Share Via</span></div>
+
+            <div class="social-share-grid">
+                <div class="social-btn whatsapp" onclick="shareViaSocial('whatsapp')">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="social-btn facebook" onclick="shareViaSocial('facebook')">
+                    <i class="fa-brands fa-facebook-f"></i>
+                    <span>Facebook</span>
+                </div>
+                <div class="social-btn sms" onclick="shareViaSocial('sms')">
+                    <i class="fa-solid fa-comment-sms"></i>
+                    <span>SMS</span>
+                </div>
+                <div class="social-btn telegram" onclick="shareViaSocial('telegram')">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Telegram</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cashback & Credits Detail Modal -->
+    <div class="custom-modal-overlay" id="cashback-detail-modal" style="display: none;">
+        <div class="modal-card cashback-modal-card" style="max-width: 400px; padding: 24px; text-align: center;">
+            <button class="modal-close-btn" onclick="closeCashbackModal()">&times;</button>
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">🪙</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Cashback & Balance Summary</h3>
+            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 16px;">Total earnings accumulated from verified price reports, agent missions, and referral bonuses.</p>
+            
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+                    <span style="color: #475569;">Available Cashback:</span>
+                    <strong style="color: #15803d; font-weight: 800;">₦18,900.00</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+                    <span style="color: #475569;">Available Reward Spins:</span>
+                    <strong style="color: #15803d; font-weight: 800;" id="cb-spins-val">3 Spins</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                    <span style="color: #475569;">Active Vouchers Value:</span>
+                    <strong style="color: #15803d; font-weight: 800;">₦1,500.00</strong>
+                </div>
+            </div>
+
+            <div class="modal-actions-row">
+                <button class="btn-primary-green" onclick="closeCashbackModal(); scrollToWheelStage();">
+                    <i class="fa-solid fa-dharmachakra"></i> Spin Rewards Wheel
+                </button>
+                <button class="btn-secondary" onclick="closeCashbackModal()">Close</button>
+            </div>
         </div>
     </div>
 
