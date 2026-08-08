@@ -3,10 +3,16 @@
     "usr_demo": {
       "userId": "usr_demo",
       "name": "MamaPrice User",
-      "availableSpins": 0,
+      "availableSpins": 5,
       "todayProgress": 100,
       "dailyStreak": 4,
       "earnedSources": [
+        {
+          "source": "PROMO_CODE",
+          "label": "Redeemed code MAMAPLUS (+3 spins)",
+          "spins": 3,
+          "date": "2026-08-08T15:30:59.434Z"
+        },
         {
           "source": "MISSION_COMPLETED",
           "label": "Claimed Mission MSN-IBADAN-088",
@@ -309,6 +315,42 @@
   ],
   "rewardLedger": [
     {
+      "id": "vch_1786203253166",
+      "userId": "usr_demo",
+      "rewardId": "rew_1786203249870",
+      "title": "?1,500 Chicken Republic Meal Voucher",
+      "description": "Sponsored market voucher",
+      "type": "FOOD_VOUCHER",
+      "value": 1500,
+      "currency": "NGN",
+      "partnerName": "Chicken Republic",
+      "status": "AVAILABLE",
+      "source": "PROMO_CODE",
+      "voucherCode": "PRM-CHICKEN2026-8871",
+      "qrData": "MAMAPRICE:VOUCHER:CHICKEN2026",
+      "location": "Mile 12 & Bodija Outlets",
+      "createdAt": "2026-08-08T15:34:13.166Z",
+      "expiresAt": "2026-09-07T15:34:13.166Z"
+    },
+    {
+      "id": "vch_1786203067723",
+      "userId": "usr_demo",
+      "rewardId": "rew_bodija_500",
+      "title": "₦500 Bodija Market Voucher",
+      "description": "Valid for fresh produce and food items at Bodija Market",
+      "type": "FOOD_VOUCHER",
+      "value": 500,
+      "currency": "NGN",
+      "partnerName": "Bodija Traders Guild",
+      "status": "AVAILABLE",
+      "source": "PROMO_CODE",
+      "voucherCode": "PRM-BODIJA500-9481",
+      "qrData": "MAMAPRICE:VOUCHER:BODIJA500",
+      "location": "Bodija Market, Ibadan",
+      "createdAt": "2026-08-08T15:31:07.723Z",
+      "expiresAt": "2026-09-07T15:31:07.723Z"
+    },
+    {
       "id": "tx_1786196813939_110",
       "userId": "usr_demo",
       "rewardId": "rew_airtime_500",
@@ -571,5 +613,62 @@
     "voucherRedemptions": 30,
     "totalRewardValueNgn": 90000,
     "partnerImpressions": 1240
+  },
+  "promoCodes": {
+    "MAMAPLUS": {
+      "code": "MAMAPLUS",
+      "type": "SPINS",
+      "spins": 3,
+      "title": "+3 Extra Wheel Spins",
+      "active": true
+    },
+    "BODIJA500": {
+      "code": "BODIJA500",
+      "type": "VOUCHER",
+      "voucher": {
+        "id": "rew_bodija_500",
+        "type": "FOOD_VOUCHER",
+        "title": "₦500 Bodija Market Voucher",
+        "description": "Valid for fresh produce and food items at Bodija Market",
+        "value": 500,
+        "currency": "NGN",
+        "partnerName": "Bodija Traders Guild",
+        "location": "Bodija Market, Ibadan"
+      },
+      "active": true
+    },
+    "WELCOME5K": {
+      "code": "WELCOME5K",
+      "type": "CASHBACK",
+      "amount": 5000,
+      "title": "₦5,000 Welcome Cashback",
+      "active": true
+    },
+    "CHICKEN2026": {
+      "code": "CHICKEN2026",
+      "type": "VOUCHER",
+      "spins": 1,
+      "amount": 1500,
+      "title": "?1,500 Chicken Republic Meal Voucher",
+      "partnerName": "Chicken Republic",
+      "maxRedemptions": 100,
+      "active": true,
+      "createdAt": "2026-08-08T15:34:09.870Z",
+      "voucher": {
+        "id": "rew_1786203249870",
+        "type": "FOOD_VOUCHER",
+        "title": "?1,500 Chicken Republic Meal Voucher",
+        "description": "Sponsored market voucher",
+        "value": 1500,
+        "currency": "NGN",
+        "partnerName": "Chicken Republic",
+        "location": "Mile 12 & Bodija Outlets"
+      }
+    }
+  },
+  "userPromoRedemptions": {
+    "usr_demo_MAMAPLUS": "2026-08-08T15:30:59.437Z",
+    "usr_demo_BODIJA500": "2026-08-08T15:31:07.723Z",
+    "usr_demo_CHICKEN2026": "2026-08-08T15:34:13.166Z"
   }
 }

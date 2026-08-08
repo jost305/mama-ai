@@ -359,6 +359,16 @@ app.post("/api/rewards/promo/apply", (req, res) => {
     }
 });
 
+// POST /api/rewards/admin/partner-codes/generate (Generate partner promo code)
+app.post("/api/rewards/admin/partner-codes/generate", (req, res) => {
+    try {
+        const promo = rewardsEngine.generatePartnerPromoCode(req.body);
+        res.json({ success: true, message: "🎉 Partner Promo Code Generated Successfully!", promo });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
 // GET /api/rewards/admin/campaigns
 app.get("/api/rewards/admin/campaigns", (req, res) => {
     try {

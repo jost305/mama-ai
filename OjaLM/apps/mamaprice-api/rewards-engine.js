@@ -525,6 +525,10 @@ class RewardsEngine {
             case "BONUS_EARNINGS": return "💰";
             case "EXTRA_SPIN": return "🎟️";
             case "MULTIPLIER": return "⚡";
+            default: return "🔁";
+        }
+    }
+
     // Redeem Promo or Partner Code
     applyPromoCode(userId, rawCode) {
         if (!rawCode) throw new Error("Promo code is required.");
@@ -662,6 +666,44 @@ class RewardsEngine {
         this.saveData();
 
         return { campaign: newCmp, reward: newReward };
+    }
+
+    // Partner & Admin Self-Serve Promo Code Generation
+    generatePartnerPromoCode(codeData) {
+        const code = (codeData.code || `MP-${Math.floor(1000 + Math.random() * 9000)}`).toUpperCase();
+        const type = codeData.type || "SPINS"; // SPINS, CASHBACK, VOUCHER
+        
+        if (!this.data.promoCodes) this.data.promoCodes = {};
+        
+        const promoEntry = {
+            code,
+            type,
+            spins: Number(codeData.spins || 1),
+            amount: Number(codeData.amount || 0),
+            title: codeData.title || `Partner Promo Code ${code}`,
+            partnerName: codeData.partnerName || "MamaPrice Partner",
+            maxRedemptions: Number(codeData.maxRedemptions || 100),
+            active: true,
+            createdAt: new Date().toISOString()
+        };
+        
+        if (type === "VOUCHER") {
+            promoEntry.voucher = {
+                id: `rew_${Date.now()}`,
+                type: codeData.voucherType || "FOOD_VOUCHER",
+                title: codeData.title || "Partner Discount Voucher",
+                description: codeData.description || "Sponsored market voucher",
+                value: Number(codeData.amount || 500),
+                currency: "NGN",
+                partnerName: codeData.partnerName || "MamaPrice Partner",
+                location: codeData.location || "Nationwide"
+            };
+        }
+        
+        this.data.promoCodes[code] = promoEntry;
+        this.saveData();
+        
+        return promoEntry;
     }
 
     // Analytics Summary
