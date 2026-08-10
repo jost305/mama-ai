@@ -182,10 +182,10 @@ async function getOrCreateSession(sessionId) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /chat — Hybrid RAG Commerce Intelligence Endpoint
+// POST /chat & POST /api/chat — Hybrid RAG Commerce Intelligence Endpoint
 // ─────────────────────────────────────────────────────────────────────────────
 
-app.post("/chat", async (req, res) => {
+app.post(["/chat", "/api/chat"], async (req, res) => {
     console.log("\n--- POST /chat ---");
 
     let prompt, sessionId, modelId;
