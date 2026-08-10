@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    let API_URL = 'http://localhost:3001';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    let API_URL = isLocalhost ? 'http://localhost:3001' : '';
     let currentSessionId = `session_${Date.now()}`;
     let agentEarnings = 148500;
 
@@ -2874,32 +2875,38 @@ document.addEventListener('DOMContentLoaded', () => {
             showTypingIndicator();
 
             // 3. Fetch data from OjaLM API / Grounded Market Engine
-            try {
-                const response = await fetch(`${API_URL}/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-session-id': currentSessionId
-                    },
-                    body: JSON.stringify({ 
-                        prompt: message,
-                        attachedImage: attachedImg,
-                        sessionId: currentSessionId,
-                        modelId: selectedModel
-                    })
-                });
+            let data = null;
+            if (isLocalhost && API_URL) {
+                try {
+                    const response = await fetch(`${API_URL}/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-session-id': currentSessionId
+                        },
+                        body: JSON.stringify({ 
+                            prompt: message,
+                            attachedImage: attachedImg,
+                            sessionId: currentSessionId,
+                            modelId: selectedModel
+                        })
+                    });
 
-                if (!response.ok) {
-                    let errData;
-                    try { errData = await response.json(); } catch(_) {}
-                    const msg = (errData && errData.error) ? errData.error : `HTTP Error: ${response.status}`;
-                    throw new Error(msg);
+                    if (response.ok) {
+                        data = await response.json();
+                    }
+                } catch (localErr) {
+                    console.warn("Local API server fetch skipped/failed:", localErr);
                 }
+            }
 
-                const data = await response.json();
-                
-                removeTypingIndicator();
-                addAgentMessage(data.response, data.evidence, data.modelUsed);
+            try {
+                if (data && data.response) {
+                    removeTypingIndicator();
+                    addAgentMessage(data.response, data.evidence, data.modelUsed);
+                    return;
+                }
+                throw new Error("Local API offline or cloud mode");
             } catch (error) {
                 console.error("Local API Notice:", error);
                 
@@ -3322,7 +3329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mapSheet.classList.remove('is-collapsed');
 
         // Smooth flyTo map location
-        if (map) {
+        if (map && typeof data.lat === 'number' && typeof data.lon === 'number' && !isNaN(data.lat) && !isNaN(data.lon)) {
             map.flyTo([data.lat, data.lon], 13, { duration: 1.2, animate: true });
 
             // Draw connecting route polyline from user position
@@ -5093,8 +5100,12 @@ window.updateRewardsUI = function() {
 
     // Render Vouchers & History
     if (window.rewardsState.summary) {
-        window.renderActiveVouchers(window.rewardsState.summary.rewardWallet || []);
-        window.renderRewardHistory(window.rewardsState.summary.rewardWallet || []);
+        if (typeof window.renderTicketVouchers === 'function') {
+            window.renderTicketVouchers(window.rewardsState.summary.rewardWallet || [], window.rewardsState.currentCouponsFilter || "AVAILABLE");
+        }
+        if (typeof window.renderRewardHistory === 'function') {
+            window.renderRewardHistory(window.rewardsState.summary.rewardWallet || []);
+        }
     }
 
     // Render Canvas Wheel

@@ -147,38 +147,36 @@ function buildGroundedContext(query, evidence) {
 // Session Management
 // ─────────────────────────────────────────────────────────────────────────────
 
+let masterLlamaContext = null;
+let masterChatSession = null;
+
 async function getOrCreateSession(sessionId) {
-    if (sessions.has(sessionId)) {
-        const existing = sessions.get(sessionId);
-        existing.lastActive = Date.now();
-        return existing.chatSession;
+    if (masterChatSession) {
+        return masterChatSession;
     }
 
-    console.log(`[SESSION] Creating new context for ID: "${sessionId}"`);
-    let context;
-    for (const contextSize of [1024, 512, 256, 2048]) {
+    console.log(`[SESSION] Creating master LLM context for fast CPU inference...`);
+    for (const contextSize of [512, 256, 1024]) {
         try {
-            console.log(`[SESSION] Trying contextSize: ${contextSize}...`);
-            context = await model.createContext({ contextSize });
-            console.log(`[SESSION] Context created successfully with contextSize: ${contextSize}`);
+            console.log(`[SESSION] Allocating contextSize: ${contextSize}...`);
+            masterLlamaContext = await model.createContext({ contextSize });
+            const sequence = masterLlamaContext.getSequence();
+            masterChatSession = new LlamaChatSession({
+                contextSequence: sequence,
+                systemPrompt: SYSTEM_PROMPT
+            });
+            console.log(`[SESSION] Master LLM Context ready with contextSize: ${contextSize}`);
             break;
         } catch (err) {
-            console.warn(`[SESSION] Failed to create context with size ${contextSize}:`, err.message || err);
+            console.warn(`[SESSION] Context size ${contextSize} allocation warning:`, err.message || err);
         }
     }
 
-    if (!context) {
+    if (!masterChatSession) {
         throw new Error("Unable to allocate LLM context buffer on current system RAM resources.");
     }
 
-    const sequence = context.getSequence();
-    const chatSession = new LlamaChatSession({
-        contextSequence: sequence,
-        systemPrompt: SYSTEM_PROMPT
-    });
-
-    sessions.set(sessionId, { context, sequence, chatSession, lastActive: Date.now() });
-    return chatSession;
+    return masterChatSession;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
