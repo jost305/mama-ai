@@ -65,12 +65,12 @@
                     <i class="fa-solid fa-user-shield"></i>
                     <span>Agents</span>
                     <span class="nav-earned-badge" id="nav-agent-earned-badge"
-                        title="Scout Earnings So Far">₦148.5k</span>
+                        title="Scout Earnings So Far" style="display: none;">₦148.5k</span>
                 </a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-rewards">
                     <i class="fa-solid fa-dharmachakra"></i>
                     <span>Spin & Win</span>
-                    <span class="nav-earned-badge green-spin-badge" id="nav-spins-badge" title="Available Spins">🎟 3</span>
+                    <span class="nav-earned-badge green-spin-badge" id="nav-spins-badge" title="Available Spins" style="display: none;">🎟 3</span>
                 </a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-map" style="display: none !important;"><i
                         class="fa-solid fa-map-location-dot"></i><span>Live Map</span></a>
@@ -136,7 +136,7 @@
                     <button class="header-spin-btn" id="header-spin-btn" onclick="switchView(document.getElementById('nav-rewards'), document.getElementById('page-rewards'))" title="Spin & Win Rewards">
                         <img src="spin-wheel-logo.png" alt="Spin Logo" class="hsb-logo-img">
                         <span class="hsb-text">Spin</span>
-                        <span class="hsb-badge" id="header-spins-count">3</span>
+                        <span class="hsb-badge" id="header-spins-count" style="display: none;">3</span>
                     </button>
 
                     <!-- Tight Dynamic Live Weather & Location Capsule -->
@@ -197,9 +197,9 @@
 
                     <!-- Notification Bell & Dropdown Popover (Exact Match to Design Reference) -->
                     <div class="notif-popover-wrapper" style="position: relative;">
-                        <button class="notif-btn" id="notif-btn" title="3 New Market Alerts">
+                        <button class="notif-btn" id="notif-btn" title="Market Alerts">
                             <i class="fa-solid fa-bell"></i>
-                            <span class="notif-badge">3</span>
+                            <span class="notif-badge" style="display: none;">3</span>
                         </button>
 
                         <div class="notif-popover-card" id="notif-popover">
@@ -212,7 +212,7 @@
                                 <div class="tab-list">
                                     <button class="pop-tab active" data-filter="all">All</button>
                                     <button class="pop-tab" data-filter="inbox">Inbox <span class="tab-badge"
-                                            id="count-inbox-badge">2</span></button>
+                                            id="count-inbox-badge" style="display: none;">2</span></button>
                                     <button class="pop-tab" data-filter="price">Price Alerts</button>
                                     <button class="pop-tab" data-filter="archived">Archived</button>
                                 </div>

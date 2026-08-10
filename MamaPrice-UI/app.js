@@ -2648,9 +2648,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAuthUIState() {
         const userJson = localStorage.getItem('mamaprice_auth_user');
 
-        const navProfile    = document.getElementById('nav-profile');
-        const mNavProfile   = document.getElementById('m-nav-profile');
+        const navProfile     = document.getElementById('nav-profile');
+        const mNavProfile    = document.getElementById('m-nav-profile');
         const userProfileBtn = document.getElementById('user-profile-btn');
+        const newChatBtn     = document.getElementById('new-chat-btn');
+        const navAgentBadge  = document.getElementById('nav-agent-earned-badge');
+        const navSpinsBadge  = document.getElementById('nav-spins-badge');
+        const headerSpins    = document.getElementById('header-spins-count');
+        const notifBadge     = document.querySelector('.notif-badge');
+        const inboxBadge     = document.getElementById('count-inbox-badge');
 
         if (userJson) {
             const user = JSON.parse(userJson);
@@ -2661,12 +2667,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 waAuthBtn.style.background = 'transparent';
                 waAuthBtn.style.padding    = '0';
                 waAuthBtn.style.border     = 'none';
-                waAuthBtn.title = `${user.name} — Privy Authenticated`;
+                waAuthBtn.title = `${user.name} — Authenticated`;
             }
             if (navProfile)     navProfile.style.display  = 'flex';
             if (mNavProfile)    mNavProfile.style.display  = 'flex';
             if (userProfileBtn) userProfileBtn.style.display = 'flex';
             if (newChatBtn)     newChatBtn.style.display  = 'inline-flex';
+            if (navAgentBadge)  navAgentBadge.style.display = 'inline-block';
+            if (navSpinsBadge)  navSpinsBadge.style.display = 'inline-block';
+            if (headerSpins)    headerSpins.style.display   = 'inline-block';
+            if (notifBadge)     notifBadge.style.display    = 'inline-flex';
+            if (inboxBadge)     inboxBadge.style.display    = 'inline-block';
         } else {
             if (waAuthBtn) {
                 waAuthBtn.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:#6366f1;margin-right:5px;"></i><span>Sign in</span>`;
@@ -2675,12 +2686,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 waAuthBtn.style.border       = '1px solid #cbd5e1';
                 waAuthBtn.style.padding      = '6px 14px';
                 waAuthBtn.style.borderRadius = '20px';
-                waAuthBtn.title = 'Sign in with Privy Auth';
+                waAuthBtn.title = 'Sign in to access your dashboard';
             }
             if (navProfile)     navProfile.style.display  = 'none';
             if (mNavProfile)    mNavProfile.style.display  = 'none';
             if (userProfileBtn) userProfileBtn.style.display = 'none';
             if (newChatBtn)     newChatBtn.style.display  = 'none';
+            if (navAgentBadge)  navAgentBadge.style.display = 'none';
+            if (navSpinsBadge)  navSpinsBadge.style.display = 'none';
+            if (headerSpins)    headerSpins.style.display   = 'none';
+            if (notifBadge)     notifBadge.style.display    = 'none';
+            if (inboxBadge)     inboxBadge.style.display    = 'none';
         }
 
         updateUserProfileDashboard();
@@ -3398,7 +3414,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mapSheet.classList.remove('is-collapsed');
 
         // Smooth flyTo map location
-        if (map && typeof data.lat === 'number' && typeof data.lon === 'number' && !isNaN(data.lat) && !isNaN(data.lon)) {
+        const isMapVisible = mapContainer && mapContainer.offsetWidth > 0 && mapContainer.offsetHeight > 0;
+        if (map && isMapVisible && typeof data.lat === 'number' && typeof data.lon === 'number' && !isNaN(data.lat) && !isNaN(data.lon)) {
             try {
                 const lat = Number(data.lat);
                 const lon = Number(data.lon);
