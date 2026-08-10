@@ -3029,10 +3029,24 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
         scrollToBottom();
     }
 
-    function addAgentMessage(responseText, evidenceList = [], modelUsed = 'MamaPrice 4o') {
+    function addAgentMessage(responseText, rawEvidence = [], modelUsed = 'MamaPrice 4o') {
         const msgDiv = document.createElement('div');
         msgDiv.className = 'message-row agent-row';
         
+        // Flatten evidence object or array safely
+        let evidenceList = [];
+        if (Array.isArray(rawEvidence)) {
+            evidenceList = rawEvidence;
+        } else if (rawEvidence && typeof rawEvidence === 'object') {
+            Object.values(rawEvidence).forEach(val => {
+                if (Array.isArray(val)) {
+                    evidenceList.push(...val);
+                } else if (val && typeof val === 'object' && (val.product || val.title)) {
+                    evidenceList.push(val);
+                }
+            });
+        }
+
         let evidenceHtml = '';
         if (evidenceList && evidenceList.length > 0) {
             evidenceHtml = `
