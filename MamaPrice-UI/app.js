@@ -447,102 +447,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ────────────────────────────────────────────────────────────────────────
     // DYNAMIC LIVE REPORT STREAMER — Rotates live pulse as new reports come in
-    // ────────────────────────────────────────────────────────────────────────
+    // REAL-TIME FIELD PRICE REPORT SYSTEM — Adds user & agent submitted reports
     const prListContainer = document.querySelector('.prices-reports-card .pr-list');
-    if (prListContainer) {
-        const liveReportsPool = [
-            { market: "Lagos, Mile 12 Market", commodity: "🌶️ Pepper (100kg)", price: "₦13,200", avatar: "MM", altClass: "alt4", agent: "@chinedu_scout", agentInit: "CO" },
-            { market: "Onitsha, Main Market", commodity: "🛢️ Palm Oil (25L)", price: "₦14,100", avatar: "OM", altClass: "alt2", agent: "@uchenna_scout", agentInit: "UC" },
-            { market: "Abuja, Wuse Market", commodity: "🍚 Rice (50kg)", price: "₦13,600", avatar: "WM", altClass: "alt3", agent: "@aisha_scout", agentInit: "AI" },
-            { market: "Port Harcourt, Oil Mill", commodity: "🛢️ Palm Oil (25L)", price: "₦14,500", avatar: "OM", altClass: "alt1", agent: "@emeka_scout", agentInit: "EM" },
-            { market: "Kano, Dawanau Market", commodity: "🌶️ Pepper (100kg)", price: "₦13,800", avatar: "KM", altClass: "", agent: "@maryam_scout", agentInit: "MA" },
-            { market: "Kaduna, Sabon Gari", commodity: "🌶️ Pepper (100kg)", price: "₦13,700", avatar: "KS", altClass: "alt1", agent: "@sani_scout", agentInit: "SI" },
-            { market: "Maiduguri, Monday Market", commodity: "🌶️ Pepper (100kg)", price: "₦15,000", avatar: "MM", altClass: "alt2", agent: "@buba_scout", agentInit: "BM" }
-        ];
 
-        let poolIndex = 0;
-
-        function injectNextLiveReport() {
-            const report = liveReportsPool[poolIndex];
-            poolIndex = (poolIndex + 1) % liveReportsPool.length;
-
-            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-            // Remove pulse and beacon highlights from existing items
-            const currentLatest = prListContainer.querySelector('.pr-item-latest');
-            if (currentLatest) {
-                currentLatest.classList.remove('pr-item-latest');
-                const oldPulseDot = currentLatest.querySelector('.avatar-pulse-dot');
-                if (oldPulseDot) oldPulseDot.remove();
-                const oldBeacon = currentLatest.querySelector('.pulse-beacon');
-                if (oldBeacon) oldBeacon.remove();
-            }
-
-            // Create new report HTML element
-            const newReportElem = document.createElement('div');
-            newReportElem.className = 'pr-item pr-item-latest';
-            newReportElem.innerHTML = `
-                <div class="pr-top-bar">
-                    <div class="pr-left-meta">
-                        <div class="pr-avatar-wrap">
-                            <div class="pr-avatar ${report.altClass}">${report.avatar}</div>
-                            <span class="avatar-pulse-dot" title="Live Report Alert"></span>
-                        </div>
-                        <div class="pr-details">
-                            <div class="pr-title-row">
-                                <span class="pr-prod-tag">${report.commodity}</span>
-                                <span class="pr-market-name">${report.market}</span>
-                            </div>
-                            <div class="pr-sub-row">
-                                <span class="pr-agent-by">
-                                    <span class="pr-mini-avatar ${report.altClass}">${report.agentInit}</span>
-                                    <span>by <strong>${report.agent}</strong></span>
-                                </span>
-                                <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pr-price-wrap">
-                        <strong class="pr-val">${report.price}</strong>
-                        <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
-                    </div>
-                </div>
-            `;
-
-
-            // Insert new live report at top of list
-            prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
-
-            // Maintain exactly 3 reports in list
-            while (prListContainer.children.length > 3) {
-                prListContainer.lastElementChild.remove();
-            }
-
-            // Recalculate dynamic KPIs (Lowest, Highest, Market Spread & Total Saved)
-            updateDynamicKpiMetrics();
-
-            // Increment & flash sidebar Agents earned badge
-            if (typeof window.updateAgentEarnedBadge === 'function') {
-                window.updateAgentEarnedBadge();
-            }
-        }
-
-        // Stream new live report every 6.5 seconds
-        setInterval(injectNextLiveReport, 6500);
-
-        // Public Global Hook: Invoked when a user or agent submits a new price observation
-        window.addNewVerifiedReport = function(customReport) {
-            if (!prListContainer) return;
-
-            const report = customReport || {
-                market: "Lagos, Mile 12 Market",
-                commodity: "🌶️ Pepper (100kg)",
-                price: "₦13,800",
-                avatar: "US",
-                altClass: "alt-user",
-                agent: "@you_scout",
-                agentInit: "YOU"
-            };
+    // Public Global Hook: Invoked when a user or agent submits a new price observation
+    window.addNewVerifiedReport = function(customReport) {
+        if (!prListContainer || !customReport) return;
+        const report = customReport;
 
             const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
@@ -2186,16 +2097,7 @@ document.addEventListener('DOMContentLoaded', () => {
     claimPendingBonuses();
 
     // ── Dynamic Market Agents Management & Real-time Filter Engine ──
-    const scoutsData = [
-        { id: 'AG-0001', name: 'Maryam Abubakar', phone: '0803 123 4567', level: 'Market Captain', markets: ['Mile 12', 'Balogun', 'Oyingbo'], reports: 482, points: 12050, trustScore: 98, trustLabel: 'Excellent', earnings: 84750, status: 'Active', paymentStatus: 'Released', avatar: null },
-        { id: 'AG-0002', name: 'Chinedu Okafor', phone: '0812 345 6789', level: 'Senior Agent', markets: ['Onitsha Main', 'Ariaria'], reports: 356, points: 8900, trustScore: 94, trustLabel: 'Excellent', earnings: 61200, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0003', name: 'Aisha Bello', phone: '0706 789 0123', level: 'Senior Agent', markets: ['Computer Village', 'Ikeja'], reports: 298, points: 7450, trustScore: 92, trustLabel: 'Excellent', earnings: 48600, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0004', name: 'Emeka Nwosu', phone: '0810 222 3344', level: 'Market Agent', markets: ['Mile 12'], reports: 215, points: 5375, trustScore: 90, trustLabel: 'Great', earnings: 31450, status: 'Active', paymentStatus: 'Pending', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0005', name: 'Grace Adeyemi', phone: '0901 556 7788', level: 'Market Agent', markets: ['Bodija', 'Dugbe', 'Sango'], reports: 184, points: 4600, trustScore: 88, trustLabel: 'Great', earnings: 26200, status: 'Active', paymentStatus: 'Pending', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0006', name: 'Ibrahim Musa', phone: '0815 667 8899', level: 'Agent Explorer', markets: ['Dawanau', 'Kano Main'], reports: 76, points: 1900, trustScore: 76, trustLabel: 'Good', earnings: 9800, status: 'Active', paymentStatus: 'Released', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0007', name: 'Patience Johnson', phone: '0702 334 5678', level: 'Agent Explorer', markets: ['Computer Village'], reports: 42, points: 1050, trustScore: 68, trustLabel: 'Fair', earnings: 5250, status: 'Inactive', paymentStatus: 'Cancelled', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80' },
-        { id: 'AG-0008', name: 'David Williams', phone: '0807 889 9900', level: 'Agent Explorer', markets: ['Mile 12'], reports: 28, points: 700, trustScore: 64, trustLabel: 'Fair', earnings: 3500, status: 'Inactive', paymentStatus: 'Cancelled', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=80' }
-    ];
+    const scoutsData = [];
 
 
     const scoutSearchInput = document.getElementById('scout-search-input');
