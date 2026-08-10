@@ -455,68 +455,67 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!prListContainer || !customReport) return;
         const report = customReport;
 
-            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-            // Remove pulse and beacon highlights from existing top item
-            const currentLatest = prListContainer.querySelector('.pr-item-latest');
-            if (currentLatest) {
-                currentLatest.classList.remove('pr-item-latest');
-                const oldPulseDot = currentLatest.querySelector('.avatar-pulse-dot');
-                if (oldPulseDot) oldPulseDot.remove();
-                const oldBeacon = currentLatest.querySelector('.pulse-beacon');
-                if (oldBeacon) oldBeacon.remove();
-            }
+        // Remove pulse and beacon highlights from existing top item
+        const currentLatest = prListContainer.querySelector('.pr-item-latest');
+        if (currentLatest) {
+            currentLatest.classList.remove('pr-item-latest');
+            const oldPulseDot = currentLatest.querySelector('.avatar-pulse-dot');
+            if (oldPulseDot) oldPulseDot.remove();
+            const oldBeacon = currentLatest.querySelector('.pulse-beacon');
+            if (oldBeacon) oldBeacon.remove();
+        }
 
-            // Create new report HTML element
-            const newReportElem = document.createElement('div');
-            newReportElem.className = 'pr-item pr-item-latest';
-            newReportElem.innerHTML = `
-                <div class="pr-main-row">
-                    <div class="pr-avatar-col">
-                        <div class="pr-avatar-wrap">
-                            <div class="pr-avatar ${report.altClass || ''}">${report.avatar || 'US'}</div>
-                            <span class="avatar-pulse-dot" title="Live Report Alert"></span>
-                        </div>
-                        <div class="pr-info-line">
-                            <span class="pr-prod-tag">${report.commodity || '🌶️ Verified Report'}</span>
-                            <span class="pr-market-name">${report.market}</span>
-                            <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
-                        </div>
+        // Create new report HTML element
+        const newReportElem = document.createElement('div');
+        newReportElem.className = 'pr-item pr-item-latest';
+        newReportElem.innerHTML = `
+            <div class="pr-main-row">
+                <div class="pr-avatar-col">
+                    <div class="pr-avatar-wrap">
+                        <div class="pr-avatar ${report.altClass || ''}">${report.avatar || 'US'}</div>
+                        <span class="avatar-pulse-dot" title="Live Report Alert"></span>
                     </div>
-                    <div>
-                        <strong class="pr-val">${report.price}</strong>
+                    <div class="pr-info-line">
+                        <span class="pr-prod-tag">${report.commodity || '🌶️ Verified Report'}</span>
+                        <span class="pr-market-name">${report.market}</span>
+                        <span class="pr-time-inline"><span class="pulse-beacon"></span>Just now</span>
                     </div>
                 </div>
-                <div class="pr-agent-meta">
-                    <div class="pr-agent-by">
-                        <span class="pr-mini-avatar ${report.altClass || ''}">${report.agentInit || 'YOU'}</span>
-                        <span>by <strong>${report.agent || '@you_scout'}</strong></span>
-                    </div>
-                    <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                <div>
+                    <strong class="pr-val">${report.price}</strong>
                 </div>
-            `;
+            </div>
+            <div class="pr-agent-meta">
+                <div class="pr-agent-by">
+                    <span class="pr-mini-avatar ${report.altClass || ''}">${report.agentInit || 'YOU'}</span>
+                    <span>by <strong>${report.agent || '@you_scout'}</strong></span>
+                </div>
+                <span class="pr-date-lbl"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+            </div>
+        `;
 
-            // Prepend new report to top of list
-            prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
+        // Prepend new report to top of list
+        prListContainer.insertBefore(newReportElem, prListContainer.firstChild);
 
-            // Maintain top 3 reports limit
-            while (prListContainer.children.length > 3) {
-                prListContainer.lastElementChild.remove();
-            }
+        // Maintain top 3 reports limit
+        while (prListContainer.children.length > 3) {
+            prListContainer.lastElementChild.remove();
+        }
 
-            // Recalculate dynamic KPIs (Lowest, Highest, Market Spread & Total Saved)
-            if (typeof updateDynamicKpiMetrics === 'function') updateDynamicKpiMetrics();
+        // Recalculate dynamic KPIs (Lowest, Highest, Market Spread & Total Saved)
+        if (typeof updateDynamicKpiMetrics === 'function') updateDynamicKpiMetrics();
 
-            // Increment & flash sidebar Agents earned badge
-            if (typeof window.updateAgentEarnedBadge === 'function') {
-                window.updateAgentEarnedBadge(500);
-            }
+        // Increment & flash sidebar Agents earned badge
+        if (typeof window.updateAgentEarnedBadge === 'function') {
+            window.updateAgentEarnedBadge(500);
+        }
 
-            if (typeof showToast === 'function') {
-                showToast(`Your price report for ${report.market} was verified & published live! +500 MarketPoints`, "success");
-            }
-        };
-    }
+        if (typeof showToast === 'function') {
+            showToast(`Your price report for ${report.market} was verified & published live! +500 MarketPoints`, "success");
+        }
+    };
 
     // ────────────────────────────────────────────────────────────────────────
     // DYNAMIC PRICES PAGE KPI CALCULATOR — Live Lowest, Highest, Spread & Total Saved
