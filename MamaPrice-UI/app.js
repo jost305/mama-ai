@@ -2905,10 +2905,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Attempt HuggingFace Serverless Inference API for ctrlprompt/OjaLM-v0.1
                 try {
+                    const hfToken = localStorage.getItem('mamaprice_hf_token') || '';
+                    const hfHeaders = { 'Content-Type': 'application/json' };
+                    if (hfToken) hfHeaders['Authorization'] = `Bearer ${hfToken}`;
+
                     const hfPrompt = `<|system|>\nYou are MamaPrice, the intelligent Commerce AI for African markets. Provide accurate price benchmarks and market guidance.</s>\n<|user|>\n${message || 'Analyze market price evidence'}</s>\n<|assistant|>`;
                     const hfResponse = await fetch('https://api-inference.huggingface.co/models/ctrlprompt/OjaLM-v0.1', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: hfHeaders,
                         body: JSON.stringify({
                             inputs: hfPrompt,
                             parameters: { max_new_tokens: 400, temperature: 0.7, return_full_text: false }

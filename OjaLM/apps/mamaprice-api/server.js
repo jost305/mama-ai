@@ -185,7 +185,7 @@ async function getOrCreateSession(sessionId) {
 // HuggingFace Serverless Inference Integration — ctrlprompt/OjaLM-v0.1
 // ─────────────────────────────────────────────────────────────────────────────
 const HF_MODEL_REPO = "ctrlprompt/OjaLM-v0.1";
-const HF_INFERENCE_URL = `https://api-inference.huggingface.co/models/${HF_MODEL_REPO}`;
+const HF_INFERENCE_URL = process.env.HF_ENDPOINT_URL || `https://api-inference.huggingface.co/models/${HF_MODEL_REPO}`;
 
 async function queryHuggingFaceInference(prompt, systemPrompt = SYSTEM_PROMPT, userToken = null) {
     const hfToken = userToken || process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN || "";
