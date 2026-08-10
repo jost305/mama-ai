@@ -91,22 +91,7 @@
             </div>
 
             <div class="history-section" id="history-section-container">
-                <div class="section-title">Today</div>
-                <div class="history-link active"
-                    data-query="Where can I buy the cheapest 50kg bag of Dangote Cement in Lagos?">
-                    <i class="fa-regular fa-message"></i> Lagos Cement Price Inquiry
-                </div>
-                <div class="history-link" data-query="Golden Penny Flour price at Mile 12 Market">
-                    <i class="fa-regular fa-message"></i> Flour Prices Mile 12
-                </div>
-
-                <div class="section-title">7 Days Ago</div>
-                <div class="history-link" data-query="Fresh Tomatoes price basket Mile 12">
-                    <i class="fa-regular fa-message"></i> Tomato Basket Price Trend
-                </div>
-                <div class="history-link" data-query="Mama Gold Rice 50kg bag Bodija Market">
-                    <i class="fa-regular fa-message"></i> Bodija Rice Observations
-                </div>
+                <!-- Populated dynamically from user chat sessions -->
             </div>
 
             <div class="sidebar-user" id="user-profile-btn" style="cursor: pointer;" title="View User Profile">
@@ -1752,7 +1737,7 @@
                                 <span class="p-card-lbl">SAVINGS</span>
                                 <i class="fa-solid fa-piggy-bank p-icon green"></i>
                             </div>
-                            <strong class="p-card-val green" id="prof-savings-val">₦128.5k</strong>
+                            <strong class="p-card-val green" id="prof-savings-val">₦0</strong>
                             <span class="p-card-sub">Discovered This Month</span>
                         </div>
 
@@ -1761,8 +1746,8 @@
                                 <span class="p-card-lbl">EARNINGS</span>
                                 <i class="fa-solid fa-wallet p-icon blue"></i>
                             </div>
-                            <strong class="p-card-val" id="prof-wallet-val">₦148.5k</strong>
-                            <span class="p-card-sub" id="prof-agent-sub">Unlocked on Activity</span>
+                            <strong class="p-card-val" id="prof-wallet-val">₦0</strong>
+                            <span class="p-card-sub" id="prof-agent-sub">Become Agent to Earn</span>
                         </div>
 
                         <div class="prof-pill-card highlight-amber">
@@ -1770,7 +1755,7 @@
                                 <span class="p-card-lbl">POINTS</span>
                                 <i class="fa-solid fa-coins p-icon amber"></i>
                             </div>
-                            <strong class="p-card-val amber" id="prof-points-val">3,550</strong>
+                            <strong class="p-card-val amber" id="prof-points-val">0</strong>
                             <span class="p-card-sub">+25 pts per report</span>
                         </div>
 
@@ -1779,8 +1764,8 @@
                                 <span class="p-card-lbl">TRUST</span>
                                 <i class="fa-solid fa-shield-halved p-icon teal"></i>
                             </div>
-                            <strong class="p-card-val" id="prof-trust-val">98.4%</strong>
-                            <span class="p-card-sub" id="prof-reports-logged-sub">142 Reports Logged</span>
+                            <strong class="p-card-val" id="prof-trust-val">100%</strong>
+                            <span class="p-card-sub" id="prof-reports-logged-sub">0 Reports Logged</span>
                         </div>
                     </div>
 
@@ -1816,8 +1801,8 @@
                                     <div class="savings-total-pill">
                                         <small style="color: #64748b; font-weight: 600;">Total Saved (This
                                             Month):</small>
-                                        <strong
-                                            style="color: #15803d; font-size: 1.1rem; margin-left: 6px;">₦128,500</strong>
+                                        <strong id="prof-total-saved-pill"
+                                            style="color: #15803d; font-size: 1.1rem; margin-left: 6px;">₦0</strong>
                                     </div>
                                 </div>
 
@@ -1834,98 +1819,11 @@
                                                 <th style="text-align: right;">ACTION</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="savings-table-body">
                                             <tr>
-                                                <td><span
-                                                        style="font-size: 0.8rem; font-weight: 600; color: #334155;">Today,
-                                                        2:15 PM</span></td>
-                                                <td><strong style="color: #0f172a;">Rice 50kg (Mama Gold)</strong></td>
-                                                <td><span class="scout-markets-text">Dawanau Market, Kano</span></td>
-                                                <td><span
-                                                        style="color: #64748b; text-decoration: line-through;">₦76,500</span>
-                                                </td>
-                                                <td><strong style="color: #16a34a;">₦72,000</strong></td>
-                                                <td><span class="savings-tag-badge">+₦4,500 (5.9%)</span></td>
-                                                <td style="text-align: right;">
-                                                    <button class="tbl-ask-mama-btn"
-                                                        onclick="askMamaAboutMarket('Rice 50kg (Mama Gold)', 'Dawanau Market, Kano', '76,500', '72,000', '4,500 (5.9%)')">
-                                                        <i class="fa-solid fa-sparkles"></i> Ask AI
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        style="font-size: 0.8rem; font-weight: 600; color: #334155;">Today,
-                                                        11:30 AM</span></td>
-                                                <td><strong style="color: #0f172a;">Fresh Tomatoes (Big Basket)</strong>
-                                                </td>
-                                                <td><span class="scout-markets-text">Mile 12 Market, Lagos</span></td>
-                                                <td><span
-                                                        style="color: #64748b; text-decoration: line-through;">₦42,000</span>
-                                                </td>
-                                                <td><strong style="color: #16a34a;">₦41,650</strong></td>
-                                                <td><span class="savings-tag-badge">+₦350 (0.8%)</span></td>
-                                                <td style="text-align: right;">
-                                                    <button class="tbl-ask-mama-btn"
-                                                        onclick="askMamaAboutMarket('Fresh Tomatoes (Big Basket)', 'Mile 12 Market, Lagos', '42,000', '41,650', '350 (0.8%)')">
-                                                        <i class="fa-solid fa-sparkles"></i> Ask AI
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        style="font-size: 0.8rem; font-weight: 600; color: #334155;">Yesterday,
-                                                        4:45 PM</span></td>
-                                                <td><strong style="color: #0f172a;">Dangote Cement 50kg</strong></td>
-                                                <td><span class="scout-markets-text">Sabon Gari Market, Kano</span></td>
-                                                <td><span
-                                                        style="color: #64748b; text-decoration: line-through;">₦9,300</span>
-                                                </td>
-                                                <td><strong style="color: #16a34a;">₦8,500</strong></td>
-                                                <td><span class="savings-tag-badge">+₦800 (8.6%)</span></td>
-                                                <td style="text-align: right;">
-                                                    <button class="tbl-ask-mama-btn"
-                                                        onclick="askMamaAboutMarket('Dangote Cement 50kg', 'Sabon Gari Market, Kano', '9,300', '8,500', '800 (8.6%)')">
-                                                        <i class="fa-solid fa-sparkles"></i> Ask AI
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        style="font-size: 0.8rem; font-weight: 600; color: #334155;">22
-                                                        Jul, 10:15 AM</span></td>
-                                                <td><strong style="color: #0f172a;">Golden Penny Flour 50kg</strong>
-                                                </td>
-                                                <td><span class="scout-markets-text">Bodija Market, Ibadan</span></td>
-                                                <td><span
-                                                        style="color: #64748b; text-decoration: line-through;">₦68,000</span>
-                                                </td>
-                                                <td><strong style="color: #16a34a;">₦64,800</strong></td>
-                                                <td><span class="savings-tag-badge">+₦3,200 (4.7%)</span></td>
-                                                <td style="text-align: right;">
-                                                    <button class="tbl-ask-mama-btn"
-                                                        onclick="askMamaAboutMarket('Golden Penny Flour 50kg', 'Bodija Market, Ibadan', '68,000', '64,800', '3,200 (4.7%)')">
-                                                        <i class="fa-solid fa-sparkles"></i> Ask AI
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        style="font-size: 0.8rem; font-weight: 600; color: #334155;">20
-                                                        Jul, 1:20 PM</span></td>
-                                                <td><strong style="color: #0f172a;">Refined Palm Oil 25L</strong></td>
-                                                <td><span class="scout-markets-text">Onitsha Main Market, Anambra</span>
-                                                </td>
-                                                <td><span
-                                                        style="color: #64748b; text-decoration: line-through;">₦58,500</span>
-                                                </td>
-                                                <td><strong style="color: #16a34a;">₦54,000</strong></td>
-                                                <td><span class="savings-tag-badge">+₦4,500 (7.7%)</span></td>
-                                                <td style="text-align: right;">
-                                                    <button class="tbl-ask-mama-btn"
-                                                        onclick="askMamaAboutMarket('Refined Palm Oil 25L', 'Onitsha Main Market, Anambra', '58,500', '54,000', '4,500 (7.7%)')">
-                                                        <i class="fa-solid fa-sparkles"></i> Ask AI
-                                                    </button>
+                                                <td colspan="7" style="text-align: center; padding: 24px; color: #64748b;">
+                                                    <i class="fa-solid fa-piggy-bank" style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                                    No itemized market savings recorded yet. Use MamaPrice to compare prices across regional markets!
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -1938,32 +1836,10 @@
                         <div class="prof-pane" id="prof-pane-activity" style="display: none;">
                             <div class="prof-settings-card">
                                 <h3><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</h3>
-                                <div class="activity-feed-list">
-                                    <div class="act-feed-item">
-                                        <i class="fa-solid fa-circle-check act-icon green"></i>
-                                        <div class="act-info">
-                                            <strong>Submitted Price Report: Rice 50kg (₦72,000)</strong>
-                                            <span>Dawanau Market · Verified by 5 Agents · Earned +25 MarketPoints
-                                                (+₦1,500)</span>
-                                        </div>
-                                        <span class="act-time">2h ago</span>
-                                    </div>
-                                    <div class="act-feed-item">
-                                        <i class="fa-solid fa-circle-check act-icon green"></i>
-                                        <div class="act-info">
-                                            <strong>Verified Cement Price: Dangote 50kg (₦8,500)</strong>
-                                            <span>Sabon Gari Market · Confidence 99% · Earned +25 MarketPoints
-                                                (+₦800)</span>
-                                        </div>
-                                        <span class="act-time">Yesterday</span>
-                                    </div>
-                                    <div class="act-feed-item">
-                                        <i class="fa-solid fa-receipt act-icon purple"></i>
-                                        <div class="act-info">
-                                            <strong>Uploaded Market Receipt: Golden Penny Flour</strong>
-                                            <span>Mile 12 Audit Batch · Earned +50 MarketPoints</span>
-                                        </div>
-                                        <span class="act-time">3 days ago</span>
+                                <div class="activity-feed-list" id="activity-feed-container">
+                                    <div style="text-align: center; padding: 24px; color: #64748b;">
+                                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                        No activity logged yet.
                                     </div>
                                 </div>
                             </div>
@@ -1980,17 +1856,17 @@
                                     <div class="settings-right">
                                         <div class="form-row-grid">
                                             <div class="form-field">
-                                                <label>Agent Full Name</label>
-                                                <input type="text" value="Amina Yusuf" id="input-prof-name" />
+                                                <label>Full Name</label>
+                                                <input type="text" placeholder="Enter your full name" id="input-prof-name" />
                                             </div>
                                             <div class="form-field">
-                                                <label>Primary Phone Number</label>
-                                                <input type="text" value="+234 801 234 5678" id="input-prof-phone" />
+                                                <label>Primary Phone / Contact</label>
+                                                <input type="text" placeholder="Enter phone or email" id="input-prof-phone" />
                                             </div>
                                         </div>
                                         <div class="form-field margin-top">
                                             <label>Assigned Markets & Region</label>
-                                            <input type="text" value="Dawanau & Sabon Gari Markets, Kano"
+                                            <input type="text" placeholder="e.g. Mile 12 Market, Lagos"
                                                 id="input-prof-markets" />
                                         </div>
                                     </div>

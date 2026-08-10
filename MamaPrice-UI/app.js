@@ -1556,16 +1556,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch(e) {}
 
         const defaultHistory = {
-            today: [
-                { title: 'Lagos Cement Price Inquiry', query: 'Where can I buy the cheapest 50kg bag of Dangote Cement in Lagos?', timestamp: Date.now() },
-                { title: 'Flour Prices Mile 12', query: 'Golden Penny Flour price at Mile 12 Market', timestamp: Date.now() - 3600000 }
-            ],
-            sevenDays: [
-                { title: 'Tomato Basket Price Trend', query: 'Fresh Tomatoes price basket Mile 12', timestamp: Date.now() - (3 * 86400000) },
-                { title: 'Bodija Rice Observations', query: 'Mama Gold Rice 50kg bag Bodija Market', timestamp: Date.now() - (6 * 86400000) }
-            ]
+            today: [],
+            sevenDays: []
         };
-        localStorage.setItem('mamaprice_chat_history_v2', JSON.stringify(defaultHistory));
         return defaultHistory;
     }
 
@@ -1598,15 +1591,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         
         const history = getStoredHistory();
+        if (history.today.length === 0 && (!history.sevenDays || history.sevenDays.length === 0)) {
+            container.innerHTML = ``;
+            return;
+        }
 
-        let html = `<div class="section-title">Today</div>`;
-        history.today.forEach((item, idx) => {
-            html += `
-                <div class="history-link ${idx === 0 ? 'active' : ''}" onclick="window.loadHistoryQuery('${encodeURIComponent(item.query)}')">
-                    <i class="fa-regular fa-message"></i> ${escapeHTML(item.title)}
-                </div>
-            `;
-        });
+        let html = ``;
+        if (history.today.length > 0) {
+            html += `<div class="section-title">Today</div>`;
+            history.today.forEach((item, idx) => {
+                html += `
+                    <div class="history-link ${idx === 0 ? 'active' : ''}" onclick="window.loadHistoryQuery('${encodeURIComponent(item.query)}')">
+                        <i class="fa-regular fa-message"></i> ${escapeHTML(item.title)}
+                    </div>
+                `;
+            });
+        }
 
         if (history.sevenDays && history.sevenDays.length > 0) {
             html += `<div class="section-title">7 Days Ago</div>`;
@@ -2582,22 +2582,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Calculate MarketPoints
-        let totalPts = user ? (user.referralPoints || 600) : 600;
+        let totalPts = user ? (user.referralPoints || 0) : 0;
         const agentData = user ? scoutsData.find(a => a.name.toLowerCase() === (user.name || '').toLowerCase()) : null;
 
         if (agentData) {
             totalPts += (agentData.points || 0);
             if (walletVal) walletVal.textContent = `₦${(agentData.earnings || 0).toLocaleString()}`;
-            if (trustVal) trustVal.textContent = `${agentData.trustScore || 98}%`;
+            if (trustVal) trustVal.textContent = `${agentData.trustScore || 100}%`;
             if (reportsLoggedSub) reportsLoggedSub.textContent = `${agentData.reports || 0} Reports Logged`;
         } else {
-            if (walletVal) walletVal.textContent = isAgent ? `₦148,500` : `₦0`;
-            if (trustVal) trustVal.textContent = isAgent ? `98.4%` : `100%`;
-            if (reportsLoggedSub) reportsLoggedSub.textContent = isAgent ? `142 Reports Logged` : `0 Reports Logged`;
+            if (walletVal) walletVal.textContent = isAgent ? `₦0` : `₦0`;
+            if (trustVal) trustVal.textContent = isAgent ? `100%` : `100%`;
+            if (reportsLoggedSub) reportsLoggedSub.textContent = isAgent ? `0 Reports Logged` : `0 Reports Logged`;
         }
 
         if (pointsVal) pointsVal.textContent = totalPts.toLocaleString();
-        if (savingsVal) savingsVal.textContent = `₦128,500`;
+        if (savingsVal) savingsVal.textContent = user && user.savings ? user.savings : `₦0`;
+        const totalSavedPill = document.getElementById('prof-total-saved-pill');
+        if (totalSavedPill) totalSavedPill.textContent = user && user.savings ? user.savings : `₦0`;
     }
 
     // ─── Privy Auth Event Handlers (real login / logout / session restore) ───
