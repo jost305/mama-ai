@@ -4,28 +4,31 @@ dotenv.config();
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "openrouter/free";
 
-const COMMERCE_QUERY_KEYWORDS = [
-    "price", "cost", "how much", "naira", "ngn", "rate", "sold", "buy", "buying",
-    "vendor", "seller", "shop", "store", "trader", "merchant", "stall",
-    "market", "bodija", "mile 12", "dawanau", "oyingbo", "onitsha", "ariaria", "balogun", "computer village", "sabon gari", "dugbe", "kuto", "ikeja",
-    "available", "stock", "out of stock", "in stock", "find", "where to buy", "sold out",
-    "rice", "tomato", "tomatoes", "pepper", "cement", "garri", "yam", "oil", "palm oil", "eggs", "flour", "fuel", "petrol", "pms", "steel", "rebar", "rent",
-    "cheapest", "compare", "discount", "voucher", "earnings", "scout", "agent report", "observation"
-];
+const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
 
-function isCommerceQuery(query) {
-    if (!query) return false;
-    const q = query.toLowerCase().trim();
-    return COMMERCE_QUERY_KEYWORDS.some(kw => q.includes(kw));
-}
+Your job is to help users discover products, understand prices, compare markets and vendors, find better purchasing opportunities, understand commerce information, and navigate the MamaPrice platform.
 
-const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice's fallback assistant.
-MamaPrice is an AI-powered commerce intelligence platform for African markets.
-You are operating as a temporary fallback because MamaPrice's primary OjaLM inference service is unavailable.
-You may answer general questions about MamaPrice and general conversational questions.
-You MUST NOT invent current prices, vendors, market conditions, agent reports, earnings, availability, or other live commerce information.
-When a question requires live MamaPrice data that is unavailable, clearly explain that live commerce intelligence is temporarily unavailable.
-Keep responses concise, helpful, and natural.`;
+Speak naturally, confidently, and helpfully.
+
+You are part of the MamaPrice product. Never describe yourself as a fallback assistant, secondary assistant, backup model, or alternative model.
+
+Never mention model providers, inference infrastructure, APIs, servers, outages, failover systems, or internal architecture.
+
+Never tell the user that another model is unavailable.
+
+Maintain the same identity, tone, and conversational behavior as MamaPrice regardless of which underlying model is generating the response.
+
+When verified MamaPrice commerce evidence is provided to you, use that evidence to answer the user's question.
+
+Do not invent prices, vendors, markets, earnings, agent reports, availability, or other factual commerce information.
+
+When the required information is not available in the provided evidence or tools, be honest about what you know and what you cannot verify, but do not reveal internal system limitations or model failover.
+
+Do not fabricate missing information.
+
+Answer naturally and directly.
+
+You are MamaPrice.`;
 
 async function queryFallbackLLM(prompt, options = {}) {
     const apiKey = process.env.OPENROUTER_API_KEY;
@@ -38,7 +41,7 @@ async function queryFallbackLLM(prompt, options = {}) {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
-        console.log(`[LLM] Requesting OpenRouter FREE fallback model (${OPENROUTER_MODEL})...`);
+        console.log(`[LLM] Requesting secondary inference engine (${OPENROUTER_MODEL})...`);
         const res = await fetch(OPENROUTER_ENDPOINT, {
             method: "POST",
             headers: {
@@ -61,13 +64,13 @@ async function queryFallbackLLM(prompt, options = {}) {
 
         if (!res.ok) {
             const errText = await res.text();
-            throw new Error(`OpenRouter API error (${res.status}): ${errText}`);
+            throw new Error(`Secondary engine API error (${res.status}): ${errText}`);
         }
 
         const data = await res.json();
         const content = data.choices?.[0]?.message?.content;
         if (!content) {
-            throw new Error("Invalid or empty response from OpenRouter free model.");
+            throw new Error("Invalid or empty response from secondary inference engine.");
         }
 
         return {
@@ -82,84 +85,74 @@ async function queryFallbackLLM(prompt, options = {}) {
     }
 }
 
-async function simulateInference(prompt, forceOjaLMFail = false, forceOpenRouterFail = false) {
+async function simulateInference(userQuery, ojaGraphEvidence = "", forceOjaLMFail = false, forceSecondaryFail = false) {
     console.log(`\n==================================================`);
-    console.log(`TEST PROMPT: "${prompt}" (forceOjaLMFail=${forceOjaLMFail}, forceOpenRouterFail=${forceOpenRouterFail})`);
-    
+    console.log(`QUERY: "${userQuery}" (OjaGraph Evidence Present: ${Boolean(ojaGraphEvidence)})`);
+
+    const augmentedPrompt = ojaGraphEvidence 
+        ? `=== GROUNDED OJAGRAPH EVIDENCE ===\n${ojaGraphEvidence}\n\nUSER QUESTION: ${userQuery}`
+        : userQuery;
+
     // Step 1: OjaLM Primary Inference
     if (!forceOjaLMFail) {
         console.log(`[LLM] provider=ojalm fallback=false`);
         return {
             provider: "ojalm",
             fallback: false,
-            response: `OjaLM Primary Response for "${prompt}"`
+            response: `I'm MamaPrice! Here is your commerce answer for "${userQuery}".`
         };
     }
 
-    // Step 2: Fallback Route
-    console.warn("⚠️ [LLM] OjaLM primary inference service unavailable. Activating fallback pipeline...");
-    const isCommerce = isCommerceQuery(prompt);
+    // Step 2: Silent Secondary Failover (receives SAME augmentedPrompt & evidence)
+    console.warn("⚠️ [LLM] Primary OjaLM unavailable. Executing secondary inference engine silently...");
 
-    if (isCommerce) {
-        console.log("[LLM] provider=static fallback=true reason=commerce_query_protection");
+    if (forceSecondaryFail) {
+        console.log("[LLM] provider=static fallback=true reason=secondary_engine_failed");
+        let staticMsg = "I'm having trouble finding verified market information for your query right now. Please check back shortly or try rephrasing your search!";
+        if (ojaGraphEvidence) {
+            staticMsg = `Here is the latest verified MamaPrice market snapshot for your query:\n\n${ojaGraphEvidence}`;
+        }
         return {
             provider: "static",
             fallback: true,
-            reason: "commerce_query_protection",
-            response: "Sorry, MamaPrice's live commerce intelligence is temporarily unavailable. Please try again shortly."
-        };
-    }
-
-    if (forceOpenRouterFail) {
-        console.log("[LLM] provider=static fallback=true reason=openrouter_failed");
-        return {
-            provider: "static",
-            fallback: true,
-            reason: "openrouter_failed",
-            response: "I'm having trouble responding right now. Please try again shortly."
+            reason: "secondary_engine_failed",
+            response: staticMsg
         };
     }
 
     try {
-        const fallbackRes = await queryFallbackLLM(prompt);
-        console.log(`[LLM] provider=openrouter fallback=true model=${fallbackRes.model}`);
-        return fallbackRes;
+        const secondaryRes = await queryFallbackLLM(augmentedPrompt);
+        console.log(`[LLM] provider=openrouter fallback=true model=${secondaryRes.model}`);
+        return secondaryRes;
     } catch (err) {
-        console.warn("⚠️ OpenRouter error:", err.message);
-        console.log("[LLM] provider=static fallback=true reason=openrouter_failed");
+        console.warn("⚠️ Secondary inference error:", err.message);
+        console.log("[LLM] provider=static fallback=true reason=secondary_engine_failed");
         return {
             provider: "static",
             fallback: true,
-            reason: "openrouter_failed",
-            response: "I'm having trouble responding right now. Please try again shortly."
+            reason: "secondary_engine_failed",
+            response: "I'm having trouble finding verified market information for your query right now. Please check back shortly!"
         };
     }
 }
 
 async function runAllTests() {
-    console.log("Starting MamaPrice Fallback Routing Verification Suite...\n");
+    console.log("Starting Seamless MamaPrice Failover Acceptance Test Suite...\n");
 
-    // Test 1: Normal working request
-    const t1 = await simulateInference("What is MamaPrice?", false);
-    console.log("Result T1:", t1);
+    // Test A: Hi (Primary OjaLM working)
+    const tA1 = await simulateInference("Hi, who are you?", "", false);
+    console.log("Result T-A1 (Primary Active):", tA1.response);
 
-    // Test 2: Forced OjaLM failure with non-commerce query (OpenRouter fallback)
-    const t2 = await simulateInference("Hello, who are you?", true);
-    console.log("Result T2:", t2);
+    // Test B: Hi (Secondary Failover active)
+    const tB1 = await simulateInference("Hi, who are you?", "", true);
+    console.log("\nResult T-B1 (Silent Failover - Identity Check):", tB1.content || tB1.response);
 
-    // Test 3: Forced OjaLM failure with commerce query (Commerce protection guard)
-    const t3 = await simulateInference("What is rice selling for in Bodija today?", true);
-    console.log("Result T3:", t3);
+    // Test C: Rice price query in Ibadan WITH OjaGraph evidence (Secondary Failover active)
+    const mockIbadanEvidence = "Bodija Market: 50kg rice — ₦73,500 (95% confidence)\nDugbe Market: 50kg rice — ₦76,000 (91% confidence)";
+    const tC1 = await simulateInference("Where can I get cheaper rice in Ibadan?", mockIbadanEvidence, true);
+    console.log("\nResult T-C1 (Silent Failover - OjaGraph Evidence Answer):", tC1.content || tC1.response);
 
-    // Test 4: Forced both OjaLM & OpenRouter failure
-    const t4 = await simulateInference("Hello, who are you?", true, true);
-    console.log("Result T4:", t4);
-
-    // Test 5: Commerce query with vendor check under OjaLM failure
-    const t5 = await simulateInference("Which vendor has the cheapest cement in Mile 12?", true);
-    console.log("Result T5:", t5);
-
-    console.log("\n✅ All 5 Fallback Verification Tests Execution Completed.");
+    console.log("\n✅ All Failover Acceptance Tests Execution Completed.");
 }
 
 runAllTests().catch(err => console.error("Test Suite Error:", err));

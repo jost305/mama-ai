@@ -37,24 +37,36 @@ reviews, market events, counterfeit warnings, and quality assessments.
 If a question has no matching evidence, say so honestly and offer general guidance.`;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// OpenRouter FREE Fallback Assistant System Prompt
+// OpenRouter FREE Secondary Model Integration
 // ─────────────────────────────────────────────────────────────────────────────
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "openrouter/free";
 
-const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice's fallback assistant.
+const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
 
-MamaPrice is an AI-powered commerce intelligence platform for African markets.
+Your job is to help users discover products, understand prices, compare markets and vendors, find better purchasing opportunities, understand commerce information, and navigate the MamaPrice platform.
 
-You are operating as a temporary fallback because MamaPrice's primary OjaLM inference service is unavailable.
+Speak naturally, confidently, and helpfully.
 
-You may answer general questions about MamaPrice and general conversational questions.
+You are part of the MamaPrice product. Never describe yourself as a fallback assistant, secondary assistant, backup model, or alternative model.
 
-You MUST NOT invent current prices, vendors, market conditions, agent reports, earnings, availability, or other live commerce information.
+Never mention model providers, inference infrastructure, APIs, servers, outages, failover systems, or internal architecture.
 
-When a question requires live MamaPrice data that is unavailable, clearly explain that live commerce intelligence is temporarily unavailable.
+Never tell the user that another model is unavailable.
 
-Keep responses concise, helpful, and natural.`;
+Maintain the same identity, tone, and conversational behavior as MamaPrice regardless of which underlying model is generating the response.
+
+When verified MamaPrice commerce evidence is provided to you, use that evidence to answer the user's question.
+
+Do not invent prices, vendors, markets, earnings, agent reports, availability, or other factual commerce information.
+
+When the required information is not available in the provided evidence or tools, be honest about what you know and what you cannot verify, but do not reveal internal system limitations or model failover.
+
+Do not fabricate missing information.
+
+Answer naturally and directly.
+
+You are MamaPrice.`;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Intent Detection & Commerce Query Protection
@@ -419,47 +431,37 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         });
     }
 
-    // ─── FALLBACK PIPELINE: OjaLM Primary Failed ─────────────────────────────
-    console.warn("⚠️ OjaLM primary inference service unavailable. Activating fallback pipeline...");
+    // ─── SECONDARY INFERENCE ENGINE: Silent Failover ──────────────────────────
+    console.warn("[LLM] Primary OjaLM unavailable. Executing secondary inference engine silently...");
 
-    const isCommerce = isCommerceQuery(prompt);
-
-    if (isCommerce) {
-        // COMMERCE QUERY PROTECTION: Never allow fallback LLM to fabricate live prices
-        console.log("[LLM] provider=static fallback=true reason=commerce_query_protection");
-        return res.json({
-            sessionId,
-            modelUsed: "MamaPrice Safety Guard",
-            response: "Sorry, MamaPrice's live commerce intelligence is temporarily unavailable. Please try again shortly.",
-            intents: detectedIntents,
-            evidence: allEvidence,
-            provider: "static",
-            fallback: true
-        });
-    }
-
-    // NON-COMMERCE QUERY: Attempt OpenRouter FREE Fallback for general conversation
     try {
-        const fallbackResult = await queryFallbackLLM(prompt);
+        const fallbackResult = await queryFallbackLLM(augmentedPrompt);
         console.log("[LLM] provider=openrouter fallback=true");
         return res.json({
             sessionId,
             modelUsed: fallbackResult.model,
             response: fallbackResult.content,
             intents: detectedIntents,
-            evidence: {},
+            evidence: allEvidence,
             provider: "openrouter",
             fallback: true
         });
     } catch (openRouterErr) {
-        console.warn("⚠️ OpenRouter fallback error:", openRouterErr.message);
-        console.log("[LLM] provider=static fallback=true reason=openrouter_failed");
+        console.warn("⚠️ Secondary inference error:", openRouterErr.message);
+        console.log("[LLM] provider=static fallback=true reason=secondary_engine_failed");
+
+        // Natural MamaPrice static response if both inference engines fail
+        let staticResponse = "I'm having trouble finding verified market information for your query right now. Please check back shortly or try rephrasing your search!";
+        if (groundedContext) {
+            staticResponse = `Here is the latest verified MamaPrice market snapshot for your query:\n\n${groundedContext.replace(/=== GROUNDED OJAGRAPH EVIDENCE ===\n/, '')}`;
+        }
+
         return res.json({
             sessionId,
-            modelUsed: "MamaPrice Static Fallback",
-            response: "I'm having trouble responding right now. Please try again shortly.",
+            modelUsed: "MamaPrice Engine",
+            response: staticResponse,
             intents: detectedIntents,
-            evidence: {},
+            evidence: allEvidence,
             provider: "static",
             fallback: true
         });
