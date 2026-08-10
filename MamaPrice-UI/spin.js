@@ -1,17 +1,17 @@
-/* ------------------------------------------
-   SPIN & WIN MODAL ENGINE � spin.js
-   Loaded after app.js � IIFE scoped to avoid any global conflicts.
------------------------------------------- */
+﻿/* ══════════════════════════════════════════
+   SPIN & WIN MODAL ENGINE — spin.js
+   Fully IIFE-scoped, wired via addEventListener
+══════════════════════════════════════════ */
 (function () {
     "use strict";
 
     var SPIN_PRIZES = [
-        { label: "?300", value: 300, color: "#f59e0b" },
-        { label: "?50",  value: 50,  color: "#10b981" },
-        { label: "?100", value: 100, color: "#059669" },
-        { label: "?150", value: 150, color: "#10b981" },
-        { label: "?200", value: 200, color: "#059669" },
-        { label: "?250", value: 250, color: "#10b981" }
+        { label: "₦300", value: 300, color: "#f59e0b" },
+        { label: "₦50",  value: 50,  color: "#10b981" },
+        { label: "₦100", value: 100, color: "#059669" },
+        { label: "₦150", value: 150, color: "#10b981" },
+        { label: "₦200", value: 200, color: "#059669" },
+        { label: "₦250", value: 250, color: "#10b981" }
     ];
 
     var spinWheelAngle = 0;
@@ -19,6 +19,7 @@
     var spinCanvas     = null;
     var spinCtx        = null;
 
+    /* ── Draw Wheel ── */
     function drawWheel(angle) {
         if (!spinCanvas || !spinCtx) return;
         var cx = spinCanvas.width / 2;
@@ -43,7 +44,7 @@
             spinCtx.rotate(start + sliceAngle / 2);
             spinCtx.textAlign = "right";
             spinCtx.fillStyle = "#fff";
-            spinCtx.font = "bold 15px \"Plus Jakarta Sans\", sans-serif";
+            spinCtx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
             spinCtx.shadowColor = "rgba(0,0,0,0.25)";
             spinCtx.shadowBlur = 3;
             spinCtx.fillText(prize.label, r - 14, 5);
@@ -56,6 +57,13 @@
         spinCtx.stroke();
     }
 
+    /* ── Close helper ── */
+    function doCloseModal() {
+        var overlay = document.getElementById("spin-modal-overlay");
+        if (overlay) overlay.classList.remove("open");
+    }
+
+    /* ── Open Modal ── */
     window.openSpinModal = function () {
         var overlay = document.getElementById("spin-modal-overlay");
         if (!overlay) return;
@@ -66,12 +74,7 @@
         scheduleSocialToast();
     };
 
-    window.closeSpinModal = function (e) {
-        if (e && e.target && e.target.id !== "spin-modal-overlay") return;
-        var overlay = document.getElementById("spin-modal-overlay");
-        if (overlay) overlay.classList.remove("open");
-    };
-
+    /* ── Spin Wheel ── */
     window.spinWheel = function () {
         if (spinIsRunning) return;
         var spinsEl  = document.getElementById("sm-spins-remaining");
@@ -115,7 +118,7 @@
     };
 
     function showSpinResult(prize) {
-        document.getElementById("spin-modal-overlay").classList.remove("open");
+        doCloseModal();
         if (prize.value > 0) {
             var amtEl = document.getElementById("sr-win-amount");
             if (amtEl) amtEl.textContent = prize.label;
@@ -136,9 +139,10 @@
         var cb = document.getElementById("sm-spin-now-btn");
         var ct = document.getElementById("sm-cta-btn");
         if (cb) cb.disabled = false;
-        if (ct) { ct.disabled = false; ct.innerHTML = "<i class=\"fa-solid fa-dharmachakra\"></i> Spin Now"; }
+        if (ct) { ct.disabled = false; ct.innerHTML = '<i class="fa-solid fa-dharmachakra"></i> Spin Now'; }
     };
 
+    /* ── Confetti ── */
     function spawnConfetti() {
         var c = document.getElementById("sr-confetti-container");
         if (!c) return;
@@ -157,13 +161,14 @@
         }
     }
 
+    /* ── Social Toast ── */
     var TOAST_PEOPLE = [
-        { name: "Martha Ikenna",   prize: "?50",  init: "MI" },
-        { name: "Chidi Okafor",    prize: "?200", init: "CO" },
-        { name: "Amina Bello",     prize: "?100", init: "AB" },
-        { name: "Emeka Eze",       prize: "?300", init: "EE" },
-        { name: "Fatima Suleiman", prize: "?150", init: "FS" },
-        { name: "Kola Adeyemi",    prize: "?50",  init: "KA" }
+        { name: "Martha Ikenna",   prize: "₦50",  init: "MI" },
+        { name: "Chidi Okafor",    prize: "₦200", init: "CO" },
+        { name: "Amina Bello",     prize: "₦100", init: "AB" },
+        { name: "Emeka Eze",       prize: "₦300", init: "EE" },
+        { name: "Fatima Suleiman", prize: "₦150", init: "FS" },
+        { name: "Kola Adeyemi",    prize: "₦50",  init: "KA" }
     ];
     var toastIdx   = 0;
     var toastTimer = null;
@@ -190,5 +195,35 @@
             }
         }, 3200);
     }
+
+    /* ── Wire up event listeners after DOM ready ── */
+    document.addEventListener("DOMContentLoaded", function () {
+        // Backdrop click → close (only when clicking the dark backdrop itself)
+        var overlay = document.getElementById("spin-modal-overlay");
+        var modalBox = document.getElementById("spin-modal-box");
+        if (overlay && modalBox) {
+            overlay.addEventListener("click", function () { doCloseModal(); });
+            modalBox.addEventListener("click", function (e) { e.stopPropagation(); });
+        }
+
+        // Back button
+        var backBtn = document.getElementById("sm-back-btn");
+        if (backBtn) backBtn.addEventListener("click", doCloseModal);
+
+        // Center spin button
+        var centerBtn = document.getElementById("sm-spin-now-btn");
+        if (centerBtn) centerBtn.addEventListener("click", window.spinWheel);
+
+        // CTA button
+        var ctaBtn = document.getElementById("sm-cta-btn");
+        if (ctaBtn) ctaBtn.addEventListener("click", window.spinWheel);
+
+        // Header trigger
+        var headerBtn = document.getElementById("header-spin-btn");
+        if (headerBtn) {
+            headerBtn.removeAttribute("onclick");
+            headerBtn.addEventListener("click", window.openSpinModal);
+        }
+    });
 
 }());
