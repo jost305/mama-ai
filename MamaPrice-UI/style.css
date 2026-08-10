@@ -10735,7 +10735,7 @@ table tbody tr:hover {
 .rewards-left-column, .rewards-right-column {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
     width: 100%;
     box-sizing: border-box;
 }
