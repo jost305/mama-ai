@@ -46,16 +46,23 @@ const INTENT_KEYWORDS = {
     quality:      ["quality", "fresh", "good", "bad", "expired", "rotten", "packaging", "condition"]
 };
 
+const GREETING_KEYWORDS = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "howdy", "greetings", "sup", "xup"];
+
 function detectQueryIntents(query) {
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
+    const isGreeting = GREETING_KEYWORDS.some(kw => q === kw || q.startsWith(`${kw} `) || q.startsWith(`${kw}!`));
+    if (isGreeting) {
+        return ["greeting"];
+    }
+
     const intents = new Set();
     for (const [intent, keywords] of Object.entries(INTENT_KEYWORDS)) {
         if (keywords.some(kw => q.includes(kw))) {
             intents.add(intent);
         }
     }
-    // Default to price if no specific intent detected
-    if (intents.size === 0) intents.add("price");
+    // Default to general commerce intelligence if no specific intent detected
+    if (intents.size === 0) intents.add("general");
     return Array.from(intents);
 }
 
