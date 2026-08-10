@@ -3399,21 +3399,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Smooth flyTo map location
         if (map && typeof data.lat === 'number' && typeof data.lon === 'number' && !isNaN(data.lat) && !isNaN(data.lon)) {
-            map.flyTo([data.lat, data.lon], 13, { duration: 1.2, animate: true });
+            try {
+                const lat = Number(data.lat);
+                const lon = Number(data.lon);
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    map.flyTo([lat, lon], 13, { duration: 1.2, animate: true });
 
-            // Draw connecting route polyline from user position
-            if (currentPolyline) map.removeLayer(currentPolyline);
-            currentPolyline = L.polyline([[11.9964, 8.5167], [data.lat, data.lon]], {
-                color: '#f59e0b',
-                weight: 4,
-                dashArray: '8, 8',
-                opacity: 0.85
-            }).addTo(map);
+                    // Draw connecting route polyline from user position
+                    if (currentPolyline) map.removeLayer(currentPolyline);
+                    currentPolyline = L.polyline([[11.9964, 8.5167], [lat, lon]], {
+                        color: '#f59e0b',
+                        weight: 4,
+                        dashArray: '8, 8',
+                        opacity: 0.85
+                    }).addTo(map);
+                }
+            } catch (mapErr) {
+                console.warn("Leaflet map flyTo notice:", mapErr);
+            }
         }
     }
 
     window.selectMapMarket = selectMarket;
-    selectMarket('dawanau');
+    try {
+        selectMarket('dawanau');
+    } catch (_) {}
 
     // Filter pills handler
     document.querySelectorAll('#page-map .map-pill-btn').forEach(pill => {

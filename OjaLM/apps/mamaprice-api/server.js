@@ -1199,18 +1199,19 @@ app.post("/webhook/whatsapp", async (req, res) => {
 
 async function initLlama() {
     try {
-        console.log("STEP 1 - getLlama()");
+        console.log("STEP 1 - Initializing Llama CPU runtime...");
         llama = await getLlama({ gpu: false });
         console.log("✓ STEP 1 COMPLETE");
 
-        console.log("STEP 2 - loadModel()");
+        console.log("STEP 2 - Loading OjaLM GGUF model...");
         model = await llama.loadModel({ modelPath: MODEL_PATH });
         console.log("✓ STEP 2 COMPLETE — OjaLM loaded on CPU.");
     } catch (err) {
-        console.error("\n❌ FAILED TO LOAD OJALM MODEL ❌");
-        console.error(err);
-        if (err.stack) console.error(err.stack);
-        process.exit(1);
+        console.warn("\n⚠️ LOCAL OJALM GGUF UNAVAILABLE ⚠️");
+        console.warn("Notice:", err.message || err);
+        console.warn("Continuing server startup in Cloud Inference & OpenRouter Secondary Mode.\n");
+        model = null;
+        llama = null;
     }
 }
 
