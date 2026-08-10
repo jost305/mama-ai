@@ -25,6 +25,7 @@ tsconfig.tsbuildinfo
 
 # Environment and secret files
 .env
+**/.env
 .env.local
 .env.*.local
 

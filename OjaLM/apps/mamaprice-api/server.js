@@ -2,9 +2,12 @@ import { fileURLToPath } from "url";
 import path from "path";
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { getLlama, LlamaChatSession } from "node-llama-cpp";
 import { ojaGraph } from "./ojagraph.js";
 import { rewardsEngine } from "./rewards-engine.js";
+
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -34,7 +37,27 @@ reviews, market events, counterfeit warnings, and quality assessments.
 If a question has no matching evidence, say so honestly and offer general guidance.`;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Intent Detection — determines what type of commerce knowledge to retrieve
+// OpenRouter FREE Fallback Assistant System Prompt
+// ─────────────────────────────────────────────────────────────────────────────
+const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_MODEL = "openrouter/free";
+
+const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice's fallback assistant.
+
+MamaPrice is an AI-powered commerce intelligence platform for African markets.
+
+You are operating as a temporary fallback because MamaPrice's primary OjaLM inference service is unavailable.
+
+You may answer general questions about MamaPrice and general conversational questions.
+
+You MUST NOT invent current prices, vendors, market conditions, agent reports, earnings, availability, or other live commerce information.
+
+When a question requires live MamaPrice data that is unavailable, clearly explain that live commerce intelligence is temporarily unavailable.
+
+Keep responses concise, helpful, and natural.`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Intent Detection & Commerce Query Protection
 // ─────────────────────────────────────────────────────────────────────────────
 
 const INTENT_KEYWORDS = {
@@ -47,6 +70,21 @@ const INTENT_KEYWORDS = {
 };
 
 const GREETING_KEYWORDS = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "howdy", "greetings", "sup", "xup"];
+
+const COMMERCE_QUERY_KEYWORDS = [
+    "price", "cost", "how much", "naira", "ngn", "rate", "sold", "buy", "buying",
+    "vendor", "seller", "shop", "store", "trader", "merchant", "stall",
+    "market", "bodija", "mile 12", "dawanau", "oyingbo", "onitsha", "ariaria", "balogun", "computer village", "sabon gari", "dugbe", "kuto", "ikeja",
+    "available", "stock", "out of stock", "in stock", "find", "where to buy", "sold out",
+    "rice", "tomato", "tomatoes", "pepper", "cement", "garri", "yam", "oil", "palm oil", "eggs", "flour", "fuel", "petrol", "pms", "steel", "rebar", "rent",
+    "cheapest", "compare", "discount", "voucher", "earnings", "scout", "agent report", "observation"
+];
+
+function isCommerceQuery(query) {
+    if (!query) return false;
+    const q = query.toLowerCase().trim();
+    return COMMERCE_QUERY_KEYWORDS.some(kw => q.includes(kw));
+}
 
 function detectQueryIntents(query) {
     const q = query.toLowerCase().trim();
@@ -187,10 +225,10 @@ async function getOrCreateSession(sessionId) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HuggingFace Serverless Inference Integration — ctrlprompt/OjaLM-v0.1
+// Primary OjaLM Remote Inference — HuggingFace ctrlprompt/OjaLM-v0.1
 // ─────────────────────────────────────────────────────────────────────────────
 const HF_MODEL_REPO = "ctrlprompt/OjaLM-v0.1";
-const HF_INFERENCE_URL = process.env.HF_ENDPOINT_URL || `https://api-inference.huggingface.co/models/${HF_MODEL_REPO}`;
+const HF_INFERENCE_URL = process.env.HF_ENDPOINT_URL || `https://router.huggingface.co/hf-inference/models/${HF_MODEL_REPO}`;
 
 async function queryHuggingFaceInference(prompt, systemPrompt = SYSTEM_PROMPT, userToken = null) {
     const hfToken = userToken || process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN || "";
@@ -228,6 +266,64 @@ async function queryHuggingFaceInference(prompt, systemPrompt = SYSTEM_PROMPT, u
         return data.trim();
     }
     return JSON.stringify(data);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Dedicated Secondary Fallback: OpenRouter FREE LLM API
+// ─────────────────────────────────────────────────────────────────────────────
+async function queryFallbackLLM(prompt, options = {}) {
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+        throw new Error("OPENROUTER_API_KEY environment variable is not configured.");
+    }
+
+    const controller = new AbortController();
+    const timeoutMs = options.timeoutMs || 10000;
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        console.log(`[LLM] Requesting OpenRouter FREE fallback model (${OPENROUTER_MODEL})...`);
+        const res = await fetch(OPENROUTER_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: OPENROUTER_MODEL,
+                messages: [
+                    { role: "system", content: FALLBACK_SYSTEM_PROMPT },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.3,
+                max_tokens: 500
+            }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`OpenRouter API error (${res.status}): ${errText}`);
+        }
+
+        const data = await res.json();
+        const content = data.choices?.[0]?.message?.content;
+        if (!content) {
+            throw new Error("Invalid or empty response from OpenRouter free model.");
+        }
+
+        return {
+            content: content.trim(),
+            provider: "openrouter",
+            model: OPENROUTER_MODEL,
+            fallback: true
+        };
+    } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -279,53 +375,94 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         ? `${groundedContext}\n\nUSER QUESTION: ${prompt}`
         : prompt;
 
-    // Step 4: Fallback to HuggingFace Serverless API if local GGUF model is unallocated or requested
+    // ─── PRIMARY INFERENCE ENGINE: OjaLM (Local GGUF / Remote HF) ────────────
+    let primarySuccess = false;
+    let ojalmResponseText = "";
+    let providerName = "ojalm";
+
+    // Attempt HuggingFace Serverless API if requested or local model unallocated
     if (!model || useHf) {
         try {
-            console.log(`[HF INFERENCE ENGINE] Invoking HuggingFace Serverless API for ctrlprompt/OjaLM-v0.1...`);
-            const hfResponseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
-            console.log(`[HF INFERENCE ENGINE] Complete (${hfResponseText.length} chars).`);
-
-            return res.json({
-                sessionId,
-                modelUsed: `${modelId} (HuggingFace Serverless)`,
-                response: hfResponseText,
-                intents: detectedIntents,
-                evidence: allEvidence,
-                provider: "HuggingFace Serverless API"
-            });
+            console.log(`[HF INFERENCE ENGINE] Invoking HuggingFace API for ctrlprompt/OjaLM-v0.1...`);
+            ojalmResponseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
+            primarySuccess = true;
+            providerName = "ojalm-hf";
         } catch (hfErr) {
-            console.warn(`⚠️ [HuggingFace API] failed:`, hfErr.message);
-            if (!model) {
-                return res.status(500).json({ stage: "hf_and_local_model_failed", error: hfErr.message });
-            }
+            console.warn(`⚠️ [HuggingFace OjaLM API] failed:`, hfErr.message);
         }
     }
 
-    let chatSession;
-    try {
-        chatSession = await getOrCreateSession(sessionId);
-    } catch (err) {
-        return res.status(500).json({ stage: "getOrCreateSession", error: err.message });
+    // Attempt Local OjaLM GGUF if local model is loaded and HF wasn't used/successful
+    if (!primarySuccess && model) {
+        try {
+            console.log(`[OjaLM Local GGUF] Generating response for session "${sessionId}"...`);
+            const chatSession = await getOrCreateSession(sessionId);
+            ojalmResponseText = await chatSession.prompt(augmentedPrompt);
+            primarySuccess = true;
+            providerName = "ojalm-local";
+        } catch (localErr) {
+            console.warn(`⚠️ [OjaLM Local GGUF] failed:`, localErr.message);
+        }
     }
 
-    // Step 5: OjaLM Reasoning & Response Generation via Local GGUF
-    try {
-        console.log(`[OjaLM Local GGUF] Generating response for session "${sessionId}"...`);
-        const responseText = await chatSession.prompt(augmentedPrompt);
-        console.log(`[OjaLM Local GGUF] Response complete (${responseText.length} chars).`);
-
+    // ─── SUCCESS: Return OjaLM Primary Response ──────────────────────────────
+    if (primarySuccess && ojalmResponseText) {
+        console.log(`[LLM] provider=ojalm fallback=false`);
         return res.json({
             sessionId,
             modelUsed: modelId,
-            response: responseText.trim(),
+            response: ojalmResponseText.trim(),
             intents: detectedIntents,
             evidence: allEvidence,
-            provider: "Local OjaLM GGUF"
+            provider: "ojalm",
+            fallback: false
         });
-    } catch (err) {
-        console.error(`❌ [session.prompt] failed for session "${sessionId}":`, err);
-        return res.status(500).json({ stage: "session.prompt", error: err.message });
+    }
+
+    // ─── FALLBACK PIPELINE: OjaLM Primary Failed ─────────────────────────────
+    console.warn("⚠️ OjaLM primary inference service unavailable. Activating fallback pipeline...");
+
+    const isCommerce = isCommerceQuery(prompt);
+
+    if (isCommerce) {
+        // COMMERCE QUERY PROTECTION: Never allow fallback LLM to fabricate live prices
+        console.log("[LLM] provider=static fallback=true reason=commerce_query_protection");
+        return res.json({
+            sessionId,
+            modelUsed: "MamaPrice Safety Guard",
+            response: "Sorry, MamaPrice's live commerce intelligence is temporarily unavailable. Please try again shortly.",
+            intents: detectedIntents,
+            evidence: allEvidence,
+            provider: "static",
+            fallback: true
+        });
+    }
+
+    // NON-COMMERCE QUERY: Attempt OpenRouter FREE Fallback for general conversation
+    try {
+        const fallbackResult = await queryFallbackLLM(prompt);
+        console.log("[LLM] provider=openrouter fallback=true");
+        return res.json({
+            sessionId,
+            modelUsed: fallbackResult.model,
+            response: fallbackResult.content,
+            intents: detectedIntents,
+            evidence: {},
+            provider: "openrouter",
+            fallback: true
+        });
+    } catch (openRouterErr) {
+        console.warn("⚠️ OpenRouter fallback error:", openRouterErr.message);
+        console.log("[LLM] provider=static fallback=true reason=openrouter_failed");
+        return res.json({
+            sessionId,
+            modelUsed: "MamaPrice Static Fallback",
+            response: "I'm having trouble responding right now. Please try again shortly.",
+            intents: detectedIntents,
+            evidence: {},
+            provider: "static",
+            fallback: true
+        });
     }
 });
 
