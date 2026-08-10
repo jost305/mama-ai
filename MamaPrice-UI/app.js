@@ -2917,7 +2917,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (hfToken) hfHeaders['Authorization'] = `Bearer ${hfToken}`;
 
                     const hfPrompt = `<|system|>\nYou are MamaPrice, the intelligent Commerce AI for African markets. Provide accurate price benchmarks and market guidance.</s>\n<|user|>\n${message || 'Analyze market price evidence'}</s>\n<|assistant|>`;
-                    const hfResponse = await fetch('https://api-inference.huggingface.co/models/ctrlprompt/OjaLM-v0.1', {
+                    const hfResponse = await fetch('https://router.huggingface.co/hf-inference/models/ctrlprompt/OjaLM-v0.1', {
                         method: 'POST',
                         headers: hfHeaders,
                         body: JSON.stringify({
@@ -2926,7 +2926,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                     });
 
-                    if (hfResponse.ok) {
+                    if (hfResponse && hfResponse.ok) {
                         const hfData = await hfResponse.json();
                         let hfText = '';
                         if (Array.isArray(hfData) && hfData[0]?.generated_text) {
@@ -2938,13 +2938,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (hfText) {
                             removeTypingIndicator();
                             addAgentMessage(hfText, [
-                                { title: "OjaLM v0.1 HuggingFace Model", snippet: "ctrlprompt/OjaLM-v0.1 Serverless Inference" }
-                            ], `${selectedModel} (HF Serverless)`);
+                                { title: "OjaLM v0.1 HuggingFace Model", snippet: "ctrlprompt/OjaLM-v0.1 Commerce Intelligence" }
+                            ], `${selectedModel} (HF Cloud)`);
                             return;
                         }
                     }
                 } catch (hfErr) {
-                    console.warn("HuggingFace Direct Notice:", hfErr);
+                    console.warn("HuggingFace Direct Notice:", hfErr.message || hfErr);
                 }
 
                 removeTypingIndicator();
@@ -2995,13 +2995,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             evidenceList.forEach(obs => {
-                const priceFormatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(obs.observed_price);
+                const itemTitle = obs.title || obs.product || 'Commerce Intelligence';
+                const itemMarket = obs.market ? `📍 ${obs.market}${obs.state ? `, ${obs.state}` : ''}` : '';
+                const itemPrice = obs.observed_price ? ` — ₦${Number(obs.observed_price).toLocaleString()}` : '';
+                const itemSnippet = obs.snippet || (obs.quantity ? `Quantity: ${obs.quantity}` : '');
                 const confPercent = Math.round((obs.confidence || 0.95) * 100);
+
                 evidenceHtml += `
                     <div style="background: #ffffff; border: 1px solid #dcfce7; padding: 8px 10px; border-radius: 8px; font-size: 0.86em;">
-                        <div><strong>${escapeHTML(obs.product)}</strong> — <span style="color: #16a34a; font-weight: 700;">${priceFormatted}</span> (${escapeHTML(obs.quantity)})</div>
+                        <div><strong>${escapeHTML(itemTitle)}</strong> <span style="color: #16a34a; font-weight: 700;">${escapeHTML(itemPrice)}</span></div>
                         <div style="color: #4b5563; font-size: 0.82em; margin-top: 2px;">
-                            📍 ${escapeHTML(obs.market)} (${escapeHTML(obs.state)}) · ⏱️ ${obs.freshness_hours}h ago · 🎯 ${confPercent}% confidence
+                            ${itemMarket ? escapeHTML(itemMarket) + ' · ' : ''}${escapeHTML(itemSnippet)} · 🎯 ${confPercent}% confidence
                         </div>
                     </div>
                 `;
@@ -3014,12 +3018,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Extract JSON block if it exists
-        const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
+        const safeRespText = String(responseText || '');
+        const jsonMatch = safeRespText.match(/```json\n([\s\S]*?)\n```/);
         const modelBadgeHtml = `<div style="font-size: 0.72em; color: #6366f1; font-weight: 600; margin-bottom: 6px;"><i class="fa-solid fa-microchip"></i> Engine: ${escapeHTML(modelUsed)}</div>`;
         
         let bubbleContent = '';
         if (jsonMatch) {
-            const textPart = responseText.replace(/```json\n[\s\S]*?\n```/, '').trim();
+            const textPart = safeRespText.replace(/```json\n[\s\S]*?\n```/, '').trim();
             const jsonStr = jsonMatch[1];
             
             bubbleContent = `
@@ -3036,7 +3041,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             bubbleContent = `
                 ${modelBadgeHtml}
-                <p>${escapeHTML(responseText).replace(/\n/g, '<br>')}</p>
+                <p>${escapeHTML(safeRespText).replace(/\n/g, '<br>')}</p>
                 ${evidenceHtml}
             `;
         }
@@ -3048,7 +3053,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         
-        chatHistory.appendChild(msgDiv);
+        if (chatHistory) chatHistory.appendChild(msgDiv);
         scrollToBottom();
     }
 
@@ -3061,7 +3066,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="bubble-agent" style="color: #b91c1c; border-color: #fca5a5;">${escapeHTML(errorMsg)}</div>
             </div>
         `;
-        chatHistory.appendChild(msgDiv);
+        if (chatHistory) chatHistory.appendChild(msgDiv);
         scrollToBottom();
     }
 
@@ -3081,7 +3086,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        chatHistory.appendChild(typingDiv);
+        if (chatHistory) chatHistory.appendChild(typingDiv);
         scrollToBottom();
     }
 
@@ -3093,11 +3098,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function scrollToBottom() {
-        chatHistory.scrollTop = chatHistory.scrollHeight;
+        if (chatHistory) chatHistory.scrollTop = chatHistory.scrollHeight;
     }
 
     function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, 
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>'"]/g, 
             tag => ({
                 '&': '&amp;',
                 '<': '&lt;',
