@@ -2876,75 +2876,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Fetch data from OjaLM API / Grounded Market Engine
             let data = null;
-            if (isLocalhost && API_URL) {
-                try {
-                    const response = await fetch(`${API_URL}/chat`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'x-session-id': currentSessionId
-                        },
-                        body: JSON.stringify({ 
-                            prompt: message,
-                            attachedImage: attachedImg,
-                            sessionId: currentSessionId,
-                            modelId: selectedModel
-                        })
-                    });
+            const targetApiUrl = (API_URL || 'http://localhost:3001');
 
-                    if (response.ok) {
-                        data = await response.json();
-                    }
-                } catch (localErr) {
-                    console.warn("Local API server fetch skipped/failed:", localErr);
+            try {
+                const response = await fetch(`${targetApiUrl}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-session-id': currentSessionId
+                    },
+                    body: JSON.stringify({ 
+                        prompt: message,
+                        attachedImage: attachedImg,
+                        sessionId: currentSessionId,
+                        modelId: selectedModel
+                    })
+                });
+
+                if (response.ok) {
+                    data = await response.json();
                 }
+            } catch (localErr) {
+                console.warn("Primary API server fetch skipped/failed:", localErr);
             }
 
             try {
                 if (data && data.response) {
                     removeTypingIndicator();
-                    addAgentMessage(data.response, data.evidence, data.modelUsed);
+                    addAgentMessage(data.response, data.evidence, data.modelUsed || selectedModel);
                     return;
                 }
-                throw new Error("Local API offline or cloud mode");
+                throw new Error("Primary API offline");
             } catch (error) {
-                console.error("Local API Notice:", error);
+                console.warn("Primary API Notice:", error);
                 
-                // Attempt HuggingFace Serverless Inference API for ctrlprompt/OjaLM-v0.1
+                // Secondary Fallback: Direct OpenRouter FREE Inference (openrouter/free)
                 try {
-                    const hfToken = localStorage.getItem('mamaprice_hf_token') || '';
-                    const hfHeaders = { 'Content-Type': 'application/json' };
-                    if (hfToken) hfHeaders['Authorization'] = `Bearer ${hfToken}`;
+                    const openRouterKey = localStorage.getItem('mamaprice_openrouter_key') || (typeof window !== 'undefined' ? window.MAMAPRICE_OPENROUTER_KEY : '') || '';
+                    if (openRouterKey) {
+                        const orSystemPrompt = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
+Your job is to help users discover products, understand prices, compare markets and vendors, find better purchasing opportunities, understand commerce information, and navigate the MamaPrice platform.
+Speak naturally, confidently, and helpfully. You are part of the MamaPrice product.
+Never describe yourself as a fallback assistant, backup model, or alternative model.
+Never mention model providers, inference infrastructure, APIs, servers, outages, failover systems, or internal architecture.
+Never tell the user that another model is unavailable. You are MamaPrice.`;
 
-                    const hfPrompt = `<|system|>\nYou are MamaPrice, the intelligent Commerce AI for African markets. Provide accurate price benchmarks and market guidance.</s>\n<|user|>\n${message || 'Analyze market price evidence'}</s>\n<|assistant|>`;
-                    const hfResponse = await fetch('https://router.huggingface.co/hf-inference/models/ctrlprompt/OjaLM-v0.1', {
-                        method: 'POST',
-                        headers: hfHeaders,
-                        body: JSON.stringify({
-                            inputs: hfPrompt,
-                            parameters: { max_new_tokens: 400, temperature: 0.7, return_full_text: false }
-                        })
-                    });
+                        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${openRouterKey}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model: 'openrouter/free',
+                                messages: [
+                                    { role: 'system', content: orSystemPrompt },
+                                    { role: 'user', content: message || 'Hello' }
+                                ],
+                                temperature: 0.3,
+                                max_tokens: 500
+                            })
+                        });
 
-                    if (hfResponse && hfResponse.ok) {
-                        const hfData = await hfResponse.json();
-                        let hfText = '';
-                        if (Array.isArray(hfData) && hfData[0]?.generated_text) {
-                            hfText = hfData[0].generated_text.trim();
-                        } else if (hfData.generated_text) {
-                            hfText = hfData.generated_text.trim();
-                        }
-
-                        if (hfText) {
-                            removeTypingIndicator();
-                            addAgentMessage(hfText, [
-                                { title: "OjaLM v0.1 HuggingFace Model", snippet: "ctrlprompt/OjaLM-v0.1 Commerce Intelligence" }
-                            ], `${selectedModel} (HF Cloud)`);
-                            return;
+                        if (orResponse && orResponse.ok) {
+                            const orData = await orResponse.json();
+                            const generatedContent = orData.choices?.[0]?.message?.content;
+                            if (generatedContent) {
+                                removeTypingIndicator();
+                                addAgentMessage(generatedContent.trim(), [], selectedModel);
+                                return;
+                            }
                         }
                     }
-                } catch (hfErr) {
-                    console.warn("HuggingFace Direct Notice:", hfErr.message || hfErr);
+                } catch (orErr) {
+                    console.warn("Direct OpenRouter Notice:", orErr.message || orErr);
                 }
 
                 removeTypingIndicator();
@@ -3354,7 +3359,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function selectMarket(key) {
         const data = marketData[key];
-        if (!data) return;
+        if (!data || typeof data.lat !== 'number' || typeof data.lon !== 'number' || isNaN(data.lat) || isNaN(data.lon)) return;
 
         activeKey = key;
 
