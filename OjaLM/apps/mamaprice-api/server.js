@@ -182,31 +182,65 @@ async function getOrCreateSession(sessionId) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// HuggingFace Serverless Inference Integration — ctrlprompt/OjaLM-v0.1
+// ─────────────────────────────────────────────────────────────────────────────
+const HF_MODEL_REPO = "ctrlprompt/OjaLM-v0.1";
+const HF_INFERENCE_URL = `https://api-inference.huggingface.co/models/${HF_MODEL_REPO}`;
+
+async function queryHuggingFaceInference(prompt, systemPrompt = SYSTEM_PROMPT, userToken = null) {
+    const hfToken = userToken || process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN || "";
+    const formattedPrompt = `<|system|>\n${systemPrompt}</s>\n<|user|>\n${prompt}</s>\n<|assistant|>`;
+    const headers = { "Content-Type": "application/json" };
+    if (hfToken) {
+        headers["Authorization"] = `Bearer ${hfToken}`;
+    }
+
+    console.log(`[HF INFERENCE] Querying HuggingFace API model: ${HF_MODEL_REPO}...`);
+    const hfRes = await fetch(HF_INFERENCE_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+            inputs: formattedPrompt,
+            parameters: {
+                max_new_tokens: 512,
+                temperature: 0.7,
+                return_full_text: false
+            }
+        })
+    });
+
+    if (!hfRes.ok) {
+        const errorText = await hfRes.text();
+        throw new Error(`HuggingFace API (${hfRes.status}): ${errorText}`);
+    }
+
+    const data = await hfRes.json();
+    if (Array.isArray(data) && data[0]?.generated_text) {
+        return data[0].generated_text.trim();
+    } else if (data.generated_text) {
+        return data.generated_text.trim();
+    } else if (typeof data === "string") {
+        return data.trim();
+    }
+    return JSON.stringify(data);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /chat & POST /api/chat — Hybrid RAG Commerce Intelligence Endpoint
 // ─────────────────────────────────────────────────────────────────────────────
 
 app.post(["/chat", "/api/chat"], async (req, res) => {
     console.log("\n--- POST /chat ---");
 
-    let prompt, sessionId, modelId;
+    let prompt, sessionId, modelId, useHf;
     try {
         prompt = req.body.prompt;
         sessionId = req.body.sessionId || req.headers["x-session-id"] || "default-session";
         modelId = req.body.modelId || "MamaPrice 4o";
+        useHf = req.body.useHf || req.body.useHuggingFace || false;
         console.log(`[SESSION: ${sessionId}] [MODEL: ${modelId}] Prompt: "${prompt}"`);
     } catch (err) {
         return res.status(400).json({ stage: "parse_body", error: err.message });
-    }
-
-    if (!model) {
-        return res.status(500).json({ stage: "model_check", error: "OjaLM model not loaded" });
-    }
-
-    let chatSession;
-    try {
-        chatSession = await getOrCreateSession(sessionId);
-    } catch (err) {
-        return res.status(500).json({ stage: "getOrCreateSession", error: err.message });
     }
 
     // ─── Hybrid RAG Retrieval ────────────────────────────────────────────────
@@ -230,7 +264,7 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         const totalMatches = Object.values(allEvidence).reduce((sum, val) => sum + (Array.isArray(val) ? val.length : (val ? 1 : 0)), 0);
         console.log(`[RAG] Retrieved ${totalMatches} total evidence items (including trend memory).`);
     } else {
-        console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF inference.`);
+        console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF / HF inference.`);
     }
 
     // Step 3: Build grounded context from multi-type evidence
@@ -240,18 +274,49 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         ? `${groundedContext}\n\nUSER QUESTION: ${prompt}`
         : prompt;
 
-    // Step 4: OjaLM Reasoning & Response Generation
+    // Step 4: Fallback to HuggingFace Serverless API if local GGUF model is unallocated or requested
+    if (!model || useHf) {
+        try {
+            console.log(`[HF INFERENCE ENGINE] Invoking HuggingFace Serverless API for ctrlprompt/OjaLM-v0.1...`);
+            const hfResponseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
+            console.log(`[HF INFERENCE ENGINE] Complete (${hfResponseText.length} chars).`);
+
+            return res.json({
+                sessionId,
+                modelUsed: `${modelId} (HuggingFace Serverless)`,
+                response: hfResponseText,
+                intents: detectedIntents,
+                evidence: allEvidence,
+                provider: "HuggingFace Serverless API"
+            });
+        } catch (hfErr) {
+            console.warn(`⚠️ [HuggingFace API] failed:`, hfErr.message);
+            if (!model) {
+                return res.status(500).json({ stage: "hf_and_local_model_failed", error: hfErr.message });
+            }
+        }
+    }
+
+    let chatSession;
     try {
-        console.log(`[OjaLM] Generating response for session "${sessionId}"...`);
+        chatSession = await getOrCreateSession(sessionId);
+    } catch (err) {
+        return res.status(500).json({ stage: "getOrCreateSession", error: err.message });
+    }
+
+    // Step 5: OjaLM Reasoning & Response Generation via Local GGUF
+    try {
+        console.log(`[OjaLM Local GGUF] Generating response for session "${sessionId}"...`);
         const responseText = await chatSession.prompt(augmentedPrompt);
-        console.log(`[OjaLM] Response complete (${responseText.length} chars).`);
+        console.log(`[OjaLM Local GGUF] Response complete (${responseText.length} chars).`);
 
         return res.json({
             sessionId,
             modelUsed: modelId,
             response: responseText.trim(),
             intents: detectedIntents,
-            evidence: allEvidence
+            evidence: allEvidence,
+            provider: "Local OjaLM GGUF"
         });
     } catch (err) {
         console.error(`❌ [session.prompt] failed for session "${sessionId}":`, err);

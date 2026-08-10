@@ -2901,10 +2901,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 removeTypingIndicator();
                 addAgentMessage(data.response, data.evidence, data.modelUsed);
             } catch (error) {
-                console.error("API Notice:", error);
+                console.error("Local API Notice:", error);
+                
+                // Attempt HuggingFace Serverless Inference API for ctrlprompt/OjaLM-v0.1
+                try {
+                    const hfPrompt = `<|system|>\nYou are MamaPrice, the intelligent Commerce AI for African markets. Provide accurate price benchmarks and market guidance.</s>\n<|user|>\n${message || 'Analyze market price evidence'}</s>\n<|assistant|>`;
+                    const hfResponse = await fetch('https://api-inference.huggingface.co/models/ctrlprompt/OjaLM-v0.1', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            inputs: hfPrompt,
+                            parameters: { max_new_tokens: 400, temperature: 0.7, return_full_text: false }
+                        })
+                    });
+
+                    if (hfResponse.ok) {
+                        const hfData = await hfResponse.json();
+                        let hfText = '';
+                        if (Array.isArray(hfData) && hfData[0]?.generated_text) {
+                            hfText = hfData[0].generated_text.trim();
+                        } else if (hfData.generated_text) {
+                            hfText = hfData.generated_text.trim();
+                        }
+
+                        if (hfText) {
+                            removeTypingIndicator();
+                            addAgentMessage(hfText, [
+                                { title: "OjaLM v0.1 HuggingFace Model", snippet: "ctrlprompt/OjaLM-v0.1 Serverless Inference" }
+                            ], `${selectedModel} (HF Serverless)`);
+                            return;
+                        }
+                    }
+                } catch (hfErr) {
+                    console.warn("HuggingFace Direct Notice:", hfErr);
+                }
+
                 removeTypingIndicator();
                 
-                // Smart AI Grounded Fallback Response when local CPU server is not running
+                // Smart AI Grounded Fallback Response when local CPU server & HF are loading
                 let fallbackResp = `I have received your query: "${message || 'Image Attachment'}". Grounded against live commodity benchmarks across 20 Nigerian markets.`;
                 if (attachedImg) {
                     fallbackResp = `📷 <strong>Image Attachment Analyzed!</strong><br>I've logged your market evidence photo/receipt. Price verified against current regional market price indexes.`;
