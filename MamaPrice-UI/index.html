@@ -112,7 +112,7 @@
 
                 <div class="header-right">
                     <!-- Compact Header Spin & Win Trigger -->
-                    <button class="header-spin-btn" id="header-spin-btn" onclick="switchView(document.getElementById('nav-rewards'), document.getElementById('page-rewards'))" title="Spin & Win Rewards">
+                    <button class="header-spin-btn" id="header-spin-btn" onclick="openSpinModal()" title="Spin & Win Rewards">
                         <img src="spin-wheel-logo.png" alt="Spin Logo" class="hsb-logo-img">
                         <span class="hsb-text">Spin</span>
                         <span class="hsb-badge" id="header-spins-count" style="display: none;">3</span>
@@ -2274,6 +2274,502 @@
             </div>
         </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SPIN & WIN MODAL — Triggered from header Spin button
+         ═══════════════════════════════════════════════════════ -->
+    <div class="spin-modal-overlay" id="spin-modal-overlay" onclick="closeSpinModal(event)">
+        <div class="spin-modal-box" id="spin-modal-box">
+
+            <!-- Header -->
+            <div class="sm-header">
+                <button class="sm-back-btn" onclick="closeSpinModal()">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span class="sm-title">Spin &amp; Win</span>
+            </div>
+
+            <!-- Daily Spin Banner -->
+            <div class="sm-banner">
+                <div>
+                    <div class="sm-banner-title">🎯 Daily Spin!</div>
+                    <div class="sm-banner-sub">Spin the wheel daily to win amazing rewards!</div>
+                </div>
+                <div class="sm-trophy">🏆</div>
+            </div>
+
+            <!-- Wheel Section -->
+            <div class="sm-wheel-section">
+                <div class="sm-lucky-label">🎰 Lucky Wheel</div>
+                <div class="sm-wheel-wrap">
+                    <!-- Pointer -->
+                    <div class="sm-pointer"></div>
+                    <!-- Canvas Wheel -->
+                    <canvas id="spin-wheel-canvas" width="280" height="280"></canvas>
+                    <!-- Center button -->
+                    <button class="sm-center-btn" id="sm-spin-now-btn" onclick="spinWheel()">
+                        <span>SPIN<br>NOW</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Spins left -->
+            <div class="sm-spins-left" id="sm-spins-left-text">
+                You have <strong id="sm-spins-remaining">1</strong> free spin today
+            </div>
+
+            <!-- CTA -->
+            <button class="sm-cta-btn" id="sm-cta-btn" onclick="spinWheel()">
+                <i class="fa-solid fa-dharmachakra"></i> Spin Now
+            </button>
+        </div>
+    </div>
+
+    <!-- WIN Result Modal -->
+    <div class="spin-result-overlay" id="spin-win-overlay">
+        <div class="spin-result-box spin-win-box">
+            <div class="sr-confetti" id="sr-confetti-container"></div>
+            <div class="sr-icon">🎉</div>
+            <h2 class="sr-title">You Won!</h2>
+            <div class="sr-prize" id="sr-win-amount">₦150</div>
+            <p class="sr-sub">has been added to your wallet balance!</p>
+            <button class="sr-btn sr-btn-win" onclick="closeSpinResult()">
+                <i class="fa-solid fa-wallet"></i> Claim Reward
+            </button>
+        </div>
+    </div>
+
+    <!-- LOSE Result Modal -->
+    <div class="spin-result-overlay" id="spin-lose-overlay">
+        <div class="spin-result-box spin-lose-box">
+            <div class="sr-icon">😔</div>
+            <h2 class="sr-title">Better Luck Next Time!</h2>
+            <p class="sr-sub">You didn't win this time. Come back tomorrow for another free spin!</p>
+            <div class="sr-tip">💡 Submit a price report to earn extra spins</div>
+            <button class="sr-btn sr-btn-lose" onclick="closeSpinResult()">
+                <i class="fa-solid fa-rotate-right"></i> Try Again Tomorrow
+            </button>
+        </div>
+    </div>
+
+    <!-- Social Toast -->
+    <div class="spin-social-toast" id="spin-social-toast">
+        <div class="sst-avatar" id="sst-avatar">MK</div>
+        <div class="sst-body">
+            <strong id="sst-name">Martha Ikenna</strong>
+            <span id="sst-msg">just won ₦50 spin bonus!</span>
+        </div>
+        <span class="sst-time">now</span>
+    </div>
+
+    <style>
+    /* ── Spin Modal Overlay ── */
+    .spin-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+    .spin-modal-overlay.open { display: flex; }
+    .spin-modal-box {
+        background: #f0fdf4;
+        border-radius: 24px;
+        width: 360px;
+        max-width: 95vw;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 0 0 28px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+        position: relative;
+        animation: smSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes smSlideUp {
+        from { transform: translateY(60px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* Header */
+    .sm-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 20px 12px;
+    }
+    .sm-back-btn {
+        background: none; border: none; cursor: pointer;
+        color: #1e293b; font-size: 1rem; padding: 6px;
+        border-radius: 50%; transition: background 0.2s;
+    }
+    .sm-back-btn:hover { background: #e2e8f0; }
+    .sm-title { font-weight: 700; font-size: 1.05rem; color: #1e293b; }
+
+    /* Banner */
+    .sm-banner {
+        margin: 0 16px 20px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 16px;
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+    }
+    .sm-banner-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .sm-banner-sub   { font-size: 0.82rem; opacity: 0.92; }
+    .sm-trophy       { font-size: 2.4rem; }
+
+    /* Wheel */
+    .sm-wheel-section { display: flex; flex-direction: column; align-items: center; }
+    .sm-lucky-label   { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 14px; }
+    .sm-wheel-wrap    { position: relative; display: flex; align-items: center; justify-content: center; }
+    #spin-wheel-canvas { border-radius: 50%; display: block; }
+
+    /* Pointer triangle pointing down toward center */
+    .sm-pointer {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0; height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 22px solid #10b981;
+        z-index: 10;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .sm-center-btn {
+        position: absolute;
+        width: 68px; height: 68px;
+        border-radius: 50%;
+        background: #fff;
+        border: 4px solid #10b981;
+        color: #10b981;
+        font-size: 0.62rem;
+        font-weight: 800;
+        cursor: pointer;
+        line-height: 1.2;
+        box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+        transition: transform 0.15s, box-shadow 0.15s;
+        letter-spacing: 0.03em;
+    }
+    .sm-center-btn:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(16,185,129,0.45); }
+    .sm-center-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Spins left */
+    .sm-spins-left {
+        text-align: center;
+        font-size: 0.82rem;
+        color: #475569;
+        margin: 16px 0 12px;
+    }
+    .sm-spins-left strong { color: #10b981; font-size: 1rem; }
+
+    /* CTA */
+    .sm-cta-btn {
+        display: block;
+        margin: 0 20px;
+        width: calc(100% - 40px);
+        padding: 14px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s, transform 0.15s;
+    }
+    .sm-cta-btn:hover   { opacity: 0.92; transform: translateY(-1px); }
+    .sm-cta-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+    /* ── Result Overlays ── */
+    .spin-result-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(6px);
+        z-index: 10001;
+        align-items: center;
+        justify-content: center;
+    }
+    .spin-result-overlay.open { display: flex; }
+    .spin-result-box {
+        border-radius: 24px;
+        padding: 40px 32px;
+        text-align: center;
+        width: 320px;
+        max-width: 92vw;
+        position: relative;
+        animation: smSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);
+        overflow: hidden;
+    }
+    .spin-win-box  { background: linear-gradient(160deg, #f0fdf4, #dcfce7); border: 2px solid #10b981; }
+    .spin-lose-box { background: linear-gradient(160deg, #f8fafc, #f1f5f9); border: 2px solid #cbd5e1; }
+    .sr-icon  { font-size: 3.5rem; margin-bottom: 12px; }
+    .sr-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin: 0 0 8px; }
+    .sr-prize { font-size: 2.8rem; font-weight: 900; color: #10b981; margin: 8px 0; }
+    .sr-sub   { font-size: 0.88rem; color: #475569; margin-bottom: 20px; }
+    .sr-tip   { font-size: 0.8rem; color: #64748b; background: #f1f5f9; padding: 10px 14px; border-radius: 10px; margin-bottom: 20px; }
+    .sr-btn {
+        width: 100%; padding: 14px; border: none; border-radius: 50px;
+        font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+    }
+    .sr-btn-win  { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+    .sr-btn-lose { background: #e2e8f0; color: #475569; }
+
+    /* Confetti particles */
+    .sr-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .confetti-p  {
+        position: absolute;
+        width: 8px; height: 8px;
+        border-radius: 2px;
+        animation: confettiFall 1.6s ease-in forwards;
+    }
+    @keyframes confettiFall {
+        0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+        100% { transform: translateY(320px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Social Toast ── */
+    .spin-social-toast {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: #fff;
+        border-radius: 50px;
+        padding: 10px 18px 10px 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        font-size: 0.82rem;
+        z-index: 10002;
+        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+        opacity: 0;
+        min-width: 240px;
+        border: 1px solid #e2e8f0;
+    }
+    .spin-social-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .sst-avatar {
+        width: 34px; height: 34px; border-radius: 50%;
+        background: linear-gradient(135deg,#10b981,#059669);
+        color: #fff; font-weight: 700; font-size: 0.72rem;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sst-body { display: flex; flex-direction: column; flex: 1; }
+    .sst-body strong { color: #1e293b; }
+    .sst-body span   { color: #475569; }
+    .sst-time { color: #94a3b8; font-size: 0.72rem; white-space: nowrap; }
+    </style>
+
+    <script>
+    /* ══════════════════════════════════════════
+       SPIN & WIN MODAL ENGINE
+    ══════════════════════════════════════════ */
+    const SPIN_PRIZES = [
+        { label: '₦300', value: 300, color: '#f59e0b' },
+        { label: '₦50',  value: 50,  color: '#10b981' },
+        { label: '₦100', value: 100, color: '#059669' },
+        { label: '₦150', value: 150, color: '#10b981' },
+        { label: '₦200', value: 200, color: '#059669' },
+        { label: '₦250', value: 250, color: '#10b981' },
+    ];
+
+    let spinWheelAngle = 0;
+    let spinIsRunning  = false;
+    let spinCanvas, spinCtx;
+
+    function drawWheel(angle) {
+        if (!spinCanvas) return;
+        const cx = spinCanvas.width / 2;
+        const cy = spinCanvas.height / 2;
+        const r  = cx - 4;
+        const sliceAngle = (2 * Math.PI) / SPIN_PRIZES.length;
+        spinCtx.clearRect(0, 0, spinCanvas.width, spinCanvas.height);
+
+        SPIN_PRIZES.forEach((prize, i) => {
+            const start = angle + i * sliceAngle;
+            const end   = start + sliceAngle;
+
+            spinCtx.beginPath();
+            spinCtx.moveTo(cx, cy);
+            spinCtx.arc(cx, cy, r, start, end);
+            spinCtx.closePath();
+            spinCtx.fillStyle = prize.color;
+            spinCtx.fill();
+            spinCtx.strokeStyle = '#fff';
+            spinCtx.lineWidth = 2;
+            spinCtx.stroke();
+
+            // Label
+            spinCtx.save();
+            spinCtx.translate(cx, cy);
+            spinCtx.rotate(start + sliceAngle / 2);
+            spinCtx.textAlign = 'right';
+            spinCtx.fillStyle = '#fff';
+            spinCtx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+            spinCtx.shadowColor = 'rgba(0,0,0,0.25)';
+            spinCtx.shadowBlur = 3;
+            spinCtx.fillText(prize.label, r - 14, 5);
+            spinCtx.restore();
+        });
+
+        // Outer ring
+        spinCtx.beginPath();
+        spinCtx.arc(cx, cy, r, 0, 2 * Math.PI);
+        spinCtx.strokeStyle = '#10b981';
+        spinCtx.lineWidth = 5;
+        spinCtx.stroke();
+    }
+
+    function openSpinModal() {
+        const overlay = document.getElementById('spin-modal-overlay');
+        overlay.classList.add('open');
+        // Init canvas
+        spinCanvas = document.getElementById('spin-wheel-canvas');
+        spinCtx    = spinCanvas.getContext('2d');
+        drawWheel(spinWheelAngle);
+        // Start social toast loop
+        scheduleSocialToast();
+    }
+
+    function closeSpinModal(e) {
+        if (e && e.target !== document.getElementById('spin-modal-overlay')) return;
+        document.getElementById('spin-modal-overlay').classList.remove('open');
+    }
+
+    function spinWheel() {
+        if (spinIsRunning) return;
+        const spinsEl  = document.getElementById('sm-spins-remaining');
+        const spinLeft = parseInt(spinsEl.textContent || '1');
+        if (spinLeft <= 0) {
+            document.getElementById('sm-cta-btn').textContent = 'No spins left today!';
+            return;
+        }
+        spinsEl.textContent = spinLeft - 1;
+
+        spinIsRunning = true;
+        document.getElementById('sm-spin-now-btn').disabled = true;
+        document.getElementById('sm-cta-btn').disabled      = true;
+
+        // Pick a random winning segment
+        const winIndex = Math.floor(Math.random() * SPIN_PRIZES.length);
+        const sliceAngle = (2 * Math.PI) / SPIN_PRIZES.length;
+
+        // Target: pointer (top = -π/2) lands on winIndex segment center
+        // Segment center in wheel-local coords: winIndex * sliceAngle + sliceAngle/2
+        // We need: spinWheelAngle + segCenter ≡ -π/2  (mod 2π)
+        const segCenter = winIndex * sliceAngle + sliceAngle / 2;
+        const targetAngle = -Math.PI / 2 - segCenter;
+        // Add enough full rotations (5–8) for drama
+        const extraSpins = (5 + Math.floor(Math.random() * 3)) * 2 * Math.PI;
+        const finalAngle = targetAngle + extraSpins;
+
+        const duration = 4500; // ms
+        const startAngle = spinWheelAngle;
+        const startTime  = performance.now();
+
+        function easeOut(t) {
+            return 1 - Math.pow(1 - t, 4);
+        }
+
+        function animate(now) {
+            const elapsed = now - startTime;
+            const t = Math.min(elapsed / duration, 1);
+            spinWheelAngle = startAngle + (finalAngle - startAngle) * easeOut(t);
+            drawWheel(spinWheelAngle);
+
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                spinWheelAngle = finalAngle % (2 * Math.PI);
+                spinIsRunning = false;
+                showSpinResult(SPIN_PRIZES[winIndex]);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function showSpinResult(prize) {
+        // Close the main modal first
+        document.getElementById('spin-modal-overlay').classList.remove('open');
+
+        const isWin = prize.value > 0;
+        if (isWin) {
+            document.getElementById('sr-win-amount').textContent = prize.label;
+            document.getElementById('spin-win-overlay').classList.add('open');
+            spawnConfetti();
+        } else {
+            document.getElementById('spin-lose-overlay').classList.add('open');
+        }
+    }
+
+    function closeSpinResult() {
+        document.getElementById('spin-win-overlay').classList.remove('open');
+        document.getElementById('spin-lose-overlay').classList.remove('open');
+        document.getElementById('sm-spin-now-btn').disabled = false;
+        document.getElementById('sm-cta-btn').disabled      = false;
+        document.getElementById('sm-cta-btn').textContent   = '🎡 Spin Now';
+    }
+
+    function spawnConfetti() {
+        const container = document.getElementById('sr-confetti-container');
+        container.innerHTML = '';
+        const colors = ['#10b981','#f59e0b','#ef4444','#6366f1','#ec4899','#14b8a6'];
+        for (let i = 0; i < 42; i++) {
+            const p = document.createElement('div');
+            p.className = 'confetti-p';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            p.style.animationDelay = (Math.random() * 0.8) + 's';
+            p.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+            p.style.width = (6 + Math.random() * 6) + 'px';
+            p.style.height = p.style.width;
+            container.appendChild(p);
+        }
+    }
+
+    /* ── Social Toast ── */
+    const TOAST_PEOPLE = [
+        { name: 'Martha Ikenna',  prize: '₦50',  init: 'MI' },
+        { name: 'Chidi Okafor',   prize: '₦200', init: 'CO' },
+        { name: 'Amina Bello',    prize: '₦100', init: 'AB' },
+        { name: 'Emeka Eze',      prize: '₦300', init: 'EE' },
+        { name: 'Fatima Suleiman',prize: '₦150', init: 'FS' },
+        { name: 'Kola Adeyemi',   prize: '₦50',  init: 'KA' },
+    ];
+    let toastIdx = 0;
+    let toastTimer = null;
+
+    function scheduleSocialToast() {
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(showSocialToast, 2800);
+    }
+
+    function showSocialToast() {
+        const person = TOAST_PEOPLE[toastIdx % TOAST_PEOPLE.length];
+        toastIdx++;
+        const toast = document.getElementById('spin-social-toast');
+        document.getElementById('sst-avatar').textContent = person.init;
+        document.getElementById('sst-name').textContent   = person.name;
+        document.getElementById('sst-msg').textContent    = `just won ${person.prize} spin bonus!`;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            // schedule next while modal is open
+            const overlay = document.getElementById('spin-modal-overlay');
+            if (overlay.classList.contains('open')) {
+                toastTimer = setTimeout(showSocialToast, 4000);
+            }
+        }, 3200);
+    }
+    </script>
 
     <!-- Supabase JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
