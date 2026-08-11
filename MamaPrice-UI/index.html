@@ -2579,7 +2579,145 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="orb.js"></script>
     <script src="app.js"></script>
-    <!-- Spin & Win Engine (must load after app.js) -->
-    <script src="spin.js"></script>
+
+    <!-- ═══ SPIN & WIN ENGINE — inline after app.js, DOM already ready ═══ -->
+    <script>
+    (function(){
+        var PRIZES=[
+            {label:'&#8358;300',value:300,color:'#f59e0b'},
+            {label:'&#8358;50', value:50, color:'#10b981'},
+            {label:'&#8358;100',value:100,color:'#059669'},
+            {label:'&#8358;150',value:150,color:'#10b981'},
+            {label:'&#8358;200',value:200,color:'#059669'},
+            {label:'&#8358;250',value:250,color:'#10b981'}
+        ];
+        var angle=0,running=false,cvs=null,ctx=null;
+
+        function draw(a){
+            if(!cvs||!ctx)return;
+            var cx=cvs.width/2,cy=cvs.height/2,r=cx-4;
+            var sa=(2*Math.PI)/PRIZES.length;
+            ctx.clearRect(0,0,cvs.width,cvs.height);
+            PRIZES.forEach(function(p,i){
+                var s=a+i*sa,e=s+sa;
+                ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+                ctx.fillStyle=p.color;ctx.fill();
+                ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+                ctx.save();ctx.translate(cx,cy);ctx.rotate(s+sa/2);
+                ctx.textAlign='right';ctx.fillStyle='#fff';
+                ctx.font='bold 15px sans-serif';
+                ctx.fillText(p.label,r-14,5);
+                ctx.restore();
+            });
+            ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);
+            ctx.strokeStyle='#10b981';ctx.lineWidth=5;ctx.stroke();
+        }
+
+        function open(){
+            var ov=document.getElementById('spin-modal-overlay');
+            if(!ov)return;
+            ov.classList.add('open');
+            cvs=document.getElementById('spin-wheel-canvas');
+            ctx=cvs?cvs.getContext('2d'):null;
+            draw(angle);
+            scheduleToast();
+        }
+        function close(){
+            var ov=document.getElementById('spin-modal-overlay');
+            if(ov)ov.classList.remove('open');
+        }
+        window.openSpinModal=open;
+        window.closeSpinModal=close;
+
+        window.spinWheel=function(){
+            if(running)return;
+            var el=document.getElementById('sm-spins-remaining');
+            var n=parseInt((el&&el.textContent)||'1');
+            if(n<=0){var c=document.getElementById('sm-cta-btn');if(c)c.textContent='No spins left!';return;}
+            if(el)el.textContent=n-1;
+            running=true;
+            var cb=document.getElementById('sm-spin-now-btn');
+            var ct=document.getElementById('sm-cta-btn');
+            if(cb)cb.disabled=true;if(ct)ct.disabled=true;
+            var wi=Math.floor(Math.random()*PRIZES.length);
+            var sl=(2*Math.PI)/PRIZES.length;
+            var fa=(-Math.PI/2-(wi*sl+sl/2))+(5+Math.floor(Math.random()*3))*2*Math.PI;
+            var dur=4500,sa=angle,st=performance.now();
+            function step(now){
+                var t=Math.min((now-st)/dur,1),e=1-Math.pow(1-t,4);
+                angle=sa+(fa-sa)*e;draw(angle);
+                if(t<1){requestAnimationFrame(step);}
+                else{angle=fa%(2*Math.PI);running=false;result(PRIZES[wi]);}
+            }
+            requestAnimationFrame(step);
+        };
+
+        function result(p){
+            close();
+            if(p.value>0){
+                var a=document.getElementById('sr-win-amount');
+                if(a)a.textContent=p.label.replace('&#8358;','\u20a6');
+                var w=document.getElementById('spin-win-overlay');if(w)w.classList.add('open');
+                confetti();
+            }else{
+                var l=document.getElementById('spin-lose-overlay');if(l)l.classList.add('open');
+            }
+        }
+        window.closeSpinResult=function(){
+            var w=document.getElementById('spin-win-overlay');
+            var l=document.getElementById('spin-lose-overlay');
+            if(w)w.classList.remove('open');if(l)l.classList.remove('open');
+            var cb=document.getElementById('sm-spin-now-btn');
+            var ct=document.getElementById('sm-cta-btn');
+            if(cb)cb.disabled=false;
+            if(ct){ct.disabled=false;ct.innerHTML='<i class="fa-solid fa-dharmachakra"></i> Spin Now';}
+        };
+        function confetti(){
+            var c=document.getElementById('sr-confetti-container');if(!c)return;c.innerHTML='';
+            var cols=['#10b981','#f59e0b','#ef4444','#6366f1','#ec4899','#14b8a6'];
+            for(var i=0;i<42;i++){
+                var p=document.createElement('div');p.className='confetti-p';
+                p.style.left=(Math.random()*100)+'%';
+                p.style.background=cols[Math.floor(Math.random()*cols.length)];
+                p.style.animationDelay=(Math.random()*0.8)+'s';
+                p.style.animationDuration=(1.2+Math.random()*0.8)+'s';
+                var sz=(6+Math.random()*6)+'px';p.style.width=sz;p.style.height=sz;
+                c.appendChild(p);
+            }
+        }
+        var TOASTS=[
+            {n:'Martha Ikenna',pr:'\u20a650',i:'MI'},{n:'Chidi Okafor',pr:'\u20a6200',i:'CO'},
+            {n:'Amina Bello',pr:'\u20a6100',i:'AB'},{n:'Emeka Eze',pr:'\u20a6300',i:'EE'},
+            {n:'Fatima Suleiman',pr:'\u20a6150',i:'FS'},{n:'Kola Adeyemi',pr:'\u20a650',i:'KA'}
+        ];
+        var ti=0,tt=null;
+        function scheduleToast(){clearTimeout(tt);tt=setTimeout(showToast,2800);}
+        function showToast(){
+            var p=TOASTS[ti%TOASTS.length];ti++;
+            var t=document.getElementById('spin-social-toast');if(!t)return;
+            document.getElementById('sst-avatar').textContent=p.i;
+            document.getElementById('sst-name').textContent=p.n;
+            document.getElementById('sst-msg').textContent='just won '+p.pr+' spin bonus!';
+            t.classList.add('show');
+            setTimeout(function(){
+                t.classList.remove('show');
+                var ov=document.getElementById('spin-modal-overlay');
+                if(ov&&ov.classList.contains('open'))tt=setTimeout(showToast,4000);
+            },3200);
+        }
+
+        /* Wire — DOM already ready here */
+        var ov=document.getElementById('spin-modal-overlay');
+        var mb=document.getElementById('spin-modal-box');
+        if(ov)ov.addEventListener('click',close);
+        if(mb)mb.addEventListener('click',function(e){e.stopPropagation();});
+        var bb=document.getElementById('sm-back-btn');if(bb)bb.addEventListener('click',close);
+        var sb=document.getElementById('sm-spin-now-btn');if(sb)sb.addEventListener('click',window.spinWheel);
+        var cb=document.getElementById('sm-cta-btn');if(cb)cb.addEventListener('click',window.spinWheel);
+        var hb=document.getElementById('header-spin-btn');
+        if(hb){hb.removeAttribute('onclick');hb.addEventListener('click',open);}
+
+    }());
+    </script>
 </body>
 </html>
