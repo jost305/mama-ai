@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hash === 'agents' || hash === 'agent') pageKey = 'agent';
         if (hash === 'watchlist' || hash === 'library') pageKey = 'library';
         if (hash === 'rewards' || hash === 'spin') pageKey = 'rewards';
-        if (hash === 'partner' || hash === 'partners' || hash === 'developers' || hash === 'developer' || hash === 'partner-portal') pageKey = 'developers';
+        if (hash === 'partner' || hash === 'partners' || hash === 'developers' || hash === 'developer' || hash === 'partner-portal') pageKey = 'partners';
 
 
         if (pageKey === 'home') {
@@ -432,12 +432,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navRewards) navRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(navRewards, pageRewards); });
     if (mNavRewards) mNavRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavRewards, pageRewards); });
 
-    const navDevelopers = document.getElementById('nav-developers');
-    const pageDevelopers = document.getElementById('page-developers');
-    if (navDevelopers && pageDevelopers) {
-        navDevelopers.addEventListener('click', (e) => {
+    const navPartners = document.getElementById('nav-partners');
+    const pagePartners = document.getElementById('page-partners');
+    if (navPartners && pagePartners) {
+        navPartners.addEventListener('click', (e) => {
             e.preventDefault();
-            switchView(navDevelopers, pageDevelopers);
+            switchView(navPartners, pagePartners);
+            window.location.hash = 'partners';
         });
     }
 
