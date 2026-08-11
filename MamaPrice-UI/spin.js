@@ -1,4 +1,4 @@
-﻿/* ══════════════════════════════════════════
+/* ══════════════════════════════════════════
    SPIN & WIN MODAL ENGINE — spin.js
    Runs at bottom of <body> — DOM is already
    fully parsed, no DOMContentLoaded needed.
