@@ -8,6 +8,8 @@ import { ojaGraph } from "./ojagraph.js";
 import { rewardsEngine } from "./rewards-engine.js";
 import { addPaymentRecord, getPaymentRecord } from "./payment-ledger.js";
 import { buildX402Challenge, verifyX402Payment } from "./x402.js";
+import { createMonitor, listMonitors, processActionProposal } from "./action-gateway.js";
+
 
 dotenv.config();
 
@@ -490,43 +492,92 @@ app.post("/observe", async (req, res) => {
     }
 });
 
-// POST /api/commerce/intel — Phase 1 paid commerce intelligence query
-app.post("/api/commerce/intel", async (req, res) => {
-    const { prompt, paymentProof, sessionId, modelId, useHf } = req.body;
-    if (!prompt) {
-        return res.status(400).json({ error: "prompt is required" });
+// Structured Commerce Logging Helper (Task 10)
+function logCommerceEvent(eventType, details = {}) {
+    const logObj = {
+        event: eventType,
+        timestamp: new Date().toISOString(),
+        requestId: details.requestId || `req_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        agentId: details.agentId || details.sessionId || "external-agent",
+        resource: details.resource || "/api/commerce/intel",
+        paymentId: details.paymentId || details.transactionHash || null,
+        transactionHash: details.transactionHash || null,
+        status: details.status || "OK",
+        latency: details.latencyMs !== undefined ? `${details.latencyMs}ms` : undefined,
+        ...details,
+    };
+    console.log(`[COMMERCE_LOG] ${JSON.stringify(logObj)}`);
+    return logObj.requestId;
+}
+
+// Handler core for commerce intelligence queries
+async function processCommerceQuery({ prompt, paymentProof, resource, sessionId, modelId, useHf, req }) {
+    const startTime = Date.now();
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+
+    logCommerceEvent("COMMERCE_REQUEST", { requestId, resource, prompt });
+
+    if (paymentProof) {
+        logCommerceEvent("PAYMENT_RECEIVED", { requestId, resource, transactionHash: paymentProof.transactionHash });
     }
 
-    const verification = await verifyX402Payment(paymentProof, "/api/commerce/intel");
+    const verification = await verifyX402Payment(paymentProof, resource);
     if (!verification.verified) {
-        const status = verification.challenge ? 402 : 422;
-        return res.status(status).json({
-            success: false,
-            verified: false,
+        const status = verification.status || (verification.challenge ? 402 : 422);
+        logCommerceEvent(status === 402 ? "PAYMENT_REQUIRED" : "PAYMENT_REJECTED", {
+            requestId,
+            resource,
+            status,
             errors: verification.errors,
-            challenge: verification.challenge,
+            latencyMs: Date.now() - startTime,
         });
+        return {
+            status,
+            body: {
+                success: false,
+                verified: false,
+                errors: verification.errors,
+                challenge: verification.challenge,
+            },
+        };
     }
+
+    logCommerceEvent("PAYMENT_VERIFIED", { requestId, resource, transactionHash: verification.payment.transactionHash });
 
     const existing = getPaymentRecord(verification.payment.transactionHash);
     if (existing) {
-        return res.status(409).json({
-            success: false,
+        logCommerceEvent("PAYMENT_REJECTED", {
+            requestId,
+            resource,
+            status: 409,
             error: "PAYMENT_ALREADY_PROCESSED",
-            message: "This Base payment has already been used for a paid query.",
-            existingRecord: existing,
+            transactionHash: verification.payment.transactionHash,
+            latencyMs: Date.now() - startTime,
         });
+        return {
+            status: 409,
+            body: {
+                success: false,
+                error: "PAYMENT_ALREADY_PROCESSED",
+                message: "This Base payment has already been used for a paid query.",
+                existingRecord: existing,
+            },
+        };
     }
+
+    logCommerceEvent("COMMERCE_QUERY_STARTED", { requestId, resource, prompt });
 
     try {
         const modelLabel = modelId || "MamaPrice 4o";
         const useHfEngine = Boolean(useHf);
         const detectedIntents = detectQueryIntents(prompt);
 
+        const ogStart = Date.now();
         const [searchRes, trendRes] = await Promise.all([
             Promise.resolve(ojaGraph.searchCommerceIntelligence(prompt)),
             Promise.resolve(ojaGraph.retrieveTrend(prompt))
         ]);
+        logCommerceEvent("OGRAPHER_RETRIEVAL", { requestId, resource, latencyMs: Date.now() - ogStart });
 
         const allEvidence = { ...searchRes, trend: trendRes };
         const groundedContext = buildGroundedContext(prompt, allEvidence);
@@ -536,9 +587,10 @@ app.post("/api/commerce/intel", async (req, res) => {
         let providerName = "ojalm";
         let primarySuccess = false;
 
+        const lmStart = Date.now();
         if (!model || useHfEngine) {
             try {
-                responseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
+                responseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body?.hfToken);
                 primarySuccess = true;
                 providerName = "ojalm-hf";
             } catch (hfErr) {
@@ -558,40 +610,189 @@ app.post("/api/commerce/intel", async (req, res) => {
         }
 
         if (!primarySuccess || !responseText) {
-            const fallbackResult = await queryFallbackLLM(augmentedPrompt);
-            responseText = fallbackResult.content;
-            providerName = fallbackResult.model;
+            try {
+                const fallbackResult = await queryFallbackLLM(augmentedPrompt);
+                responseText = fallbackResult.content;
+                providerName = fallbackResult.model;
+            } catch (fbErr) {
+                console.warn(`⚠️ [Fallback LLM] failed: ${fbErr.message}`);
+                responseText = groundedContext
+                    ? `[MamaPrice Grounded Commerce Intelligence]\n${groundedContext}`
+                    : `MamaPrice Commerce Intelligence: Grounded query for ${prompt}.`;
+                providerName = "ojagraph-grounded";
+            }
         }
+
+
+        logCommerceEvent("OJALM_INFERENCE", { requestId, resource, provider: providerName, latencyMs: Date.now() - lmStart });
 
         const paymentRecord = addPaymentRecord({
             transactionHash: verification.payment.transactionHash,
-            sender: verification.payment.sender,
+            sender: verification.payment.sender || "0x0000000000000000000000000000000000000000",
             amount: verification.payment.amount,
             currency: verification.payment.currency,
             chain: verification.payment.chain,
             method: verification.payment.method,
             signature: verification.payment.signature,
-            timestamp: verification.payment.timestamp,
+            timestamp: verification.payment.timestamp || new Date().toISOString(),
             prompt,
             sessionId: sessionId || "default-session",
             modelId: modelLabel,
             createdAt: new Date().toISOString(),
         });
 
-        return res.json({
-            success: true,
-            payment: { verified: true, record: paymentRecord },
-            sessionId: sessionId || "default-session",
-            modelUsed: modelLabel,
-            provider: providerName,
-            response: responseText.trim(),
-            intents: detectedIntents,
+        const totalLatency = Date.now() - startTime;
+        logCommerceEvent("COMMERCE_RESPONSE", { requestId, resource, status: 200, provider: providerName, latencyMs: totalLatency });
+
+        return {
+            status: 200,
+            body: {
+                success: true,
+                payment: { verified: true, record: paymentRecord },
+                sessionId: sessionId || "default-session",
+                modelUsed: modelLabel,
+                provider: providerName,
+                response: responseText.trim(),
+                intents: detectedIntents,
+                evidence: allEvidence,
+            },
             evidence: allEvidence,
-        });
+            paymentRecord,
+            responseText: responseText.trim(),
+        };
     } catch (err) {
-        return res.status(500).json({ error: err.message, message: "Failed to execute paid commerce query." });
+        logCommerceEvent("COMMERCE_REQUEST_FAILED", { requestId, resource, status: 500, error: err.message, latencyMs: Date.now() - startTime });
+        return {
+            status: 503,
+            body: {
+                success: false,
+                error: "INTELLIGENCE_SERVICE_UNAVAILABLE",
+                message: "Commerce intelligence engine is temporarily unavailable. Please retry later.",
+            },
+        };
     }
+}
+
+// POST /api/commerce/intel — Phase 1 paid commerce intelligence query
+app.post("/api/commerce/intel", async (req, res) => {
+    const { prompt, paymentProof, sessionId, modelId, useHf } = req.body;
+    if (!prompt) {
+        return res.status(400).json({ error: "prompt is required" });
+    }
+
+    const result = await processCommerceQuery({
+        prompt,
+        paymentProof,
+        resource: "/api/commerce/intel",
+        sessionId,
+        modelId,
+        useHf,
+        req,
+    });
+
+    return res.status(result.status).json(result.body);
 });
+
+// GET /api/v1/commerce/prices — Phase 1 machine-facing GET endpoint (Task 2)
+app.get("/api/v1/commerce/prices", async (req, res) => {
+    const product = req.query.product || "general commodity";
+    const location = req.query.location || "Lagos";
+    const prompt = req.query.prompt || `What is the current price and market condition of ${product} in ${location}?`;
+
+    let paymentProof = null;
+    if (req.query.paymentProof) {
+        try {
+            paymentProof = typeof req.query.paymentProof === "string" ? JSON.parse(req.query.paymentProof) : req.query.paymentProof;
+        } catch (_) {}
+    } else if (req.headers["x-payment-proof"]) {
+        try {
+            paymentProof = JSON.parse(req.headers["x-payment-proof"]);
+        } catch (_) {}
+    } else if (req.query.transactionHash) {
+        paymentProof = {
+            transactionHash: req.query.transactionHash,
+            chain: req.query.chain || "Base",
+            currency: req.query.currency || "USDC",
+            amount: Number(req.query.amount || "0.01"),
+            method: req.query.method || "x402",
+        };
+    }
+
+    const result = await processCommerceQuery({
+        prompt,
+        paymentProof,
+        resource: "/api/v1/commerce/prices",
+        sessionId: req.query.sessionId || "v1-agent-session",
+        req,
+    });
+
+    if (result.status !== 200) {
+        return res.status(result.status).json(result.body);
+    }
+
+    return res.status(200).json({
+        product,
+        location,
+        observations: result.evidence?.observations || result.evidence?.queryMatches || [],
+        analysis: result.evidence?.trend || {},
+        grounded_by: "OjaGraph",
+        generated_by: "OjaLM",
+        response: result.responseText,
+        payment: result.body.payment,
+    });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 3 — AGENT MONITORING & AUTONOMOUS COMMERCE ACTION ENDPOINTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+// POST /api/v1/monitors — Create monitoring rule (Phase 3)
+app.post("/api/v1/monitors", (req, res) => {
+    const { agentId, product, location, condition, maxSpendUSD, intervalMinutes } = req.body;
+    if (!product || !location) {
+        return res.status(400).json({ error: "product and location are required" });
+    }
+    const monitor = createMonitor({ agentId, product, location, condition, maxSpendUSD, intervalMinutes });
+    return res.json({ success: true, monitor });
+});
+
+// GET /api/v1/monitors — List monitoring rules (Phase 3)
+app.get("/api/v1/monitors", (req, res) => {
+    const monitors = listMonitors(req.query.agentId);
+    return res.json({ success: true, count: monitors.length, monitors });
+});
+
+// POST /api/v1/commerce/actions/propose — Propose commerce action (Phase 3)
+app.post("/api/v1/commerce/actions/propose", async (req, res) => {
+    const { agentId, monitorId, proposedAction, groundedPrice, quantity, unit, estimatedUSD, paymentProof } = req.body;
+    if (groundedPrice === undefined) {
+        return res.status(400).json({ error: "groundedPrice is required" });
+    }
+
+    if (paymentProof) {
+        const verification = await verifyX402Payment(paymentProof, "/api/v1/commerce/actions/propose");
+        if (!verification.verified) {
+            const status = verification.status || 422;
+            return res.status(status).json({ success: false, error: "X402_VERIFICATION_FAILED", errors: verification.errors });
+        }
+    }
+
+    const proposal = processActionProposal({
+        agentId,
+        monitorId,
+        proposedAction,
+        groundedPrice,
+        quantity,
+        unit,
+        estimatedUSD,
+        paymentProof,
+    });
+
+    const status = proposal.policyEvaluation.approved ? 200 : 422;
+    return res.status(status).json({ success: proposal.policyEvaluation.approved, proposal });
+});
+
+
 
 // POST /missions/claim — Claim an active mission
 app.post("/missions/claim", (req, res) => {
@@ -1302,8 +1503,16 @@ app.post("/webhook/whatsapp", async (req, res) => {
 // Model Initialization
 // ─────────────────────────────────────────────────────────────────────────────
 
+import fs from "fs";
+
 async function initLlama() {
     try {
+        if (!fs.existsSync(MODEL_PATH)) {
+            console.log("ℹ️ Local OjaLM GGUF model file not found at path. Running in Cloud Inference & Fallback mode.");
+            model = null;
+            llama = null;
+            return;
+        }
         console.log("STEP 1 - Initializing Llama CPU runtime...");
         llama = await getLlama({ gpu: false });
         console.log("✓ STEP 1 COMPLETE");
@@ -1321,13 +1530,14 @@ async function initLlama() {
 }
 
 async function startServer() {
-    await initLlama();
-    const PORT = 3001;
+    const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
         console.log(`\n✅ MamaPrice Commerce Intelligence API`);
         console.log(`   Powered by OjaLM + OjaGraph v2 Hybrid RAG`);
         console.log(`   Listening on http://localhost:${PORT}\n`);
     });
+    initLlama().catch(err => console.warn("Llama init notice:", err.message));
 }
 
 startServer();
+

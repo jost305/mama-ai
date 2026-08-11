@@ -84,7 +84,13 @@
                         class="fa-regular fa-bookmark"></i><span>Watchlist</span></a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-history"><i
                         class="fa-regular fa-clock"></i><span>History</span></a>
+                <a href="javascript:void(0)" class="nav-item" id="nav-developers" style="border: 1px solid rgba(0,82,255,0.25); background: rgba(0,82,255,0.06); border-radius: 8px; margin-top: 6px;">
+                    <i class="fa-solid fa-code" style="color: #0052ff;"></i>
+                    <span>Build with MamaPrice</span>
+                    <span class="nav-earned-badge" style="background:#0052ff; color:#fff; font-weight:700;">Base x402</span>
+                </a>
             </nav>
+
 
             <!-- Active Model Intelligence Pill (Moved from Header) -->
             <div class="sidebar-model-card">
@@ -1806,7 +1812,516 @@
                         });
                     </script>
                 </div>
+
+                <!-- DEVELOPER & PARTNER PORTAL VIEW (PHASE 1.5) -->
+                <div class="page-view" id="page-developers" style="display: none; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
+                    <!-- Hero Section -->
+                    <div class="dev-hero-card" style="background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #002b80 100%); border: 1px solid rgba(0, 82, 255, 0.3); border-radius: 16px; padding: 32px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 82, 255, 0.15);">
+                        <div style="position: absolute; top: -50px; right: -50px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(0, 82, 255, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
+                            <div style="flex: 1; min-width: 300px;">
+                                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 82, 255, 0.2); border: 1px solid rgba(0, 82, 255, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #60a5fa; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-bolt"></i> MamaPrice API & Autonomous AI Agent Gateway
+                                </div>
+                                <h1 style="font-size: 2.2rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px; background: linear-gradient(90deg, #ffffff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                    Build with MamaPrice
+                                </h1>
+                                <p style="font-size: 1.05rem; color: #94a3b8; max-width: 620px; line-height: 1.6; margin-bottom: 20px;">
+                                    Access real-time African commerce intelligence for your application, restaurant procurement system, retail marketplace, or autonomous AI agent. Powered by <strong>Base x402</strong> micro-payments and grounded <strong>OjaGraph + OjaLM</strong> RAG.
+                                </p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                    <button id="open-partner-modal-btn" style="background: #10b981; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); transition: transform 0.2s;">
+                                        <i class="fa-solid fa-handshake"></i> Become a Commercial Partner
+                                    </button>
+                                    <button id="dev-btn-get-key" style="background: #0052ff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 82, 255, 0.4); transition: transform 0.2s;">
+                                        <i class="fa-solid fa-key"></i> Get Developer Credentials
+                                    </button>
+                                    <a href="#dev-sandbox-section" style="background: rgba(255, 255, 255, 0.08); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.15); padding: 12px 22px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-terminal"></i> Try API Sandbox
+                                    </a>
+                                </div>
+
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px; min-width: 280px;">
+                                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; font-weight: 700;">LIVE INFRASTRUCTURE STATUS</div>
+                                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: #cbd5e1;"><i class="fa-solid fa-cube" style="color:#0052ff; margin-right:6px;"></i> Base Network:</span>
+                                        <span style="color: #4ade80; font-weight: 600;">Active (Sepolia / Mainnet)</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: #cbd5e1;"><i class="fa-solid fa-shield-halved" style="color:#38bdf8; margin-right:6px;"></i> Payment Protocol:</span>
+                                        <span style="color: #38bdf8; font-weight: 600;">x402 Verified</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: #cbd5e1;"><i class="fa-solid fa-database" style="color:#a78bfa; margin-right:6px;"></i> Commerce Knowledge:</span>
+                                        <span style="color: #a78bfa; font-weight: 600;">OjaGraph v2 RAG</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: #cbd5e1;"><i class="fa-solid fa-coins" style="color:#f59e0b; margin-right:6px;"></i> Query Cost:</span>
+                                        <span style="color: #fbbf24; font-weight: 600;">$0.01 USDC / req</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Base Grant Story Callout Card -->
+                    <div style="background: rgba(0, 82, 255, 0.05); border-left: 4px solid #0052ff; border-radius: 8px; padding: 18px 24px; margin-bottom: 32px;">
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e3a8a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-nodes" style="color:#0052ff;"></i> AI-Native Commerce Infrastructure on Base
+                        </h3>
+                        <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0;">
+                            MamaPrice is building an <strong>AI-native commerce intelligence layer for Africa</strong>, allowing applications and autonomous AI agents to access grounded market intelligence through programmable APIs. Using <strong>x402 on Base</strong>, AI agents can pay programmatically for the commerce information they need.
+                        </p>
+                    </div>
+
+                    <!-- Commercial Target Audiences (Who is this for?) -->
+                    <div style="margin-bottom: 36px;">
+                        <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                            Commercial Entry Points & Who Can Build
+                        </h2>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px;">
+                            MamaPrice powers enterprise applications, local businesses, and autonomous AI agents across 5 key sectors.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+                            <!-- Audience 1: Developers -->
+                            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: transform 0.2s;">
+                                <div style="width: 40px; height: 40px; background: rgba(0, 82, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #0052ff; font-size: 1.1rem; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+                                <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Developers & Apps</h3>
+                                <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    Embed real-time African commodity price indices, currency trends, and market discovery APIs into web and mobile applications.
+                                </p>
+                            </div>
+
+                            <!-- Audience 2: Restaurants -->
+                            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: transform 0.2s;">
+                                <div style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d97706; font-size: 1.1rem; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-utensils"></i>
+                                </div>
+                                <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Restaurants & Procurement</h3>
+                                <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    Automate ingredient market price tracking across wholesale hubs (Mile 12, Bodija, Dawanau) to optimize menu costing.
+                                </p>
+                            </div>
+
+                            <!-- Audience 3: Supermarkets -->
+                            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: transform 0.2s;">
+                                <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #059669; font-size: 1.1rem; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-store"></i>
+                                </div>
+                                <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Supermarkets & Retailers</h3>
+                                <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    Monitor competitor prices and regional wholesale margin fluctuations in real-time to maintain competitive retail pricing.
+                                </p>
+                            </div>
+
+                            <!-- Audience 4: Marketplaces -->
+                            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: transform 0.2s;">
+                                <div style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #7c3aed; font-size: 1.1rem; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-basket-shopping"></i>
+                                </div>
+                                <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Food Apps & Delivery</h3>
+                                <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    Integrate grounded market intelligence into consumer shopping assistants and logistics delivery checkout flows.
+                                </p>
+                            </div>
+
+                            <!-- Audience 5: AI Agents -->
+                            <div style="background: #fff; border: 1px solid #0052ff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 14px rgba(0, 82, 255, 0.06);">
+                                <div style="width: 40px; height: 40px; background: #0052ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.1rem; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Autonomous AI Agents</h3>
+                                <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    Deploy autonomous agents that query market intelligence programmatically and pay per request using USDC micro-payments on Base.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Core Services Grid (5 Capabilities) -->
+                    <div style="margin-bottom: 36px;">
+                        <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                            Core Commerce Services
+                        </h2>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px;">
+                            Integrate structured commodity data, cross-market analytics, or autonomous agent payment gates into your stack.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <!-- Service 1 -->
+                            <div class="dev-service-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; transition: box-shadow 0.2s, transform 0.2s;">
+                                <div style="width: 44px; height: 44px; background: rgba(0, 82, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #0052ff; font-size: 1.2rem; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-tag"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Price Intelligence</h3>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin-bottom: 14px;">
+                                    Real-time commodity price tracking across regional African markets (Rice in Lagos, Tomatoes in Ibadan, Cement in Kano).
+                                </p>
+                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #0f172a;">
+                                    GET /api/v1/commerce/prices
+                                </div>
+                            </div>
+
+                            <!-- Service 2 -->
+                            <div class="dev-service-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; transition: box-shadow 0.2s, transform 0.2s;">
+                                <div style="width: 44px; height: 44px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 1.2rem; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Market Intelligence</h3>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin-bottom: 14px;">
+                                    Compare regional price spreads, 24h/7d volatility trends, and market supply movements across major trading hubs.
+                                </p>
+                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #0f172a;">
+                                    OjaGraph Trend Engine
+                                </div>
+                            </div>
+
+                            <!-- Service 3 -->
+                            <div class="dev-service-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; transition: box-shadow 0.2s, transform 0.2s;">
+                                <div style="width: 44px; height: 44px; background: rgba(245, 158, 11, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.2rem; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-shop"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Vendor Intelligence</h3>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin-bottom: 14px;">
+                                    Locate verified sellers and wholesale suppliers, evaluate trust ratings, and check live stock availability.
+                                </p>
+                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #0f172a;">
+                                    OjaGraph Merchant Lookup
+                                </div>
+                            </div>
+
+                            <!-- Service 4 -->
+                            <div class="dev-service-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; transition: box-shadow 0.2s, transform 0.2s;">
+                                <div style="width: 44px; height: 44px; background: rgba(139, 92, 246, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-size: 1.2rem; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Commerce RAG Query</h3>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin-bottom: 14px;">
+                                    Execute complex natural language commerce inquiries grounded in verified MamaPrice scout observations.
+                                </p>
+                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #0f172a;">
+                                    POST /api/commerce/intel
+                                </div>
+                            </div>
+
+                            <!-- Service 5 -->
+                            <div class="dev-service-card" style="background: #fff; border: 1px solid #0052ff; border-radius: 12px; padding: 22px; box-shadow: 0 4px 14px rgba(0, 82, 255, 0.08);">
+                                <div style="width: 44px; height: 44px; background: #0052ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">AI Agent Access (x402)</h3>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin-bottom: 14px;">
+                                    Autonomous machine agents pay programmatically using USDC on Base to retrieve grounded commerce intelligence.
+                                </p>
+                                <div style="background: rgba(0, 82, 255, 0.08); border: 1px solid rgba(0, 82, 255, 0.2); padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #0052ff; font-weight: 600;">
+                                    Base USDC x402 Protocol
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Developer Journey Visualizer -->
+                    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; margin-bottom: 36px;">
+                        <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                            The Developer Journey
+                        </h2>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px;">
+                            From initial exploration to production autonomous agent payments on Base Mainnet.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;">
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #0052ff; text-transform: uppercase; margin-bottom: 4px;">Step 1</div>
+                                <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px; font-size: 0.95rem;">DISCOVER</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Explore APIs & capabilities</div>
+                            </div>
+
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #0052ff; text-transform: uppercase; margin-bottom: 4px;">Step 2</div>
+                                <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px; font-size: 0.95rem;">GET CREDENTIALS</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Create Sandbox key</div>
+                            </div>
+
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #0052ff; text-transform: uppercase; margin-bottom: 4px;">Step 3</div>
+                                <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px; font-size: 0.95rem;">READ DOCS</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Review x402 headers</div>
+                            </div>
+
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #0052ff; text-transform: uppercase; margin-bottom: 4px;">Step 4</div>
+                                <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px; font-size: 0.95rem;">TEST SANDBOX</div>
+                                <div style="font-size: 0.8rem; color: #64748b;">Run interactive queries</div>
+                            </div>
+
+                            <div style="background: rgba(0, 82, 255, 0.05); border: 1px solid rgba(0, 82, 255, 0.3); border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #0052ff; text-transform: uppercase; margin-bottom: 4px;">Step 5</div>
+                                <div style="font-weight: 700; color: #0052ff; margin-bottom: 6px; font-size: 0.95rem;">BASE SEPOLIA</div>
+                                <div style="font-size: 0.8rem; color: #3b82f6;">Testnet payment proofs</div>
+                            </div>
+
+                            <div style="background: linear-gradient(135deg, #0052ff 0%, #1d4ed8 100%); border-radius: 10px; padding: 16px; text-align: center; color: #fff;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #93c5fd; text-transform: uppercase; margin-bottom: 4px;">Step 6</div>
+                                <div style="font-weight: 700; color: #fff; margin-bottom: 6px; font-size: 0.95rem;">GO LIVE</div>
+                                <div style="font-size: 0.8rem; color: #dbeafe;">Base Mainnet + x402</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- External AI Agent Live Examples (Task 2.4) -->
+                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 28px; color: #fff; margin-bottom: 36px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 14px;">
+                            <div>
+                                <span style="display: inline-block; background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #c084fc; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">
+                                    Phase 2 — Live External Agent Integrations
+                                </span>
+                                <h2 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-robot" style="color: #a78bfa;"></i> Runnable External AI Agent Clients
+                                </h2>
+                            </div>
+                            <span style="font-size: 0.85rem; color: #cbd5e1; background: rgba(255, 255, 255, 0.08); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <i class="fa-solid fa-cube" style="color: #0052ff; margin-right: 4px;"></i> Base Sepolia / Mainnet x402 Protocol
+                            </span>
+                        </div>
+
+                        <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+                            See how external machine agents outside of MamaPrice discover, pay for, and consume grounded African commerce intelligence using x402 on Base.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                            <!-- Agent 1 Card: FoodAgent -->
+                            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #38bdf8; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-utensils"></i> FoodAgent
+                                        </h3>
+                                        <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Procurement Agent</span>
+                                    </div>
+                                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin-bottom: 16px;">
+                                        Simulates a restaurant procurement AI querying tomato & ingredient prices in Lagos, handling 402 challenge parsing, and executing Base payment proofs.
+                                    </p>
+                                    <div style="background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.78rem; color: #a78bfa; margin-bottom: 16px;">
+                                        GET /api/v1/commerce/prices?product=tomatoes&location=Lagos
+                                    </div>
+                                </div>
+                                <button id="dev-run-food-agent-btn" style="background: #0052ff; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-play"></i> Run FoodAgent Live Demo
+                                </button>
+                            </div>
+
+                            <!-- Agent 2 Card: MarketMonitor -->
+                            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #4ade80; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-chart-pie"></i> MarketMonitor
+                                        </h3>
+                                        <span style="font-size: 0.75rem; background: rgba(74, 222, 128, 0.15); color: #4ade80; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Multi-Market Agent</span>
+                                    </div>
+                                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin-bottom: 16px;">
+                                        Simulates an autonomous wholesale agent comparing rice prices across Lagos (Mile 12), Ibadan (Bodija), and Kano (Dawanau) using sequential x402 Base payments.
+                                    </p>
+                                    <div style="background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.78rem; color: #4ade80; margin-bottom: 16px;">
+                                        Multi-Market Batch Payment Query (Lagos, Ibadan, Kano)
+                                    </div>
+                                </div>
+                                <button id="dev-run-market-monitor-btn" style="background: #10b981; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-play"></i> Run MarketMonitor Live Demo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live Agent Console Viewer -->
+                        <div id="dev-agent-console-box" style="display: none; margin-top: 20px; background: #090d16; border: 1px solid #334155; border-radius: 10px; padding: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                                <span id="dev-agent-console-title" style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; font-family: monospace;">
+                                    [Agent Terminal Output]
+                                </span>
+                                <button id="dev-agent-console-close" style="background: transparent; color: #64748b; border: none; font-size: 0.8rem; cursor: pointer;">
+                                    <i class="fa-solid fa-xmark"></i> Clear Console
+                                </button>
+                            </div>
+                            <pre id="dev-agent-console-stream" style="background: transparent; margin: 0; font-family: monospace; font-size: 0.78rem; color: #e2e8f0; max-height: 220px; overflow-y: auto; line-height: 1.5; font-weight: 500;"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 — Autonomous Agent Monitoring & Decisioning (Task 3.4) -->
+                    <div style="background: linear-gradient(135deg, #180e29 0%, #03132e 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 28px; color: #fff; margin-bottom: 36px; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 14px;">
+                            <div>
+                                <span style="display: inline-block; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">
+                                    Phase 3 — Autonomous Decision Infrastructure
+                                </span>
+                                <h2 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-microchip" style="color: #38bdf8;"></i> Autonomous Price Monitoring & Policy Engine
+                                </h2>
+                            </div>
+                            <span style="font-size: 0.85rem; color: #cbd5e1; background: rgba(255, 255, 255, 0.08); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <i class="fa-solid fa-shield-halved" style="color: #4ade80; margin-right: 4px;"></i> Budget Cap: $100 USD | Deterministic Policy
+                            </span>
+                        </div>
+
+                        <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+                            Autonomous agents poll intelligence with x402 Base micro-payments, evaluate price thresholds (&lt; ₦65,000), and trigger approved Base commerce transaction proposals.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                            <!-- PriceMonitorAgent Card -->
+                            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #f59e0b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-eye"></i> PriceMonitorAgent
+                                    </h3>
+                                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin-bottom: 14px;">
+                                        Registers a monitor rule for Tomato prices in Lagos, polls x402 intelligence, and evaluates ₦63,800 &lt; ₦65,000 threshold.
+                                    </p>
+                                    <div style="background: #0f172a; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.78rem; color: #fbbf24; margin-bottom: 16px;">
+                                        Rule: POST /api/v1/monitors | Threshold: &lt; ₦65,000
+                                    </div>
+                                </div>
+                                <button id="dev-run-price-monitor-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-play"></i> Run PriceMonitorAgent Demo
+                                </button>
+                            </div>
+
+                            <!-- Policy Engine Audit Card -->
+                            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #ec4899; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-shield-cat"></i> Policy Engine Budget Cap Audit
+                                    </h3>
+                                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin-bottom: 14px;">
+                                        Demonstrates deterministic rejection of action proposals exceeding the $100 USD maximum allowable budget cap.
+                                    </p>
+                                    <div style="background: #0f172a; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.78rem; color: #f472b6; margin-bottom: 16px;">
+                                        POST /api/v1/commerce/actions/propose ($150 USD Proposal)
+                                    </div>
+                                </div>
+                                <button id="dev-test-policy-cap-btn" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-shield"></i> Test Policy Cap Rejection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive API Playground / Sandbox -->
+                    <div id="dev-sandbox-section" style="background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 28px; color: #fff; margin-bottom: 36px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);">
+
+
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 14px;">
+                            <div>
+                                <h2 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-terminal" style="color: #38bdf8;"></i> Interactive API Sandbox & Code Generator
+                                </h2>
+                                <p style="color: #94a3b8; font-size: 0.9rem; margin: 0;">
+                                    Test live queries against the MamaPrice engine with x402 payment simulation.
+                                </p>
+                            </div>
+                            <!-- Network Toggle -->
+                            <div style="display: flex; background: #1e293b; border-radius: 8px; padding: 4px; border: 1px solid #334155;">
+                                <button id="dev-net-sandbox" class="dev-net-btn active" style="background: #0052ff; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                                    Local Sandbox
+                                </button>
+                                <button id="dev-net-sepolia" class="dev-net-btn" style="background: transparent; color: #94a3b8; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                                    Base Sepolia
+                                </button>
+                                <button id="dev-net-mainnet" class="dev-net-btn" style="background: transparent; color: #94a3b8; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                                    Base Mainnet
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                            <!-- Input Form Controls -->
+                            <div style="background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155;">
+                                <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #38bdf8; margin-bottom: 14px;">
+                                    Request Parameters
+                                </div>
+
+                                <div style="margin-bottom: 14px;">
+                                    <label style="display: block; font-size: 0.8rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 600;">Target Endpoint</label>
+                                    <select id="dev-sandbox-endpoint" style="width: 100%; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; border-radius: 6px; font-size: 0.85rem; font-family: monospace;">
+                                        <option value="prices">GET /api/v1/commerce/prices</option>
+                                        <option value="intel">POST /api/commerce/intel</option>
+                                    </select>
+                                </div>
+
+                                <div style="margin-bottom: 14px;">
+                                    <label style="display: block; font-size: 0.8rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 600;">Product / Commodity</label>
+                                    <input type="text" id="dev-sandbox-product" value="Rice" style="width: 100%; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; border-radius: 6px; font-size: 0.85rem;" />
+                                </div>
+
+                                <div style="margin-bottom: 14px;">
+                                    <label style="display: block; font-size: 0.8rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 600;">Location / Market</label>
+                                    <input type="text" id="dev-sandbox-location" value="Lagos" style="width: 100%; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; border-radius: 6px; font-size: 0.85rem;" />
+                                </div>
+
+                                <div style="margin-bottom: 16px;">
+                                    <label style="display: block; font-size: 0.8rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 600;">Include Simulated x402 Proof</label>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <input type="checkbox" id="dev-sandbox-include-proof" checked style="width: 18px; height: 18px; accent-color: #0052ff; cursor: pointer;" />
+                                        <span style="font-size: 0.85rem; color: #94a3b8;">Simulate 0.01 USDC Base payment proof</span>
+                                    </div>
+                                </div>
+
+                                <button id="dev-sandbox-run-btn" style="width: 100%; background: linear-gradient(135deg, #0052ff 0%, #2563eb 100%); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-play"></i> Execute Sandbox Request
+                                </button>
+                            </div>
+
+                            <!-- Code Snippet & Live Response Viewer -->
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+                                <!-- Code Snippet Tabs -->
+                                <div style="background: #1e293b; border-radius: 12px; padding: 16px; border: 1px solid #334155;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <div style="display: flex; gap: 8px;" id="dev-code-tabs">
+                                            <button class="dev-tab-btn active" data-lang="js" style="background: #0052ff; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">JavaScript</button>
+                                            <button class="dev-tab-btn" data-lang="curl" style="background: transparent; color: #94a3b8; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">cURL</button>
+                                            <button class="dev-tab-btn" data-lang="python" style="background: transparent; color: #94a3b8; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Python</button>
+                                        </div>
+                                        <button id="dev-copy-code-btn" style="background: transparent; color: #94a3b8; border: 1px solid #475569; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">
+                                            <i class="fa-regular fa-copy"></i> Copy Code
+                                        </button>
+                                    </div>
+                                    <pre style="background: #0f172a; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.78rem; color: #38bdf8; overflow-x: auto; margin: 0; max-height: 140px;" id="dev-code-snippet-display">
+fetch("http://localhost:3001/api/v1/commerce/prices?product=Rice&location=Lagos")
+  .then(res => res.json())
+  .then(data => console.log(data));
+                                    </pre>
+                                </div>
+
+                                <!-- Live Response Box -->
+                                <div style="background: #1e293b; border-radius: 12px; padding: 16px; border: 1px solid #334155; flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span style="font-size: 0.8rem; font-weight: 700; color: #4ade80; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                                            <span style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%; display: inline-block;"></span>
+                                            Response Payload
+                                        </span>
+                                        <span id="dev-response-status-badge" style="font-size: 0.75rem; background: rgba(74, 222, 128, 0.15); color: #4ade80; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
+                                            HTTP 200 OK
+                                        </span>
+                                    </div>
+                                    <pre style="background: #0f172a; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #e2e8f0; overflow-y: auto; margin: 0; height: 160px;" id="dev-response-json-display">
+{
+  "product": "Rice",
+  "location": "Lagos",
+  "grounded_by": "OjaGraph",
+  "generated_by": "OjaLM",
+  "status": "Ready for execution. Click 'Execute Sandbox Request' to run."
+}
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </main>
+
     </div>
 
     <!-- Mobile Bottom Navigation Bar (Ref Image 1 & 3 Bottom Navigation) -->
@@ -2874,6 +3389,58 @@
 
                         }());
                     </script>
+
+    <!-- Commercial Partner Onboarding Modal -->
+    <div id="partner-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #fff; border-radius: 16px; width: 100%; max-width: 520px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); border: 1px solid #e2e8f0;">
+            <div style="background: linear-gradient(135deg, #0052ff 0%, #1e1b4b 100%); color: #fff; padding: 24px; position: relative;">
+                <button id="partner-modal-close" type="button" style="position: absolute; top: 18px; right: 18px; background: rgba(255, 255, 255, 0.15); color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.15); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">
+                    <i class="fa-solid fa-handshake"></i> Commercial Partnership
+                </div>
+                <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: #fff;">Become a MamaPrice Partner</h2>
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin: 6px 0 0 0; line-height: 1.4;">
+                    Integrate African commerce intelligence into your business, app, or AI agent ecosystem.
+                </p>
+            </div>
+            <form id="partner-onboarding-form" style="padding: 24px;">
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Company / Project Name *</label>
+                    <input type="text" id="partner-company-name" required placeholder="e.g. Lagos Procurement Ltd or FoodAgent AI" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; box-sizing: border-box;" />
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Organization Type *</label>
+                    <select id="partner-org-type" required style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; box-sizing: border-box; background: #fff;">
+                        <option value="Restaurant / Caterer">Restaurant / Food Procurement</option>
+                        <option value="Supermarket / Retailer">Supermarket / Retail Store</option>
+                        <option value="Food App / Marketplace">Food App / Delivery Marketplace</option>
+                        <option value="AI Agent Builder">Autonomous AI Agent Builder</option>
+                        <option value="Software Developer">Software Developer / Tech Enterprise</option>
+                        <option value="Investor / Partner">Investor / Strategic Partner</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Contact Email / Telegram *</label>
+                    <input type="email" id="partner-contact-email" required placeholder="partner@company.com" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; box-sizing: border-box;" />
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Target Monthly API Volume</label>
+                    <select id="partner-volume" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; box-sizing: border-box; background: #fff;">
+                        <option value="Sandbox / Testing">Sandbox / Testing (&lt; 1,000 reqs/mo)</option>
+                        <option value="Growth Tier">Growth Tier (1,000 - 50,000 reqs/mo)</option>
+                        <option value="Enterprise Custom">Enterprise Custom (&gt; 50,000 reqs/mo)</option>
+                        <option value="x402 Agent Micro-pay">x402 Agent Micro-payments (Pay per request)</option>
+                    </select>
+                </div>
+                <button type="submit" style="width: 100%; background: #0052ff; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);">
+                    Submit Partnership Application
+                </button>
+            </form>
+        </div>
+    </div>
+
 </body>
 
 </html>

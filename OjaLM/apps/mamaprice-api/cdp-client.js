@@ -1,4 +1,5 @@
-import fetch from "node-fetch";
+// CDP Client for Base / Coinbase x402 payment verification
+
 
 const CDP_ENDPOINT = process.env.CDP_ENDPOINT || "";
 const CDP_API_KEY = process.env.CDP_API_KEY || "";

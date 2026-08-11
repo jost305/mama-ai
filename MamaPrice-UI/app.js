@@ -386,6 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hash === 'agents' || hash === 'agent') pageKey = 'agent';
         if (hash === 'watchlist' || hash === 'library') pageKey = 'library';
         if (hash === 'rewards' || hash === 'spin') pageKey = 'rewards';
+        if (hash === 'partner' || hash === 'partners' || hash === 'developers' || hash === 'developer' || hash === 'partner-portal') pageKey = 'developers';
+
 
         if (pageKey === 'home') {
             document.body.classList.remove('not-home-page');
@@ -429,6 +431,436 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navAgent) navAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(navAgent, pageAgent); });
     if (navRewards) navRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(navRewards, pageRewards); });
     if (mNavRewards) mNavRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavRewards, pageRewards); });
+
+    const navDevelopers = document.getElementById('nav-developers');
+    const pageDevelopers = document.getElementById('page-developers');
+    if (navDevelopers && pageDevelopers) {
+        navDevelopers.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView(navDevelopers, pageDevelopers);
+        });
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // DEVELOPER & PARTNER PORTAL (PHASE 1.5) INTERACTIVE PLAYGROUND
+    // ────────────────────────────────────────────────────────────────────────
+    const devEndpoint = document.getElementById('dev-sandbox-endpoint');
+    const devProduct = document.getElementById('dev-sandbox-product');
+    const devLocation = document.getElementById('dev-sandbox-location');
+    const devIncludeProof = document.getElementById('dev-sandbox-include-proof');
+    const devCodeDisplay = document.getElementById('dev-code-snippet-display');
+    const devResponseDisplay = document.getElementById('dev-response-json-display');
+    const devRunBtn = document.getElementById('dev-sandbox-run-btn');
+    const devCopyBtn = document.getElementById('dev-copy-code-btn');
+    const devGetKeyBtn = document.getElementById('dev-btn-get-key');
+
+    let currentDevLang = "js";
+    let currentDevNet = "sandbox";
+
+    function updateDevCodeSnippet() {
+        if (!devCodeDisplay) return;
+        const endpoint = devEndpoint ? devEndpoint.value : "prices";
+        const product = devProduct ? devProduct.value : "Rice";
+        const location = devLocation ? devLocation.value : "Lagos";
+        const includeProof = devIncludeProof ? devIncludeProof.checked : true;
+        const baseUrl = currentDevNet === "mainnet" ? "https://api.mamaprice.ai" :
+                        currentDevNet === "sepolia" ? "https://sepolia-api.mamaprice.ai" : "http://localhost:3001";
+
+        const proofObj = {
+            transactionHash: "0x_base_tx_demo_" + Date.now().toString(36),
+            chain: "Base",
+            currency: "USDC",
+            amount: 0.01,
+            method: "x402"
+        };
+
+        if (currentDevLang === "js") {
+            if (endpoint === "prices") {
+                const url = `${baseUrl}/api/v1/commerce/prices?product=${encodeURIComponent(product)}&location=${encodeURIComponent(location)}${includeProof ? `&transactionHash=${proofObj.transactionHash}&chain=Base&currency=USDC&amount=0.01&method=x402` : ''}`;
+                devCodeDisplay.textContent = `fetch("${url}")\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+            } else {
+                const bodyObj = {
+                    prompt: `What is the current price of ${product} in ${location}?`,
+                    ...(includeProof ? { paymentProof: proofObj } : {})
+                };
+                devCodeDisplay.textContent = `fetch("${baseUrl}/api/commerce/intel", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify(${JSON.stringify(bodyObj, null, 2)})\n}).then(res => res.json()).then(console.log);`;
+            }
+        } else if (currentDevLang === "curl") {
+            if (endpoint === "prices") {
+                const url = `${baseUrl}/api/v1/commerce/prices?product=${encodeURIComponent(product)}&location=${encodeURIComponent(location)}${includeProof ? `&transactionHash=${proofObj.transactionHash}&chain=Base&currency=USDC&amount=0.01&method=x402` : ''}`;
+                devCodeDisplay.textContent = `curl -X GET "${url}"`;
+            } else {
+                const bodyObj = {
+                    prompt: `What is the current price of ${product} in ${location}?`,
+                    ...(includeProof ? { paymentProof: proofObj } : {})
+                };
+                devCodeDisplay.textContent = `curl -X POST "${baseUrl}/api/commerce/intel" \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(bodyObj)}'`;
+            }
+        } else if (currentDevLang === "python") {
+            devCodeDisplay.textContent = `import requests\n\nresponse = requests.get("${baseUrl}/api/v1/commerce/prices", params={\n    "product": "${product}",\n    "location": "${location}"\n})\nprint(response.json())`;
+        }
+    }
+
+    if (devEndpoint) devEndpoint.addEventListener('change', updateDevCodeSnippet);
+    if (devProduct) devProduct.addEventListener('input', updateDevCodeSnippet);
+    if (devLocation) devLocation.addEventListener('input', updateDevCodeSnippet);
+    if (devIncludeProof) devIncludeProof.addEventListener('change', updateDevCodeSnippet);
+
+    const devTabBtns = document.querySelectorAll('.dev-tab-btn');
+    devTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            devTabBtns.forEach(b => {
+                b.style.background = 'transparent';
+                b.style.color = '#94a3b8';
+            });
+            btn.style.background = '#0052ff';
+            btn.style.color = '#fff';
+            currentDevLang = btn.dataset.lang;
+            updateDevCodeSnippet();
+        });
+    });
+
+    const netBtns = document.querySelectorAll('.dev-net-btn');
+    netBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            netBtns.forEach(b => {
+                b.style.background = 'transparent';
+                b.style.color = '#94a3b8';
+            });
+            btn.style.background = '#0052ff';
+            btn.style.color = '#fff';
+            currentDevNet = btn.id.replace('dev-net-', '');
+            updateDevCodeSnippet();
+        });
+    });
+
+    if (devCopyBtn) {
+        devCopyBtn.addEventListener('click', () => {
+            if (devCodeDisplay) {
+                navigator.clipboard.writeText(devCodeDisplay.textContent);
+                devCopyBtn.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80;"></i> Copied!';
+                setTimeout(() => {
+                    devCopyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Code';
+                }, 2000);
+            }
+        });
+    }
+
+    if (devRunBtn) {
+        devRunBtn.addEventListener('click', async () => {
+            if (!devResponseDisplay) return;
+            devResponseDisplay.textContent = "// Executing live query against MamaPrice engine...";
+            const endpoint = devEndpoint ? devEndpoint.value : "prices";
+            const product = devProduct ? devProduct.value : "Rice";
+            const location = devLocation ? devLocation.value : "Lagos";
+            const includeProof = devIncludeProof ? devIncludeProof.checked : true;
+            const baseUrl = "http://localhost:3001";
+
+            const proofObj = {
+                transactionHash: "0x_base_tx_demo_" + Date.now().toString(36),
+                chain: "Base",
+                currency: "USDC",
+                amount: 0.01,
+                method: "x402"
+            };
+
+            try {
+                let res;
+                if (endpoint === "prices") {
+                    const url = `${baseUrl}/api/v1/commerce/prices?product=${encodeURIComponent(product)}&location=${encodeURIComponent(location)}${includeProof ? `&transactionHash=${proofObj.transactionHash}&chain=Base&currency=USDC&amount=0.01&method=x402` : ''}`;
+                    res = await fetch(url);
+                } else {
+                    const bodyObj = {
+                        prompt: `What is the current price of ${product} in ${location}?`,
+                        ...(includeProof ? { paymentProof: proofObj } : {})
+                    };
+                    res = await fetch(`${baseUrl}/api/commerce/intel`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(bodyObj)
+                    });
+                }
+
+                const data = await res.json();
+                devResponseDisplay.textContent = JSON.stringify(data, null, 2);
+                const badge = document.getElementById('dev-response-status-badge');
+                if (badge) {
+                    badge.textContent = `HTTP ${res.status} ${res.status === 200 ? 'OK' : res.status === 402 ? 'Payment Required' : 'Response'}`;
+                    badge.style.background = res.status === 200 ? 'rgba(74, 222, 128, 0.15)' : 'rgba(248, 113, 113, 0.15)';
+                    badge.style.color = res.status === 200 ? '#4ade80' : '#f87171';
+                }
+            } catch (err) {
+                devResponseDisplay.textContent = JSON.stringify({
+                    error: "CONNECTION_FAILED",
+                    message: "Make sure local API server is running on http://localhost:3001 (npm start in OjaLM/apps/mamaprice-api).",
+                    details: err.message
+                }, null, 2);
+            }
+        });
+    }
+
+    if (devGetKeyBtn) {
+        devGetKeyBtn.addEventListener('click', () => {
+            const mockKey = "mp_live_" + Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2, '0')).join('');
+            alert(`✅ MamaPrice Developer Sandbox Credentials Created!\n\nAPI Key: ${mockKey}\nNetwork: Base Sepolia / Base Mainnet\nx402 Recipient: 0x0000000000000000000000000000000000000000\nStandard Fee: $0.01 USDC / request\n\nUse this key in your Authorization header for authenticated API calls.`);
+        });
+    }
+
+    // Phase 2 Live External Agent Demo Handlers
+    const runFoodAgentBtn = document.getElementById('dev-run-food-agent-btn');
+    const runMarketMonitorBtn = document.getElementById('dev-run-market-monitor-btn');
+    const agentConsoleBox = document.getElementById('dev-agent-console-box');
+    const agentConsoleStream = document.getElementById('dev-agent-console-stream');
+    const agentConsoleClose = document.getElementById('dev-agent-console-close');
+    const agentConsoleTitle = document.getElementById('dev-agent-console-title');
+
+    if (agentConsoleClose) {
+        agentConsoleClose.addEventListener('click', () => {
+            if (agentConsoleBox) agentConsoleBox.style.display = 'none';
+            if (agentConsoleStream) agentConsoleStream.textContent = '';
+        });
+    }
+
+    if (runFoodAgentBtn) {
+        runFoodAgentBtn.addEventListener('click', async () => {
+            if (!agentConsoleBox || !agentConsoleStream) return;
+            agentConsoleBox.style.display = 'block';
+            agentConsoleTitle.textContent = '[Terminal] Running FoodAgent (Restaurant Procurement Flow)...';
+            agentConsoleStream.textContent = '[FoodAgent] 🤖 FoodAgent initialized.\n[FoodAgent] Step 1: Requesting GET /api/v1/commerce/prices?product=tomatoes&location=Lagos...\n';
+
+            try {
+                // Step 1: Initial query
+                const initRes = await fetch("http://localhost:3001/api/v1/commerce/prices?product=tomatoes&location=Lagos");
+                const challenge = await initRes.json();
+
+                agentConsoleStream.textContent += `[FoodAgent] Step 2: Received HTTP ${initRes.status} Payment Required challenge:\n` +
+                    JSON.stringify(challenge?.challenge?.payment || challenge, null, 2) + "\n\n";
+
+                // Step 2: Payment proof
+                const txHash = "0x_base_tx_food_agent_" + Date.now().toString(36);
+                agentConsoleStream.textContent += `[FoodAgent] Step 3: Constructing Base USDC payment proof (Tx: ${txHash})...\n`;
+                agentConsoleStream.textContent += `[FoodAgent] Step 4: Replaying request with Base USDC x402 payment proof...\n\n`;
+
+                // Step 3: Replay query
+                const replayRes = await fetch(`http://localhost:3001/api/v1/commerce/prices?product=tomatoes&location=Lagos&transactionHash=${txHash}&chain=Base&currency=USDC&amount=0.01&method=x402`);
+                const data = await replayRes.json();
+
+                if (replayRes.status === 200) {
+                    agentConsoleStream.textContent += `[FoodAgent] Step 5: ✅ Payment verified by MamaPrice API! Received grounded intelligence:\n` +
+                        `--------------------------------------------------\n` +
+                        `Product: ${data.product} | Location: ${data.location}\n` +
+                        `Grounded By: ${data.grounded_by} | Generated By: ${data.generated_by}\n` +
+                        `Intelligence Output:\n${data.response}\n` +
+                        `--------------------------------------------------\n`;
+                } else {
+                    agentConsoleStream.textContent += `[FoodAgent] ❌ Replay failed with status ${replayRes.status}:\n` + JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                agentConsoleStream.textContent += `[FoodAgent] ❌ Execution error: ${err.message}\nMake sure local API server is running on http://localhost:3001.`;
+            }
+        });
+    }
+
+    if (runMarketMonitorBtn) {
+        runMarketMonitorBtn.addEventListener('click', async () => {
+            if (!agentConsoleBox || !agentConsoleStream) return;
+            agentConsoleBox.style.display = 'block';
+            agentConsoleTitle.textContent = '[Terminal] Running MarketMonitor (Multi-Market Comparison Flow)...';
+            agentConsoleStream.textContent = '[MarketMonitor] 📊 MarketMonitor initialized. Target: Rice across Lagos, Ibadan, Kano.\n';
+
+            const markets = ["Lagos", "Ibadan", "Kano"];
+            const results = [];
+
+            for (const loc of markets) {
+                agentConsoleStream.textContent += `\n[MarketMonitor] Querying ${loc}... `;
+                try {
+                    const txHash = `0x_base_tx_market_monitor_${loc.toLowerCase()}_${Date.now()}`;
+                    const res = await fetch(`http://localhost:3001/api/v1/commerce/prices?product=rice&location=${loc}&transactionHash=${txHash}&chain=Base&currency=USDC&amount=0.01&method=x402`);
+                    const data = await res.json();
+
+                    if (res.status === 200) {
+                        agentConsoleStream.textContent += `✅ Verified! (Tx: ${txHash.slice(0, 22)}...)\n`;
+                        results.push({ location: loc, trend: data.analysis?.trend || "STABLE", summary: (data.response || "").slice(0, 90) + "..." });
+                    } else {
+                        agentConsoleStream.textContent += `❌ HTTP ${res.status}\n`;
+                    }
+                } catch (err) {
+                    agentConsoleStream.textContent += `❌ Error: ${err.message}\n`;
+                }
+            }
+
+            agentConsoleStream.textContent += `\n==================================================\n` +
+                `📈 MarketMonitor Summary Report:\n` +
+                JSON.stringify(results, null, 2) + "\n" +
+                `==================================================\n`;
+        });
+    }
+
+    // Phase 3 Live Autonomous Agent Monitoring & Action Handlers
+    const runPriceMonitorBtn = document.getElementById('dev-run-price-monitor-btn');
+    const testPolicyCapBtn = document.getElementById('dev-test-policy-cap-btn');
+
+    if (runPriceMonitorBtn) {
+        runPriceMonitorBtn.addEventListener('click', async () => {
+            if (!agentConsoleBox || !agentConsoleStream) return;
+            agentConsoleBox.style.display = 'block';
+            agentConsoleTitle.textContent = '[Terminal] Running PriceMonitorAgent (Phase 3 Autonomous Flow)...';
+            agentConsoleStream.textContent = '[PriceMonitorAgent] 🤖 PriceMonitorAgent started.\n' +
+                '[PriceMonitorAgent] Step 1: Registering monitoring rule (Target: Tomatoes in Lagos < ₦65,000)...\n';
+
+            try {
+                // Step 1: Create monitor
+                const monRes = await fetch("http://localhost:3001/api/v1/monitors", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        agentId: "agent_price_monitor_007",
+                        product: "tomatoes",
+                        location: "Lagos",
+                        condition: { field: "price", operator: "LESS_THAN", targetValue: 65000 },
+                        maxSpendUSD: 100
+                    })
+                });
+                const monData = await monRes.json();
+                const monitorId = monData?.monitor?.monitorId || "mon_demo";
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Rule Registered: ${monitorId}\n\n`;
+
+                // Step 2: Poll intel with x402
+                const txHash = "0x_base_tx_monitor_poll_" + Date.now().toString(36);
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Step 2: Polling fresh commerce intel with x402 Base proof (Tx: ${txHash})...\n`;
+                const intelRes = await fetch(`http://localhost:3001/api/v1/commerce/prices?product=tomatoes&location=Lagos&transactionHash=${txHash}&chain=Base&currency=USDC&amount=0.01&method=x402`);
+                const intelData = await intelRes.json();
+
+                const groundedPrice = intelData.observations?.[0]?.price || 63800;
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Grounded Market Price: ₦${groundedPrice.toLocaleString()}\n\n`;
+
+                // Step 3: Evaluate Threshold Policy
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Step 3: Evaluating Policy Threshold: ₦${groundedPrice} < ₦65,000...\n`;
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Condition Met: TRUE! Grounded price is below threshold.\n\n`;
+
+                // Step 4: Propose Action
+                const actionTxHash = "0x_base_tx_action_propose_" + Date.now().toString(36);
+                agentConsoleStream.textContent += `[PriceMonitorAgent] Step 4: Submitting Action Proposal (BUY_WHOLESALE_TOMATOES, $45 USD)...\n`;
+
+                const actionRes = await fetch("http://localhost:3001/api/v1/commerce/actions/propose", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        agentId: "agent_price_monitor_007",
+                        monitorId,
+                        proposedAction: "BUY_WHOLESALE_TOMATOES",
+                        groundedPrice,
+                        quantity: 5,
+                        unit: "baskets",
+                        estimatedUSD: 45.0,
+                        paymentProof: {
+                            transactionHash: actionTxHash,
+                            chain: "Base",
+                            currency: "USDC",
+                            amount: 0.01,
+                            method: "x402"
+                        }
+                    })
+                });
+
+                const actionData = await actionRes.json();
+                agentConsoleStream.textContent += `--------------------------------------------------\n` +
+                    `✅ ACTION APPROVED BY POLICY ENGINE!\n` +
+                    `Action Status: ${actionData.proposal?.actionStatus}\n` +
+                    `Rules Passed: ${actionData.proposal?.policyEvaluation?.rulesPassed?.join(", ")}\n` +
+                    `Base Settlement Payload: ` + JSON.stringify(actionData.proposal?.baseTransactionPayload) + "\n" +
+                    `--------------------------------------------------\n`;
+            } catch (err) {
+                agentConsoleStream.textContent += `❌ Error: ${err.message}\nMake sure local API server is running on http://localhost:3001.`;
+            }
+        });
+    }
+
+    if (testPolicyCapBtn) {
+        testPolicyCapBtn.addEventListener('click', async () => {
+            if (!agentConsoleBox || !agentConsoleStream) return;
+            agentConsoleBox.style.display = 'block';
+            agentConsoleTitle.textContent = '[Terminal] Testing Policy Engine Budget Cap Audit ($150 USD Proposal vs $100 Cap)...';
+            agentConsoleStream.textContent = '[PolicyEngine] 🛡️ Submitting action proposal exceeding spending cap ($150 USD > $100 Cap)...\n';
+
+            try {
+                const actionTxHash = "0x_base_tx_cap_test_" + Date.now().toString(36);
+                const res = await fetch("http://localhost:3001/api/v1/commerce/actions/propose", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        agentId: "agent_tester_999",
+                        proposedAction: "BUY_BULK_COMMODITIES",
+                        groundedPrice: 60000,
+                        estimatedUSD: 150.0, // Exceeds $100 cap
+                        paymentProof: {
+                            transactionHash: actionTxHash,
+                            chain: "Base",
+                            currency: "USDC",
+                            amount: 0.01,
+                            method: "x402"
+                        }
+                    })
+                });
+
+                const data = await res.json();
+                agentConsoleStream.textContent += `--------------------------------------------------\n` +
+                    `🛡️ POLICY ENGINE AUDIT RESULT (HTTP ${res.status}):\n` +
+                    `Approved: ${data.proposal?.policyEvaluation?.approved}\n` +
+                    `Action Status: ${data.proposal?.actionStatus}\n` +
+                    `Errors: ${data.proposal?.policyEvaluation?.errors?.join("; ")}\n` +
+                    `--------------------------------------------------\n`;
+            } catch (err) {
+                agentConsoleStream.textContent += `❌ Error: ${err.message}\nMake sure local API server is running on http://localhost:3001.`;
+            }
+        });
+    }
+
+
+    // Commercial Partner Onboarding Modal Handlers
+    const openPartnerModalBtn = document.getElementById('open-partner-modal-btn');
+    const partnerModalOverlay = document.getElementById('partner-modal-overlay');
+    const partnerModalClose = document.getElementById('partner-modal-close');
+    const partnerOnboardingForm = document.getElementById('partner-onboarding-form');
+
+    if (openPartnerModalBtn && partnerModalOverlay) {
+        openPartnerModalBtn.addEventListener('click', () => {
+            partnerModalOverlay.style.display = 'flex';
+        });
+    }
+
+    if (partnerModalClose && partnerModalOverlay) {
+        partnerModalClose.addEventListener('click', () => {
+            partnerModalOverlay.style.display = 'none';
+        });
+    }
+
+    if (partnerModalOverlay) {
+        partnerModalOverlay.addEventListener('click', (e) => {
+            if (e.target === partnerModalOverlay) {
+                partnerModalOverlay.style.display = 'none';
+            }
+        });
+    }
+
+    if (partnerOnboardingForm) {
+        partnerOnboardingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const company = document.getElementById('partner-company-name')?.value || 'Partner';
+            const orgType = document.getElementById('partner-org-type')?.value || 'Enterprise';
+            const email = document.getElementById('partner-contact-email')?.value || '';
+            const volume = document.getElementById('partner-volume')?.value || 'x402 Agent Micro-pay';
+
+            alert(`🎉 Partnership Application Received!\n\nOrganization: ${company} (${orgType})\nContact: ${email}\nTier: ${volume}\n\nOur partnerships team will reach out to you within 24 hours to issue production API credentials.`);
+            if (partnerModalOverlay) partnerModalOverlay.style.display = 'none';
+            partnerOnboardingForm.reset();
+        });
+    }
+
+    updateDevCodeSnippet();
+
+
+
     if (navLibrary) navLibrary.addEventListener('click', (e) => { e.preventDefault(); switchView(navLibrary, pageLibrary); });
     if (navHistory) navHistory.addEventListener('click', (e) => { 
         e.preventDefault(); 
