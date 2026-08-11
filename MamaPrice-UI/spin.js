@@ -1,6 +1,7 @@
 ﻿/* ══════════════════════════════════════════
    SPIN & WIN MODAL ENGINE — spin.js
-   Fully IIFE-scoped, wired via addEventListener
+   Runs at bottom of <body> — DOM is already
+   fully parsed, no DOMContentLoaded needed.
 ══════════════════════════════════════════ */
 (function () {
     "use strict";
@@ -57,14 +58,8 @@
         spinCtx.stroke();
     }
 
-    /* ── Close helper ── */
-    function doCloseModal() {
-        var overlay = document.getElementById("spin-modal-overlay");
-        if (overlay) overlay.classList.remove("open");
-    }
-
-    /* ── Open Modal ── */
-    window.openSpinModal = function () {
+    /* ── Open / Close ── */
+    function doOpenModal() {
         var overlay = document.getElementById("spin-modal-overlay");
         if (!overlay) return;
         overlay.classList.add("open");
@@ -72,7 +67,16 @@
         spinCtx    = spinCanvas ? spinCanvas.getContext("2d") : null;
         drawWheel(spinWheelAngle);
         scheduleSocialToast();
-    };
+    }
+
+    function doCloseModal() {
+        var overlay = document.getElementById("spin-modal-overlay");
+        if (overlay) overlay.classList.remove("open");
+    }
+
+    /* Expose so onclick="" attributes still work if present */
+    window.openSpinModal  = doOpenModal;
+    window.closeSpinModal = doCloseModal;
 
     /* ── Spin Wheel ── */
     window.spinWheel = function () {
@@ -196,34 +200,33 @@
         }, 3200);
     }
 
-    /* ── Wire up event listeners after DOM ready ── */
-    document.addEventListener("DOMContentLoaded", function () {
-        // Backdrop click → close (only when clicking the dark backdrop itself)
-        var overlay = document.getElementById("spin-modal-overlay");
-        var modalBox = document.getElementById("spin-modal-box");
-        if (overlay && modalBox) {
-            overlay.addEventListener("click", function () { doCloseModal(); });
-            modalBox.addEventListener("click", function (e) { e.stopPropagation(); });
-        }
+    /* ══════════════════════════════════════════
+       WIRE UP — DOM is already ready here since
+       this script runs at the bottom of <body>.
+    ══════════════════════════════════════════ */
+    /* Backdrop closes modal; box stops propagation */
+    var overlay = document.getElementById("spin-modal-overlay");
+    var modalBox = document.getElementById("spin-modal-box");
+    if (overlay) overlay.addEventListener("click", doCloseModal);
+    if (modalBox) modalBox.addEventListener("click", function (e) { e.stopPropagation(); });
 
-        // Back button
-        var backBtn = document.getElementById("sm-back-btn");
-        if (backBtn) backBtn.addEventListener("click", doCloseModal);
+    /* Back button */
+    var backBtn = document.getElementById("sm-back-btn");
+    if (backBtn) backBtn.addEventListener("click", doCloseModal);
 
-        // Center spin button
-        var centerBtn = document.getElementById("sm-spin-now-btn");
-        if (centerBtn) centerBtn.addEventListener("click", window.spinWheel);
+    /* Center SPIN NOW button */
+    var centerBtn = document.getElementById("sm-spin-now-btn");
+    if (centerBtn) centerBtn.addEventListener("click", window.spinWheel);
 
-        // CTA button
-        var ctaBtn = document.getElementById("sm-cta-btn");
-        if (ctaBtn) ctaBtn.addEventListener("click", window.spinWheel);
+    /* CTA Spin Now button */
+    var ctaBtn = document.getElementById("sm-cta-btn");
+    if (ctaBtn) ctaBtn.addEventListener("click", window.spinWheel);
 
-        // Header trigger
-        var headerBtn = document.getElementById("header-spin-btn");
-        if (headerBtn) {
-            headerBtn.removeAttribute("onclick");
-            headerBtn.addEventListener("click", window.openSpinModal);
-        }
-    });
+    /* Header Spin button — add listener AND keep window.openSpinModal for onclick= fallback */
+    var headerBtn = document.getElementById("header-spin-btn");
+    if (headerBtn) {
+        headerBtn.removeAttribute("onclick");
+        headerBtn.addEventListener("click", doOpenModal);
+    }
 
 }());
