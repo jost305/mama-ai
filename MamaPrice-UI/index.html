@@ -5,20 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MamaPrice — Know prices. Shop smart.</title>
-    <meta name="description" content="Join MamaPrice — Track real-time market commodity prices across Nigeria, compare regional price trends, and earn MarketPoints as a verified scout agent.">
-    
+    <meta name="description"
+        content="Join MamaPrice — Track real-time market commodity prices across Nigeria, compare regional price trends, and earn MarketPoints as a verified scout agent.">
+
     <!-- Open Graph / WhatsApp Referral Sharing Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="MamaPrice — Know prices. Shop smart. Earn rewards.">
-    <meta property="og:description" content="Compare live commodity prices across 20+ regional Nigerian markets. Join via referral to track prices & earn MarketPoints!">
+    <meta property="og:description"
+        content="Compare live commodity prices across 20+ regional Nigerian markets. Join via referral to track prices & earn MarketPoints!">
     <meta property="og:url" content="https://mama-ai-alpha.vercel.app">
     <meta property="og:image" content="https://mama-ai-alpha.vercel.app/logo.png">
     <meta property="og:site_name" content="MamaPrice">
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MamaPrice — Know prices. Shop smart.">
-    <meta name="twitter:description" content="Track live market commodity prices, compare regional trends & earn MarketPoints.">
+    <meta name="twitter:description"
+        content="Track live market commodity prices, compare regional trends & earn MarketPoints.">
     <meta name="twitter:image" content="https://mama-ai-alpha.vercel.app/logo.png">
 
     <link rel="icon" type="image/png" href="favicon.png">
@@ -64,13 +67,14 @@
                 <a href="javascript:void(0)" class="nav-item" id="nav-agent">
                     <i class="fa-solid fa-user-shield"></i>
                     <span>Agents</span>
-                    <span class="nav-earned-badge" id="nav-agent-earned-badge"
-                        title="Scout Earnings So Far" style="display: none;">₦148.5k</span>
+                    <span class="nav-earned-badge" id="nav-agent-earned-badge" title="Scout Earnings So Far"
+                        style="display: none;">₦148.5k</span>
                 </a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-rewards">
                     <i class="fa-solid fa-dharmachakra"></i>
                     <span>Spin & Win</span>
-                    <span class="nav-earned-badge green-spin-badge" id="nav-spins-badge" title="Available Spins" style="display: none;">🎟 3</span>
+                    <span class="nav-earned-badge green-spin-badge" id="nav-spins-badge" title="Available Spins"
+                        style="display: none;">🎟 3</span>
                 </a>
                 <a href="javascript:void(0)" class="nav-item" id="nav-map" style="display: none !important;"><i
                         class="fa-solid fa-map-location-dot"></i><span>Live Map</span></a>
@@ -111,12 +115,12 @@
                 </div>
 
                 <div class="header-right">
-                    <!-- Compact Header Spin & Win Trigger -->
-                    <button class="header-spin-btn" id="header-spin-btn" onclick="document.getElementById('spin-modal-overlay').style.display='flex'" title="Spin & Win Rewards">
+                    <!-- Compact Header Spin & Win Trigger (re-added) -->
+                    <a href="#rewards" class="header-spin-btn header-spin-btn--new" id="header-spin-btn" title="Spin & Win Rewards (Daily)" role="button">
                         <img src="spin-wheel-logo.png" alt="Spin Logo" class="hsb-logo-img">
                         <span class="hsb-text">Spin</span>
-                        <span class="hsb-badge" id="header-spins-count" style="display: none;">3</span>
-                    </button>
+                        <span class="hsb-badge" id="header-spins-count" style="display:none">0</span>
+                    </a>
 
                     <!-- Tight Dynamic Live Weather & Location Capsule -->
                     <div class="weather-pill-container" style="position: relative;">
@@ -174,6 +178,8 @@
                         </div>
                     </div>
 
+                    
+
                     <!-- Notification Bell & Dropdown Popover (Exact Match to Design Reference) -->
                     <div class="notif-popover-wrapper" style="position: relative;">
                         <button class="notif-btn" id="notif-btn" title="Market Alerts">
@@ -182,10 +188,7 @@
                         </button>
 
                         <div class="notif-popover-card" id="notif-popover">
-                            <div class="notif-popover-header">
-                                <h3>Notifications</h3>
-                                <button class="mark-all-read-link" id="mark-all-read-btn">Mark all as read</button>
-                            </div>
+                            
 
                             <div class="notif-popover-tabs">
                                 <div class="tab-list">
@@ -193,7 +196,6 @@
                                     <button class="pop-tab" data-filter="inbox">Inbox <span class="tab-badge"
                                             id="count-inbox-badge" style="display: none;">2</span></button>
                                     <button class="pop-tab" data-filter="price">Price Alerts</button>
-                                    <button class="pop-tab" data-filter="archived">Archived</button>
                                 </div>
                                 <button class="pop-tab-gear" title="Notification Settings"><i
                                         class="fa-solid fa-sliders"></i></button>
@@ -345,7 +347,8 @@
                         <div id="chat-img-preview-container" class="chat-img-preview-container" style="display: none;">
                             <div class="img-preview-card">
                                 <img id="chat-img-preview-thumb" src="" alt="Attached image preview" />
-                                <button type="button" id="remove-chat-img-btn" title="Remove attachment"><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" id="remove-chat-img-btn" title="Remove attachment"><i
+                                        class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>
 
@@ -492,7 +495,8 @@
                             </div>
                             <div class="pr-list">
                                 <div style="text-align: center; padding: 32px 16px; color: #64748b;">
-                                    <i class="fa-regular fa-clipboard" style="font-size: 1.6rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                    <i class="fa-regular fa-clipboard"
+                                        style="font-size: 1.6rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
                                     No live field price reports currently stream. Submit a report to be featured!
                                 </div>
                             </div>
@@ -509,10 +513,14 @@
                         </div>
 
                         <div class="wtb-grid" id="wtb-grid-container">
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 36px 16px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
-                                <i class="fa-solid fa-compass" style="font-size: 1.8rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
-                                <strong style="font-size: 0.95rem; color: #1e293b; display: block;">No Market Recommendations Yet</strong>
-                                <p style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">Search for commodities in MamaPrice chat to receive live market deal rankings.</p>
+                            <div
+                                style="grid-column: 1 / -1; text-align: center; padding: 36px 16px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <i class="fa-solid fa-compass"
+                                    style="font-size: 1.8rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                <strong style="font-size: 0.95rem; color: #1e293b; display: block;">No Market
+                                    Recommendations Yet</strong>
+                                <p style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">Search for commodities in
+                                    MamaPrice chat to receive live market deal rankings.</p>
                             </div>
                         </div>
                     </div>
@@ -527,7 +535,8 @@
                                 <h3>AI Price Insights</h3>
                             </div>
                             <p class="pi-body-text" id="pi-insight-text">
-                                Ask MamaPrice in chat to generate real-time market insights and commodity trends for any regional market.
+                                Ask MamaPrice in chat to generate real-time market insights and commodity trends for any
+                                regional market.
                             </p>
                             <div class="pi-callout" id="pi-insight-callout">
                                 Real-time RAG intelligence engine active.
@@ -853,10 +862,14 @@
                     </div>
 
                     <div class="vendors-grid" id="vendors-grid-container">
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
-                            <i class="fa-solid fa-store" style="font-size: 2rem; margin-bottom: 12px; display: block; color: #94a3b8;"></i>
-                            <strong style="font-size: 1rem; color: #1e293b; display: block;">No Market Vendors Listed</strong>
-                            <p style="font-size: 0.82rem; margin-top: 4px; color: #64748b;">Search for specific products in the search bar above to discover verified local market sellers.</p>
+                        <div
+                            style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: #64748b; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
+                            <i class="fa-solid fa-store"
+                                style="font-size: 2rem; margin-bottom: 12px; display: block; color: #94a3b8;"></i>
+                            <strong style="font-size: 1rem; color: #1e293b; display: block;">No Market Vendors
+                                Listed</strong>
+                            <p style="font-size: 0.82rem; margin-top: 4px; color: #64748b;">Search for specific products
+                                in the search bar above to discover verified local market sellers.</p>
                         </div>
                     </div>
                 </div>
@@ -880,19 +893,7 @@
                         </div>
                     </div>
 
-                    <!-- Agent Rewards Wheel & Spin Eligibility Card -->
-                    <div class="agent-rewards-banner" id="agent-rewards-widget">
-                        <div class="arc-left">
-                            <div class="arc-badge">🎟️</div>
-                            <div class="arc-info">
-                                <h3>Agent Spin & Win Rewards</h3>
-                                <p id="agent-rewards-sub">Available Spins: <strong id="agent-spins-count">0 Spins</strong> · Next spin: Submit 1 verified price report</p>
-                            </div>
-                        </div>
-                        <button class="btn-compact-primary arc-btn" onclick="navigateToRewards()">
-                            <i class="fa-solid fa-dharmachakra"></i> Spin Rewards Wheel
-                        </button>
-                    </div>
+                    <!-- Agent Spin & Win Rewards removed -->
 
                     <!-- 5 KPI Summary Cards Grid -->
                     <div class="scout-kpi-row">
@@ -1102,7 +1103,8 @@
                             <div class="prof-avatar-wrapper">
                                 <div class="prof-avatar-img prof-avatar-fallback" id="prof-avatar-box"
                                     style="display:flex;align-items:center;justify-content:center;background:#15803d;color:#ffffff;font-weight:700;font-size:2rem;width:80px;height:80px;border-radius:50%;border:3px solid #ffffff;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-                                    <i class="fa-solid fa-user"></i></div>
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
                                 <span class="prof-verified-badge" title="Verified User" id="prof-badge-icon"><i
                                         class="fa-solid fa-check"></i></span>
                             </div>
@@ -1219,9 +1221,12 @@
                                         </thead>
                                         <tbody id="savings-table-body">
                                             <tr>
-                                                <td colspan="7" style="text-align: center; padding: 24px; color: #64748b;">
-                                                    <i class="fa-solid fa-piggy-bank" style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
-                                                    No itemized market savings recorded yet. Use MamaPrice to compare prices across regional markets!
+                                                <td colspan="7"
+                                                    style="text-align: center; padding: 24px; color: #64748b;">
+                                                    <i class="fa-solid fa-piggy-bank"
+                                                        style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                                    No itemized market savings recorded yet. Use MamaPrice to compare
+                                                    prices across regional markets!
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -1236,7 +1241,8 @@
                                 <h3><i class="fa-solid fa-clock-rotate-left"></i> Activity Log</h3>
                                 <div class="activity-feed-list" id="activity-feed-container">
                                     <div style="text-align: center; padding: 24px; color: #64748b;">
-                                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                        <i class="fa-solid fa-clock-rotate-left"
+                                            style="font-size: 1.5rem; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
                                         No activity logged yet.
                                     </div>
                                 </div>
@@ -1255,11 +1261,13 @@
                                         <div class="form-row-grid">
                                             <div class="form-field">
                                                 <label>Full Name</label>
-                                                <input type="text" placeholder="Enter your full name" id="input-prof-name" />
+                                                <input type="text" placeholder="Enter your full name"
+                                                    id="input-prof-name" />
                                             </div>
                                             <div class="form-field">
                                                 <label>Primary Phone / Contact</label>
-                                                <input type="text" placeholder="Enter phone or email" id="input-prof-phone" />
+                                                <input type="text" placeholder="Enter phone or email"
+                                                    id="input-prof-phone" />
                                             </div>
                                         </div>
                                         <div class="form-field margin-top">
@@ -1302,7 +1310,8 @@
                                                     <p id="prof-bank-acc-lbl">Add bank account for agent cashouts</p>
                                                 </div>
                                             </div>
-                                            <span class="bank-tag-verified" style="background: #f1f5f9; color: #64748b; border-color: #cbd5e1;">Unlinked</span>
+                                            <span class="bank-tag-verified"
+                                                style="background: #f1f5f9; color: #64748b; border-color: #cbd5e1;">Unlinked</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1560,28 +1569,28 @@
             <!-- Page 9: MamaPrice Mobile & Desktop Redesigned Rewards Hub -->
             <div class="page-view" id="page-rewards">
                 <div class="view-container rewards-page-container">
-                    
+
                     <!-- Section 1: Top Header Balance Row -->
                     <div class="rewards-balance-header">
-                        <div class="balance-pill-card" onclick="openCashbackModal()" title="View Cashback Details">
+                        <div class="balance-pill-card" aria-hidden="true">
                             <span class="bp-icon">🪙</span>
                             <div class="bp-info">
                                 <span class="bp-label">Cashback & Credits</span>
-                                <strong class="bp-val">₦18,900.00 <i class="fa-solid fa-chevron-right"></i></strong>
+                                <strong class="bp-val">₦18,900.00</strong>
                             </div>
                         </div>
-                        <div class="balance-pill-card green" onclick="filterCouponsTab('AVAILABLE')" title="View Active Vouchers">
+                        <div class="balance-pill-card green" aria-hidden="true">
                             <span class="bp-icon">🎫</span>
                             <div class="bp-info">
                                 <span class="bp-label">Vouchers & Spins</span>
-                                <strong class="bp-val" id="mrh-spins-val">3 Spins <i class="fa-solid fa-chevron-right"></i></strong>
+                                <strong class="bp-val" id="mrh-spins-val">3 Spins</strong>
                             </div>
                         </div>
                     </div>
 
                     <!-- Section 2: Main Desktop & Mobile Layout Container -->
                     <div class="rewards-main-layout">
-                        
+
                         <!-- Left Column: Wheel Stage Card -->
                         <div class="rewards-left-column">
                             <div class="wheel-stage-card" id="wheel-stage-anchor">
@@ -1591,8 +1600,9 @@
                                     <!-- Canvas Wheel -->
                                     <canvas id="rewards-wheel-canvas" width="380" height="380"></canvas>
                                     <!-- Center Spin Trigger -->
-                                    <button class="wheel-center-btn" id="spin-wheel-trigger-btn" onclick="handleSpinClick()">
-                                        <span>SPIN</span>
+                                    <button class="wheel-center-btn" id="spin-wheel-trigger-btn"
+                                        onclick="handleSpinClick()">
+                                        <span></span>
                                     </button>
                                 </div>
 
@@ -1614,26 +1624,8 @@
 
                         <!-- Right Column: Quick Actions, Refer & Earn, Daily Bonus -->
                         <div class="rewards-right-column">
+
                             
-                            <!-- Quick Action Icon Grid (4 Cards) -->
-                            <div class="quick-actions-row">
-                                <div class="qa-item" onclick="scrollToWheelStage()">
-                                    <div class="qa-icon-box green-tint">🎡</div>
-                                    <span>Spin & Win</span>
-                                </div>
-                                <div class="qa-item" onclick="openReferralShareModal()">
-                                    <div class="qa-icon-box pink-tint">👥</div>
-                                    <span>Refer Friends</span>
-                                </div>
-                                <div class="qa-item" onclick="scrollToDailyBonus()">
-                                    <div class="qa-icon-box yellow-tint">⭐</div>
-                                    <span>Daily Bonus</span>
-                                </div>
-                                <div class="qa-item" onclick="filterCouponsTab('AVAILABLE')">
-                                    <div class="qa-icon-box teal-tint">🎟️</div>
-                                    <span>My Vouchers</span>
-                                </div>
-                            </div>
 
                             <!-- Refer & Earn Milestone Card (Vertical Stack Layout) -->
                             <div class="refer-earn-card" id="refer-earn-anchor">
@@ -1642,9 +1634,10 @@
                                         <h3>Refer & Earn</h3>
                                         <p>Invite friends to join MamaPrice & earn cash + spins</p>
                                     </div>
-                                    <button class="rec-more-btn" onclick="openReferralShareModal()">More <i class="fa-solid fa-chevron-right"></i></button>
+                                    <button class="rec-more-btn" onclick="openReferralShareModal()">More <i
+                                            class="fa-solid fa-chevron-right"></i></button>
                                 </div>
-                                
+
                                 <div class="rec-body">
                                     <div class="rec-cash-badge">
                                         <strong class="rec-cash-val">₦1,594.00</strong>
@@ -1690,12 +1683,14 @@
 
                                 <div class="task-list-rows">
                                     <div class="task-row">
-                                        <div class="task-icon-box purple"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                                        <div class="task-icon-box purple"><i
+                                                class="fa-solid fa-arrow-right-arrow-left"></i></div>
                                         <div class="task-info">
                                             <h4>Report Market Price</h4>
                                             <p>Submit 1 verified price report (0/1 per day)</p>
                                         </div>
-                                        <button class="task-action-btn" id="daily-task-btn-PRICE_REPORT" onclick="executeDailyBonusTask('PRICE_REPORT', 'Report Market Price')">Go</button>
+                                        <button class="task-action-btn" id="daily-task-btn-PRICE_REPORT"
+                                            onclick="executeDailyBonusTask('PRICE_REPORT', 'Report Market Price')">Go</button>
                                     </div>
                                     <div class="task-row">
                                         <div class="task-icon-box blue"><i class="fa-solid fa-user-check"></i></div>
@@ -1703,7 +1698,8 @@
                                             <h4>Complete Agent Mission</h4>
                                             <p>Claim high-gap market coverage (Once per day)</p>
                                         </div>
-                                        <button class="task-action-btn" id="daily-task-btn-AGENT_MISSION" onclick="executeDailyBonusTask('AGENT_MISSION', 'Complete Agent Mission')">Go</button>
+                                        <button class="task-action-btn" id="daily-task-btn-AGENT_MISSION"
+                                            onclick="executeDailyBonusTask('AGENT_MISSION', 'Complete Agent Mission')">Go</button>
                                     </div>
                                     <div class="task-row">
                                         <div class="task-icon-box green"><i class="fa-solid fa-mobile-screen"></i></div>
@@ -1711,56 +1707,105 @@
                                             <h4>Data & Commodity Alert</h4>
                                             <p>Set 1 price alert on any commodity</p>
                                         </div>
-                                        <button class="task-action-btn" id="daily-task-btn-PRICE_ALERT" onclick="executeDailyBonusTask('PRICE_ALERT', 'Data & Commodity Alert')">Go</button>
+                                        <button class="task-action-btn" id="daily-task-btn-PRICE_ALERT"
+                                            onclick="executeDailyBonusTask('PRICE_ALERT', 'Data & Commodity Alert')">Go</button>
                                     </div>
                                 </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Full-Width Section: Redeem Promo Code Card -->
-                    <div class="promo-code-card" id="promo-code-anchor">
-                        <div class="pcc-header">
-                            <div class="pcc-icon-circle">🎁</div>
-                            <div class="pcc-info">
-                                <h4>Redeem Promo or Partner Code</h4>
-                                <p>Enter code (e.g. <code>MAMAPLUS</code>, <code>BODIJA500</code>, <code>WELCOME5K</code>) to unlock free spins, cash & partner vouchers</p>
                             </div>
                         </div>
 
-                        <div class="promo-input-row">
-                            <input type="text" id="promo-code-input" placeholder="e.g. MAMAPLUS" style="text-transform: uppercase;" />
-                            <button class="apply-promo-btn" id="apply-promo-btn" onclick="applyPromoCode()">Apply Code</button>
+                        <!-- Section 3: Full-Width Section: Redeem Promo Code Card -->
+                        <div class="promo-code-card" id="promo-code-anchor">
+                            <div class="pcc-header">
+                                <div class="pcc-icon-circle">🎁</div>
+                                <div class="pcc-info">
+                                    <h4>Redeem Promo or Partner Code</h4>
+                                    <p>Enter code (e.g. <code>MAMAPLUS</code>, <code>BODIJA500</code>,
+                                        <code>WELCOME5K</code>) to unlock free spins, cash & partner vouchers
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="promo-input-row">
+                                <input type="text" id="promo-code-input" placeholder="e.g. MAMAPLUS"
+                                    style="text-transform: uppercase;" />
+                                <button class="apply-promo-btn" id="apply-promo-btn" onclick="applyPromoCode()">Apply
+                                    Code</button>
+                            </div>
                         </div>
+
+                        <!-- Section 3: Full-Width Bottom Section: My Coupons -->
+                        <div class="my-coupons-container" id="my-coupons-anchor">
+                            <div class="mc-header-row">
+                                <h3>My Coupons</h3>
+                                <i class="fa-regular fa-circle-question mc-help-icon"
+                                    onclick="alert('Coupons Guidelines:\n- Redeemable at participating partner markets\n- Show QR code or alphanumeric code at checkout')"
+                                    title="Coupon Guidelines"></i>
+                            </div>
+
+                            <!-- 3-Tab Filter Bar -->
+                            <div class="coupons-tabs-bar">
+                                <button class="c-tab-btn active" data-coupons-tab="AVAILABLE"
+                                    onclick="filterCouponsTab('AVAILABLE')">
+                                    Available (<span id="c-count-available">2</span>)
+                                </button>
+                                <button class="c-tab-btn" data-coupons-tab="USED" onclick="filterCouponsTab('USED')">
+                                    Used (<span id="c-count-used">1</span>)
+                                </button>
+                                <button class="c-tab-btn" data-coupons-tab="EXPIRED"
+                                    onclick="filterCouponsTab('EXPIRED')">
+                                    Expired (<span id="c-count-expired">0</span>)
+                                </button>
+                            </div>
+
+                            <!-- Ticket Coupons List Stage / Empty State -->
+                            <div class="coupons-list-stage" id="coupons-list-stage">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Section 3: Full-Width Bottom Section: My Coupons -->
-                    <div class="my-coupons-container" id="my-coupons-anchor">
-                        <div class="mc-header-row">
-                            <h3>My Coupons</h3>
-                            <i class="fa-regular fa-circle-question mc-help-icon" onclick="alert('Coupons Guidelines:\n- Redeemable at participating partner markets\n- Show QR code or alphanumeric code at checkout')" title="Coupon Guidelines"></i>
-                        </div>
-
-                        <!-- 3-Tab Filter Bar -->
-                        <div class="coupons-tabs-bar">
-                            <button class="c-tab-btn active" data-coupons-tab="AVAILABLE" onclick="filterCouponsTab('AVAILABLE')">
-                                Available (<span id="c-count-available">2</span>)
-                            </button>
-                            <button class="c-tab-btn" data-coupons-tab="USED" onclick="filterCouponsTab('USED')">
-                                Used (<span id="c-count-used">1</span>)
-                            </button>
-                            <button class="c-tab-btn" data-coupons-tab="EXPIRED" onclick="filterCouponsTab('EXPIRED')">
-                                Expired (<span id="c-count-expired">0</span>)
-                            </button>
-                        </div>
-
-                        <!-- Ticket Coupons List Stage / Empty State -->
-                        <div class="coupons-list-stage" id="coupons-list-stage">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-
+                    <!-- Inline override to force desktop rewards layout (loads last) -->
+                    <style>
+                        @media (min-width: 980px) {
+                            .rewards-main-layout{display:flex !important; flex-direction:row !important; gap:20px !important; align-items:flex-start !important}
+                            .rewards-left-column{flex:1.6 1 0 !important; min-width:380px !important; max-width:720px !important}
+                            .rewards-right-column{flex:0 0 420px !important; display:grid !important; grid-template-columns:1fr 1fr !important; gap:18px !important}
+                            .rewards-right-column > *{width:100% !important}
+                            #rewards-wheel-canvas{max-width:600px !important}
+                        }
+                    </style>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function(){
+                            try{
+                                if (window.innerWidth >= 980) {
+                                    var main = document.querySelector('.rewards-main-layout');
+                                    var left = document.querySelector('.rewards-left-column');
+                                    var right = document.querySelector('.rewards-right-column');
+                                    if (main) {
+                                        main.style.display = 'flex';
+                                        main.style.flexDirection = 'row';
+                                        main.style.gap = '20px';
+                                        main.style.alignItems = 'flex-start';
+                                    }
+                                    if (left) {
+                                        left.style.flex = '0 0 620px';
+                                        left.style.width = '620px';
+                                        left.style.minWidth = '380px';
+                                    }
+                                    if (right) {
+                                        right.style.flex = '0 0 420px';
+                                        right.style.width = '420px';
+                                        right.style.display = 'grid';
+                                        right.style.gridTemplateColumns = '1fr 1fr';
+                                        right.style.gap = '18px';
+                                    }
+                                }
+                            } catch(e) { console && console.warn && console.warn('layout override failed', e); }
+                        });
+                    </script>
                 </div>
-            </div>
         </main>
     </div>
 
@@ -1815,12 +1860,15 @@
 
             <div class="referral-modal-body">
                 <div class="ref-link-box" style="margin-bottom: 12px;">
-                    <input type="text" id="referral-link-input" value="https://mamaprice.ng/invite?ref=AMINA92X" readonly />
-                    <button type="button" class="ref-copy-btn" id="copy-ref-link-btn" title="Copy Link"><i class="fa-regular fa-copy"></i> Copy</button>
+                    <input type="text" id="referral-link-input" value="https://mamaprice.ng/invite?ref=AMINA92X"
+                        readonly />
+                    <button type="button" class="ref-copy-btn" id="copy-ref-link-btn" title="Copy Link"><i
+                            class="fa-regular fa-copy"></i> Copy</button>
                 </div>
 
                 <div class="ref-share-actions">
-                    <a href="https://wa.me/?text=Join%20me%20as%20a%20verified%20Market%20Agent%20on%20MamaPrice!%20Earn%20cash%20reporting%20local%20prices:%20https://mamaprice.ng/invite?ref=AMINA92X" target="_blank" class="wa-share-btn">
+                    <a href="https://wa.me/?text=Join%20me%20as%20a%20verified%20Market%20Agent%20on%20MamaPrice!%20Earn%20cash%20reporting%20local%20prices:%20https://mamaprice.ng/invite?ref=AMINA92X"
+                        target="_blank" class="wa-share-btn">
                         <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
                     </a>
                 </div>
@@ -1831,7 +1879,8 @@
     <!-- Modal 5: Tight Agent Details & Payment Status Modal -->
     <div class="modal-overlay" id="agent-details-modal">
         <div class="modal-card agent-details-card">
-            <button class="modal-close" id="close-agent-details-modal" onclick="closeAgentDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close" id="close-agent-details-modal" onclick="closeAgentDetailsModal()"><i
+                    class="fa-solid fa-xmark"></i></button>
 
             <!-- Agent Header Profile -->
             <div class="adm-profile-header">
@@ -1905,7 +1954,8 @@
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
                     <div
                         style="width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #ffffff;">
-                        <i class="fa-solid fa-user-shield"></i></div>
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
                     <span
                         style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 20px;">MamaPrice
                         Field Scout</span>
@@ -2094,7 +2144,8 @@
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                 <div
                     style="width: 36px; height: 36px; border-radius: 10px; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
-                    <i class="fa-solid fa-bell"></i></div>
+                    <i class="fa-solid fa-bell"></i>
+                </div>
                 <div>
                     <h3 style="margin: 0; font-size: 1rem; font-weight: 800; color: #0f172a;">Create Price Alert</h3>
                     <p style="margin: 0; font-size: 0.72rem; color: #64748b;">Get instant alerts when price targets hit
@@ -2152,577 +2203,677 @@
                     style="width: 100%; padding: 9px; background: #15803d; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(21,128,61,0.25); margin-top: 4px;">
                     <i class="fa-solid fa-bell"></i> Set Price Alert
                 </button>
-    <!-- Celebration Win Modal -->
-    <div class="custom-modal-overlay" id="reward-win-modal" style="display: none;">
-        <div class="modal-card celebration-card">
-            <button class="modal-close-btn" onclick="closeRewardWinModal()">&times;</button>
-            <div class="win-icon-wrapper" id="win-icon-box">🎉</div>
-            <span class="win-tag">CONGRATULATIONS!</span>
-            <h2 id="win-reward-title">₦1,000 Food Voucher</h2>
-            <p id="win-reward-desc">from Mama's Kitchen</p>
+                <!-- Celebration Win Modal -->
+                <div class="custom-modal-overlay" id="reward-win-modal" style="display: none;">
+                    <div class="modal-card celebration-card">
+                        <button class="modal-close-btn" onclick="closeRewardWinModal()">&times;</button>
+                        <div class="win-icon-wrapper" id="win-icon-box">🎉</div>
+                        <span class="win-tag">CONGRATULATIONS!</span>
+                        <h2 id="win-reward-title">₦1,000 Food Voucher</h2>
+                        <p id="win-reward-desc">from Mama's Kitchen</p>
 
-            <div class="win-code-box" id="win-code-box">
-                <span class="code-lbl">VOUCHER CODE</span>
-                <strong class="code-val" id="win-voucher-code">MAMA-IBD-82K7P</strong>
-            </div>
+                        <div class="win-code-box" id="win-code-box">
+                            <span class="code-lbl">VOUCHER CODE</span>
+                            <strong class="code-val" id="win-voucher-code">MAMA-IBD-82K7P</strong>
+                        </div>
 
-            <div class="modal-actions-row">
-                <button class="btn-primary-green" onclick="viewClaimedVoucherDetail()">
-                    <i class="fa-solid fa-qrcode"></i> View Voucher & QR
-                </button>
-                <button class="btn-secondary" onclick="closeRewardWinModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Voucher Detail Modal -->
-    <div class="custom-modal-overlay" id="voucher-detail-modal" style="display: none;">
-        <div class="modal-card voucher-modal-card">
-            <button class="modal-close-btn" onclick="closeVoucherDetailModal()">&times;</button>
-            <div class="voucher-detail-header">
-                <span class="vd-type-badge" id="vd-type-badge">FOOD VOUCHER</span>
-                <h2 id="vd-title">₦1,000 Food Voucher</h2>
-                <p id="vd-partner">Partner: Mama's Kitchen</p>
-            </div>
-
-            <div class="vd-qr-stage">
-                <div id="vd-qr-code-svg" class="qr-svg-box"></div>
-                <div class="vd-code-display" id="vd-code-text">MAMA-IBD-82K7P</div>
-                <span class="vd-location" id="vd-location-text">Valid at Bodija Market, Ibadan North</span>
-            </div>
-
-            <div class="vd-instructions">
-                <h4>How to Redeem:</h4>
-                <ol>
-                    <li>Visit the participating merchant location.</li>
-                    <li>Show this voucher code or QR code to the cashier.</li>
-                    <li>Cashier scans or confirms code to apply discount.</li>
-                </ol>
-            </div>
-
-            <div class="vd-status-bar">
-                <span>Valid until: <strong id="vd-expiry-text">31 Aug 2026</strong></span>
-                <span id="vd-status-pill" class="status-pill green">AVAILABLE</span>
-            </div>
-
-            <div class="modal-actions-row" style="margin-top: 15px;">
-                <button class="btn-primary-green" id="vd-redeem-action-btn" onclick="handleRedeemVoucherAction()">
-                    <i class="fa-solid fa-circle-check"></i> Redeem Now
-                </button>
-                <button class="btn-secondary" onclick="closeVoucherDetailModal()">Close</button>
-            </div>
-        </div>
-    <!-- Referral Share Social Modal (Ref Image 2) -->
-    <div class="custom-modal-overlay" id="referral-share-modal" style="display: none;">
-        <div class="modal-card share-sheet-card">
-            <button class="modal-close-btn" onclick="closeReferralShareModal()">&times;</button>
-            
-            <div class="share-invite-box">
-                <div class="share-app-icon">💚</div>
-                <p>Join MamaPrice and get <strong>₦5,500 Welcome Bonus & Free Spins!</strong> Use code <code id="share-code-text">MAMA2026</code> or link:</p>
-                <div class="copy-link-row">
-                    <span class="share-url-text">https://mamaprice.ng/join?ref=MAMA2026</span>
-                    <button class="copy-btn" onclick="copyReferralCode()"><i class="fa-regular fa-copy"></i></button>
+                        <div class="modal-actions-row">
+                            <button class="btn-primary-green" onclick="viewClaimedVoucherDetail()">
+                                <i class="fa-solid fa-qrcode"></i> View Voucher & QR
+                            </button>
+                            <button class="btn-secondary" onclick="closeRewardWinModal()">Close</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="share-divider"><span>Share Via</span></div>
+                <!-- Voucher Detail Modal -->
+                <div class="custom-modal-overlay" id="voucher-detail-modal" style="display: none;">
+                    <div class="modal-card voucher-modal-card">
+                        <button class="modal-close-btn" onclick="closeVoucherDetailModal()">&times;</button>
+                        <div class="voucher-detail-header">
+                            <span class="vd-type-badge" id="vd-type-badge">FOOD VOUCHER</span>
+                            <h2 id="vd-title">₦1,000 Food Voucher</h2>
+                            <p id="vd-partner">Partner: Mama's Kitchen</p>
+                        </div>
 
-            <div class="social-share-grid">
-                <div class="social-btn whatsapp" onclick="shareViaSocial('whatsapp')">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span>WhatsApp</span>
-                </div>
-                <div class="social-btn facebook" onclick="shareViaSocial('facebook')">
-                    <i class="fa-brands fa-facebook-f"></i>
-                    <span>Facebook</span>
-                </div>
-                <div class="social-btn sms" onclick="shareViaSocial('sms')">
-                    <i class="fa-solid fa-comment-sms"></i>
-                    <span>SMS</span>
-                </div>
-                <div class="social-btn telegram" onclick="shareViaSocial('telegram')">
-                    <i class="fa-brands fa-telegram"></i>
-                    <span>Telegram</span>
-                </div>
-            </div>
-        </div>
-    </div>
+                        <div class="vd-qr-stage">
+                            <div id="vd-qr-code-svg" class="qr-svg-box"></div>
+                            <div class="vd-code-display" id="vd-code-text">MAMA-IBD-82K7P</div>
+                            <span class="vd-location" id="vd-location-text">Valid at Bodija Market, Ibadan North</span>
+                        </div>
 
-    <!-- Cashback & Credits Detail Modal -->
-    <div class="custom-modal-overlay" id="cashback-detail-modal" style="display: none;">
-        <div class="modal-card cashback-modal-card" style="max-width: 400px; padding: 24px; text-align: center;">
-            <button class="modal-close-btn" onclick="closeCashbackModal()">&times;</button>
-            <div style="font-size: 2.8rem; margin-bottom: 8px;">🪙</div>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Cashback & Balance Summary</h3>
-            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 16px;">Total earnings accumulated from verified price reports, agent missions, and referral bonuses.</p>
-            
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: left;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
-                    <span style="color: #475569;">Available Cashback:</span>
-                    <strong style="color: #15803d; font-weight: 800;">₦18,900.00</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
-                    <span style="color: #475569;">Available Reward Spins:</span>
-                    <strong style="color: #15803d; font-weight: 800;" id="cb-spins-val">3 Spins</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
-                    <span style="color: #475569;">Active Vouchers Value:</span>
-                    <strong style="color: #15803d; font-weight: 800;">₦1,500.00</strong>
-                </div>
-            </div>
+                        <div class="vd-instructions">
+                            <h4>How to Redeem:</h4>
+                            <ol>
+                                <li>Visit the participating merchant location.</li>
+                                <li>Show this voucher code or QR code to the cashier.</li>
+                                <li>Cashier scans or confirms code to apply discount.</li>
+                            </ol>
+                        </div>
 
-            <div class="modal-actions-row">
-                <button class="btn-primary-green" onclick="closeCashbackModal(); scrollToWheelStage();">
-                    <i class="fa-solid fa-dharmachakra"></i> Spin Rewards Wheel
-                </button>
-                <button class="btn-secondary" onclick="closeCashbackModal()">Close</button>
-            </div>
-        </div>
-    </div>
+                        <div class="vd-status-bar">
+                            <span>Valid until: <strong id="vd-expiry-text">31 Aug 2026</strong></span>
+                            <span id="vd-status-pill" class="status-pill green">AVAILABLE</span>
+                        </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         SPIN & WIN MODAL — Triggered from header Spin button
+                        <div class="modal-actions-row" style="margin-top: 15px;">
+                            <button class="btn-primary-green" id="vd-redeem-action-btn"
+                                onclick="handleRedeemVoucherAction()">
+                                <i class="fa-solid fa-circle-check"></i> Redeem Now
+                            </button>
+                            <button class="btn-secondary" onclick="closeVoucherDetailModal()">Close</button>
+                        </div>
+                    </div>
+                    <!-- Referral Share Social Modal (Ref Image 2) -->
+                    <div class="custom-modal-overlay" id="referral-share-modal" style="display: none;">
+                        <div class="modal-card share-sheet-card">
+                            <button class="modal-close-btn" onclick="closeReferralShareModal()">&times;</button>
+
+                            <div class="share-invite-box">
+                                <div class="share-app-icon">💚</div>
+                                <p>Join MamaPrice and get <strong>₦5,500 Welcome Bonus & Free Spins!</strong> Use code
+                                    <code id="share-code-text">MAMA2026</code> or link:
+                                </p>
+                                <div class="copy-link-row">
+                                    <span class="share-url-text">https://mamaprice.ng/join?ref=MAMA2026</span>
+                                    <button class="copy-btn" onclick="copyReferralCode()"><i
+                                            class="fa-regular fa-copy"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="share-divider"><span>Share Via</span></div>
+
+                            <div class="social-share-grid">
+                                <div class="social-btn whatsapp" onclick="shareViaSocial('whatsapp')">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    <span>WhatsApp</span>
+                                </div>
+                                <div class="social-btn facebook" onclick="shareViaSocial('facebook')">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                    <span>Facebook</span>
+                                </div>
+                                <div class="social-btn sms" onclick="shareViaSocial('sms')">
+                                    <i class="fa-solid fa-comment-sms"></i>
+                                    <span>SMS</span>
+                                </div>
+                                <div class="social-btn telegram" onclick="shareViaSocial('telegram')">
+                                    <i class="fa-brands fa-telegram"></i>
+                                    <span>Telegram</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cashback & Credits Detail Modal -->
+                    <div class="custom-modal-overlay" id="cashback-detail-modal" style="display: none;">
+                        <div class="modal-card cashback-modal-card"
+                            style="max-width: 400px; padding: 24px; text-align: center;">
+                            <button class="modal-close-btn" onclick="closeCashbackModal()">&times;</button>
+                            <div style="font-size: 2.8rem; margin-bottom: 8px;">🪙</div>
+                            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+                                Cashback & Balance Summary</h3>
+                            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 16px;">Total earnings
+                                accumulated from verified price reports, agent missions, and referral bonuses.</p>
+
+                            <div
+                                style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: left;">
+                                <div
+                                    style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+                                    <span style="color: #475569;">Available Cashback:</span>
+                                    <strong style="color: #15803d; font-weight: 800;">₦18,900.00</strong>
+                                </div>
+                                <div
+                                    style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+                                    <span style="color: #475569;">Available Reward Spins:</span>
+                                    <strong style="color: #15803d; font-weight: 800;" id="cb-spins-val">3 Spins</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                                    <span style="color: #475569;">Active Vouchers Value:</span>
+                                    <strong style="color: #15803d; font-weight: 800;">₦1,500.00</strong>
+                                </div>
+                            </div>
+
+                            <div class="modal-actions-row">
+                                <button class="btn-primary-green" onclick="closeCashbackModal(); scrollToWheelStage();">
+                                    <i class="fa-solid fa-dharmachakra"></i> Spin Rewards Wheel
+                                </button>
+                                <button class="btn-secondary" onclick="closeCashbackModal()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════════
+         SPIN MODALS — Separate: Check-in Modal and Wheel Modal
          ═══════════════════════════════════════════════════════ -->
-    <div class="spin-modal-overlay" id="spin-modal-overlay">
-        <div class="spin-modal-box" id="spin-modal-box">
+                    <!-- CHECK-IN modal -->
+                    <div class="spin-checkin-overlay" id="spin-checkin-overlay">
+                        <div class="spin-checkin-box" id="spin-checkin-box">
+                            <div class="sc-top-row">
+                                <button class="sc-back-btn" onclick="document.getElementById('spin-checkin-overlay')?.classList.remove('open')">◀</button>
+                                <div class="sc-title">Check In</div>
+                                <button class="sc-close-btn" onclick="document.getElementById('spin-checkin-overlay')?.classList.remove('open')">×</button>
+                            </div>
+                            <div class="sc-body">
+                                <h3>Check-in Calendar</h3>
+                                <p>New check-in cycle has started! Check in daily to earn your ₦200 bonus.</p>
+                                <div class="sc-days">
+                                    <div class="cd">Sat</div><div class="cd">Sun</div><div class="cd">Mon</div>
+                                    <div class="cd">Tue</div><div class="cd">Wed</div><div class="cd">Thu</div>
+                                    <div class="cd">Fri</div>
+                                </div>
+                                <button class="checkin-btn">Check-in Now</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Header -->
-            <div class="sm-header">
-                <button class="sm-back-btn" id="sm-back-btn" onclick="document.getElementById('spin-modal-overlay').style.display='none'">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <span class="sm-title">Spin &amp; Win</span>
-            </div>
+                    <!-- WHEEL modal -->
+                    <div class="spin-wheel-overlay" id="spin-wheel-overlay">
+                        <div class="spin-wheel-box" id="spin-wheel-box">
+                            <div class="sw-top-row">
+                                <button class="sw-back-btn" onclick="document.getElementById('spin-wheel-overlay')?.classList.remove('open')">◀</button>
+                                <div class="sw-title">Spin & Win</div>
+                                <button class="sw-close-btn" onclick="document.getElementById('spin-wheel-overlay')?.classList.remove('open')">×</button>
+                            </div>
+                            <div class="sw-banner">🎯 Daily Spin! — Spin the wheel daily to win amazing rewards!</div>
+                            <div class="sw-wheel-wrap">
+                                <div class="sw-pointer"></div>
+                                <canvas id="spin-wheel-canvas" width="360" height="360"></canvas>
+                                <button class="sw-center-btn" id="sw-spin-now-btn" onclick="spinWheel()">SPIN NOW</button>
+                            </div>
+                            <div class="sw-spins-left">You have <strong id="sm-spins-remaining">1</strong> free spin today</div>
+                        </div>
+                    </div>
 
-            <!-- Daily Spin Banner -->
-            <div class="sm-banner">
-                <div>
-                    <div class="sm-banner-title">🎯 Daily Spin!</div>
-                    <div class="sm-banner-sub">Spin the wheel daily to win amazing rewards!</div>
-                </div>
-                <div class="sm-trophy">🏆</div>
-            </div>
+                    <!-- WIN Result Modal -->
+                    <div class="spin-result-overlay" id="spin-win-overlay">
+                        <div class="spin-result-box spin-win-box">
+                            <div class="sr-confetti" id="sr-confetti-container"></div>
+                            <div class="sr-icon">🎉</div>
+                            <h2 class="sr-title">You Won!</h2>
+                            <div class="sr-prize" id="sr-win-amount">₦150</div>
+                            <p class="sr-sub">has been added to your wallet balance!</p>
+                            <button class="sr-btn sr-btn-win" onclick="closeSpinResult()">
+                                <i class="fa-solid fa-wallet"></i> Claim Reward
+                            </button>
+                        </div>
+                    </div>
 
-            <!-- Wheel Section -->
-            <div class="sm-wheel-section">
-                <div class="sm-lucky-label">🎰 Lucky Wheel</div>
-                <div class="sm-wheel-wrap">
-                    <!-- Pointer -->
-                    <div class="sm-pointer"></div>
-                    <!-- Canvas Wheel -->
-                    <canvas id="spin-wheel-canvas" width="280" height="280"></canvas>
-                    <!-- Center button -->
-                    <button class="sm-center-btn" id="sm-spin-now-btn" onclick="spinWheel()">
-                        <span>SPIN<br>NOW</span>
-                    </button>
-                </div>
-            </div>
+                    <!-- LOSE Result Modal -->
+                    <div class="spin-result-overlay" id="spin-lose-overlay">
+                        <div class="spin-result-box spin-lose-box">
+                            <div class="sr-icon">😔</div>
+                            <h2 class="sr-title">Better Luck Next Time!</h2>
+                            <p class="sr-sub">You didn't win this time. Come back tomorrow for another free spin!</p>
+                            <div class="sr-tip">💡 Submit a price report to earn extra spins</div>
+                            <button class="sr-btn sr-btn-lose" onclick="closeSpinResult()">
+                                <i class="fa-solid fa-rotate-right"></i> Try Again Tomorrow
+                            </button>
+                        </div>
+                    </div>
 
-            <!-- Spins left -->
-            <div class="sm-spins-left" id="sm-spins-left-text">
-                You have <strong id="sm-spins-remaining">1</strong> free spin today
-            </div>
+                    <!-- Social Toast -->
+                    <div class="spin-social-toast" id="spin-social-toast">
+                        <div class="sst-avatar" id="sst-avatar">MK</div>
+                        <div class="sst-body">
+                            <strong id="sst-name">Martha Ikenna</strong>
+                            <span id="sst-msg">just won ₦50 spin bonus!</span>
+                        </div>
+                        <span class="sst-time">now</span>
+                    </div>
 
-            <!-- CTA -->
-            <button class="sm-cta-btn" id="sm-cta-btn" onclick="spinWheel()">
-                <i class="fa-solid fa-dharmachakra"></i> Spin Now
-            </button>
-        </div>
-    </div>
+                    <style>
+                        /* ── Spin Modal Overlay ── */
+                        .spin-modal-overlay {
+                            display: none;
+                            position: fixed;
+                            inset: 0;
+                            background: rgba(0, 0, 0, 0.55);
+                            backdrop-filter: blur(4px);
+                            z-index: 9999;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 24px;
+                        }
 
-    <!-- WIN Result Modal -->
-    <div class="spin-result-overlay" id="spin-win-overlay">
-        <div class="spin-result-box spin-win-box">
-            <div class="sr-confetti" id="sr-confetti-container"></div>
-            <div class="sr-icon">🎉</div>
-            <h2 class="sr-title">You Won!</h2>
-            <div class="sr-prize" id="sr-win-amount">₦150</div>
-            <p class="sr-sub">has been added to your wallet balance!</p>
-            <button class="sr-btn sr-btn-win" onclick="closeSpinResult()">
-                <i class="fa-solid fa-wallet"></i> Claim Reward
-            </button>
-        </div>
-    </div>
+                        .spin-modal-overlay.open,
+                        .spin-modal-overlay[style*="flex"] {
+                            display: flex !important;
+                            align-items: center;
+                            justify-content: center;
+                        }
 
-    <!-- LOSE Result Modal -->
-    <div class="spin-result-overlay" id="spin-lose-overlay">
-        <div class="spin-result-box spin-lose-box">
-            <div class="sr-icon">😔</div>
-            <h2 class="sr-title">Better Luck Next Time!</h2>
-            <p class="sr-sub">You didn't win this time. Come back tomorrow for another free spin!</p>
-            <div class="sr-tip">💡 Submit a price report to earn extra spins</div>
-            <button class="sr-btn sr-btn-lose" onclick="closeSpinResult()">
-                <i class="fa-solid fa-rotate-right"></i> Try Again Tomorrow
-            </button>
-        </div>
-    </div>
+                        .spin-modal-box--fresh {
+                            background: #ffffff;
+                            border-radius: 16px;
+                            width: min(920px, 96vw);
+                            max-height: 92vh;
+                            overflow: hidden;
+                            box-shadow: 0 30px 80px rgba(2, 6, 23, 0.24);
+                            display: flex;
+                            flex-direction: column;
+                            animation: smSlideUp 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+                        }
 
-    <!-- Social Toast -->
-    <div class="spin-social-toast" id="spin-social-toast">
-        <div class="sst-avatar" id="sst-avatar">MK</div>
-        <div class="sst-body">
-            <strong id="sst-name">Martha Ikenna</strong>
-            <span id="sst-msg">just won ₦50 spin bonus!</span>
-        </div>
-        <span class="sst-time">now</span>
-    </div>
+                        @keyframes smSlideUp {
+                            from { transform: translateY(36px); opacity: 0; }
+                            to { transform: translateY(0); opacity: 1; }
+                        }
 
-    <style>
-    /* ── Spin Modal Overlay ── */
-    .spin-modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.55);
-        backdrop-filter: blur(4px);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-    }
-    .spin-modal-overlay.open,
-    .spin-modal-overlay[style*="flex"] {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
-    .spin-modal-box {
-        background: #f0fdf4;
-        border-radius: 24px;
-        width: 360px;
-        max-width: 95vw;
-        max-height: 92vh;
-        overflow-y: auto;
-        padding: 0 0 28px;
-        box-shadow: 0 24px 80px rgba(0,0,0,0.3);
-        position: relative;
-        animation: smSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);
-    }
-    @keyframes smSlideUp {
-        from { transform: translateY(60px); opacity: 0; }
-        to   { transform: translateY(0);    opacity: 1; }
-    }
+                        .sm-top-row {
+                            display:flex; align-items:center; justify-content:space-between; gap:12px;
+                            padding: 14px 18px; border-bottom: 1px solid #eef2f4;
+                        }
+                        .sm-back-btn, .sm-close-btn { background:none; border:none; font-size:20px; cursor:pointer; color:#0f172a }
+                        .sm-top-title { font-weight:800; font-size:1.05rem; color:#0f172a }
 
-    /* Header */
-    .sm-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 18px 20px 12px;
-    }
-    .sm-back-btn {
-        background: none; border: none; cursor: pointer;
-        color: #1e293b; font-size: 1rem; padding: 6px;
-        border-radius: 50%; transition: background 0.2s;
-    }
-    .sm-back-btn:hover { background: #e2e8f0; }
-    .sm-title { font-weight: 700; font-size: 1.05rem; color: #1e293b; }
+                        .sm-intro-card { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px; background:#f6fff7; border-bottom:1px solid #eef7ee }
+                        .sm-intro-left h3 { margin:0 0 6px 0; font-size:1.1rem }
+                        .sm-intro-left p { margin:0; color:#475569; font-size:0.92rem }
+                        .sm-intro-right { font-size:28px }
 
-    /* Banner */
-    .sm-banner {
-        margin: 0 16px 20px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        border-radius: 16px;
-        padding: 18px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: #fff;
-    }
-    .sm-banner-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
-    .sm-banner-sub   { font-size: 0.82rem; opacity: 0.92; }
-    .sm-trophy       { font-size: 2.4rem; }
+                        .sm-fresh-body { display:flex; gap:18px; padding:22px; align-items:flex-start }
+                        .sm-left-panel { width: 260px }
+                        .checkin-card { background:#fff; border-radius:12px; padding:12px; box-shadow: 0 6px 18px rgba(2,6,23,0.06) }
+                        .checkin-title { font-weight:700; margin-bottom:10px }
+                        .checkin-days { display:flex; gap:6px; flex-wrap:wrap }
+                        .checkin-days .cd { width:30px; height:30px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border-radius:6px; font-size:0.75rem }
+                        .checkin-btn { display:block; width:100%; margin-top:10px; padding:10px; border-radius:10px; background:#10b981; color:#fff; border:none; font-weight:700 }
+                        .rewards-legend { margin-top:14px; font-size:0.92rem; color:#334155 }
+                        .rewards-legend ul { padding-left:18px; margin:8px 0 }
 
-    /* Wheel */
-    .sm-wheel-section { display: flex; flex-direction: column; align-items: center; }
-    .sm-lucky-label   { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 14px; }
-    .sm-wheel-wrap    { position: relative; display: flex; align-items: center; justify-content: center; }
-    #spin-wheel-canvas { border-radius: 50%; display: block; }
+                        .sm-wheel-area { flex:1; display:flex; flex-direction:column; align-items:center }
+                        .sm-wheel-wrap--fresh { position:relative; width:380px; height:380px; display:flex; align-items:center; justify-content:center }
+                        #spin-wheel-canvas { width:100%; height:100%; border-radius:50% }
+                        .sm-pointer--fresh { position:absolute; top:6px; left:50%; transform:translateX(-50%); width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid #10b981; z-index:20 }
 
-    /* Pointer triangle pointing down toward center */
-    .sm-pointer {
-        position: absolute;
-        top: -14px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0; height: 0;
-        border-left: 12px solid transparent;
-        border-right: 12px solid transparent;
-        border-top: 22px solid #10b981;
-        z-index: 10;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    }
-    .sm-center-btn {
-        position: absolute;
-        width: 68px; height: 68px;
-        border-radius: 50%;
-        background: #fff;
-        border: 4px solid #10b981;
-        color: #10b981;
-        font-size: 0.62rem;
-        font-weight: 800;
-        cursor: pointer;
-        line-height: 1.2;
-        box-shadow: 0 4px 16px rgba(16,185,129,0.3);
-        transition: transform 0.15s, box-shadow 0.15s;
-        letter-spacing: 0.03em;
-    }
-    .sm-center-btn:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(16,185,129,0.45); }
-    .sm-center-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+                        .sm-center-btn--fresh { position:absolute; width:110px; height:110px; border-radius:999px; background:linear-gradient(180deg,#10b981,#059669); color:#fff; border:none; font-weight:900; font-size:1rem; display:flex; align-items:center; justify-content:center; box-shadow:0 16px 40px rgba(16,185,129,0.24); cursor:pointer }
 
-    /* Spins left */
-    .sm-spins-left {
-        text-align: center;
-        font-size: 0.82rem;
-        color: #475569;
-        margin: 16px 0 12px;
-    }
-    .sm-spins-left strong { color: #10b981; font-size: 1rem; }
+                        .sm-spins-left { margin-top:14px; color:#475569; font-weight:600 }
 
-    /* CTA */
-    .sm-cta-btn {
-        display: block;
-        margin: 0 20px;
-        width: calc(100% - 40px);
-        padding: 14px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: #fff;
-        border: none;
-        border-radius: 50px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: opacity 0.2s, transform 0.15s;
-    }
-    .sm-cta-btn:hover   { opacity: 0.92; transform: translateY(-1px); }
-    .sm-cta-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+                        @media (max-width:900px) {
+                            .spin-modal-box--fresh { width: 96vw }
+                            .sm-fresh-body { flex-direction:column; }
+                            .sm-left-panel { width:100%; order:2 }
+                            .sm-wheel-area { order:1 }
+                            .sm-wheel-wrap--fresh { width:320px; height:320px }
+                        }
 
-    /* ── Result Overlays ── */
-    .spin-result-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.65);
-        backdrop-filter: blur(6px);
-        z-index: 10001;
-        align-items: center;
-        justify-content: center;
-    }
-    .spin-result-overlay.open { display: flex; }
-    .spin-result-box {
-        border-radius: 24px;
-        padding: 40px 32px;
-        text-align: center;
-        width: 320px;
-        max-width: 92vw;
-        position: relative;
-        animation: smSlideUp 0.35s cubic-bezier(0.22,1,0.36,1);
-        overflow: hidden;
-    }
-    .spin-win-box  { background: linear-gradient(160deg, #f0fdf4, #dcfce7); border: 2px solid #10b981; }
-    .spin-lose-box { background: linear-gradient(160deg, #f8fafc, #f1f5f9); border: 2px solid #cbd5e1; }
-    .sr-icon  { font-size: 3.5rem; margin-bottom: 12px; }
-    .sr-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin: 0 0 8px; }
-    .sr-prize { font-size: 2.8rem; font-weight: 900; color: #10b981; margin: 8px 0; }
-    .sr-sub   { font-size: 0.88rem; color: #475569; margin-bottom: 20px; }
-    .sr-tip   { font-size: 0.8rem; color: #64748b; background: #f1f5f9; padding: 10px 14px; border-radius: 10px; margin-bottom: 20px; }
-    .sr-btn {
-        width: 100%; padding: 14px; border: none; border-radius: 50px;
-        font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
-    }
-    .sr-btn-win  { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
-    .sr-btn-lose { background: #e2e8f0; color: #475569; }
+                        /* ── Result Overlays ── */
+                        .spin-result-overlay {
+                            display: none;
+                            position: fixed;
+                            inset: 0;
+                            background: rgba(0, 0, 0, 0.65);
+                            backdrop-filter: blur(6px);
+                            z-index: 10001;
+                            align-items: center;
+                            justify-content: center;
+                        }
 
-    /* Confetti particles */
-    .sr-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-    .confetti-p  {
-        position: absolute;
-        width: 8px; height: 8px;
-        border-radius: 2px;
-        animation: confettiFall 1.6s ease-in forwards;
-    }
-    @keyframes confettiFall {
-        0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
-        100% { transform: translateY(320px) rotate(720deg); opacity: 0; }
-    }
+                        .spin-result-overlay.open {
+                            display: flex;
+                        }
 
-    /* ── Social Toast ── */
-    .spin-social-toast {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(80px);
-        background: #fff;
-        border-radius: 50px;
-        padding: 10px 18px 10px 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        font-size: 0.82rem;
-        z-index: 10002;
-        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
-        opacity: 0;
-        min-width: 240px;
-        border: 1px solid #e2e8f0;
-    }
-    .spin-social-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .sst-avatar {
-        width: 34px; height: 34px; border-radius: 50%;
-        background: linear-gradient(135deg,#10b981,#059669);
-        color: #fff; font-weight: 700; font-size: 0.72rem;
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .sst-body { display: flex; flex-direction: column; flex: 1; }
-    .sst-body strong { color: #1e293b; }
-    .sst-body span   { color: #475569; }
-    .sst-time { color: #94a3b8; font-size: 0.72rem; white-space: nowrap; }
-    </style>
+                        .spin-result-box {
+                            border-radius: 24px;
+                            padding: 40px 32px;
+                            text-align: center;
+                            width: 320px;
+                            max-width: 92vw;
+                            position: relative;
+                            animation: smSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+                            overflow: hidden;
+                        }
+
+                        .spin-win-box {
+                            background: linear-gradient(160deg, #f0fdf4, #dcfce7);
+                            border: 2px solid #10b981;
+                        }
+
+                        .spin-lose-box {
+                            background: linear-gradient(160deg, #f8fafc, #f1f5f9);
+                            border: 2px solid #cbd5e1;
+                        }
+
+                        .sr-icon {
+                            font-size: 3.5rem;
+                            margin-bottom: 12px;
+                        }
+
+                        .sr-title {
+                            font-size: 1.5rem;
+                            font-weight: 800;
+                            color: #1e293b;
+                            margin: 0 0 8px;
+                        }
+
+                        .sr-prize {
+                            font-size: 2.8rem;
+                            font-weight: 900;
+                            color: #10b981;
+                            margin: 8px 0;
+                        }
+
+                        .sr-sub {
+                            font-size: 0.88rem;
+                            color: #475569;
+                            margin-bottom: 20px;
+                        }
+
+                        .sr-tip {
+                            font-size: 0.8rem;
+                            color: #64748b;
+                            background: #f1f5f9;
+                            padding: 10px 14px;
+                            border-radius: 10px;
+                            margin-bottom: 20px;
+                        }
+
+                        .sr-btn {
+                            width: 100%;
+                            padding: 14px;
+                            border: none;
+                            border-radius: 50px;
+                            font-size: 0.95rem;
+                            font-weight: 700;
+                            cursor: pointer;
+                            transition: opacity 0.2s;
+                        }
+
+                        .sr-btn-win {
+                            background: linear-gradient(135deg, #10b981, #059669);
+                            color: #fff;
+                        }
+
+                        .sr-btn-lose {
+                            background: #e2e8f0;
+                            color: #475569;
+                        }
+
+                        /* Confetti particles */
+                        .sr-confetti {
+                            position: absolute;
+                            inset: 0;
+                            pointer-events: none;
+                            overflow: hidden;
+                        }
+
+                        .confetti-p {
+                            position: absolute;
+                            width: 8px;
+                            height: 8px;
+                            border-radius: 2px;
+                            animation: confettiFall 1.6s ease-in forwards;
+                        }
+
+                        @keyframes confettiFall {
+                            0% {
+                                transform: translateY(-20px) rotate(0deg);
+                                opacity: 1;
+                            }
+
+                            100% {
+                                transform: translateY(320px) rotate(720deg);
+                                opacity: 0;
+                            }
+                        }
+
+                        /* ── Social Toast ── */
+                        .spin-social-toast {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            position: fixed;
+                            bottom: 24px;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(80px);
+                            background: #fff;
+                            border-radius: 50px;
+                            padding: 10px 18px 10px 12px;
+                            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+                            font-size: 0.82rem;
+                            z-index: 10002;
+                            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+                            opacity: 0;
+                            min-width: 240px;
+                            border: 1px solid #e2e8f0;
+                        }
+
+                        .spin-social-toast.show {
+                            transform: translateX(-50%) translateY(0);
+                            opacity: 1;
+                        }
+
+                        .sst-avatar {
+                            width: 34px;
+                            height: 34px;
+                            border-radius: 50%;
+                            background: linear-gradient(135deg, #10b981, #059669);
+                            color: #fff;
+                            font-weight: 700;
+                            font-size: 0.72rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                        }
+
+                        .sst-body {
+                            display: flex;
+                            flex-direction: column;
+                            flex: 1;
+                        }
+
+                        .sst-body strong {
+                            color: #1e293b;
+                        }
+
+                        .sst-body span {
+                            color: #475569;
+                        }
+
+                        .sst-time {
+                            color: #94a3b8;
+                            font-size: 0.72rem;
+                            white-space: nowrap;
+                        }
+                    </style>
 
 
-    <!-- Supabase JS Client Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="orb.js"></script>
-    <script src="app.js"></script>
+                    <!-- Supabase JS Client Library -->
+                    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+                    <script src="orb.js"></script>
+                    <script src="app.js"></script>
 
-    <!-- ═══ SPIN & WIN ENGINE — inline after app.js, DOM already ready ═══ -->
-    <script>
-    (function(){
-        var PRIZES=[
-            {label:'&#8358;300',value:300,color:'#f59e0b'},
-            {label:'&#8358;50', value:50, color:'#10b981'},
-            {label:'&#8358;100',value:100,color:'#059669'},
-            {label:'&#8358;150',value:150,color:'#10b981'},
-            {label:'&#8358;200',value:200,color:'#059669'},
-            {label:'&#8358;250',value:250,color:'#10b981'}
-        ];
-        var angle=0,running=false,cvs=null,ctx=null;
+                    <script>
+                        // Improve canvas sharpness for rewards wheel by matching devicePixelRatio
+                        (function(){
+                            function fixRewardsCanvas(){
+                                try {
+                                    var c = document.getElementById('rewards-wheel-canvas');
+                                    if (!c) return;
+                                    var rect = c.getBoundingClientRect();
+                                    var dpr = window.devicePixelRatio || 1;
+                                    var w = Math.max(1, Math.round(rect.width * dpr));
+                                    var h = Math.max(1, Math.round(rect.height * dpr));
+                                    if (c.width !== w || c.height !== h) {
+                                        c.width = w; c.height = h;
+                                        c.style.width = rect.width + 'px';
+                                        c.style.height = rect.height + 'px';
+                                        var ctx = c.getContext('2d');
+                                        if (ctx && typeof ctx.setTransform === 'function') ctx.setTransform(dpr,0,0,dpr,0,0);
+                                    }
+                                } catch(e) { /* ignore */ }
+                            }
+                            window.addEventListener('load', fixRewardsCanvas);
+                            window.addEventListener('resize', function(){ clearTimeout(window._rwct); window._rwct = setTimeout(fixRewardsCanvas, 120); });
+                            // run now in case DOM already ready
+                            setTimeout(fixRewardsCanvas, 60);
+                        })();
+                    </script>
 
-        function draw(a){
-            if(!cvs||!ctx)return;
-            var cx=cvs.width/2,cy=cvs.height/2,r=cx-4;
-            var sa=(2*Math.PI)/PRIZES.length;
-            ctx.clearRect(0,0,cvs.width,cvs.height);
-            PRIZES.forEach(function(p,i){
-                var s=a+i*sa,e=s+sa;
-                ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
-                ctx.fillStyle=p.color;ctx.fill();
-                ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-                ctx.save();ctx.translate(cx,cy);ctx.rotate(s+sa/2);
-                ctx.textAlign='right';ctx.fillStyle='#fff';
-                ctx.font='bold 15px sans-serif';
-                ctx.fillText(p.label,r-14,5);
-                ctx.restore();
-            });
-            ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);
-            ctx.strokeStyle='#10b981';ctx.lineWidth=5;ctx.stroke();
-        }
+                    <!-- ═══ SPIN & WIN ENGINE — inline after app.js, DOM already ready ═══ -->
+                    <script>
+                        (function () {
+                            var PRIZES = [
+                                { label: '&#8358;300', value: 300, color: '#f59e0b' },
+                                { label: '&#8358;50', value: 50, color: '#10b981' },
+                                { label: '&#8358;100', value: 100, color: '#059669' },
+                                { label: '&#8358;150', value: 150, color: '#10b981' },
+                                { label: '&#8358;200', value: 200, color: '#059669' },
+                                { label: '&#8358;250', value: 250, color: '#10b981' }
+                            ];
+                            var angle = 0, running = false, cvs = null, ctx = null;
 
-        function open(){
-            var ov=document.getElementById('spin-modal-overlay');
-            if(!ov)return;
-            ov.classList.add('open');
-            cvs=document.getElementById('spin-wheel-canvas');
-            ctx=cvs?cvs.getContext('2d'):null;
-            draw(angle);
-            scheduleToast();
-        }
-        function close(){
-            var ov=document.getElementById('spin-modal-overlay');
-            if(ov)ov.classList.remove('open');
-        }
-        window.openSpinModal=open;
-        window.closeSpinModal=close;
+                            function draw(a) {
+                                if (!cvs || !ctx) return;
+                                var cx = cvs.width / 2, cy = cvs.height / 2, r = cx - 4;
+                                var sa = (2 * Math.PI) / PRIZES.length;
+                                ctx.clearRect(0, 0, cvs.width, cvs.height);
+                                PRIZES.forEach(function (p, i) {
+                                    var s = a + i * sa, e = s + sa;
+                                    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, s, e); ctx.closePath();
+                                    ctx.fillStyle = p.color; ctx.fill();
+                                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+                                    ctx.save(); ctx.translate(cx, cy); ctx.rotate(s + sa / 2);
+                                    ctx.textAlign = 'right'; ctx.fillStyle = '#fff';
+                                    ctx.font = 'bold 15px sans-serif';
+                                    ctx.fillText(p.label, r - 14, 5);
+                                    ctx.restore();
+                                });
+                                ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+                                ctx.strokeStyle = '#10b981'; ctx.lineWidth = 5; ctx.stroke();
+                            }
 
-        window.spinWheel=function(){
-            if(running)return;
-            var el=document.getElementById('sm-spins-remaining');
-            var n=parseInt((el&&el.textContent)||'1');
-            if(n<=0){var c=document.getElementById('sm-cta-btn');if(c)c.textContent='No spins left!';return;}
-            if(el)el.textContent=n-1;
-            running=true;
-            var cb=document.getElementById('sm-spin-now-btn');
-            var ct=document.getElementById('sm-cta-btn');
-            if(cb)cb.disabled=true;if(ct)ct.disabled=true;
-            var wi=Math.floor(Math.random()*PRIZES.length);
-            var sl=(2*Math.PI)/PRIZES.length;
-            var fa=(-Math.PI/2-(wi*sl+sl/2))+(5+Math.floor(Math.random()*3))*2*Math.PI;
-            var dur=4500,sa=angle,st=performance.now();
-            function step(now){
-                var t=Math.min((now-st)/dur,1),e=1-Math.pow(1-t,4);
-                angle=sa+(fa-sa)*e;draw(angle);
-                if(t<1){requestAnimationFrame(step);}
-                else{angle=fa%(2*Math.PI);running=false;result(PRIZES[wi]);}
-            }
-            requestAnimationFrame(step);
-        };
+                            function doOpenSpinModal() {
+                                var ov = document.getElementById('spin-modal-overlay');
+                                if (!ov) return;
+                                ov.classList.add('open');
+                                ov.style.display = 'flex';
+                                ov.style.visibility = 'visible';
+                                ov.style.opacity = '1';
+                                cvs = document.getElementById('spin-wheel-canvas');
+                                ctx = cvs ? cvs.getContext('2d') : null;
+                                draw(angle);
+                                scheduleToast();
+                            }
+                            function doCloseModal() {
+                                var ov = document.getElementById('spin-modal-overlay');
+                                if (ov) {
+                                    ov.classList.remove('open');
+                                    ov.style.display = 'none';
+                                }
+                            }
+                            window.openSpinModal = doOpenSpinModal;
+                            window.closeSpinModal = doCloseModal;
 
-        function result(p){
-            close();
-            if(p.value>0){
-                var a=document.getElementById('sr-win-amount');
-                if(a)a.textContent=p.label.replace('&#8358;','\u20a6');
-                var w=document.getElementById('spin-win-overlay');if(w)w.classList.add('open');
-                confetti();
-            }else{
-                var l=document.getElementById('spin-lose-overlay');if(l)l.classList.add('open');
-            }
-        }
-        window.closeSpinResult=function(){
-            var w=document.getElementById('spin-win-overlay');
-            var l=document.getElementById('spin-lose-overlay');
-            if(w)w.classList.remove('open');if(l)l.classList.remove('open');
-            var cb=document.getElementById('sm-spin-now-btn');
-            var ct=document.getElementById('sm-cta-btn');
-            if(cb)cb.disabled=false;
-            if(ct){ct.disabled=false;ct.innerHTML='<i class="fa-solid fa-dharmachakra"></i> Spin Now';}
-        };
-        function confetti(){
-            var c=document.getElementById('sr-confetti-container');if(!c)return;c.innerHTML='';
-            var cols=['#10b981','#f59e0b','#ef4444','#6366f1','#ec4899','#14b8a6'];
-            for(var i=0;i<42;i++){
-                var p=document.createElement('div');p.className='confetti-p';
-                p.style.left=(Math.random()*100)+'%';
-                p.style.background=cols[Math.floor(Math.random()*cols.length)];
-                p.style.animationDelay=(Math.random()*0.8)+'s';
-                p.style.animationDuration=(1.2+Math.random()*0.8)+'s';
-                var sz=(6+Math.random()*6)+'px';p.style.width=sz;p.style.height=sz;
-                c.appendChild(p);
-            }
-        }
-        var TOASTS=[
-            {n:'Martha Ikenna',pr:'\u20a650',i:'MI'},{n:'Chidi Okafor',pr:'\u20a6200',i:'CO'},
-            {n:'Amina Bello',pr:'\u20a6100',i:'AB'},{n:'Emeka Eze',pr:'\u20a6300',i:'EE'},
-            {n:'Fatima Suleiman',pr:'\u20a6150',i:'FS'},{n:'Kola Adeyemi',pr:'\u20a650',i:'KA'}
-        ];
-        var ti=0,tt=null;
-        function scheduleToast(){clearTimeout(tt);tt=setTimeout(showToast,2800);}
-        function showToast(){
-            var p=TOASTS[ti%TOASTS.length];ti++;
-            var t=document.getElementById('spin-social-toast');if(!t)return;
-            document.getElementById('sst-avatar').textContent=p.i;
-            document.getElementById('sst-name').textContent=p.n;
-            document.getElementById('sst-msg').textContent='just won '+p.pr+' spin bonus!';
-            t.classList.add('show');
-            setTimeout(function(){
-                t.classList.remove('show');
-                var ov=document.getElementById('spin-modal-overlay');
-                if(ov&&ov.classList.contains('open'))tt=setTimeout(showToast,4000);
-            },3200);
-        }
+                            window.spinWheel = function () {
+                                if (running) return;
+                                var el = document.getElementById('sm-spins-remaining');
+                                var n = parseInt((el && el.textContent) || '1');
+                                if (n <= 0) { var c = document.getElementById('sm-cta-btn'); if (c) c.textContent = 'No spins left!'; return; }
+                                if (el) el.textContent = n - 1;
+                                running = true;
+                                var cb = document.getElementById('sm-spin-now-btn');
+                                var ct = document.getElementById('sm-cta-btn');
+                                if (cb) cb.disabled = true; if (ct) ct.disabled = true;
+                                var wi = Math.floor(Math.random() * PRIZES.length);
+                                var sl = (2 * Math.PI) / PRIZES.length;
+                                var fa = (-Math.PI / 2 - (wi * sl + sl / 2)) + (5 + Math.floor(Math.random() * 3)) * 2 * Math.PI;
+                                var dur = 4500, sa = angle, st = performance.now();
+                                function step(now) {
+                                    var t = Math.min((now - st) / dur, 1), e = 1 - Math.pow(1 - t, 4);
+                                    angle = sa + (fa - sa) * e; draw(angle);
+                                    if (t < 1) { requestAnimationFrame(step); }
+                                    else { angle = fa % (2 * Math.PI); running = false; result(PRIZES[wi]); }
+                                }
+                                requestAnimationFrame(step);
+                            };
 
-        /* Wire — DOM already ready here */
-        var ov=document.getElementById('spin-modal-overlay');
-        var mb=document.getElementById('spin-modal-box');
-        if(ov)ov.addEventListener('click',close);
-        if(mb)mb.addEventListener('click',function(e){e.stopPropagation();});
-        var bb=document.getElementById('sm-back-btn');if(bb)bb.addEventListener('click',close);
-        var sb=document.getElementById('sm-spin-now-btn');if(sb)sb.addEventListener('click',window.spinWheel);
-        var cb=document.getElementById('sm-cta-btn');if(cb)cb.addEventListener('click',window.spinWheel);
-        var hb=document.getElementById('header-spin-btn');
-        if(hb){hb.removeAttribute('onclick');hb.addEventListener('click',open);}
+                            function result(p) {
+                                close();
+                                if (p.value > 0) {
+                                    var a = document.getElementById('sr-win-amount');
+                                    if (a) a.textContent = p.label.replace('&#8358;', '\u20a6');
+                                    var w = document.getElementById('spin-win-overlay'); if (w) w.classList.add('open');
+                                    confetti();
+                                } else {
+                                    var l = document.getElementById('spin-lose-overlay'); if (l) l.classList.add('open');
+                                }
+                            }
+                            window.closeSpinResult = function () {
+                                var w = document.getElementById('spin-win-overlay');
+                                var l = document.getElementById('spin-lose-overlay');
+                                if (w) w.classList.remove('open'); if (l) l.classList.remove('open');
+                                var cb = document.getElementById('sm-spin-now-btn');
+                                var ct = document.getElementById('sm-cta-btn');
+                                if (cb) cb.disabled = false;
+                                if (ct) { ct.disabled = false; ct.innerHTML = '<i class="fa-solid fa-dharmachakra"></i> Spin Now'; }
+                            };
+                            function confetti() {
+                                var c = document.getElementById('sr-confetti-container'); if (!c) return; c.innerHTML = '';
+                                var cols = ['#10b981', '#f59e0b', '#ef4444', '#6366f1', '#ec4899', '#14b8a6'];
+                                for (var i = 0; i < 42; i++) {
+                                    var p = document.createElement('div'); p.className = 'confetti-p';
+                                    p.style.left = (Math.random() * 100) + '%';
+                                    p.style.background = cols[Math.floor(Math.random() * cols.length)];
+                                    p.style.animationDelay = (Math.random() * 0.8) + 's';
+                                    p.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+                                    var sz = (6 + Math.random() * 6) + 'px'; p.style.width = sz; p.style.height = sz;
+                                    c.appendChild(p);
+                                }
+                            }
+                            var TOASTS = [
+                                { n: 'Martha Ikenna', pr: '\u20a650', i: 'MI' }, { n: 'Chidi Okafor', pr: '\u20a6200', i: 'CO' },
+                                { n: 'Amina Bello', pr: '\u20a6100', i: 'AB' }, { n: 'Emeka Eze', pr: '\u20a6300', i: 'EE' },
+                                { n: 'Fatima Suleiman', pr: '\u20a6150', i: 'FS' }, { n: 'Kola Adeyemi', pr: '\u20a650', i: 'KA' }
+                            ];
+                            var ti = 0, tt = null;
+                            function scheduleToast() { clearTimeout(tt); tt = setTimeout(showToast, 2800); }
+                            function showToast() {
+                                var p = TOASTS[ti % TOASTS.length]; ti++;
+                                var t = document.getElementById('spin-social-toast'); if (!t) return;
+                                document.getElementById('sst-avatar').textContent = p.i;
+                                document.getElementById('sst-name').textContent = p.n;
+                                document.getElementById('sst-msg').textContent = 'just won ' + p.pr + ' spin bonus!';
+                                t.classList.add('show');
+                                setTimeout(function () {
+                                    t.classList.remove('show');
+                                    var ov = document.getElementById('spin-modal-overlay');
+                                    if (ov && ov.classList.contains('open')) tt = setTimeout(showToast, 4000);
+                                }, 3200);
+                            }
 
-    }());
-    </script>
+                            /* Wire — DOM already ready here */
+                            var ov = document.getElementById('spin-modal-overlay');
+                            var mb = document.getElementById('spin-modal-box');
+                            if (ov) ov.addEventListener('click', doCloseModal);
+                            if (mb) mb.addEventListener('click', function (e) { e.stopPropagation(); });
+                            var bb = document.getElementById('sm-back-btn'); if (bb) bb.addEventListener('click', doCloseModal);
+                            var sb = document.getElementById('sm-spin-now-btn'); if (sb) sb.addEventListener('click', window.spinWheel);
+                            var cb = document.getElementById('sm-cta-btn'); if (cb) cb.addEventListener('click', window.spinWheel);
+                            var hb = document.getElementById('header-spin-btn');
+                            if (hb) {
+                                // header 'Spin' now navigates to the rewards page via anchor href="#rewards";
+                                // leave event wiring to the anchor/navigation; do not open inline modal here.
+                            }
+
+                            // Hide notification UI for unsigned users
+                            (function(){
+                                try {
+                                    var user = localStorage.getItem('mamaprice_auth_user');
+                                    if (!user) {
+                                        var np = document.querySelector('.notif-popover-wrapper');
+                                        if (np) np.style.display = 'none';
+                                        // also hide mobile/other notif badges if present
+                                        var nb = document.querySelectorAll('.notif-badge, .nav-earned-badge');
+                                        nb.forEach(function(el){ el.style.display = 'none'; });
+                                    }
+                                } catch (e) { /* ignore */ }
+                            }());
+
+                        }());
+                    </script>
 </body>
+
 </html>

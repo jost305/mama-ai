@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    let API_URL = isLocalhost ? 'http://localhost:3001' : '';
+    let API_URL = isLocalhost ? 'http://localhost:3001' : window.location.origin;
     let currentSessionId = `session_${Date.now()}`;
     let agentEarnings = 148500;
 
@@ -1874,9 +1874,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     // Real Supabase User Sign Up
+                    const redirectUrl = window.location.origin + window.location.pathname;
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
-                        password: password
+                        password: password,
+                        options: {
+                            emailRedirectTo: redirectUrl
+                        }
                     });
 
                     if (error) throw error;
@@ -1929,7 +1933,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const { error } = await supabaseClient.auth.signInWithOtp({ email: email });
+                const redirectUrl = window.location.origin + window.location.pathname;
+                const { error } = await supabaseClient.auth.signInWithOtp({
+                    email: email,
+                    options: {
+                        emailRedirectTo: redirectUrl
+                    }
+                });
                 if (error) throw error;
                 showAuthAlert(`✨ Magic sign-in link sent to ${email}! Check your inbox.`, 'success');
             } catch (err) {
@@ -1947,10 +1957,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!supabaseClient) return;
 
             try {
+                const redirectUrl = window.location.origin + window.location.pathname;
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.href
+                        redirectTo: redirectUrl
                     }
                 });
                 if (error) throw error;
@@ -1960,9 +1971,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Auto-restore Supabase Session on Page Load
+    // Auto-restore Supabase Session on Page Load & Auth State Changes
     if (supabaseClient) {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        const handleSessionUpdate = (session) => {
             if (session && session.user) {
                 const user = session.user;
                 const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Scout Agent';
@@ -1976,26 +1987,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('mamaprice_jwt_token', session.access_token);
                 if (typeof updateAuthUIState === 'function') updateAuthUIState();
             }
-        });
+        };
 
+        // Listen for session changes (signed in, magic links, email verification redirect, OAuth redirects, signed out)
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                const user = session.user;
-                const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Scout Agent';
-                const userObj = {
-                    name: displayName,
-                    phone: user.email || 'user@mamaprice.ng',
-                    id: user.id,
-                    provider: 'Supabase Auth'
-                };
-                localStorage.setItem('mamaprice_auth_user', JSON.stringify(userObj));
-                localStorage.setItem('mamaprice_jwt_token', session.access_token);
-                if (typeof updateAuthUIState === 'function') updateAuthUIState();
+            if (event === 'SIGNED_IN' || (session && event !== 'SIGNED_OUT')) {
+                handleSessionUpdate(session);
             } else if (event === 'SIGNED_OUT') {
                 localStorage.removeItem('mamaprice_auth_user');
                 localStorage.removeItem('mamaprice_jwt_token');
                 if (typeof updateAuthUIState === 'function') updateAuthUIState();
             }
+        });
+
+        // Check active session on initial page load
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session) handleSessionUpdate(session);
         });
     }
 
@@ -2795,7 +2802,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Fetch data from OjaLM API / Grounded Market Engine
             let data = null;
-            const targetApiUrl = (API_URL || 'http://localhost:3001');
+            const targetApiUrl = API_URL;
 
             try {
                 const response = await fetch(`${targetApiUrl}/chat`, {
@@ -4997,7 +5004,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+})();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 🎡 MAMAPRICE REWARDS & SPIN-TO-WIN ENGINE — FRONTEND LOGIC
@@ -5043,7 +5050,7 @@ window.fetchRewardsSummary = async function() {
             if (u.id) window.rewardsState.userId = u.id;
         }
 
-        const res = await fetch(`http://localhost:3001/api/rewards/user-summary?userId=${window.rewardsState.userId}`);
+        const res = await fetch(`${API_URL}/api/rewards/user-summary?userId=${window.rewardsState.userId}`);
         if (!res.ok) throw new Error("Failed to fetch rewards summary");
         const data = await res.json();
 
@@ -5233,7 +5240,7 @@ window.handleSpinClick = async function() {
     }
 
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/spin", {
+        const res = await fetch(`${API_URL}/api/rewards/spin`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -5537,7 +5544,7 @@ window.executeDailyBonusTask = async function(taskType, taskTitle) {
 
     // Call Backend API /api/rewards/activity to credit +1 Spin live
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/activity", {
+        const res = await fetch(`${API_URL}/api/rewards/activity`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -5624,7 +5631,7 @@ window.applyPromoCode = async function() {
     }
 
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/promo/apply", {
+        const res = await fetch(`${API_URL}/api/rewards/promo/apply`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -5845,7 +5852,7 @@ window.handleRedeemVoucherAction = async function() {
     if (!voucher || !voucher.id) return;
 
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/redeem", {
+        const res = await fetch(`${API_URL}/api/rewards/redeem`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -5875,7 +5882,7 @@ window.fetchPartnerCampaigns = async function() {
     if (!grid) return;
 
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/admin/campaigns");
+        const res = await fetch(`${API_URL}/api/rewards/admin/campaigns`);
         const data = await res.json();
 
         if (data.success && data.campaigns) {
@@ -5901,7 +5908,7 @@ window.fetchPartnerCampaigns = async function() {
 // Fetch Admin Analytics Summary
 window.fetchAdminAnalytics = async function() {
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/admin/analytics");
+        const res = await fetch(`${API_URL}/api/rewards/admin/analytics`);
         const data = await res.json();
         if (data.success && data.analytics) {
             const an = data.analytics;
@@ -5934,7 +5941,7 @@ window.handleCreateCampaignSubmit = async function(event) {
     };
 
     try {
-        const res = await fetch("http://localhost:3001/api/rewards/admin/campaigns", {
+        const res = await fetch(`${API_URL}/api/rewards/admin/campaigns`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -5973,4 +5980,3 @@ document.addEventListener('DOMContentLoaded', () => {
         window.fetchRewardsSummary();
     }, 500);
 });
-

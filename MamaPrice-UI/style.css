@@ -2559,6 +2559,32 @@ body.not-home-page .weather-pill-container {
     color: var(--accent-green);
 }
 
+.header-spin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, transform 0.15s, background 0.15s;
+}
+
+.header-spin-btn:hover {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+    color: #166534;
+    transform: translateY(-1px);
+}
+
+.header-spin-btn i {
+    font-size: 0.92rem;
+}
+
 .notif-badge {
     position: absolute;
     top: -2px;
@@ -9618,12 +9644,12 @@ table tbody tr:hover {
 /* Transient Toast Notification Layer */
 .toast-region {
     position: fixed;
-    top: 76px;
-    right: 24px;
-    width: min(380px, calc(100vw - 32px));
+    top: 64px;
+    right: 18px;
+    width: min(320px, calc(100vw - 32px));
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     z-index: 100000;
     pointer-events: none;
 }
@@ -9634,17 +9660,17 @@ table tbody tr:hover {
     position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 11px;
-    padding: 13px 36px 15px 13px;
+    gap: 8px;
+    padding: 10px 14px 10px 10px;
     overflow: hidden;
     color: #1e293b;
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid var(--toast-accent);
-    border-radius: 13px;
-    box-shadow: 0 16px 35px rgba(15, 23, 42, 0.16), 0 3px 8px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e6edf0;
+    border-left: 3px solid var(--toast-accent);
+    border-radius: 10px;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
     pointer-events: auto;
-    animation: toastEnter 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: toastEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .toast-price { --toast-accent: #15803d; --toast-surface: #f0fdf4; }
@@ -9659,14 +9685,14 @@ table tbody tr:hover {
 
 .toast-icon {
     display: grid;
-    flex: 0 0 32px;
-    width: 32px;
-    height: 32px;
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
     place-items: center;
     color: var(--toast-accent);
     background: var(--toast-surface);
-    border-radius: 9px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
 }
 
 .toast-content {
@@ -9697,18 +9723,18 @@ table tbody tr:hover {
 
 .toast-dismiss {
     position: absolute;
-    top: 9px;
-    right: 9px;
+    top: 8px;
+    right: 8px;
     display: grid;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     place-items: center;
     color: #94a3b8;
     background: transparent;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
 }
 
 .toast-dismiss:hover {
@@ -10115,40 +10141,65 @@ table tbody tr:hover {
 /* Main Wheel Stage */
 .wheel-stage-card {
     display: grid;
-    grid-template-columns: 420px 1fr;
+    grid-template-columns: minmax(360px, 440px) 1fr;
     gap: 30px;
+    align-items: center;
     background: #ffffff;
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 18px;
     padding: 30px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 6px 30px rgba(2, 6, 23, 0.04);
 }
 
 .wheel-container-wrapper {
     position: relative;
-    width: 380px;
-    height: 380px;
+    width: 100%;
+    max-width: 420px;
     margin: 0 auto;
+    aspect-ratio: 1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 6px;
+}
+
+.wheel-container-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02));
+    z-index: 0;
+    pointer-events: none;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.06);
 }
 
 .wheel-pointer {
     position: absolute;
-    top: -14px;
+    top: -22px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-top: 24px solid #ef4444;
-    z-index: 20;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 28px solid #ef4444;
+    z-index: 40;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
 }
 
 #rewards-wheel-canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display:block;
     border-radius: 50%;
-    box-shadow: 0 8px 30px rgba(21, 128, 61, 0.15);
+    box-shadow: 0 10px 36px rgba(21, 128, 61, 0.12);
+    border: 10px solid #ffffff;
+    z-index: 10;
+    background: conic-gradient(#0f172a00, #0f172a00);
 }
 
 .wheel-center-btn {
@@ -10156,19 +10207,19 @@ table tbody tr:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 74px;
-    height: 74px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #15803d, #166534);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: #ffffff;
-    border: 4px solid #ffffff;
+    border: 6px solid #ffffff;
     font-weight: 900;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     letter-spacing: 1px;
     cursor: pointer;
-    z-index: 10;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-    transition: transform 0.15s, box-shadow 0.15s;
+    z-index: 30;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.18);
+    transition: transform 0.18s, box-shadow 0.18s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10386,6 +10437,23 @@ table tbody tr:hover {
     cursor: pointer;
 }
 
+/* Header Spin Button (new compact style) */
+.header-spin-btn--new {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 18px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #15803d;
+    font-weight: 700;
+}
+.header-spin-btn--new:hover { background: #dcfce7; }
+.header-spin-btn--new .hsb-logo-img { height: 20px; width: 20px; }
+.header-spin-btn--new .hsb-text { font-size: 0.84rem; }
+
 /* History Table */
 .rw-history-table {
     width: 100%;
@@ -10582,58 +10650,6 @@ table tbody tr:hover {
     object-fit: contain;
 }
 
-/* Compact Header Spin & Win Trigger Button */
-.header-spin-btn {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 20px;
-    padding: 5px 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #15803d;
-    transition: transform 0.15s, background 0.15s, border-color 0.15s;
-    box-shadow: 0 2px 6px rgba(21, 128, 61, 0.08);
-    flex-shrink: 0;
-}
-
-.header-spin-btn:hover {
-    transform: translateY(-1px);
-    background: #dcfce7;
-    border-color: #86efac;
-}
-
-.hsb-icon {
-    font-size: 1rem;
-    line-height: 1;
-}
-
-.hsb-text {
-    display: inline-block;
-}
-
-@media (max-width: 480px) {
-    .hsb-text {
-        display: none;
-    }
-    .header-spin-btn {
-        padding: 5px 8px;
-    }
-}
-
-.hsb-badge {
-    background: #15803d;
-    color: #ffffff;
-    font-size: 0.72rem;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 10px;
-    line-height: 1;
-}
 
 #page-rewards {
     width: 100%;
@@ -10680,6 +10696,15 @@ table tbody tr:hover {
     border-color: #15803d;
 }
 
+/* Static stats variant (non-interactive) */
+.balance-pill-card[aria-hidden="true"] {
+    cursor: default;
+}
+.balance-pill-card[aria-hidden="true"]:hover {
+    transform: none;
+    border-color: inherit;
+}
+
 .balance-pill-card.green {
     background: #f0fdf4;
     border-color: #bbf7d0;
@@ -10713,6 +10738,31 @@ table tbody tr:hover {
 
 .bp-val i { font-size: 0.7rem; color: #94a3b8; }
 
+/* Override: force rewards layout to flex on wide screens so wheel stays dominant */
+@media (min-width: 980px) {
+    .rewards-main-layout {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 20px !important;
+        align-items: flex-start !important;
+    }
+
+    .rewards-left-column {
+        flex: 1.6 1 0 !important;
+        min-width: 380px !important;
+        max-width: 720px !important;
+    }
+
+    .rewards-right-column {
+        flex: 0 0 420px !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 18px !important;
+    }
+
+    .rewards-right-column > * { width: 100% !important; }
+}
+
 /* Responsive Main Layout Container */
 .rewards-main-layout {
     display: flex;
@@ -10723,21 +10773,46 @@ table tbody tr:hover {
     box-sizing: border-box;
 }
 
-@media (min-width: 860px) {
+@media (min-width: 980px) {
     .rewards-main-layout {
-        display: grid;
-        grid-template-columns: 380px 1fr;
-        gap: 22px;
-        align-items: start;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        align-items: flex-start;
+        width: 100%;
+        box-sizing: border-box;
     }
+
+    /* Left: wheel takes majority of horizontal space */
+    .rewards-left-column {
+        flex: 1.6 1 0;
+        min-width: 380px;
+        max-width: 720px;
+    }
+
+    /* Right: fixed width column that itself contains two side-by-side cards */
+    .rewards-right-column {
+        flex: 0 0 420px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: start;
+        box-sizing: border-box;
+    }
+
+    .rewards-right-column > * { width: 100%; }
 }
 
 .rewards-left-column, .rewards-right-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
     width: 100%;
     box-sizing: border-box;
+}
+
+.rewards-left-column {
+    align-items: center;
 }
 
 /* Quick Action Icon Grid (4 Cards) */
@@ -10809,9 +10884,10 @@ table tbody tr:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
+# Wheel container: allow larger wheel but cap to keep layout tight
 .wheel-container-wrapper {
     width: 100%;
-    max-width: 320px;
+    max-width: 600px;
     height: auto;
     aspect-ratio: 1 / 1;
     margin: 0 auto;
@@ -10819,11 +10895,12 @@ table tbody tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 6px;
 }
 
 #rewards-wheel-canvas {
     width: 100% !important;
-    max-width: 320px !important;
+    max-width: 600px !important;
     height: auto !important;
     aspect-ratio: 1 / 1;
     display: block;
@@ -11537,6 +11614,53 @@ table tbody tr:hover {
     .bp-val { font-size: 0.8rem; }
     .rec-body { flex-direction: column; align-items: stretch; }
     .rec-milestones-track { margin-top: 6px; }
+}
+
+/* Desktop: make wheel-stage single-column so wheel can be dominant */
+@media (min-width: 980px) {
+    .wheel-stage-card { grid-template-columns: 1fr !important; gap: 18px !important; padding: 22px !important; }
+    .wheel-container-wrapper { max-width: 560px !important; width: 100% !important; }
+    #rewards-wheel-canvas { max-width: 560px !important; width: 100% !important; height: auto !important; }
+}
+
+/* Tighten section spacing and remove shadows (mobile + desktop) */
+/* Reduce gaps between sections and remove heavy shadows for a flatter UI */
+.rewards-page-container { padding: 10px !important; }
+.rewards-main-layout { gap: 8px !important; }
+
+/* Remove shadows and reduce padding/margin on common cards */
+.wheel-stage-card,
+.balance-pill-card,
+.spin-counter-card,
+.rewards-progress-card,
+.refer-earn-card,
+.daily-bonus-card,
+.promo-code-card,
+.my-coupons-container,
+.wheel-prizes-preview,
+.qa-item {
+    box-shadow: none !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+    border-radius: 12px !important;
+}
+
+/* Tighter wheel container padding */
+.wheel-container-wrapper { padding: 4px !important; }
+
+/* Reduce pointer offset so wheel and cards sit closer */
+.wheel-stage-card { gap: 12px !important; }
+
+/* Toasts and small cards */
+.spin-counter-card, .qa-item { padding: 8px !important; }
+
+/* Make prize preview more compact */
+.wheel-prizes-preview h4 { margin-bottom: 6px !important; font-size: 0.86rem; }
+.prizes-grid { gap: 6px !important; }
+
+/* Desktop: slightly reduce right-column card spacing */
+@media (min-width: 980px) {
+    .rewards-right-column { gap: 12px !important; }
 }
 
 

@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import { getLlama, LlamaChatSession } from "node-llama-cpp";
 import { ojaGraph } from "./ojagraph.js";
 import { rewardsEngine } from "./rewards-engine.js";
+import { addPaymentRecord, getPaymentRecord } from "./payment-ledger.js";
+import { buildX402Challenge, verifyX402Payment } from "./x402.js";
 
 dotenv.config();
 
@@ -485,6 +487,109 @@ app.post("/observe", async (req, res) => {
         res.json({ success: true, document: newDoc, rewards: { spinGranted: 1, availableSpins: rewardBonus.availableSpins } });
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/commerce/intel — Phase 1 paid commerce intelligence query
+app.post("/api/commerce/intel", async (req, res) => {
+    const { prompt, paymentProof, sessionId, modelId, useHf } = req.body;
+    if (!prompt) {
+        return res.status(400).json({ error: "prompt is required" });
+    }
+
+    const verification = await verifyX402Payment(paymentProof, "/api/commerce/intel");
+    if (!verification.verified) {
+        const status = verification.challenge ? 402 : 422;
+        return res.status(status).json({
+            success: false,
+            verified: false,
+            errors: verification.errors,
+            challenge: verification.challenge,
+        });
+    }
+
+    const existing = getPaymentRecord(verification.payment.transactionHash);
+    if (existing) {
+        return res.status(409).json({
+            success: false,
+            error: "PAYMENT_ALREADY_PROCESSED",
+            message: "This Base payment has already been used for a paid query.",
+            existingRecord: existing,
+        });
+    }
+
+    try {
+        const modelLabel = modelId || "MamaPrice 4o";
+        const useHfEngine = Boolean(useHf);
+        const detectedIntents = detectQueryIntents(prompt);
+
+        const [searchRes, trendRes] = await Promise.all([
+            Promise.resolve(ojaGraph.searchCommerceIntelligence(prompt)),
+            Promise.resolve(ojaGraph.retrieveTrend(prompt))
+        ]);
+
+        const allEvidence = { ...searchRes, trend: trendRes };
+        const groundedContext = buildGroundedContext(prompt, allEvidence);
+        const augmentedPrompt = groundedContext ? `${groundedContext}\n\nUSER QUESTION: ${prompt}` : prompt;
+
+        let responseText = "";
+        let providerName = "ojalm";
+        let primarySuccess = false;
+
+        if (!model || useHfEngine) {
+            try {
+                responseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
+                primarySuccess = true;
+                providerName = "ojalm-hf";
+            } catch (hfErr) {
+                console.warn(`⚠️ [HF Engine] failed: ${hfErr.message}`);
+            }
+        }
+
+        if (!primarySuccess && model) {
+            try {
+                const chatSession = await getOrCreateSession(sessionId || "default-session");
+                responseText = await chatSession.prompt(augmentedPrompt);
+                primarySuccess = true;
+                providerName = "ojalm-local";
+            } catch (localErr) {
+                console.warn(`⚠️ [OjaLM Local] failed: ${localErr.message}`);
+            }
+        }
+
+        if (!primarySuccess || !responseText) {
+            const fallbackResult = await queryFallbackLLM(augmentedPrompt);
+            responseText = fallbackResult.content;
+            providerName = fallbackResult.model;
+        }
+
+        const paymentRecord = addPaymentRecord({
+            transactionHash: verification.payment.transactionHash,
+            sender: verification.payment.sender,
+            amount: verification.payment.amount,
+            currency: verification.payment.currency,
+            chain: verification.payment.chain,
+            method: verification.payment.method,
+            signature: verification.payment.signature,
+            timestamp: verification.payment.timestamp,
+            prompt,
+            sessionId: sessionId || "default-session",
+            modelId: modelLabel,
+            createdAt: new Date().toISOString(),
+        });
+
+        return res.json({
+            success: true,
+            payment: { verified: true, record: paymentRecord },
+            sessionId: sessionId || "default-session",
+            modelUsed: modelLabel,
+            provider: providerName,
+            response: responseText.trim(),
+            intents: detectedIntents,
+            evidence: allEvidence,
+        });
+    } catch (err) {
+        return res.status(500).json({ error: err.message, message: "Failed to execute paid commerce query." });
     }
 });
 

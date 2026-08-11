@@ -3,7 +3,7 @@
     "usr_demo": {
       "userId": "usr_demo",
       "name": "MamaPrice User",
-      "availableSpins": 5,
+      "availableSpins": 2,
       "todayProgress": 100,
       "dailyStreak": 4,
       "earnedSources": [
@@ -65,6 +65,21 @@
           "date": "2026-08-08T13:00:24.546Z"
         }
       ]
+    },
+    "0e8fd67f-825c-4df4-bf3e-5668a4a2b807": {
+      "userId": "0e8fd67f-825c-4df4-bf3e-5668a4a2b807",
+      "name": "MamaPrice Consumer",
+      "availableSpins": 3,
+      "todayProgress": 50,
+      "dailyStreak": 1,
+      "earnedSources": [
+        {
+          "source": "DAILY_LOGIN",
+          "label": "Welcome bonus spin",
+          "spins": 3,
+          "date": "2026-08-10T16:03:41.154Z"
+        }
+      ]
     }
   },
   "rewardsCatalog": [
@@ -77,7 +92,7 @@
       "currency": "NGN",
       "probability": 15,
       "active": true,
-      "inventory": 47,
+      "inventory": 46,
       "dailyLimit": 20,
       "totalLimit": 100,
       "partnerId": "prt_mamas_kitchen",
@@ -147,7 +162,7 @@
       "currency": "PTS",
       "probability": 25,
       "active": true,
-      "inventory": 999998,
+      "inventory": 999997,
       "dailyLimit": 99999,
       "totalLimit": 999999,
       "partnerId": "prt_mamaprice_core",
@@ -185,7 +200,7 @@
       "currency": "NGN",
       "probability": 10,
       "active": true,
-      "inventory": 200,
+      "inventory": 199,
       "dailyLimit": 50,
       "totalLimit": 500,
       "partnerId": "prt_mamaprice_core",
@@ -314,6 +329,72 @@
     }
   ],
   "rewardLedger": [
+    {
+      "id": "tx_1786361169227_810",
+      "userId": "usr_demo",
+      "rewardId": "rew_points_100",
+      "campaignId": "cmp_points_reward",
+      "partnerId": "prt_mamaprice_core",
+      "partnerName": "MamaPrice Rewards",
+      "type": "POINTS",
+      "title": "+100 MamaPrice Points",
+      "description": "Added to your MamaPrice Points balance",
+      "value": 100,
+      "currency": "PTS",
+      "status": "REDEEMED",
+      "source": "daily_activity",
+      "spinId": "spn_usr_demo_1786361169211",
+      "voucherCode": "MAMA-FACIE",
+      "qrData": "MAMAPRICE:POINTS:MAMA-FACIE",
+      "location": "Nationwide",
+      "createdAt": "2026-08-10T11:26:09.227Z",
+      "redeemedAt": "2026-08-10T11:26:09.227Z",
+      "expiresAt": "2027-08-10T11:26:09.227Z"
+    },
+    {
+      "id": "tx_1786361080749_261",
+      "userId": "usr_demo",
+      "rewardId": "rew_food_1000",
+      "campaignId": "cmp_friday_food_rush",
+      "partnerId": "prt_mamas_kitchen",
+      "partnerName": "Mama's Kitchen",
+      "type": "FOOD_VOUCHER",
+      "title": "₦1,000 Food Voucher",
+      "description": "Valid for ready meals and fresh produce",
+      "value": 1000,
+      "currency": "NGN",
+      "status": "AVAILABLE",
+      "source": "daily_activity",
+      "spinId": "spn_usr_demo_1786361080732",
+      "voucherCode": "MAMA-0B5AA",
+      "qrData": "MAMAPRICE:FOOD_VOUCHER:MAMA-0B5AA",
+      "location": "Bodija, Ibadan, Oyo",
+      "createdAt": "2026-08-10T11:24:40.749Z",
+      "redeemedAt": null,
+      "expiresAt": "2026-09-09T11:24:40.749Z"
+    },
+    {
+      "id": "tx_1786359584076_966",
+      "userId": "usr_demo",
+      "rewardId": "rew_credit_500",
+      "campaignId": "cmp_platform_credit",
+      "partnerId": "prt_mamaprice_core",
+      "partnerName": "MamaPrice Platform",
+      "type": "MAMAPRICE_CREDIT",
+      "title": "₦500 MamaPrice Credit",
+      "description": "Usable for API intelligence queries and featured listings",
+      "value": 500,
+      "currency": "NGN",
+      "status": "REDEEMED",
+      "source": "daily_activity",
+      "spinId": "spn_usr_demo_1786359583424",
+      "voucherCode": "MAMA-6RCWY",
+      "qrData": "MAMAPRICE:MAMAPRICE_CREDIT:MAMA-6RCWY",
+      "location": "Nationwide",
+      "createdAt": "2026-08-10T10:59:44.076Z",
+      "redeemedAt": "2026-08-10T10:59:44.076Z",
+      "expiresAt": "2026-11-08T10:59:44.076Z"
+    },
     {
       "id": "vch_1786203253166",
       "userId": "usr_demo",
@@ -603,15 +684,75 @@
       },
       "remainingSpins": 0,
       "todayProgress": 100
+    },
+    "spn_usr_demo_1786359583424": {
+      "success": true,
+      "transactionId": "tx_1786359584076_966",
+      "reward": {
+        "id": "rew_credit_500",
+        "type": "MAMAPRICE_CREDIT",
+        "title": "₦500 MamaPrice Credit",
+        "description": "Usable for API intelligence queries and featured listings",
+        "value": 500,
+        "currency": "NGN",
+        "partnerName": "MamaPrice Platform",
+        "voucherCode": "MAMA-6RCWY",
+        "qrData": "MAMAPRICE:MAMAPRICE_CREDIT:MAMA-6RCWY",
+        "location": "Nationwide",
+        "expiresAt": "2026-11-08T10:59:44.076Z",
+        "segmentIndex": 5
+      },
+      "remainingSpins": 4,
+      "todayProgress": 100
+    },
+    "spn_usr_demo_1786361080732": {
+      "success": true,
+      "transactionId": "tx_1786361080749_261",
+      "reward": {
+        "id": "rew_food_1000",
+        "type": "FOOD_VOUCHER",
+        "title": "₦1,000 Food Voucher",
+        "description": "Valid for ready meals and fresh produce",
+        "value": 1000,
+        "currency": "NGN",
+        "partnerName": "Mama's Kitchen",
+        "voucherCode": "MAMA-0B5AA",
+        "qrData": "MAMAPRICE:FOOD_VOUCHER:MAMA-0B5AA",
+        "location": "Bodija, Ibadan, Oyo",
+        "expiresAt": "2026-09-09T11:24:40.749Z",
+        "segmentIndex": 0
+      },
+      "remainingSpins": 3,
+      "todayProgress": 100
+    },
+    "spn_usr_demo_1786361169211": {
+      "success": true,
+      "transactionId": "tx_1786361169227_810",
+      "reward": {
+        "id": "rew_points_100",
+        "type": "POINTS",
+        "title": "+100 MamaPrice Points",
+        "description": "Added to your MamaPrice Points balance",
+        "value": 100,
+        "currency": "PTS",
+        "partnerName": "MamaPrice Rewards",
+        "voucherCode": "MAMA-FACIE",
+        "qrData": "MAMAPRICE:POINTS:MAMA-FACIE",
+        "location": "Nationwide",
+        "expiresAt": "2027-08-10T11:26:09.227Z",
+        "segmentIndex": 3
+      },
+      "remainingSpins": 2,
+      "todayProgress": 100
     }
   },
   "analytics": {
-    "totalSpins": 153,
+    "totalSpins": 156,
     "uniqueUsers": 64,
-    "rewardsDistributed": 147,
+    "rewardsDistributed": 150,
     "voucherClaims": 43,
     "voucherRedemptions": 30,
-    "totalRewardValueNgn": 90000,
+    "totalRewardValueNgn": 91500,
     "partnerImpressions": 1240
   },
   "promoCodes": {

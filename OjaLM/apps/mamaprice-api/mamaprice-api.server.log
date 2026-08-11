@@ -1,7 +1,8 @@
-[OjaGraph v2] Commerce Graph loaded. Nodes: 12 documents across 6 categories.
-STEP 1 - getLlama()
+[OjaGraph v2] Commerce Graph loaded. Nodes: 13 documents across 6 categories.
+◇ injected env (1) from .env // tip: ⌘ suppress logs { quiet: true }
+STEP 1 - Initializing Llama CPU runtime...
 ✓ STEP 1 COMPLETE
-STEP 2 - loadModel()
+STEP 2 - Loading OjaLM GGUF model...
 ✓ STEP 2 COMPLETE — OjaLM loaded on CPU.
 
 ✅ MamaPrice Commerce Intelligence API
