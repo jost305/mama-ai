@@ -112,7 +112,7 @@
 
                 <div class="header-right">
                     <!-- Compact Header Spin & Win Trigger -->
-                    <button class="header-spin-btn" id="header-spin-btn" onclick="openSpinModal()" title="Spin & Win Rewards">
+                    <button class="header-spin-btn" id="header-spin-btn" onclick="document.getElementById('spin-modal-overlay').style.display='flex'" title="Spin & Win Rewards">
                         <img src="spin-wheel-logo.png" alt="Spin Logo" class="hsb-logo-img">
                         <span class="hsb-text">Spin</span>
                         <span class="hsb-badge" id="header-spins-count" style="display: none;">3</span>
@@ -2289,7 +2289,7 @@
 
             <!-- Header -->
             <div class="sm-header">
-                <button class="sm-back-btn" id="sm-back-btn">
+                <button class="sm-back-btn" id="sm-back-btn" onclick="document.getElementById('spin-modal-overlay').style.display='none'">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <span class="sm-title">Spin &amp; Win</span>
@@ -2380,7 +2380,12 @@
         align-items: center;
         justify-content: center;
     }
-    .spin-modal-overlay.open { display: flex; }
+    .spin-modal-overlay.open,
+    .spin-modal-overlay[style*="flex"] {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
     .spin-modal-box {
         background: #f0fdf4;
         border-radius: 24px;
