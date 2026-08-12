@@ -675,7 +675,15 @@ async function processCommerceQuery({ prompt, paymentProof, resource, sessionId,
 
 // POST /api/commerce/intel — Phase 1 paid commerce intelligence query
 app.post("/api/commerce/intel", async (req, res) => {
-    const { prompt, paymentProof, sessionId, modelId, useHf } = req.body;
+    const body = req.body || {};
+    const { prompt, paymentProof, sessionId, modelId, useHf } = body;
+
+    // x402scan spec: probe MUST receive 402 challenge BEFORE body validation
+    // Probes send empty/minimal POST — return payment challenge immediately if no proof
+    if (!paymentProof || typeof paymentProof !== "object" || Object.keys(paymentProof).length === 0) {
+        return res.status(402).json(buildX402Challenge("/api/commerce/intel"));
+    }
+
     if (!prompt) {
         return res.status(400).json({ error: "prompt is required" });
     }
@@ -695,6 +703,14 @@ app.post("/api/commerce/intel", async (req, res) => {
 
 // GET /api/v1/commerce/prices — Phase 1 machine-facing GET endpoint (Task 2)
 app.get("/api/v1/commerce/prices", async (req, res) => {
+    // x402scan spec: return 402 challenge before any other validation
+    const hasPaymentProof = req.query.transactionHash ||
+        req.query.paymentProof ||
+        req.headers["x-payment-proof"];
+    if (!hasPaymentProof) {
+        return res.status(402).json(buildX402Challenge("/api/v1/commerce/prices"));
+    }
+
     const product = req.query.product || "general commodity";
     const location = req.query.location || "Lagos";
     const prompt = req.query.prompt || `What is the current price and market condition of ${product} in ${location}?`;
@@ -1528,6 +1544,294 @@ async function initLlama() {
         llama = null;
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// X402SCAN DISCOVERY ENDPOINTS
+// Spec: https://x402scan.com/discovery/spec
+// ─────────────────────────────────────────────────────────────────────────────
+
+const API_ORIGIN = process.env.API_ORIGIN || "https://api.mamaprice.shop";
+
+const openApiSpec = {
+    openapi: "3.1.0",
+    info: {
+        title: "MamaPrice Commerce Intelligence API",
+        version: "1.5.0",
+        description: "Real-time African market price intelligence powered by OjaGraph + OjaLM. Supports x402 micropayments on Base.",
+        "x-guidance": [
+            "This API provides AI-grounded commerce intelligence for African markets (Nigeria-first).",
+            "All paid endpoints require an x402 payment proof on Base network (USDC).",
+            "Step 1: POST to a paid endpoint without paymentProof — receive a 402 challenge with payment details.",
+            "Step 2: Pay the USDC amount to the recipient address on Base, capture the transaction hash.",
+            "Step 3: Replay the POST with paymentProof: { transactionHash, chain, currency, amount, method } in the body.",
+            "The /api/commerce/intel endpoint accepts a natural-language 'prompt' and returns grounded market intelligence.",
+            "The /api/v1/commerce/prices endpoint accepts product + location as query params and returns structured price data.",
+            "Payment amount: $0.01 USDC per query. Network: Base. Currency: USDC."
+        ],
+        contact: { name: "MamaPrice", url: "https://mamaprice.shop", email: "merchants@merit.systems" },
+        license: { name: "Proprietary", url: "https://mamaprice.shop" }
+    },
+    servers: [
+        { url: API_ORIGIN, description: "MamaPrice Commerce Intelligence API" }
+    ],
+    "x-payment-info": {
+        protocols: [
+            {
+                name: "x402",
+                version: "2",
+                description: "Base blockchain USDC micropayment. Pay $0.01 USDC per query on Base Mainnet.",
+                chain: "Base",
+                currency: "USDC",
+                amount: Number(process.env.X402_PRICE_USD || "0.01"),
+                recipient: process.env.X402_RECIPIENT || "0x0000000000000000000000000000000000000000",
+                resource: process.env.X402_RESOURCE || "/api/commerce/intel"
+            }
+        ]
+    },
+    components: {
+        securitySchemes: {
+            x402: {
+                type: "http",
+                scheme: "x402",
+                description: "Base x402 micropayment. Submit payment proof in request body as paymentProof object.",
+                "x-payment": {
+                    protocol: "x402",
+                    chain: "Base",
+                    currency: "USDC",
+                    amount: Number(process.env.X402_PRICE_USD || "0.01"),
+                    recipient: process.env.X402_RECIPIENT || "0x0000000000000000000000000000000000000000"
+                }
+            }
+        },
+        schemas: {
+            PaymentProof: {
+                type: "object",
+                required: ["transactionHash", "chain", "currency", "amount", "method"],
+                properties: {
+                    transactionHash: { type: "string", description: "Base transaction hash of USDC transfer", example: "0xabc123..." },
+                    chain: { type: "string", enum: ["Base"], example: "Base" },
+                    currency: { type: "string", enum: ["USDC"], example: "USDC" },
+                    amount: { type: "number", example: 0.01 },
+                    method: { type: "string", enum: ["x402"], example: "x402" }
+                }
+            },
+            X402Challenge: {
+                type: "object",
+                properties: {
+                    code: { type: "string", example: "x402" },
+                    message: { type: "string", example: "Payment Required" },
+                    payment: {
+                        type: "object",
+                        properties: {
+                            amount: { type: "number", example: 0.01 },
+                            currency: { type: "string", example: "USDC" },
+                            network: { type: "string", example: "Base" },
+                            recipient: { type: "string", example: "0xabc..." },
+                            resource: { type: "string", example: "/api/commerce/intel" }
+                        }
+                    },
+                    timestamp: { type: "string", format: "date-time" },
+                    instructions: { type: "string" }
+                }
+            },
+            CommerceIntelResponse: {
+                type: "object",
+                properties: {
+                    success: { type: "boolean" },
+                    responseText: { type: "string", description: "AI-grounded market intelligence response" },
+                    evidence: { type: "object", description: "OjaGraph grounding evidence" },
+                    payment: { "$ref": "#/components/schemas/PaymentProof" },
+                    requestId: { type: "string" },
+                    latencyMs: { type: "number" },
+                    model: { type: "string", description: "Model used for inference" }
+                }
+            },
+            PricesResponse: {
+                type: "object",
+                properties: {
+                    product: { type: "string" },
+                    location: { type: "string" },
+                    observations: { type: "array", items: { type: "object" } },
+                    analysis: { type: "object" },
+                    grounded_by: { type: "string", example: "OjaGraph" },
+                    generated_by: { type: "string", example: "OjaLM" },
+                    response: { type: "string" },
+                    payment: { "$ref": "#/components/schemas/PaymentProof" }
+                }
+            }
+        }
+    },
+    paths: {
+        "/api/commerce/intel": {
+            post: {
+                operationId: "queryCommerceIntelligence",
+                summary: "Query market price intelligence (x402 paid)",
+                description: "Submit a natural-language commerce query. Returns AI-grounded price, vendor, and market event intelligence for African markets. Requires a valid Base x402 USDC payment proof.",
+                security: [{ x402: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["prompt", "paymentProof"],
+                                properties: {
+                                    prompt: { type: "string", description: "Natural language commerce query", example: "What is the current price of tomatoes in Lagos?" },
+                                    paymentProof: { "$ref": "#/components/schemas/PaymentProof" },
+                                    sessionId: { type: "string", description: "Optional session ID for multi-turn context" },
+                                    modelId: { type: "string", description: "Optional model override" }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Commerce intelligence response", content: { "application/json": { schema: { "$ref": "#/components/schemas/CommerceIntelResponse" } } } },
+                    "402": { description: "x402 Payment Required", content: { "application/json": { schema: { "$ref": "#/components/schemas/X402Challenge" } } } },
+                    "409": { description: "Payment already used" },
+                    "422": { description: "Payment verification failed" }
+                }
+            }
+        },
+        "/api/v1/commerce/prices": {
+            get: {
+                operationId: "getCommercePrice",
+                summary: "Get structured commodity price data (x402 paid)",
+                description: "Returns structured price observations for a product in a location. Requires x402 payment via query params or x-payment-proof header.",
+                security: [{ x402: [] }],
+                parameters: [
+                    { name: "product", in: "query", schema: { type: "string" }, example: "tomatoes" },
+                    { name: "location", in: "query", schema: { type: "string" }, example: "Lagos" },
+                    { name: "transactionHash", in: "query", required: true, schema: { type: "string" }, description: "Base tx hash of USDC payment" },
+                    { name: "chain", in: "query", schema: { type: "string", default: "Base" } },
+                    { name: "currency", in: "query", schema: { type: "string", default: "USDC" } },
+                    { name: "amount", in: "query", schema: { type: "number", default: 0.01 } },
+                    { name: "sessionId", in: "query", schema: { type: "string" } }
+                ],
+                responses: {
+                    "200": { description: "Structured price data", content: { "application/json": { schema: { "$ref": "#/components/schemas/PricesResponse" } } } },
+                    "402": { description: "x402 Payment Required", content: { "application/json": { schema: { "$ref": "#/components/schemas/X402Challenge" } } } }
+                }
+            }
+        },
+        "/api/v1/commerce/actions/propose": {
+            post: {
+                operationId: "proposeCommerceAction",
+                summary: "Propose autonomous commerce action (x402 paid)",
+                description: "Propose a price-alert or autonomous purchase action for an AI agent. Requires x402 payment.",
+                security: [{ x402: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["action", "paymentProof"],
+                                properties: {
+                                    action: { type: "string", description: "Action type (price_alert, buy_order)", example: "price_alert" },
+                                    product: { type: "string", example: "tomatoes" },
+                                    location: { type: "string", example: "Lagos" },
+                                    condition: { type: "string", example: "price < 5000" },
+                                    paymentProof: { "$ref": "#/components/schemas/PaymentProof" }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Action proposal accepted" },
+                    "402": { description: "x402 Payment Required", content: { "application/json": { schema: { "$ref": "#/components/schemas/X402Challenge" } } } }
+                }
+            }
+        },
+        "/api/v1/monitors": {
+            post: {
+                operationId: "createMonitor",
+                summary: "Create a price monitor rule",
+                description: "Create an agent monitoring rule for price alerts.",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                required: ["product", "location"],
+                                properties: {
+                                    agentId: { type: "string" },
+                                    product: { type: "string", example: "tomatoes" },
+                                    location: { type: "string", example: "Lagos" },
+                                    condition: { type: "string", example: "price > 5000" },
+                                    maxSpendUSD: { type: "number", example: 1.0 },
+                                    intervalMinutes: { type: "number", example: 60 }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: { "200": { description: "Monitor created" } }
+            },
+            get: {
+                operationId: "listMonitors",
+                summary: "List active price monitors",
+                description: "Returns all active monitoring rules for the requesting agent.",
+                responses: { "200": { description: "List of monitors" } }
+            }
+        }
+    }
+};
+
+// GET /openapi.json — canonical OpenAPI discovery document (x402scan spec requirement)
+app.get(["/openapi.json", "/.well-known/openapi.json"], (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.json(openApiSpec);
+});
+
+// GET /.well-known/x402.json — x402 payment manifest (x402scan discovery)
+app.get(["/.well-known/x402.json", "/x402.json"], (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.json({
+        version: "2",
+        origin: API_ORIGIN,
+        description: "MamaPrice Commerce Intelligence — real-time African market prices via x402 micropayments on Base.",
+        resources: [
+            {
+                path: "/api/commerce/intel",
+                method: "POST",
+                payment: {
+                    chain: process.env.X402_CHAIN || "Base",
+                    currency: process.env.X402_CURRENCY || "USDC",
+                    amount: Number(process.env.X402_PRICE_USD || "0.01"),
+                    recipient: process.env.X402_RECIPIENT || "0x0000000000000000000000000000000000000000"
+                }
+            },
+            {
+                path: "/api/v1/commerce/prices",
+                method: "GET",
+                payment: {
+                    chain: process.env.X402_CHAIN || "Base",
+                    currency: process.env.X402_CURRENCY || "USDC",
+                    amount: Number(process.env.X402_PRICE_USD || "0.01"),
+                    recipient: process.env.X402_RECIPIENT || "0x0000000000000000000000000000000000000000"
+                }
+            },
+            {
+                path: "/api/v1/commerce/actions/propose",
+                method: "POST",
+                payment: {
+                    chain: process.env.X402_CHAIN || "Base",
+                    currency: process.env.X402_CURRENCY || "USDC",
+                    amount: Number(process.env.X402_PRICE_USD || "0.01"),
+                    recipient: process.env.X402_RECIPIENT || "0x0000000000000000000000000000000000000000"
+                }
+            }
+        ],
+        discovery: {
+            openapi: `${API_ORIGIN}/openapi.json`
+        }
+    });
+});
 
 async function startServer() {
     const PORT = process.env.PORT || 3001;
