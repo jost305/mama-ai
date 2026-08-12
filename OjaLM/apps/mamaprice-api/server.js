@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { getLlama, LlamaChatSession } from "node-llama-cpp";
+// node-llama-cpp is loaded dynamically inside initLlama() — safe for Vercel/serverless
 import { ojaGraph } from "./ojagraph.js";
 import { rewardsEngine } from "./rewards-engine.js";
 import { addPaymentRecord, getPaymentRecord } from "./payment-ledger.js";
@@ -1516,13 +1516,26 @@ app.post("/webhook/whatsapp", async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Model Initialization
+// Model Initialization (dynamic import — safe for Vercel/serverless)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import fs from "fs";
 
+let getLlama, LlamaChatSession;
+
 async function initLlama() {
     try {
+        // Dynamic import — skipped gracefully on Vercel or if not installed
+        if (!getLlama) {
+            try {
+                const llamaMod = await import("node-llama-cpp");
+                getLlama = llamaMod.getLlama;
+                LlamaChatSession = llamaMod.LlamaChatSession;
+            } catch (importErr) {
+                console.warn("ℹ️ node-llama-cpp not available. Running in Cloud Inference & Fallback mode.");
+                model = null; llama = null; return;
+            }
+        }
         if (!fs.existsSync(MODEL_PATH)) {
             console.log("ℹ️ Local OjaLM GGUF model file not found at path. Running in Cloud Inference & Fallback mode.");
             model = null;
@@ -1843,5 +1856,10 @@ async function startServer() {
     initLlama().catch(err => console.warn("Llama init notice:", err.message));
 }
 
-startServer();
+// Export app for Vercel serverless (top-level export required by ES modules)
+export default app;
 
+// Only start the HTTP server in non-Vercel environments (local / Railway / VPS)
+if (!process.env.VERCEL && !process.env.VERCEL_ENV) {
+    startServer();
+}

@@ -1,0 +1,11 @@
+# Exclude large files from Vercel deployment
+OjaLM-v0.1.gguf
+models/
+*.gguf
+*.bin
+node_modules/
+payment-ledger.json
+mamaprice-api.server.log
+mamaprice-api.server.error.log
+test/
+.env
