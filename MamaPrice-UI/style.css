@@ -11664,4 +11664,27 @@ table tbody tr:hover {
 }
 
 
+/* ── Developer & Partner Portal View Layout (#page-partners) ── */
+#page-partners {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#page-partners.active {
+    display: flex !important;
+}
+
+.partners-page-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto !important;
+    box-sizing: border-box;
+}
 
