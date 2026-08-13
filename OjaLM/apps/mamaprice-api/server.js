@@ -291,7 +291,7 @@ const MODAL_OJALM_ENDPOINT = process.env.MODAL_OJALM_ENDPOINT || "https://mrbloo
 
 async function queryModalOjaLM(prompt, systemPrompt = SYSTEM_PROMPT) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout for Modal GPU cold starts
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s fast timeout for Modal GPU (fails over instantly if cold)
 
     try {
         console.log(`[OjaLM Modal GPU] Requesting Modal endpoint (${MODAL_OJALM_ENDPOINT})...`);
@@ -472,16 +472,23 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         }
     }
 
-    // Attempt 3: Local OjaLM GGUF if local model is loaded and HF/Modal weren't successful
+    // Attempt 3: Local OjaLM GGUF with 4s Fast Timeout
     if (!primarySuccess && model) {
         try {
             console.log(`[OjaLM Local GGUF] Generating response for session "${sessionId}"...`);
             const chatSession = await getOrCreateSession(sessionId);
-            ojalmResponseText = await chatSession.prompt(augmentedPrompt);
+            
+            // 4s timeout for CPU inference
+            const localPromise = chatSession.prompt(augmentedPrompt, { maxTokens: 200 });
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("Local CPU GGUF inference timed out (4s limit exceeded)")), 4000)
+            );
+
+            ojalmResponseText = await Promise.race([localPromise, timeoutPromise]);
             primarySuccess = true;
             providerName = "ojalm-local";
         } catch (localErr) {
-            console.warn(`⚠️ [OjaLM Local GGUF] failed:`, localErr.message);
+            console.warn(`⚠️ [OjaLM Local GGUF] skipped/failed:`, localErr.message);
         }
     }
 
