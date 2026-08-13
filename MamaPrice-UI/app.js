@@ -2007,9 +2007,13 @@ runMarketMonitor();`
     });
 
     // ────────────────────────────────────────────────────────────────────────
-    // REAL PERSISTENT CHAT HISTORY SYSTEM — Stores Per User in LocalStorage
+    // REAL PERSISTENT CHAT HISTORY SYSTEM — Stores Per User in LocalStorage (Only if Signed In)
     // ────────────────────────────────────────────────────────────────────────
     function getStoredHistory() {
+        const isAuthed = localStorage.getItem('mamaprice_auth_user');
+        if (!isAuthed) {
+            return { today: [], sevenDays: [] };
+        }
         try {
             const data = localStorage.getItem('mamaprice_chat_history_v2');
             if (data) return JSON.parse(data);
@@ -2023,12 +2027,18 @@ runMarketMonitor();`
     }
 
     function saveStoredHistory(historyData) {
+        const isAuthed = localStorage.getItem('mamaprice_auth_user');
+        if (!isAuthed) return;
         localStorage.setItem('mamaprice_chat_history_v2', JSON.stringify(historyData));
         renderSidebarHistory();
         renderFullHistoryPage();
     }
 
     window.addMessageToHistory = function(userMessageText) {
+        // Do not store history for unauthenticated users
+        const isAuthed = localStorage.getItem('mamaprice_auth_user');
+        if (!isAuthed) return;
+
         if (!userMessageText || userMessageText.length < 2) return;
         const historyData = getStoredHistory();
         
