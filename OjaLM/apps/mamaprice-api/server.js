@@ -44,7 +44,7 @@ If a question has no matching evidence, say so honestly and offer general guidan
 // OpenRouter FREE Secondary Model Integration
 // ─────────────────────────────────────────────────────────────────────────────
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct:free";
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-2-9b-it:free";
 
 const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
 
