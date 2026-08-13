@@ -27,8 +27,11 @@ image = (
         "fastapi[standard]",
         "pydantic",
         "huggingface_hub",
-        "httpx",
-        "llama-cpp-python"
+        "httpx"
+    )
+    .pip_install(
+        "llama-cpp-python",
+        extra_index_url="https://abetlen.github.io/llama-cpp-python/wheels/cxx11/cu122"
     )
 )
 

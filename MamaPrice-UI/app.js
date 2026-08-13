@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    let API_URL = isLocalhost ? 'http://localhost:3001' : window.location.origin;
+    let API_URL = isLocalhost ? 'http://localhost:3001' : 'https://api.mamaprice.shop';
     let currentSessionId = `session_${Date.now()}`;
     let agentEarnings = 148500;
 
@@ -372,7 +372,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update URL hash without scroll jump
-        const hashKey = (pageKey === 'agent') ? 'agents' : (pageKey === 'library' ? 'watchlist' : pageKey);
+        const currentHash = window.location.hash.replace('#', '').toLowerCase();
+        const hashKey = (currentHash === 'partners' || currentHash === 'partner' || currentHash === 'build' || currentHash === 'builder' || currentHash === 'devs' || currentHash === 'dev') ? currentHash : ((pageKey === 'agent') ? 'agents' : (pageKey === 'library' ? 'watchlist' : pageKey));
         if (window.location.hash !== `#${hashKey}`) {
             history.replaceState(null, '', `#${hashKey}`);
         }
@@ -386,7 +387,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hash === 'agents' || hash === 'agent') pageKey = 'agent';
         if (hash === 'watchlist' || hash === 'library') pageKey = 'library';
         if (hash === 'rewards' || hash === 'spin') pageKey = 'rewards';
-        if (hash === 'partner' || hash === 'partners' || hash === 'developers' || hash === 'developer' || hash === 'partner-portal') pageKey = 'partners';
+        if (hash === 'partner' || hash === 'partners' || hash === 'developers' || hash === 'developer' || hash === 'partner-portal' || hash === 'devs' || hash === 'dev' || hash === 'build' || hash === 'builder' || hash === 'price2' || hash === 'prices2' || hash === 'price') pageKey = 'partners';
+        if (hash === 'prices') pageKey = 'prices';
 
 
         if (pageKey === 'home') {
@@ -409,8 +411,10 @@ document.addEventListener('DOMContentLoaded', () => {
     handleHashRouting();
 
     const navPrices = document.getElementById('nav-prices');
+    const navPartners = document.getElementById('nav-partners') || document.getElementById('nav-build');
     const navLibrary = document.getElementById('nav-library');
     const pagePrices = document.getElementById('page-prices');
+    const pagePartners = document.getElementById('page-partners') || document.getElementById('page-build');
     const pageLibrary = document.getElementById('page-library');
 
     // Mobile Bottom Nav Elements
@@ -424,23 +428,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageRewards = document.getElementById('page-rewards');
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); switchView(navHome, pageHome); });
-    if (navPrices) navPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(navPrices, pagePrices); });
+    if (navPrices) navPrices.addEventListener('click', (e) => { e.preventDefault(); switchView(navPrices, pagePrices); window.location.hash = 'prices'; });
+    if (navPartners) navPartners.addEventListener('click', (e) => { e.preventDefault(); switchView(navPartners, pagePartners); window.location.hash = 'partners'; });
     if (navExplore) navExplore.addEventListener('click', (e) => { e.preventDefault(); switchView(navExplore, pageExplore); });
     if (navMap) navMap.addEventListener('click', (e) => { e.preventDefault(); switchView(navMap, pageMap); });
     if (navMarkets) navMarkets.addEventListener('click', (e) => { e.preventDefault(); switchView(navMarkets, pageMarkets); });
     if (navAgent) navAgent.addEventListener('click', (e) => { e.preventDefault(); switchView(navAgent, pageAgent); });
     if (navRewards) navRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(navRewards, pageRewards); });
     if (mNavRewards) mNavRewards.addEventListener('click', (e) => { e.preventDefault(); switchView(mNavRewards, pageRewards); });
-
-    const navPartners = document.getElementById('nav-partners');
-    const pagePartners = document.getElementById('page-partners');
-    if (navPartners && pagePartners) {
-        navPartners.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchView(navPartners, pagePartners);
-            window.location.hash = 'partners';
-        });
-    }
 
     // ────────────────────────────────────────────────────────────────────────
     // DEVELOPER & PARTNER PORTAL (PHASE 1.5) INTERACTIVE PLAYGROUND
@@ -859,6 +854,128 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateDevCodeSnippet();
+
+    // ────────────────────────────────────────────────────────────────────────
+    // PHASE 3.4 — REFERENCE AGENT TAB SWITCHER (FoodAgent / MarketMonitor)
+    // ────────────────────────────────────────────────────────────────────────
+    const AGENT_REF_CODE = {
+        food: {
+            title: "FoodAgent.js — Restaurant Procurement Agent",
+            desc:  "Single-query procurement agent: \"Find the best current tomato price for my restaurant in Lagos.\"",
+            code: `import fetch from "node-fetch";
+
+const API_BASE = "https://api.mamaprice.shop";
+
+export async function runFoodAgent({ product = "tomatoes", location = "Lagos" } = {}) {
+  // Step 1: Initial query (receives HTTP 402 challenge)
+  const initRes = await fetch(\`\${API_BASE}/api/v1/commerce/prices?product=\${product}&location=\${location}\`);
+  const challenge = await initRes.json();
+
+  // Step 2: Settle 0.01 USDC payment on Base network
+  const paymentProof = {
+    transactionHash: "0x_base_tx_hash_from_wallet",
+    chain: "Base",
+    currency: "USDC",
+    amount: 0.01,
+    method: "x402"
+  };
+
+  // Step 3: Replay request with Base x402 payment proof
+  const res = await fetch(
+    \`\${API_BASE}/api/v1/commerce/prices?product=\${product}&location=\${location}\` +
+    \`&transactionHash=\${paymentProof.transactionHash}&chain=Base&currency=USDC&amount=0.01&method=x402\`
+  );
+  const data = await res.json();
+
+  console.log("✅ Grounded Commerce Intelligence:", data.response);
+  return data;
+}
+
+runFoodAgent();`
+        },
+        monitor: {
+            title: "MarketMonitor.js — Multi-Market Commodity Monitor",
+            desc:  "Multi-city price comparison agent: monitors Rice prices across Lagos, Ibadan & Kano via parallel x402 queries.",
+            code: `import fetch from "node-fetch";
+
+const API_BASE = "https://api.mamaprice.shop";
+const CITIES   = ["Lagos", "Ibadan", "Kano"];
+
+export async function runMarketMonitor({ product = "rice" } = {}) {
+  const results = [];
+
+  for (const location of CITIES) {
+    // Each city query is a separate x402 micropayment (0.01 USDC each)
+    const txHash = \`0x_base_tx_monitor_\${location.toLowerCase()}_\${Date.now()}\`;
+
+    const res = await fetch(
+      \`\${API_BASE}/api/v1/commerce/prices?product=\${product}&location=\${location}\` +
+      \`&transactionHash=\${txHash}&chain=Base&currency=USDC&amount=0.01&method=x402\`
+    );
+    const data = await res.json();
+
+    if (res.status === 200) {
+      results.push({
+        location,
+        trend:   data.analysis?.trend    || "STABLE",
+        summary: (data.response || "").slice(0, 120) + "..."
+      });
+      console.log(\`[MarketMonitor] \${location}: ✅ verified (Tx: \${txHash.slice(0, 24)}...)\`);
+    } else {
+      console.warn(\`[MarketMonitor] \${location}: HTTP \${res.status}\`);
+    }
+  }
+
+  console.log("📈 Market Monitor Report:", results);
+  return results;
+}
+
+runMarketMonitor();`
+        }
+    };
+
+    const devAgentTabBtns  = document.querySelectorAll('.dev-agent-tab-btn');
+    const devAgentTitle    = document.getElementById('dev-agent-title');
+    const devAgentDesc     = document.getElementById('dev-agent-desc');
+    const devAgentCodeDisplay = document.getElementById('dev-agent-code-display');
+    const devCopyAgentCodeBtn = document.getElementById('dev-copy-agent-code-btn');
+
+    function switchAgentRefTab(agentKey) {
+        const agent = AGENT_REF_CODE[agentKey];
+        if (!agent) return;
+
+        // Update tab button styles
+        devAgentTabBtns.forEach(btn => {
+            const isActive = btn.dataset.agent === agentKey;
+            btn.style.background = isActive ? '#0052ff' : 'transparent';
+            btn.style.color = isActive ? '#fff' : '#94a3b8';
+        });
+
+        if (devAgentTitle)       devAgentTitle.textContent       = agent.title;
+        if (devAgentDesc)        devAgentDesc.textContent        = agent.desc;
+        if (devAgentCodeDisplay) devAgentCodeDisplay.textContent = agent.code;
+    }
+
+    devAgentTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchAgentRefTab(btn.dataset.agent));
+    });
+
+    if (devCopyAgentCodeBtn) {
+        devCopyAgentCodeBtn.addEventListener('click', () => {
+            const code = devAgentCodeDisplay ? devAgentCodeDisplay.textContent : '';
+            if (code) {
+                navigator.clipboard.writeText(code).then(() => {
+                    devCopyAgentCodeBtn.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80;"></i> Copied!';
+                    setTimeout(() => {
+                        devCopyAgentCodeBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Reference Code';
+                    }, 2000);
+                });
+            }
+        });
+    }
+
+    // Initialize to FoodAgent tab on load
+    switchAgentRefTab('food');
 
 
 

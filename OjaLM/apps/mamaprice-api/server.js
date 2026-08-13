@@ -285,6 +285,59 @@ async function queryHuggingFaceInference(prompt, systemPrompt = SYSTEM_PROMPT, u
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Modal Cloud GPU Inference Integration (OjaLM Primary Host)
+// ─────────────────────────────────────────────────────────────────────────────
+const MODAL_OJALM_ENDPOINT = process.env.MODAL_OJALM_ENDPOINT || "https://mrbloomguy--ojalm-inference-serve.modal.run/v1/chat/completions";
+
+async function queryModalOjaLM(prompt, systemPrompt = SYSTEM_PROMPT) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout for Modal GPU cold starts
+
+    try {
+        console.log(`[OjaLM Modal GPU] Requesting Modal endpoint (${MODAL_OJALM_ENDPOINT})...`);
+        const res = await fetch(MODAL_OJALM_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...(process.env.OJALM_API_KEY ? { "Authorization": `Bearer ${process.env.OJALM_API_KEY}` } : {})
+            },
+            body: JSON.stringify({
+                model: "OjaLM-v0.1",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.3,
+                max_tokens: 500
+            }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`Modal API HTTP error (${res.status}): ${errText}`);
+        }
+
+        const data = await res.json();
+        const content = data.choices?.[0]?.message?.content;
+        if (!content) {
+            throw new Error("Invalid or empty response payload from Modal OjaLM.");
+        }
+
+        return {
+            content: content.trim(),
+            provider: "ojalm-modal",
+            latencyMs: data.latency_ms || 0
+        };
+    } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Dedicated Secondary Fallback: OpenRouter FREE LLM API
 // ─────────────────────────────────────────────────────────────────────────────
 async function queryFallbackLLM(prompt, options = {}) {
@@ -391,13 +444,24 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         ? `${groundedContext}\n\nUSER QUESTION: ${prompt}`
         : prompt;
 
-    // ─── PRIMARY INFERENCE ENGINE: OjaLM (Local GGUF / Remote HF) ────────────
+    // ─── PRIMARY INFERENCE ENGINE: OjaLM (Modal Cloud GPU / Remote HF / Local) ────────────
     let primarySuccess = false;
     let ojalmResponseText = "";
-    let providerName = "ojalm";
+    let providerName = "ojalm-modal";
 
-    // Attempt HuggingFace Serverless API if requested or local model unallocated
-    if (!model || useHf) {
+    // Attempt 1: Modal Cloud GPU OjaLM
+    try {
+        console.log(`[OjaLM Modal GPU] Generating response for session "${sessionId}"...`);
+        const modalRes = await queryModalOjaLM(augmentedPrompt, SYSTEM_PROMPT);
+        ojalmResponseText = modalRes.content;
+        primarySuccess = true;
+        providerName = "ojalm-modal";
+    } catch (modalErr) {
+        console.warn(`⚠️ [OjaLM Modal GPU] primary failed:`, modalErr.message);
+    }
+
+    // Attempt 2: HuggingFace Serverless API if Modal GPU failed or HF requested
+    if (!primarySuccess && (!model || useHf)) {
         try {
             console.log(`[HF INFERENCE ENGINE] Invoking HuggingFace API for ctrlprompt/OjaLM-v0.1...`);
             ojalmResponseText = await queryHuggingFaceInference(augmentedPrompt, SYSTEM_PROMPT, req.headers["x-hf-token"] || req.body.hfToken);
@@ -408,7 +472,7 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         }
     }
 
-    // Attempt Local OjaLM GGUF if local model is loaded and HF wasn't used/successful
+    // Attempt 3: Local OjaLM GGUF if local model is loaded and HF/Modal weren't successful
     if (!primarySuccess && model) {
         try {
             console.log(`[OjaLM Local GGUF] Generating response for session "${sessionId}"...`);
@@ -423,14 +487,14 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
 
     // ─── SUCCESS: Return OjaLM Primary Response ──────────────────────────────
     if (primarySuccess && ojalmResponseText) {
-        console.log(`[LLM] provider=ojalm fallback=false`);
+        console.log(`[LLM] provider=${providerName} fallback=false`);
         return res.json({
             sessionId,
             modelUsed: modelId,
             response: ojalmResponseText.trim(),
             intents: detectedIntents,
             evidence: allEvidence,
-            provider: "ojalm",
+            provider: providerName,
             fallback: false
         });
     }
