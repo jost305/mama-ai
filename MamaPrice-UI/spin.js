@@ -165,40 +165,9 @@
         }
     }
 
-    /* ── Social Toast ── */
-    var TOAST_PEOPLE = [
-        { name: "Martha Ikenna",   prize: "₦50",  init: "MI" },
-        { name: "Chidi Okafor",    prize: "₦200", init: "CO" },
-        { name: "Amina Bello",     prize: "₦100", init: "AB" },
-        { name: "Emeka Eze",       prize: "₦300", init: "EE" },
-        { name: "Fatima Suleiman", prize: "₦150", init: "FS" },
-        { name: "Kola Adeyemi",    prize: "₦50",  init: "KA" }
-    ];
-    var toastIdx   = 0;
-    var toastTimer = null;
-
-    function scheduleSocialToast() {
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(showSocialToast, 2800);
-    }
-
-    function showSocialToast() {
-        var person = TOAST_PEOPLE[toastIdx % TOAST_PEOPLE.length];
-        toastIdx++;
-        var toast = document.getElementById("spin-social-toast");
-        if (!toast) return;
-        document.getElementById("sst-avatar").textContent = person.init;
-        document.getElementById("sst-name").textContent   = person.name;
-        document.getElementById("sst-msg").textContent    = "just won " + person.prize + " spin bonus!";
-        toast.classList.add("show");
-        setTimeout(function () {
-            toast.classList.remove("show");
-            var ov = document.getElementById("spin-modal-overlay");
-            if (ov && ov.classList.contains("open")) {
-                toastTimer = setTimeout(showSocialToast, 4000);
-            }
-        }, 3200);
-    }
+    /* ── Social Toast (Disabled Mocks) ── */
+    function scheduleSocialToast() { }
+    function showSocialToast() { }
 
     /* ══════════════════════════════════════════
        WIRE UP — DOM is already ready here since

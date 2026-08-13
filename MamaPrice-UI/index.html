@@ -3050,26 +3050,9 @@
                                     c.appendChild(p);
                                 }
                             }
-                            var TOASTS = [
-                                { n: 'Martha Ikenna', pr: '\u20a650', i: 'MI' }, { n: 'Chidi Okafor', pr: '\u20a6200', i: 'CO' },
-                                { n: 'Amina Bello', pr: '\u20a6100', i: 'AB' }, { n: 'Emeka Eze', pr: '\u20a6300', i: 'EE' },
-                                { n: 'Fatima Suleiman', pr: '\u20a6150', i: 'FS' }, { n: 'Kola Adeyemi', pr: '\u20a650', i: 'KA' }
-                            ];
-                            var ti = 0, tt = null;
-                            function scheduleToast() { clearTimeout(tt); tt = setTimeout(showToast, 2800); }
-                            function showToast() {
-                                var p = TOASTS[ti % TOASTS.length]; ti++;
-                                var t = document.getElementById('spin-social-toast'); if (!t) return;
-                                document.getElementById('sst-avatar').textContent = p.i;
-                                document.getElementById('sst-name').textContent = p.n;
-                                document.getElementById('sst-msg').textContent = 'just won ' + p.pr + ' spin bonus!';
-                                t.classList.add('show');
-                                setTimeout(function () {
-                                    t.classList.remove('show');
-                                    var ov = document.getElementById('spin-modal-overlay');
-                                    if (ov && ov.classList.contains('open')) tt = setTimeout(showToast, 4000);
-                                }, 3200);
-                            }
+                            // Disabled mock social toasts
+                            function scheduleToast() { }
+                            function showToast() { }
 
                             /* Wire — DOM already ready here */
                             var ov = document.getElementById('spin-modal-overlay');
