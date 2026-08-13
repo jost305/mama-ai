@@ -44,7 +44,7 @@ If a question has no matching evidence, say so honestly and offer general guidan
 // OpenRouter FREE Secondary Model Integration
 // ─────────────────────────────────────────────────────────────────────────────
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-2-9b-it:free";
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "openrouter/free";
 
 const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
 
@@ -444,15 +444,15 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
 
     // ─── Hybrid RAG Retrieval ────────────────────────────────────────────────
     const enableRAG = ["MamaPrice 4o", "OjaGraph RAG", "OjaLM Commerce"].includes(modelId);
-    let allEvidence = {};
-    let detectedIntents = [];
+    let allEvidence = null;
+    let detectedIntents = detectQueryIntents(prompt);
+    let groundedContext = null;
 
-    if (enableRAG) {
-        // Step 1: Detect query intent(s)
-        detectedIntents = detectQueryIntents(prompt);
-        console.log(`[RAG] Detected intents: [${detectedIntents.join(", ")}] for query: "${prompt}"`);
+    const isCommerce = isCommerceQuery(prompt);
+    const isGreetingOrGeneral = detectedIntents.includes("greeting") || (detectedIntents.includes("general") && !isCommerce);
 
-        // Step 2: Multi-channel parallel retrieval across all Commerce Graph document types (Promise.all)
+    if (enableRAG && !isGreetingOrGeneral && isCommerce) {
+        console.log(`[RAG] Commerce query detected. Intent: [${detectedIntents.join(", ")}] for: "${prompt}"`);
         const [searchRes, trendRes] = await Promise.all([
             Promise.resolve(ojaGraph.searchCommerceIntelligence(prompt)),
             Promise.resolve(ojaGraph.retrieveTrend(prompt))
@@ -460,14 +460,10 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         allEvidence = searchRes;
         allEvidence.trend = trendRes;
 
-        const totalMatches = Object.values(allEvidence).reduce((sum, val) => sum + (Array.isArray(val) ? val.length : (val ? 1 : 0)), 0);
-        console.log(`[RAG] Retrieved ${totalMatches} total evidence items (including trend memory).`);
+        groundedContext = buildGroundedContext(prompt, allEvidence);
     } else {
-        console.log(`[DIRECT OJALM] Bypassing RAG for direct GGUF / HF inference.`);
+        console.log(`[RAG] Conversational/General query. Bypassing evidence injection for: "${prompt}"`);
     }
-
-    // Step 3: Build grounded context from multi-type evidence
-    const groundedContext = buildGroundedContext(prompt, allEvidence);
 
     const augmentedPrompt = groundedContext
         ? `${groundedContext}\n\nUSER QUESTION: ${prompt}`
@@ -555,9 +551,11 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         console.log("[LLM] provider=static fallback=true reason=secondary_engine_failed");
 
         // Natural MamaPrice static response if both inference engines fail
-        let staticResponse = "I'm having trouble finding verified market information for your query right now. Please check back shortly or try rephrasing your search!";
-        if (groundedContext) {
+        let staticResponse = "Hello! I'm MamaPrice, your AI commerce assistant for African markets. I can help you discover products, compare prices across markets, and find verified vendor deals! What can I help you with today?";
+        if (isCommerce && groundedContext) {
             staticResponse = `Here is the latest verified MamaPrice market snapshot for your query:\n\n${groundedContext.replace(/=== GROUNDED OJAGRAPH EVIDENCE ===\n/, '')}`;
+        } else if (isCommerce) {
+            staticResponse = "I'm checking the latest verified market records for your query. Please ask for specific products or markets (e.g., 'Rice in Mile 12') and I'll find the best deals for you!";
         }
 
         return res.json({
