@@ -44,13 +44,15 @@ If a question has no matching evidence, say so honestly and offer general guidan
 // OpenRouter FREE Secondary Model Integration
 // ─────────────────────────────────────────────────────────────────────────────
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = "openrouter/free";
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct:free";
 
 const FALLBACK_SYSTEM_PROMPT = `You are MamaPrice, an AI-powered commerce assistant built to help people and businesses navigate African markets.
 
 Your job is to help users discover products, understand prices, compare markets and vendors, find better purchasing opportunities, understand commerce information, and navigate the MamaPrice platform.
 
 Speak naturally, confidently, and helpfully.
+
+CRITICAL RULE: NEVER output any internal thinking steps, chain-of-thought reasoning, analysis blocks, bullet points of your internal thought process, or "Here's a thinking process:" text. Respond ONLY with your final clean conversational response as MamaPrice.
 
 You are part of the MamaPrice product. Never describe yourself as a fallback assistant, secondary assistant, backup model, or alternative model.
 
@@ -202,6 +204,33 @@ function buildGroundedContext(query, evidence) {
     if (sections.length === 0) return null;
 
     return `GROUNDED OJAGRAPH COMMERCE EVIDENCE:\n${"─".repeat(50)}\n${sections.join("\n\n")}\n${"─".repeat(50)}`;
+}
+
+function sanitizeResponseText(text) {
+    if (!text || typeof text !== "string") return "";
+    let cleaned = text.trim();
+    
+    // 1. Strip <think>...</think> tags
+    cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, "");
+    
+    // 2. Strip "Here's a thinking process:" blocks and chain-of-thought scratchpads
+    if (/Here'?s a thinking process/i.test(cleaned)) {
+        const lines = cleaned.split("\n");
+        const answerLines = [];
+        let inThinkingBlock = true;
+        for (const line of lines) {
+            if (inThinkingBlock) {
+                if (line.match(/^Here'?s a thinking process/i) || line.match(/^\d+\.\s+\*\*/) || line.match(/^-\s+/) || line.trim() === "") {
+                    continue;
+                }
+                inThinkingBlock = false;
+            }
+            answerLines.push(line);
+        }
+        cleaned = answerLines.join("\n");
+    }
+
+    return cleaned.trim();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -498,7 +527,7 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         return res.json({
             sessionId,
             modelUsed: modelId,
-            response: ojalmResponseText.trim(),
+            response: sanitizeResponseText(ojalmResponseText),
             intents: detectedIntents,
             evidence: allEvidence,
             provider: providerName,
@@ -515,7 +544,7 @@ app.post(["/chat", "/api/chat"], async (req, res) => {
         return res.json({
             sessionId,
             modelUsed: fallbackResult.model,
-            response: fallbackResult.content,
+            response: sanitizeResponseText(fallbackResult.content),
             intents: detectedIntents,
             evidence: allEvidence,
             provider: "openrouter",
