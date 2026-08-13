@@ -3559,7 +3559,7 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
         // Extract JSON block if it exists
         const safeRespText = String(responseText || '');
         const jsonMatch = safeRespText.match(/```json\n([\s\S]*?)\n```/);
-        const modelBadgeHtml = `<div style="font-size: 0.72em; color: #6366f1; font-weight: 600; margin-bottom: 6px;"><i class="fa-solid fa-microchip"></i> Engine: ${escapeHTML(modelUsed)}</div>`;
+        const modelBadgeHtml = '';
         
         let bubbleContent = '';
         if (jsonMatch) {
@@ -3567,7 +3567,6 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
             const jsonStr = jsonMatch[1];
             
             bubbleContent = `
-                ${modelBadgeHtml}
                 <p>${escapeHTML(textPart).replace(/\n/g, '<br>')}</p>
                 ${evidenceHtml}
                 <div style="margin-top: 12px; padding: 12px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px;">
@@ -3579,7 +3578,6 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
             `;
         } else {
             bubbleContent = `
-                ${modelBadgeHtml}
                 <p>${escapeHTML(safeRespText).replace(/\n/g, '<br>')}</p>
                 ${evidenceHtml}
             `;
@@ -3587,7 +3585,7 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
         
         msgDiv.innerHTML = `
             <div class="message-container">
-                <div class="message-avatar-orb"><i class="fa-solid fa-sparkles"></i></div>
+                <div class="message-avatar-orb"><img src="logo.png" alt="MamaPrice Logo" /></div>
                 <div class="bubble-agent">${bubbleContent}</div>
             </div>
         `;
@@ -3601,7 +3599,7 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
         msgDiv.className = 'message-row agent-row';
         msgDiv.innerHTML = `
             <div class="message-container">
-                <div class="message-avatar-orb" style="background: #fee2e2; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="message-avatar-orb" style="background: #fee2e2; color: #ef4444;"><img src="logo.png" alt="MamaPrice Logo" /></div>
                 <div class="bubble-agent" style="color: #b91c1c; border-color: #fca5a5;">${escapeHTML(errorMsg)}</div>
             </div>
         `;
@@ -3615,7 +3613,7 @@ Never tell the user that another model is unavailable. You are MamaPrice.`;
         typingDiv.className = 'message-row agent-row';
         typingDiv.innerHTML = `
             <div class="message-container">
-                <div class="message-avatar-orb"><i class="fa-solid fa-sparkles"></i></div>
+                <div class="message-avatar-orb"><img src="logo.png" alt="MamaPrice Logo" /></div>
                 <div class="bubble-agent">
                     <div class="typing-dots">
                         <div class="dot"></div>

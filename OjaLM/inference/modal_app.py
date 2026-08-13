@@ -59,8 +59,8 @@ class ChatCompletionRequest(BaseModel):
     image=image,
     gpu="L4",
     volumes={MODEL_DIR: vol},
-    min_containers=0,
-    scaledown_window=300
+    min_containers=1,
+    scaledown_window=900
 )
 class OjaLMModel:
     @modal.enter()

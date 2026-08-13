@@ -895,14 +895,22 @@ body.sidebar-docked .top-dock-btn {
 .message-avatar-orb {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #a5b4fc, #818cf8);
+    border-radius: 6px;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
     color: white;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.message-avatar-orb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
 }
 
 .bubble-user {
